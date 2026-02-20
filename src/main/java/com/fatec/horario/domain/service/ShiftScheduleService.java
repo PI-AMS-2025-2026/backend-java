@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.ShiftSchedule;
-import com.fatec.horario.dto.ShiftScheduleRequest;
-import com.fatec.horario.dto.ShiftScheduleResponse;
+import com.fatec.horario.dto.ShiftSchedule.ShiftScheduleRequest;
+import com.fatec.horario.dto.ShiftSchedule.ShiftScheduleResponse;
 import com.fatec.horario.infrastructure.mapper.ShiftScheduleMapper;
 import com.fatec.horario.infrastructure.repository.ShiftScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;

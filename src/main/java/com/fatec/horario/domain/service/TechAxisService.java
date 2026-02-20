@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.TechAxis;
-import com.fatec.horario.dto.TechAxisRequest;
-import com.fatec.horario.dto.TechAxisResponse;
+import com.fatec.horario.dto.TechAxis.TechAxisRequest;
+import com.fatec.horario.dto.TechAxis.TechAxisResponse;
 import com.fatec.horario.infrastructure.mapper.TechAxisMapper;
 import com.fatec.horario.infrastructure.repository.TechAxisRepository;
 import jakarta.persistence.EntityNotFoundException;

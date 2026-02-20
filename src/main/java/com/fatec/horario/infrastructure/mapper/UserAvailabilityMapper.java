@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.UserAvailability;
-import com.fatec.horario.dto.UserAvailabilityRequest;
-import com.fatec.horario.dto.UserAvailabilityResponse;
+import com.fatec.horario.dto.UserAvailability.UserAvailabilityRequest;
+import com.fatec.horario.dto.UserAvailability.UserAvailabilityResponse;
 
 public class UserAvailabilityMapper {
 

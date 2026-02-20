@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.Subject;
-import com.fatec.horario.dto.SubjectRequest;
-import com.fatec.horario.dto.SubjectResponse;
+import com.fatec.horario.dto.Subject.SubjectRequest;
+import com.fatec.horario.dto.Subject.SubjectResponse;
 
 import org.springframework.stereotype.Component;
 

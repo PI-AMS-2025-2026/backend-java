@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.Periodicity;
-import com.fatec.horario.dto.PeriodicityRequest;
-import com.fatec.horario.dto.PeriodicityResponse;
+import com.fatec.horario.dto.Periodicity.PeriodicityRequest;
+import com.fatec.horario.dto.Periodicity.PeriodicityResponse;
 
 public class PeriodicityMapper {
 

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.AcademicSemester;
 import com.fatec.horario.domain.model.Course;
-import com.fatec.horario.dto.AcademicSemesterRequest;
-import com.fatec.horario.dto.AcademicSemesterResponse;
+import com.fatec.horario.dto.AcademicSemester.AcademicSemesterRequest;
+import com.fatec.horario.dto.AcademicSemester.AcademicSemesterResponse;
 import com.fatec.horario.infrastructure.mapper.AcademicSemesterMapper;
 import com.fatec.horario.infrastructure.repository.AcademicSemesterRepository;
 import com.fatec.horario.infrastructure.repository.CourseRepository;

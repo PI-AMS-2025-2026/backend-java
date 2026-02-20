@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.Schedule;
-import com.fatec.horario.dto.ScheduleRequest;
-import com.fatec.horario.dto.ScheduleResponse;
+import com.fatec.horario.dto.Schedule.ScheduleRequest;
+import com.fatec.horario.dto.Schedule.ScheduleResponse;
 
 public class ScheduleMapper {
 

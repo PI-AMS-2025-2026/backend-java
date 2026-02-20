@@ -1,8 +1,8 @@
 package com.fatec.horario.web.controller;
 
-import com.fatec.horario.dto.UserAvailabilityRequest;
-import com.fatec.horario.dto.UserAvailabilityResponse;
 import com.fatec.horario.domain.service.UserAvailabilityService;
+import com.fatec.horario.dto.UserAvailability.UserAvailabilityRequest;
+import com.fatec.horario.dto.UserAvailability.UserAvailabilityResponse;
 
 import jakarta.validation.Valid;
 

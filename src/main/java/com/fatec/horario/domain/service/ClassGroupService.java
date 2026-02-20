@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.ClassGroup;
-import com.fatec.horario.dto.ClassGroupRequest;
-import com.fatec.horario.dto.ClassGroupResponse;
+import com.fatec.horario.dto.ClassGroup.ClassGroupRequest;
+import com.fatec.horario.dto.ClassGroup.ClassGroupResponse;
 import com.fatec.horario.infrastructure.mapper.ClassGroupMapper;
 import com.fatec.horario.infrastructure.repository.ClassGroupRepository;
 import jakarta.persistence.EntityNotFoundException;

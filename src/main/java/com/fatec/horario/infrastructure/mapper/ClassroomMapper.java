@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.Classroom;
-import com.fatec.horario.dto.ClassroomRequest;
-import com.fatec.horario.dto.ClassroomResponse;
+import com.fatec.horario.dto.Classroom.ClassroomRequest;
+import com.fatec.horario.dto.Classroom.ClassroomResponse;
 
 public class ClassroomMapper {
 

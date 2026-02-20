@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.ShiftSchedule;
 import com.fatec.horario.domain.model.ShiftScheduleDetail;
-import com.fatec.horario.dto.ShiftScheduleDetailRequest;
-import com.fatec.horario.dto.ShiftScheduleDetailResponse;
+import com.fatec.horario.dto.ShiftScheduleDetail.ShiftScheduleDetailRequest;
+import com.fatec.horario.dto.ShiftScheduleDetail.ShiftScheduleDetailResponse;
 import com.fatec.horario.infrastructure.mapper.ShiftScheduleDetailMapper;
 import com.fatec.horario.infrastructure.repository.ShiftScheduleDetailRepository;
 import com.fatec.horario.infrastructure.repository.ShiftScheduleRepository;

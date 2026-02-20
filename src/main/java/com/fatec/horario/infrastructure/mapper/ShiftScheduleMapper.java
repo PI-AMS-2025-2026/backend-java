@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.ShiftSchedule;
-import com.fatec.horario.dto.ShiftScheduleRequest;
-import com.fatec.horario.dto.ShiftScheduleResponse;
+import com.fatec.horario.dto.ShiftSchedule.ShiftScheduleRequest;
+import com.fatec.horario.dto.ShiftSchedule.ShiftScheduleResponse;
 
 public class ShiftScheduleMapper {
 

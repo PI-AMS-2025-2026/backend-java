@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.User;
 import com.fatec.horario.domain.model.UserAvailability;
-import com.fatec.horario.dto.UserAvailabilityRequest;
-import com.fatec.horario.dto.UserAvailabilityResponse;
+import com.fatec.horario.dto.UserAvailability.UserAvailabilityRequest;
+import com.fatec.horario.dto.UserAvailability.UserAvailabilityResponse;
 import com.fatec.horario.infrastructure.mapper.UserAvailabilityMapper;
 import com.fatec.horario.infrastructure.repository.UserAvailabilityRepository;
 import com.fatec.horario.infrastructure.repository.UserRepository;

@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.Modality;
-import com.fatec.horario.dto.ModalityRequest;
-import com.fatec.horario.dto.ModalityResponse;
+import com.fatec.horario.dto.Modality.ModalityRequest;
+import com.fatec.horario.dto.Modality.ModalityResponse;
 import com.fatec.horario.infrastructure.mapper.ModalityMapper;
 import com.fatec.horario.infrastructure.repository.ModalityRepository;
 import jakarta.persistence.EntityNotFoundException;

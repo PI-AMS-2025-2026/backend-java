@@ -3,8 +3,8 @@ package com.fatec.horario.infrastructure.mapper;
 import org.springframework.stereotype.Component;
 
 import com.fatec.horario.domain.model.AccessLevel;
-import com.fatec.horario.dto.AccessLevelRequest;
-import com.fatec.horario.dto.AccessLevelResponse;
+import com.fatec.horario.dto.AcessLevel.AccessLevelRequest;
+import com.fatec.horario.dto.AcessLevel.AccessLevelResponse;
 
 @Component
 public class AccessLevelMapper {

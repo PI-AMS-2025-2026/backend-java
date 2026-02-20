@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.dto.ShiftScheduleDetailRequest;
-import com.fatec.horario.dto.ShiftScheduleDetailResponse;
 import com.fatec.horario.domain.service.ShiftScheduleDetailService;
+import com.fatec.horario.dto.ShiftScheduleDetail.ShiftScheduleDetailRequest;
+import com.fatec.horario.dto.ShiftScheduleDetail.ShiftScheduleDetailResponse;
 
 import jakarta.validation.Valid;
 

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.dto.AccessLevelRequest;
-import com.fatec.horario.dto.AccessLevelResponse;
 import com.fatec.horario.domain.service.AccessLevelService;
+import com.fatec.horario.dto.AcessLevel.AccessLevelRequest;
+import com.fatec.horario.dto.AcessLevel.AccessLevelResponse;
 
 import jakarta.validation.Valid;
 

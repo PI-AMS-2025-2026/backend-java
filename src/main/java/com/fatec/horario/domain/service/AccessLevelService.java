@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.AccessLevel;
-import com.fatec.horario.dto.AccessLevelRequest;
-import com.fatec.horario.dto.AccessLevelResponse;
+import com.fatec.horario.dto.AcessLevel.AccessLevelRequest;
+import com.fatec.horario.dto.AcessLevel.AccessLevelResponse;
 import com.fatec.horario.infrastructure.mapper.AccessLevelMapper;
 import com.fatec.horario.infrastructure.repository.AccessLevelRepository;
 import jakarta.persistence.EntityNotFoundException;

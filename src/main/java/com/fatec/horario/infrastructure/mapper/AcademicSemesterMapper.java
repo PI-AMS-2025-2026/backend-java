@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.AcademicSemester;
-import com.fatec.horario.dto.AcademicSemesterRequest;
-import com.fatec.horario.dto.AcademicSemesterResponse;
+import com.fatec.horario.dto.AcademicSemester.AcademicSemesterRequest;
+import com.fatec.horario.dto.AcademicSemester.AcademicSemesterResponse;
 
 public class AcademicSemesterMapper {
 

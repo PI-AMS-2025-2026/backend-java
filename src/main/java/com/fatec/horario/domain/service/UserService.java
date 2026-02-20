@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.AccessLevel;
 import com.fatec.horario.domain.model.User;
-import com.fatec.horario.dto.UserRequest;
-import com.fatec.horario.dto.UserResponse;
+import com.fatec.horario.dto.User.UserRequest;
+import com.fatec.horario.dto.User.UserResponse;
 import com.fatec.horario.infrastructure.mapper.UserMapper;
 import com.fatec.horario.infrastructure.repository.AccessLevelRepository;
 import com.fatec.horario.infrastructure.repository.CourseUserRepository;

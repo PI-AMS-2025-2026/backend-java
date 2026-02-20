@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.Modality;
-import com.fatec.horario.dto.ModalityRequest;
-import com.fatec.horario.dto.ModalityResponse;
+import com.fatec.horario.dto.Modality.ModalityRequest;
+import com.fatec.horario.dto.Modality.ModalityResponse;
 
 public class ModalityMapper {
 

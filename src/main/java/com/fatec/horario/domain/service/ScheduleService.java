@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.model.Schedule;
-import com.fatec.horario.dto.ScheduleRequest;
-import com.fatec.horario.dto.ScheduleResponse;
+import com.fatec.horario.dto.Schedule.ScheduleRequest;
+import com.fatec.horario.dto.Schedule.ScheduleResponse;
 import com.fatec.horario.infrastructure.mapper.ScheduleMapper;
 import com.fatec.horario.infrastructure.repository.AcademicSemesterRepository;
 import com.fatec.horario.infrastructure.repository.ClassroomRepository;

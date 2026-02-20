@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.dto.ClassroomRequest;
-import com.fatec.horario.dto.ClassroomResponse;
 import com.fatec.horario.domain.service.ClassroomService;
+import com.fatec.horario.dto.Classroom.ClassroomRequest;
+import com.fatec.horario.dto.Classroom.ClassroomResponse;
 
 import jakarta.validation.Valid;
 

@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.User;
-import com.fatec.horario.dto.UserRequest;
-import com.fatec.horario.dto.UserResponse;
+import com.fatec.horario.dto.User.UserRequest;
+import com.fatec.horario.dto.User.UserResponse;
 
 public class UserMapper {
 

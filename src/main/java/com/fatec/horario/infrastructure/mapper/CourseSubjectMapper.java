@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.CourseSubject;
-import com.fatec.horario.dto.CourseSubjectRequest;
-import com.fatec.horario.dto.CourseSubjectResponse;
+import com.fatec.horario.dto.CourseSubject.CourseSubjectRequest;
+import com.fatec.horario.dto.CourseSubject.CourseSubjectResponse;
 
 public class CourseSubjectMapper {
 

@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mapper;
 
 import com.fatec.horario.domain.model.TechAxis;
-import com.fatec.horario.dto.TechAxisRequest;
-import com.fatec.horario.dto.TechAxisResponse;
+import com.fatec.horario.dto.TechAxis.TechAxisRequest;
+import com.fatec.horario.dto.TechAxis.TechAxisResponse;
 
 public class TechAxisMapper {
 
