@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.domain.service.TechAxisService;
+import com.fatec.horario.domain.services.TechAxisService;
 import com.fatec.horario.dto.TechAxis.TechAxisRequest;
 import com.fatec.horario.dto.TechAxis.TechAxisResponse;
 

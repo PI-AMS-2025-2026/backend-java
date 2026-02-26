@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.domain.service.ModalityService;
+import com.fatec.horario.domain.services.ModalityService;
 import com.fatec.horario.dto.Modality.ModalityRequest;
 import com.fatec.horario.dto.Modality.ModalityResponse;
 

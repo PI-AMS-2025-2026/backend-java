@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.domain.service.PeriodicityService;
+import com.fatec.horario.domain.services.PeriodicityService;
 import com.fatec.horario.dto.Periodicity.PeriodicityRequest;
 import com.fatec.horario.dto.Periodicity.PeriodicityResponse;
 

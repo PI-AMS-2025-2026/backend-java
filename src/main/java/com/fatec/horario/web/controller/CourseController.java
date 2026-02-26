@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.domain.service.CourseService;
+import com.fatec.horario.domain.services.CourseService;
 import com.fatec.horario.dto.Course.CourseRequest;
 import com.fatec.horario.dto.Course.CourseResponse;
 

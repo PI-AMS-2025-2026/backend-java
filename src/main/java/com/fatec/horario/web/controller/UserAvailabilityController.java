@@ -1,6 +1,6 @@
 package com.fatec.horario.web.controller;
 
-import com.fatec.horario.domain.service.UserAvailabilityService;
+import com.fatec.horario.domain.services.UserAvailabilityService;
 import com.fatec.horario.dto.UserAvailability.UserAvailabilityRequest;
 import com.fatec.horario.dto.UserAvailability.UserAvailabilityResponse;
 

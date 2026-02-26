@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.horario.domain.service.UserService;
+import com.fatec.horario.domain.services.UserService;
 import com.fatec.horario.dto.User.UserRequest;
 import com.fatec.horario.dto.User.UserResponse;
 
