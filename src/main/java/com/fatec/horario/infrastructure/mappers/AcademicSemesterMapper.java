@@ -1,0 +1,24 @@
+package com.fatec.horario.infrastructure.mappers;
+
+import com.fatec.horario.domain.entities.AcademicSemester;
+import com.fatec.horario.dto.AcademicSemester.AcademicSemesterRequest;
+import com.fatec.horario.dto.AcademicSemester.AcademicSemesterResponse;
+
+public class AcademicSemesterMapper {
+
+    public static AcademicSemester toEntity(AcademicSemesterRequest request) {
+        AcademicSemester academicSemester = new AcademicSemester();
+        academicSemester.setAcademicYear(request.academicYear());
+        academicSemester.setStatus(request.status());
+        return academicSemester;
+    }
+
+    public static AcademicSemesterResponse toResponse(AcademicSemester academicSemester) {
+        return new AcademicSemesterResponse(
+                academicSemester.getId(),
+                academicSemester.getAcademicYear(),
+                academicSemester.getStatus(),
+                academicSemester.getCourse() != null ? CourseMapper.toResponse(academicSemester.getCourse()) : null);
+    }
+
+}
