@@ -1,10 +1,11 @@
 package com.fatec.horario.infrastructure.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import com.fatec.horario.domain.entities.AccessLevel;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
+import java.util.Optional;
+
 public interface AccessLevelRepository extends JpaRepository<AccessLevel, Long> {
+
+    Optional<AccessLevel> findByName(String name);
 }

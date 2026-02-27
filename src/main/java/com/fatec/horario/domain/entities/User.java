@@ -1,21 +1,19 @@
 package com.fatec.horario.domain.entities;
 
-import java.io.Serializable;
-import java.util.List;
+import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "tbl_user")
-public class User implements Serializable {
+@Table(name = "tbl_user",
+       uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+public class User implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +25,7 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user")
@@ -41,115 +40,96 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "professor")
     private List<Schedule> schedules;
 
-    @ManyToOne
-    @JoinColumn(name = "access_level_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "access_level_id", nullable = false)
     private AccessLevel accessLevel;
 
-    public User() {
-    }
+    public User() {}
 
-    public User(Long id, String name, String email, String password) {
+    public User(Long id, String name, String email, String password, AccessLevel accessLevel) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.accessLevel = accessLevel;
     }
 
-    public Long getId() {
-        return id;
+    // ==============================
+    // Spring Security
+    // ==============================
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(() ->
+                accessLevel.getRoleName()
+        );
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public String getUsername() {
+        return email; // login por email
     }
 
-    public String getName() {
-        return name;
-    }
+    @Override
+    public boolean isAccountNonExpired() { return true; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
 
-    public String getEmail() {
-        return email;
-    }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Override
+    public boolean isEnabled() { return true; }
 
-    public String getPassword() {
-        return password;
-    }
+    // ==============================
+    // Getters e Setters
+    // ==============================
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public Long getId() { return id; }
 
-    public List<UserAvailability> getAvailabilities() {
-        return availabilities;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setAvailabilities(List<UserAvailability> availabilities) {
-        this.availabilities = availabilities;
-    }
+    public String getName() { return name; }
 
-    public List<UserSubject> getUserSubjects() {
-        return userSubjects;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public void setUserSubjects(List<UserSubject> userSubjects) {
-        this.userSubjects = userSubjects;
-    }
+    public String getEmail() { return email; }
 
-    public List<CourseUser> getCourseUsers() {
-        return courseUsers;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setCourseUsers(List<CourseUser> courseUsers) {
-        this.courseUsers = courseUsers;
-    }
+    @Override
+    public String getPassword() { return password; }
 
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
-    }
-
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
+    public AccessLevel getAccessLevel() { return accessLevel; }
 
     public void setAccessLevel(AccessLevel accessLevel) {
         this.accessLevel = accessLevel;
     }
 
+    public List<UserAvailability> getAvailabilities() { return availabilities; }
+
+    public List<UserSubject> getUserSubjects() { return userSubjects; }
+
+    public List<CourseUser> getCourseUsers() { return courseUsers; }
+
+    public List<Schedule> getSchedules() { return schedules; }
+
+    // ==============================
+    // Equals e HashCode
+    // ==============================
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id);
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return Objects.hash(id);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        User other = (User) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
-
 }

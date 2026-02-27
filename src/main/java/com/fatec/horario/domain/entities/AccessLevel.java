@@ -1,27 +1,27 @@
 package com.fatec.horario.domain.entities;
 
-import java.util.List;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "access_level")
-public class AccessLevel {
+public class AccessLevel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
+
     private Integer level;
+
     private String description;
 
     @OneToMany(mappedBy = "accessLevel")
     private List<User> users;
+
+    public AccessLevel() {}
 
     public AccessLevel(Long id, Integer level, String description) {
         this.id = id;
@@ -29,64 +29,54 @@ public class AccessLevel {
         this.description = description;
     }
 
-    public AccessLevel() {
+    // ==============================
+    // Método importante para Security
+    // ==============================
+
+    public String getRoleName() {
+
+        return switch (level) {
+            case 1 -> "ROLE_ADMIN";
+            case 2 -> "ROLE_PROFESSOR";
+            default -> "ROLE_USER";
+        };
     }
 
-    public Long getId() {
-        return id;
-    }
+    // ==============================
+    // Getters e Setters
+    // ==============================
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
 
-    public Integer getLevel() {
-        return level;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
+    public Integer getLevel() { return level; }
 
-    public String getDescription() {
-        return description;
-    }
+    public void setLevel(Integer level) { this.level = level; }
+
+    public String getDescription() { return description; }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
+    public List<User> getUsers() { return users; }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUsers(List<User> users) { this.users = users; }
+
+    // ==============================
+    // Equals e HashCode
+    // ==============================
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccessLevel that)) return false;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return Objects.hash(id);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        AccessLevel other = (AccessLevel) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
-
 }
