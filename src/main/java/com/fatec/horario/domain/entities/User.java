@@ -34,9 +34,7 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private List<UserSubject> userSubjects;
-
-    @OneToMany(mappedBy = "user")
-    private List<CourseUser> courseUsers;
+   
 
     @OneToMany(mappedBy = "professor")
     private List<Schedule> schedules;
@@ -103,13 +101,6 @@ public class User implements Serializable {
         this.userSubjects = userSubjects;
     }
 
-    public List<CourseUser> getCourseUsers() {
-        return courseUsers;
-    }
-
-    public void setCourseUsers(List<CourseUser> courseUsers) {
-        this.courseUsers = courseUsers;
-    }
 
     public List<Schedule> getSchedules() {
         return schedules;

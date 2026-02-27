@@ -11,7 +11,6 @@ import com.fatec.horario.dto.User.UserRequest;
 import com.fatec.horario.dto.User.UserResponse;
 import com.fatec.horario.infrastructure.mappers.UserMapper;
 import com.fatec.horario.infrastructure.repositories.AccessLevelRepository;
-import com.fatec.horario.infrastructure.repositories.CourseUserRepository;
 import com.fatec.horario.infrastructure.repositories.ScheduleRepository;
 import com.fatec.horario.infrastructure.repositories.UserAvailabilityRepository;
 import com.fatec.horario.infrastructure.repositories.UserRepository;
@@ -28,9 +27,6 @@ public class UserService {
 
     @Autowired
     private AccessLevelRepository accessLevelRepository;
-
-    @Autowired
-    private CourseUserRepository courseUserRepository;
 
     @Autowired
     private UserSubjectRepository userSubjectRepository;
@@ -92,7 +88,6 @@ public class UserService {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         userSubjectRepository.deleteByUserId(id);
-        courseUserRepository.deleteByUserId(id);
         userAvailabilityRepository.deleteByUserId(id);
         scheduleRepository.deleteByProfessorId(id);
         userRepository.deleteById(id);

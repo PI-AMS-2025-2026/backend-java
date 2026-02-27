@@ -38,9 +38,7 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<AcademicSemester> academicSemesters;
-
-    @OneToMany(mappedBy = "course")
-    private List<CourseUser> courseUsers;
+  
 
     public Course() {
     }
@@ -101,13 +99,6 @@ public class Course {
         this.academicSemesters = academicSemesters;
     }
 
-    public List<CourseUser> getCourseUsers() {
-        return courseUsers;
-    }
-
-    public void setCourseUsers(List<CourseUser> courseUsers) {
-        this.courseUsers = courseUsers;
-    }
 
     @Override
     public int hashCode() {
