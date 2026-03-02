@@ -11,7 +11,6 @@ import com.fatec.horario.dto.User.UserRequest;
 import com.fatec.horario.dto.User.UserResponse;
 import com.fatec.horario.infrastructure.mappers.UserMapper;
 import com.fatec.horario.infrastructure.repositories.AccessLevelRepository;
-import com.fatec.horario.infrastructure.repositories.ScheduleRepository;
 import com.fatec.horario.infrastructure.repositories.UserAvailabilityRepository;
 import com.fatec.horario.infrastructure.repositories.UserRepository;
 import com.fatec.horario.infrastructure.repositories.UserSubjectRepository;
@@ -33,8 +32,6 @@ public class UserService {
     @Autowired
     private UserAvailabilityRepository userAvailabilityRepository;
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
 
     public List<UserResponse> getAll() {
         return userRepository.findAll()
@@ -89,7 +86,6 @@ public class UserService {
         }
         userSubjectRepository.deleteByUserId(id);
         userAvailabilityRepository.deleteByUserId(id);
-        scheduleRepository.deleteByProfessorId(id);
         userRepository.deleteById(id);
     }
 }

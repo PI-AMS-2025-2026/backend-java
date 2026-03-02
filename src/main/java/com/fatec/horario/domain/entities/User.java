@@ -36,9 +36,6 @@ public class User implements Serializable {
     private List<UserSubject> userSubjects;
    
 
-    @OneToMany(mappedBy = "professor")
-    private List<Schedule> schedules;
-
     @ManyToOne
     @JoinColumn(name = "access_level_id")
     private AccessLevel accessLevel;
@@ -99,15 +96,6 @@ public class User implements Serializable {
 
     public void setUserSubjects(List<UserSubject> userSubjects) {
         this.userSubjects = userSubjects;
-    }
-
-
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
     }
 
     public AccessLevel getAccessLevel() {

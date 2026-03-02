@@ -10,9 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -31,19 +29,10 @@ public class Subject implements Serializable {
     @ManyToMany(mappedBy = "subjects")
     private Set<Course> courses = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "modality_id", nullable = false)
-    private Modality modality;
-
-    @ManyToOne
-    @JoinColumn(name = "tech_axis_id", nullable = false)
-    private TechAxis techAxis;
-
     @OneToMany(mappedBy = "subject")
     private List<UserSubject> userSubjects;
 
-    @OneToMany(mappedBy = "subject")
-    private List<Schedule> schedules;
+   
 
     public Subject() {
     }
@@ -80,21 +69,6 @@ public class Subject implements Serializable {
         this.courses = courses;
     }
 
-    public Modality getModality() {
-        return modality;
-    }
-
-    public void setModality(Modality modality) {
-        this.modality = modality;
-    }
-
-    public TechAxis getTechAxis() {
-        return techAxis;
-    }
-
-    public void setTechAxis(TechAxis techAxis) {
-        this.techAxis = techAxis;
-    }
 
     public List<UserSubject> getUserSubjects() {
         return userSubjects;
@@ -104,13 +78,6 @@ public class Subject implements Serializable {
         this.userSubjects = userSubjects;
     }
 
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
-    }
 
     @Override
     public int hashCode() {
