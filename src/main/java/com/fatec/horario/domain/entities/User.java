@@ -34,12 +34,7 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private List<UserSubject> userSubjects;
-
-    @OneToMany(mappedBy = "user")
-    private List<CourseUser> courseUsers;
-
-    @OneToMany(mappedBy = "professor")
-    private List<Schedule> schedules;
+   
 
     @ManyToOne
     @JoinColumn(name = "access_level_id")
@@ -101,22 +96,6 @@ public class User implements Serializable {
 
     public void setUserSubjects(List<UserSubject> userSubjects) {
         this.userSubjects = userSubjects;
-    }
-
-    public List<CourseUser> getCourseUsers() {
-        return courseUsers;
-    }
-
-    public void setCourseUsers(List<CourseUser> courseUsers) {
-        this.courseUsers = courseUsers;
-    }
-
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
     }
 
     public AccessLevel getAccessLevel() {
