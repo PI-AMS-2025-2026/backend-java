@@ -285,3 +285,14 @@ INSERT INTO user_availability (weekday, lesson_number, user_id) VALUES (1, 3, 6)
 INSERT INTO user_availability (weekday, lesson_number, user_id) VALUES (2, 1, 6);
 INSERT INTO user_availability (weekday, lesson_number, user_id) VALUES (3, 3, 6);
 
+-- ============================
+-- DIAS DA SEMANA
+-- ============================
+
+INSERT INTO weekday (id, name) VALUES (1, 'Segunda-feira');
+INSERT INTO weekday (id, name) VALUES (2, 'Terça-feira');
+INSERT INTO weekday (id, name) VALUES (3, 'Quarta-feira');
+INSERT INTO weekday (id, name) VALUES (4, 'Quinta-feira');
+INSERT INTO weekday (id, name) VALUES (5, 'Sexta-feira');
+INSERT INTO weekday (id, name) VALUES (6, 'Sábado');
+INSERT INTO weekday (id, name) VALUES (7, 'Domingo');
