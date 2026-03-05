@@ -8,4 +8,14 @@ import com.fatec.horario.domain.entities.ClassGroup;
 @Repository
 public interface ClassGroupRepository extends JpaRepository<ClassGroup, Long> {
 
+    /*
+     * JpaRepository já fornece operações CRUD automaticamente:
+     *
+     * save()       -> criar/atualizar
+     * findAll()    -> listar
+     * findById()   -> buscar por id
+     * deleteById() -> remover
+     * existsById() -> verificar existência
+     */
+
 }
