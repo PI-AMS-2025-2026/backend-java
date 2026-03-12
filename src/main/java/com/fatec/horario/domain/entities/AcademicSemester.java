@@ -27,7 +27,7 @@ public class AcademicSemester implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Course course;
+    private Curso course;
 
     public AcademicSemester() {
     }
@@ -62,11 +62,11 @@ public class AcademicSemester implements Serializable {
         this.status = status;
     }
 
-    public Course getCourse() {
+    public Curso getCourse() {
         return course;
     }
 
-    public void setCourse(Course course) {
+    public void setCourse(Curso course) {
         this.course = course;
     }
 
