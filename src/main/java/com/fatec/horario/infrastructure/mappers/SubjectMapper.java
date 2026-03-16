@@ -22,8 +22,6 @@ public class SubjectMapper {
         return new SubjectResponse(
                 subject.getId(),
                 subject.getName(),
-                subject.getAcronym(),
-                subject.getTechAxis() != null ? TechAxisMapper.toResponse(subject.getTechAxis()) : null,
-                subject.getModality() != null ? ModalityMapper.toResponse(subject.getModality()) : null);
+                subject.getAcronym());
     }
 }
