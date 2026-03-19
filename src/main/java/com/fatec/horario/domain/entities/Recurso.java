@@ -1,30 +1,33 @@
 package com.fatec.horario.domain.entities;
 
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "TIPO_SALA")
-public class TipoSala {
+@Table(name = "RECURSO")
+public class Recurso {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Long id_tipo_sala;
-
+    private Long id_recurso;
+    
     private String nome;
 
-    public TipoSala() {}
+    private String tipo;
 
-    public Long getId() {
-        return id_tipo_sala;
+    public Recurso() {
     }
 
-    public void setId(Long id_tipo_sala) {
-        this.id_tipo_sala = id_tipo_sala;
+    public Long getId_recurso() {
+        return id_recurso;
+    }
+
+    public void setId_recurso(Long id_recurso) {
+        this.id_recurso = id_recurso;
     }
 
     public String getNome() {
@@ -35,12 +38,19 @@ public class TipoSala {
         this.nome = nome;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id_tipo_sala == null) ? 0 : id_tipo_sala.hashCode());
-        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+        result = prime * result + ((id_recurso == null) ? 0 : id_recurso.hashCode());
         return result;
     }
 
@@ -52,18 +62,14 @@ public class TipoSala {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        TipoSala other = (TipoSala) obj;
-        if (id_tipo_sala == null) {
-            if (other.id_tipo_sala != null)
+        Recurso other = (Recurso) obj;
+        if (id_recurso == null) {
+            if (other.id_recurso != null)
                 return false;
-        } else if (!id_tipo_sala.equals(other.id_tipo_sala))
-            return false;
-        if (nome == null) {
-            if (other.nome != null)
-                return false;
-        } else if (!nome.equals(other.nome))
+        } else if (!id_recurso.equals(other.id_recurso))
             return false;
         return true;
     }
+
     
 }
