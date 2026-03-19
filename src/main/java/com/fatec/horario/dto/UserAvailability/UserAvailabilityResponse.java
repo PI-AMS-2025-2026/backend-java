@@ -1,6 +1,6 @@
 package com.fatec.horario.dto.UserAvailability;
 
-import com.fatec.horario.dto.User.UserResponse;
+import com.fatec.horario.dto.usuario.UserResponse;
 
 public record UserAvailabilityResponse(
         Long id,

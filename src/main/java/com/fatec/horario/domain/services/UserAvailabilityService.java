@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fatec.horario.domain.entities.User;
+import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.domain.entities.UserAvailability;
 import com.fatec.horario.dto.UserAvailability.UserAvailabilityRequest;
 import com.fatec.horario.dto.UserAvailability.UserAvailabilityResponse;
@@ -41,7 +41,7 @@ public class UserAvailabilityService {
     public UserAvailabilityResponse create(UserAvailabilityRequest request) {
         UserAvailability userAvailability = UserAvailabilityMapper.toEntity(request);
         if (request.userId() != null) {
-            User user = userRepository.findById(request.userId())
+            Usuario user = userRepository.findById(request.userId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.userId()));
             userAvailability.setUser(user);
         }
@@ -57,7 +57,7 @@ public class UserAvailabilityService {
         userAvailability.setWeekday(request.weekday());
         userAvailability.setLessonNumber(request.lessonNumber());
         if (request.userId() != null) {
-            User user = userRepository.findById(request.userId())
+            Usuario user = userRepository.findById(request.userId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.userId()));
             userAvailability.setUser(user);
         } else {

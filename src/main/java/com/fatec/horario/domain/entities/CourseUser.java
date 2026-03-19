@@ -13,7 +13,7 @@ public class CourseUser implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Usuario user;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
@@ -25,7 +25,7 @@ public class CourseUser implements Serializable {
     public CourseUser() {
     }
 
-    public CourseUser(User user, Course course, String role) {
+    public CourseUser(Usuario user, Course course, String role) {
         this.user = user;
         this.course = course;
         this.role = role;
@@ -39,11 +39,11 @@ public class CourseUser implements Serializable {
         this.id = id;
     }
 
-    public User getUser() {
+    public Usuario getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Usuario user) {
         this.user = user;
     }
 

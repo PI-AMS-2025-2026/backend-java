@@ -13,7 +13,7 @@ public class UserSubject implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Usuario user;
 
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
@@ -22,7 +22,7 @@ public class UserSubject implements Serializable {
     public UserSubject() {
     }
 
-    public UserSubject(User user, Subject subject) {
+    public UserSubject(Usuario user, Subject subject) {
         this.user = user;
         this.subject = subject;
     }
@@ -35,11 +35,11 @@ public class UserSubject implements Serializable {
         this.id = id;
     }
 
-    public User getUser() {
+    public Usuario getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Usuario user) {
         this.user = user;
     }
 

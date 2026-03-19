@@ -19,7 +19,7 @@ public class AccessLevel implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "accessLevel")
-    private List<User> users;
+    private List<Usuario> users;
 
     public AccessLevel() {}
 
@@ -60,9 +60,9 @@ public class AccessLevel implements Serializable {
         this.description = description;
     }
 
-    public List<User> getUsers() { return users; }
+    public List<Usuario> getUsers() { return users; }
 
-    public void setUsers(List<User> users) { this.users = users; }
+    public void setUsers(List<Usuario> users) { this.users = users; }
 
     // ==============================
     // Equals e HashCode

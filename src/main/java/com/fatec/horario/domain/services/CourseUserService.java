@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.entities.Course;
 import com.fatec.horario.domain.entities.CourseUser;
-import com.fatec.horario.domain.entities.User;
+import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.dto.CourseUser.CourseUserRequest;
 import com.fatec.horario.dto.CourseUser.CourseUserResponse;
 import com.fatec.horario.infrastructure.mappers.CourseUserMapper;
@@ -46,7 +46,7 @@ public class CourseUserService {
         CourseUser courseUser = CourseUserMapper.toEntity(request);
 
         if (request.userId() != null) {
-            User user = userRepository.findById(request.userId())
+            Usuario user = userRepository.findById(request.userId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.userId()));
             courseUser.setUser(user);
         }
@@ -68,7 +68,7 @@ public class CourseUserService {
         courseUser.setRole(request.role());
 
         if (request.userId() != null) {
-            User user = userRepository.findById(request.userId())
+            Usuario user = userRepository.findById(request.userId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.userId()));
             courseUser.setUser(user);
         }

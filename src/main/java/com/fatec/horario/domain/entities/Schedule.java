@@ -42,7 +42,7 @@ public class Schedule implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
-    private User professor;
+    private Usuario professor;
 
     public Schedule() {
     }
@@ -85,11 +85,11 @@ public class Schedule implements Serializable {
         this.subject = subject;
     }
 
-    public User getProfessor() {
+    public Usuario getProfessor() {
         return professor;
     }
 
-    public void setProfessor(User professor) {
+    public void setProfessor(Usuario professor) {
         this.professor = professor;
     }
 
