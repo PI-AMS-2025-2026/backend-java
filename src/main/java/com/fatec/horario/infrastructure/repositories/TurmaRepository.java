@@ -3,10 +3,10 @@ package com.fatec.horario.infrastructure.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.fatec.horario.domain.entities.ClassGroup;
+import com.fatec.horario.domain.entities.Turma;
 
 @Repository
-public interface ClassGroupRepository extends JpaRepository<ClassGroup, Long> {
+public interface TurmaRepository extends JpaRepository<Turma, Long> {
 
     /*
      * JpaRepository já fornece operações CRUD automaticamente:
