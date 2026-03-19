@@ -1,27 +1,27 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Curso;
-import com.fatec.horario.dto.curso.CursoRequisicao;
-import com.fatec.horario.dto.curso.CursoResposta;
+import com.fatec.horario.dto.curso.CursoRequest;
+import com.fatec.horario.dto.curso.CursoResponse;
 
 public class CursoMapper {
 
-    public static Curso paraEntidade(CursoRequisicao requisicao) {
-
+    public static Curso toEntity(CursoRequest dto) {
         Curso curso = new Curso();
-
-        curso.setNome(requisicao.nome());
-        curso.setDescricao(requisicao.descricao());
-
+        curso.setNome(dto.nome());
+        curso.setPeriodicidade(dto.periodicidade());
+        curso.setStatus(dto.status());
+        curso.setDuracao(dto.duracao());
         return curso;
     }
 
-    public static CursoResposta paraResposta(Curso curso) {
-
-        return new CursoResposta(
-                curso.getId(),
+    public static CursoResponse toResponse(Curso curso) {
+        return new CursoResponse(
+                curso.getId_curso(),
                 curso.getNome(),
-                curso.getDescricao()
+                curso.getPeriodicidade(),
+                curso.getStatus(),
+                curso.getDuracao()
         );
     }
 }
