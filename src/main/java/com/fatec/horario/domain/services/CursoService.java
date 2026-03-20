@@ -6,16 +6,19 @@ import com.fatec.horario.dto.curso.CursoResponse;
 import com.fatec.horario.infrastructure.repositories.CursoRepository;
 import com.fatec.horario.infrastructure.mappers.CursoMapper;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor
 public class CursoService {
 
     private final CursoRepository repository;
+
+    public CursoService(CursoRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     public CursoResponse criar(CursoRequest dto) {
@@ -30,10 +33,13 @@ public class CursoService {
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
     }
 
+    // 🔥 SEM PAGINAÇÃO
     @Transactional(readOnly = true)
-    public Page<CursoResponse> listar(Pageable pageable) {
-        return repository.findAll(pageable)
-                .map(CursoMapper::toResponse);
+    public List<CursoResponse> listar() {
+        return repository.findAll()
+                .stream()
+                .map(CursoMapper::toResponse)
+                .toList();
     }
 
     @Transactional

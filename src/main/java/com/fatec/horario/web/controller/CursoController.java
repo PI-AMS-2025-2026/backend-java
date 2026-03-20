@@ -1,73 +1,51 @@
 package com.fatec.horario.web.controller;
 
-import java.net.URI;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.fatec.horario.domain.services.CursoServico;
-import com.fatec.horario.dto.curso.CursoRequisicao;
-import com.fatec.horario.dto.curso.CursoResposta;
+import com.fatec.horario.domain.services.CursoService;
+import com.fatec.horario.dto.curso.CursoRequest;
+import com.fatec.horario.dto.curso.CursoResponse;
 
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
-@RequestMapping("/cursos")
-@CrossOrigin
+@RequestMapping("/curso")
 public class CursoController {
 
-    @Autowired
-    private CursoServico servico;
+    private final CursoService service;
 
-    @GetMapping
-    public ResponseEntity<List<CursoResposta>> listarTodos() {
-
-        List<CursoResposta> cursos = servico.listarTodos();
-
-        return ResponseEntity.ok(cursos);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CursoResposta> buscarPorId(@PathVariable Long id) {
-
-        CursoResposta curso = servico.buscarPorId(id);
-
-        return ResponseEntity.ok(curso);
+    public CursoController(CursoService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<CursoResposta> criar(@Valid @RequestBody CursoRequisicao requisicao) {
+    public CursoResponse criar(@RequestBody @Valid CursoRequest dto) {
+        return service.criar(dto);
+    }
 
-        CursoResposta curso = servico.criar(requisicao);
+    // 🔥 SEM PAGINAÇÃO
+    @GetMapping
+    public List<CursoResponse> listar() {
+        return service.listar();
+    }
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(curso.id())
-                .toUri();
-
-        return ResponseEntity.created(location).body(curso);
+    @GetMapping("/{id}")
+    public CursoResponse buscar(@PathVariable Long id) {
+        return service.buscarPorId(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CursoResposta> atualizar(
+    public CursoResponse atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody CursoRequisicao requisicao) {
-
-        CursoResposta curso = servico.atualizar(id, requisicao);
-
-        return ResponseEntity.ok(curso);
+            @RequestBody @Valid CursoRequest dto
+    ) {
+        return service.atualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-
-        servico.deletar(id);
-
-        return ResponseEntity.noContent().build();
+    public void deletar(@PathVariable Long id) {
+        service.deletar(id);
     }
 }
