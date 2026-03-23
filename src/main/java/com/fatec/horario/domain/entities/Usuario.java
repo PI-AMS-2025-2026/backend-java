@@ -1,7 +1,6 @@
 package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,10 +12,6 @@ import java.util.List;
 @Table(name = "usuario", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Usuario implements UserDetails {
 
     @Id
@@ -42,11 +37,89 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "id_tipo_usuario", nullable = false)
     private TipoUsuario tipo_usuario;
 
-    // ===== Spring Security =====
+    public Usuario() {
+    }
+
+    public Usuario(Long id_usuario, String nome, String email, String senha,
+                   Boolean status, LocalDateTime created_at,
+                   LocalDateTime updated_at, TipoUsuario tipo_usuario) {
+        this.id_usuario = id_usuario;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.tipo_usuario = tipo_usuario;
+    }
+
+    public Long getId_usuario() {
+        return id_usuario;
+    }
+
+    public void setId_usuario(Long id_usuario) {
+        this.id_usuario = id_usuario;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
+    }
+
+    public LocalDateTime getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(LocalDateTime updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public TipoUsuario getTipo_usuario() {
+        return tipo_usuario;
+    }
+
+    public void setTipo_usuario(TipoUsuario tipo_usuario) {
+        this.tipo_usuario = tipo_usuario;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(); // pode evoluir com roles depois
+        return List.of();
     }
 
     @Override
@@ -61,21 +134,21 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return status;
+        return status != null && status;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return status;
+        return status != null && status;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return status;
+        return status != null && status;
     }
 
     @Override
     public boolean isEnabled() {
-        return status;
+        return status != null && status;
     }
 }
