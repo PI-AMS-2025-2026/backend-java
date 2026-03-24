@@ -19,6 +19,6 @@ public class HorarioRequest {
     @Positive(message = "Duração deve ser positiva")
     private Integer duracao;
 
-    @NotNull(message = "Tipo de usuário é obrigatório")
+    @NotNull(message = "Tipo de usuário é obrigatório.")
     private Long accessLevelId;
 }
