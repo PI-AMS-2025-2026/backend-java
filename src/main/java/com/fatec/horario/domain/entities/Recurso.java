@@ -9,25 +9,29 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "RECURSO")
 public class Recurso {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idRecurso;
 
-    private Long id_recurso;
-    
     private String nome;
 
     private String tipo;
 
-    public Recurso() {
+    public Recurso() {}
+
+    public Recurso(String nome, String tipo) {
+        this.nome = nome;
+        this.tipo = tipo;
     }
 
-    public Long getId_recurso() {
-        return id_recurso;
+    // Getters e Setters
+    public Long getIdRecurso() {
+        return idRecurso;
     }
 
-    public void setId_recurso(Long id_recurso) {
-        this.id_recurso = id_recurso;
+    public void setIdRecurso(Long idRecurso) {
+        this.idRecurso = idRecurso;
     }
 
     public String getNome() {
@@ -50,7 +54,7 @@ public class Recurso {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id_recurso == null) ? 0 : id_recurso.hashCode());
+        result = prime * result + ((idRecurso == null) ? 0 : idRecurso.hashCode());
         return result;
     }
 
@@ -63,13 +67,14 @@ public class Recurso {
         if (getClass() != obj.getClass())
             return false;
         Recurso other = (Recurso) obj;
-        if (id_recurso == null) {
-            if (other.id_recurso != null)
+        if (idRecurso == null) {
+            if (other.idRecurso != null)
                 return false;
-        } else if (!id_recurso.equals(other.id_recurso))
+        } else if (!idRecurso.equals(other.idRecurso))
             return false;
         return true;
     }
 
-    
+
+
 }

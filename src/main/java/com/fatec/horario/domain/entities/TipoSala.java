@@ -6,25 +6,35 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+// Indica que a classe é uma entidade JPA (tabela no banco)
 @Entity
+// Define o nome da tabela no banco
 @Table(name = "TIPO_SALA")
 public class TipoSala {
-    
+
+    // Chave primária da tabela
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id_tipo_sala;
+    private Long idTipoSala;
 
     private String nome;
 
+    // Construtor vazio obrigatório para o JPA
     public TipoSala() {}
 
-    public Long getId() {
-        return id_tipo_sala;
+    // Construtor com campo principal
+
+    public TipoSala(String nome) {
+        this.nome = nome;
     }
 
-    public void setId(Long id_tipo_sala) {
-        this.id_tipo_sala = id_tipo_sala;
+    // Getters e Setters
+    public Long getIdTipoSala() {
+        return idTipoSala;
+    }
+
+    public void setIdTipoSala(Long idTipoSala) {
+        this.idTipoSala = idTipoSala;
     }
 
     public String getNome() {
@@ -39,8 +49,7 @@ public class TipoSala {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id_tipo_sala == null) ? 0 : id_tipo_sala.hashCode());
-        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+        result = prime * result + ((idTipoSala == null) ? 0 : idTipoSala.hashCode());
         return result;
     }
 
@@ -53,17 +62,12 @@ public class TipoSala {
         if (getClass() != obj.getClass())
             return false;
         TipoSala other = (TipoSala) obj;
-        if (id_tipo_sala == null) {
-            if (other.id_tipo_sala != null)
+        if (idTipoSala == null) {
+            if (other.idTipoSala != null)
                 return false;
-        } else if (!id_tipo_sala.equals(other.id_tipo_sala))
-            return false;
-        if (nome == null) {
-            if (other.nome != null)
-                return false;
-        } else if (!nome.equals(other.nome))
+        } else if (!idTipoSala.equals(other.idTipoSala))
             return false;
         return true;
     }
-    
+
 }

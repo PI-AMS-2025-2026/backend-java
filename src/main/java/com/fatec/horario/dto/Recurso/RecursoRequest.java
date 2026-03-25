@@ -7,7 +7,7 @@ public record RecursoRequest(
 
     @NotBlank (message = "Nome é Obrigatorio.")
     @Size (min = 5, max = 100, message = "O nome deve ter no minimo 5 e no maximo 100 caracteres.")
-    String name,
+    String nome,
     
     @NotBlank
     @Size
