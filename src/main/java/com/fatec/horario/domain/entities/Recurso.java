@@ -12,7 +12,7 @@ public class Recurso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idRecurso;
+    private Long id_recurso;
 
     private String nome;
 
@@ -26,12 +26,12 @@ public class Recurso {
     }
 
     // Getters e Setters
-    public Long getIdRecurso() {
-        return idRecurso;
+    public Long getid_recurso() {
+        return id_recurso;
     }
 
-    public void setIdRecurso(Long idRecurso) {
-        this.idRecurso = idRecurso;
+    public void setid_recurso(Long id_recurso) {
+        this.id_recurso = id_recurso;
     }
 
     public String getNome() {
@@ -54,7 +54,7 @@ public class Recurso {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idRecurso == null) ? 0 : idRecurso.hashCode());
+        result = prime * result + ((id_recurso == null) ? 0 : id_recurso.hashCode());
         return result;
     }
 
@@ -67,10 +67,10 @@ public class Recurso {
         if (getClass() != obj.getClass())
             return false;
         Recurso other = (Recurso) obj;
-        if (idRecurso == null) {
-            if (other.idRecurso != null)
+        if (id_recurso == null) {
+            if (other.id_recurso != null)
                 return false;
-        } else if (!idRecurso.equals(other.idRecurso))
+        } else if (!id_recurso.equals(other.id_recurso))
             return false;
         return true;
     }

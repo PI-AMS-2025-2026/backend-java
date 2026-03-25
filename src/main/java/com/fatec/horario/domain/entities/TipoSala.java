@@ -15,7 +15,7 @@ public class TipoSala {
     // Chave primária da tabela
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idTipoSala;
+    private Long id_tipo_sala;
 
     private String nome;
 
@@ -29,12 +29,12 @@ public class TipoSala {
     }
 
     // Getters e Setters
-    public Long getIdTipoSala() {
-        return idTipoSala;
+    public Long getid_tipo_sala() {
+        return id_tipo_sala;
     }
 
-    public void setIdTipoSala(Long idTipoSala) {
-        this.idTipoSala = idTipoSala;
+    public void setid_tipo_sala(Long id_tipo_sala) {
+        this.id_tipo_sala = id_tipo_sala;
     }
 
     public String getNome() {
@@ -49,7 +49,7 @@ public class TipoSala {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idTipoSala == null) ? 0 : idTipoSala.hashCode());
+        result = prime * result + ((id_tipo_sala == null) ? 0 : id_tipo_sala.hashCode());
         return result;
     }
 
@@ -62,10 +62,10 @@ public class TipoSala {
         if (getClass() != obj.getClass())
             return false;
         TipoSala other = (TipoSala) obj;
-        if (idTipoSala == null) {
-            if (other.idTipoSala != null)
+        if (id_tipo_sala == null) {
+            if (other.id_tipo_sala != null)
                 return false;
-        } else if (!idTipoSala.equals(other.idTipoSala))
+        } else if (!id_tipo_sala.equals(other.id_tipo_sala))
             return false;
         return true;
     }

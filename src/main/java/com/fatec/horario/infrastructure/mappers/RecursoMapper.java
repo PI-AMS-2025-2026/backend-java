@@ -15,7 +15,7 @@ public class RecursoMapper {
 
     public static RecursoResponse toResponse(Recurso entity) {
         return new RecursoResponse(
-            entity.getIdRecurso(),
+            entity.getid_recurso(),
             entity.getNome(),
             entity.getTipo()
         );

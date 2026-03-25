@@ -14,7 +14,7 @@ public class TipoSalaMapper {
 
     public static TipoSalaResponse toResponse(TipoSala entity) {
         return new TipoSalaResponse(
-            entity.getIdTipoSala(),
+            entity.getid_tipo_sala(),
             entity.getNome()
         );
     }
