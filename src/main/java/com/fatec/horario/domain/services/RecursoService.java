@@ -1,8 +1,6 @@
 package com.fatec.horario.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,25 +31,7 @@ public class RecursoService {
         Recurso entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
         return RecursoMapper.toResponse(entity);
-    }
 
-    // Lista com paginação e filtros
-    @Transactional(readOnly = true)
-    public Page<RecursoResponse> listar(String nome, String tipo, Pageable pageable) {
-
-        Page<Recurso> page;
-
-        if (nome != null && tipo != null) {
-            page = repository.findByNomeContainingIgnoreCaseAndTipoContainingIgnoreCase(nome, tipo, pageable);
-        } else if (nome != null) {
-            page = repository.findByNomeContainingIgnoreCase(nome, pageable);
-        } else if (tipo != null) {
-            page = repository.findByTipoContainingIgnoreCase(tipo, pageable);
-        } else {
-            page = repository.findAll(pageable);
-        }
-
-        return page.map(RecursoMapper::toResponse);
     }
 
     // Atualiza um recurso

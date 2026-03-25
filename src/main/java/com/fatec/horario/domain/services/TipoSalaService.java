@@ -12,8 +12,6 @@ import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import java.util.List;
-
 @Service
 public class TipoSalaService {
 
@@ -33,19 +31,6 @@ public class TipoSalaService {
         TipoSala entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado"));
         return TipoSalaMapper.toResponse(entity);
-    }
-
-    // Lista todos ou filtra por nome
-    @Transactional(readOnly = true)
-    public List<TipoSalaResponse> listar(String nome) {
-
-        List<TipoSala> lista = (nome != null)
-                ? repository.findByNomeContainingIgnoreCase(nome)
-                : repository.findAll();
-
-        return lista.stream()
-                .map(TipoSalaMapper::toResponse)
-                .toList();
     }
 
     // Atualiza um tipo de sala existente

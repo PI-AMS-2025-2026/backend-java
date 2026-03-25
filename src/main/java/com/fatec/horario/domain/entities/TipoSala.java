@@ -1,6 +1,7 @@
 package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,6 +16,8 @@ public class TipoSala {
     // Chave primária da tabela
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "id_tipo_sala")
     private Long id_tipo_sala;
 
     private String nome;
