@@ -1,4 +1,4 @@
-package com.fatec.horario.controllers;
+package com.fatec.horario.web.controller;
 
 import java.util.List;
 

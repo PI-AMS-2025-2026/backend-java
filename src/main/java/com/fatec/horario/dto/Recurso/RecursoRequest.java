@@ -5,14 +5,9 @@ import jakarta.validation.constraints.Size;
 
 public record RecursoRequest(
 
-    @NotBlank (message = "Nome é Obrigatorio.")
-    @Size (min = 5, max = 100, message = "O nome deve ter no minimo 5 e no maximo 100 caracteres.")
-    String nome,
-    
-    @NotBlank
-    @Size
-    String tipo
+        @NotBlank(message = "Nome é Obrigatorio.") @Size(min = 2, max = 100, message = "O nome deve ter no minimo 5 e no maximo 100 caracteres.") String nome,
+
+        @NotBlank(message = "Tipo é Obrigatorio.") String tipo
 
 ) {
-
 }

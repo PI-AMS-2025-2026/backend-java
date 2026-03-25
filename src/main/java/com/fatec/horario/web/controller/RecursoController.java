@@ -1,4 +1,4 @@
-package com.fatec.horario.controllers;
+package com.fatec.horario.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import com.fatec.horario.domain.services.RecursoService;
 import com.fatec.horario.dto.Recurso.RecursoRequest;
 import com.fatec.horario.dto.Recurso.RecursoResponse;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 
 @RestController
