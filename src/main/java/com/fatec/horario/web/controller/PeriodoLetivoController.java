@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,6 +22,7 @@ import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoRequest;
 import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoResponse;
 
 import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/periodos-letivos")
 @CrossOrigin
@@ -44,14 +46,13 @@ public class PeriodoLetivoController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PeriodoLetivoResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
-    }
-
     @GetMapping
-    public ResponseEntity<List<PeriodoLetivoResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
+    public ResponseEntity<List<PeriodoLetivoResponse>> listar(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String periodo,
+            @RequestParam(required = false) String status) {
+
+        return ResponseEntity.ok(service.listar(ano, periodo, status));
     }
 
     @PutMapping("/{id}")

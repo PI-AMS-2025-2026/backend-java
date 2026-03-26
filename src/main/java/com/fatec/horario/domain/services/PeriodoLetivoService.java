@@ -34,9 +34,27 @@ public class PeriodoLetivoService {
     }
 
     @Transactional(readOnly = true)
-    public List<PeriodoLetivoResponse> listar() {
-        return repository.findAll()
-                .stream()
+    public List<PeriodoLetivoResponse> listar(Integer ano, String periodo, String status) {
+
+        List<PeriodoLetivo> lista;
+
+        if (ano != null && periodo != null && status != null) {
+            lista = repository.findByAnoAndPeriodoAndStatus(ano, periodo, status);
+
+        } else if (ano != null) {
+            lista = repository.findByAno(ano);
+
+        } else if (periodo != null) {
+            lista = repository.findByPeriodoContainingIgnoreCase(periodo);
+
+        } else if (status != null) {
+            lista = repository.findByStatus(status);
+
+        } else {
+            lista = repository.findAll();
+        }
+
+        return lista.stream()
                 .map(PeriodoLetivoMapper::toResponse)
                 .toList();
     }
