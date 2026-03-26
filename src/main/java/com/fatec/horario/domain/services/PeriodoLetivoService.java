@@ -34,7 +34,7 @@ public class PeriodoLetivoService {
     }
 
     @Transactional(readOnly = true)
-    public List<PeriodoLetivoResponse> listar(Integer ano, String periodo, String status) {
+    public List<PeriodoLetivoResponse> listar(Integer ano, Integer periodo, String status) {
 
         List<PeriodoLetivo> lista;
 
@@ -45,7 +45,7 @@ public class PeriodoLetivoService {
             lista = repository.findByAno(ano);
 
         } else if (periodo != null) {
-            lista = repository.findByPeriodoContainingIgnoreCase(periodo);
+            lista = repository.findByPeriodo(periodo);
 
         } else if (status != null) {
             lista = repository.findByStatus(status);

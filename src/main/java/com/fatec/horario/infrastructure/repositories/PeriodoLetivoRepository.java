@@ -9,13 +9,12 @@ import com.fatec.horario.domain.entities.PeriodoLetivo;
 
 @Repository
 public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Long> {
-    
+
     List<PeriodoLetivo> findByAno(Integer ano);
 
-    List<PeriodoLetivo> findByPeriodoContainingIgnoreCase(String periodo); //usei o containig ignore case para nao ter restriçoes na hora de pesquisar os periodos
+    List<PeriodoLetivo> findByPeriodo(Integer periodo);
 
     List<PeriodoLetivo> findByStatus(String status);
 
-    List<PeriodoLetivo> findByAnoAndPeriodoAndStatus(Integer ano, String periodo, String status);
-
+    List<PeriodoLetivo> findByAnoAndPeriodoAndStatus(Integer ano, Integer periodo, String status);
 }

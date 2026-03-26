@@ -49,7 +49,7 @@ public class PeriodoLetivoController {
     @GetMapping
     public ResponseEntity<List<PeriodoLetivoResponse>> listar(
             @RequestParam(required = false) Integer ano,
-            @RequestParam(required = false) String periodo,
+            @RequestParam(required = false) Integer periodo,
             @RequestParam(required = false) String status) {
 
         return ResponseEntity.ok(service.listar(ano, periodo, status));
