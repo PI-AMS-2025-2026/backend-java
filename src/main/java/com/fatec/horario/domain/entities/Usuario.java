@@ -27,6 +27,9 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
+    @Column(nullable = false)
+    private String cidade;
+
     private Boolean status;
 
     private LocalDateTime created_at;
@@ -41,12 +44,13 @@ public class Usuario implements UserDetails {
     }
 
     public Usuario(Long id_usuario, String nome, String email, String senha,
-                   Boolean status, LocalDateTime created_at,
+                   String cidade, Boolean status, LocalDateTime created_at,
                    LocalDateTime updated_at, TipoUsuario tipo_usuario) {
         this.id_usuario = id_usuario;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.cidade = cidade;
         this.status = status;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -83,6 +87,14 @@ public class Usuario implements UserDetails {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 
     public Boolean getStatus() {

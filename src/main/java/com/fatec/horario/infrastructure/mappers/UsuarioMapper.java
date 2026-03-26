@@ -12,6 +12,7 @@ public class UsuarioMapper {
         u.setNome(dto.nome());
         u.setEmail(dto.email());
         u.setSenha(dto.senha());
+        u.setCidade(dto.cidade());
         u.setStatus(dto.status());
         u.setTipo_usuario(tipo);
         return u;
@@ -22,6 +23,7 @@ public class UsuarioMapper {
                 u.getId_usuario(),
                 u.getNome(),
                 u.getEmail(),
+                u.getCidade(),
                 u.getStatus(),
                 u.getCreated_at(),
                 u.getTipo_usuario().getId_tipo_usuario()

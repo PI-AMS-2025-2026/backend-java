@@ -14,6 +14,9 @@ public record UsuarioRequest(
         @Size(min = 6)
         String senha,
 
+        @NotBlank
+        String cidade,
+
         @NotNull
         Boolean status,
 
