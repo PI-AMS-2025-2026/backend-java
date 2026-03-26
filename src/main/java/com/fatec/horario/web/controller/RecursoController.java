@@ -1,5 +1,7 @@
 package com.fatec.horario.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fatec.horario.domain.services.RecursoService;
@@ -30,6 +33,15 @@ public class RecursoController {
     @PostMapping
     public ResponseEntity<RecursoResponse> criar(@Valid @RequestBody RecursoRequest request) {
         return ResponseEntity.ok(service.criar(request));
+    }
+
+    // Listar com filtros
+    @GetMapping
+    public ResponseEntity<List<RecursoResponse>> listar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String tipo) {
+
+        return ResponseEntity.ok(service.listar(nome, tipo));
     }
 
     // Buscar por ID

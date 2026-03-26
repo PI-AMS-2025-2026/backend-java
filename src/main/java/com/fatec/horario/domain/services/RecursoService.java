@@ -1,5 +1,7 @@
 package com.fatec.horario.domain.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,27 @@ public class RecursoService {
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
         return RecursoMapper.toResponse(entity);
 
+    }
+
+    // Lista com filtros
+    @Transactional(readOnly = true)
+    public List<RecursoResponse> listar(String nome, String tipo) {
+
+        List<Recurso> lista;
+
+        if (nome != null && tipo != null) {
+            lista = repository.findByNomeContainingIgnoreCaseAndTipoContainingIgnoreCase(nome, tipo);
+        } else if (nome != null) {
+            lista = repository.findByNomeContainingIgnoreCase(nome);
+        } else if (tipo != null) {
+            lista = repository.findByTipoContainingIgnoreCase(tipo);
+        } else {
+            lista = repository.findAll();
+        }
+
+        return lista.stream()
+                .map(RecursoMapper::toResponse)
+                .toList();
     }
 
     // Atualiza um recurso
