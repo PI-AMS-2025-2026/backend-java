@@ -1,5 +1,7 @@
 package com.fatec.horario.domain.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,19 @@ public class TipoSalaService {
 
     @Autowired
     private TipoSalaRepository repository;
+
+    // Lista todos ou filtra por nome
+    @Transactional(readOnly = true)
+    public List<TipoSalaResponse> listar(String nome) {
+
+        List<TipoSala> lista = (nome != null)
+                ? repository.findByNomeContainingIgnoreCase(nome)
+                : repository.findAll();
+
+        return lista.stream()
+                .map(TipoSalaMapper::toResponse)
+                .toList();
+    }
 
     // Cria um novo tipo de sala
     @Transactional

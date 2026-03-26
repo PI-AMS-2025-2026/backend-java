@@ -23,7 +23,8 @@ public class TipoSala {
     private String nome;
 
     // Construtor vazio obrigatório para o JPA
-    public TipoSala() {}
+    public TipoSala() {
+    }
 
     // Construtor com campo principal
 

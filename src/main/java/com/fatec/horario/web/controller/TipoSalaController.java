@@ -1,5 +1,7 @@
 package com.fatec.horario.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fatec.horario.domain.services.TipoSalaService;
@@ -30,6 +33,13 @@ public class TipoSalaController {
     @PostMapping
     public ResponseEntity<TipoSalaResponse> criar(@Valid @RequestBody TipoSalaRequest request) {
         return ResponseEntity.ok(service.criar(request));
+    }
+
+    // Listagem com filtro
+    @GetMapping
+    public ResponseEntity<List<TipoSalaResponse>> listar(
+            @RequestParam(required = false) String nome) {
+        return ResponseEntity.ok(service.listar(nome));
     }
 
     // Buscar por ID
