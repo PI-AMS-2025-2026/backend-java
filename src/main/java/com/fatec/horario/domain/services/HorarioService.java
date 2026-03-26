@@ -8,7 +8,6 @@ import com.fatec.horario.infrastructure.mappers.HorarioMapper;
 import com.fatec.horario.infrastructure.repositories.AccessLevelRepository;
 import com.fatec.horario.infrastructure.repositories.HorarioRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 
 @Service
-@RequiredArgsConstructor
 public class HorarioService {
 
     private final HorarioRepository repository;
     private final AccessLevelRepository accessLevelRepository;
+
+    public HorarioService(HorarioRepository repository, AccessLevelRepository accessLevelRepository) {
+        this.repository = repository;
+        this.accessLevelRepository = accessLevelRepository;
+    }
 
     @Transactional
     public HorarioResponse criar(HorarioRequest request) {

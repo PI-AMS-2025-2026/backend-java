@@ -2,11 +2,9 @@ package com.fatec.horario.dto.Horarios;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
 
 import java.time.LocalTime;
 
-@Data
 public class HorarioRequest {
 
     @NotNull(message = "Hora de início é obrigatória")
@@ -21,4 +19,46 @@ public class HorarioRequest {
 
     @NotNull(message = "Tipo de usuário é obrigatório.")
     private Long accessLevelId;
+
+    public HorarioRequest() {
+    }
+
+    public HorarioRequest(LocalTime horaInicio, LocalTime horaFim, Integer duracao, Long accessLevelId) {
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+        this.duracao = duracao;
+        this.accessLevelId = accessLevelId;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public LocalTime getHoraFim() {
+        return horaFim;
+    }
+
+    public void setHoraFim(LocalTime horaFim) {
+        this.horaFim = horaFim;
+    }
+
+    public Integer getDuracao() {
+        return duracao;
+    }
+
+    public void setDuracao(Integer duracao) {
+        this.duracao = duracao;
+    }
+
+    public Long getAccessLevelId() {
+        return accessLevelId;
+    }
+
+    public void setAccessLevelId(Long accessLevelId) {
+        this.accessLevelId = accessLevelId;
+    }
 }

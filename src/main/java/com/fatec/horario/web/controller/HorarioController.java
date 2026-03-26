@@ -4,7 +4,6 @@ import com.fatec.horario.domain.services.HorarioService;
 import com.fatec.horario.dto.Horarios.HorarioRequest;
 import com.fatec.horario.dto.Horarios.HorarioResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +23,13 @@ import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/horarios")
-@RequiredArgsConstructor
 public class HorarioController {
 
     private final HorarioService service;
+
+    public HorarioController(HorarioService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<HorarioResponse> criar(@Valid @RequestBody HorarioRequest request) {

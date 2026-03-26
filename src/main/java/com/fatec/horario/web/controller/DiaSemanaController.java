@@ -5,7 +5,6 @@ import com.fatec.horario.domain.services.DiaSemanaService;
 import com.fatec.horario.dto.DiaSemana.DiaSemanaRequest;
 import com.fatec.horario.dto.DiaSemana.DiaSemanaResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,10 +14,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dias-semana")
-@RequiredArgsConstructor
 public class DiaSemanaController {
 
     private final DiaSemanaService service;
+
+    public DiaSemanaController(DiaSemanaService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<DiaSemanaResponse> criar(@Valid @RequestBody DiaSemanaRequest request) {
