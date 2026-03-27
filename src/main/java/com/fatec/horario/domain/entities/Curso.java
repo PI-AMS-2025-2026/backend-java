@@ -24,6 +24,7 @@ public class Curso {
     @Column(nullable = false)
     private Integer duracao;
 
+    // as classes Turmas, Disciplina e GradeHoraria não foram criadas ou não estão na branch dev
     @OneToMany(mappedBy = "curso")
     private List<Turma> turmas;
 
