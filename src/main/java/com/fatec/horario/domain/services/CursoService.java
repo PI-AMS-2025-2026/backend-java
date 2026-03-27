@@ -6,6 +6,8 @@ import com.fatec.horario.dto.curso.CursoResponse;
 import com.fatec.horario.infrastructure.repositories.CursoRepository;
 import com.fatec.horario.infrastructure.mappers.CursoMapper;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +32,9 @@ public class CursoService {
     public CursoResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(CursoMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
     }
 
-    // 🔥 SEM PAGINAÇÃO
     @Transactional(readOnly = true)
     public List<CursoResponse> listar() {
         return repository.findAll()
@@ -45,18 +46,21 @@ public class CursoService {
     @Transactional
     public CursoResponse atualizar(Long id, CursoRequest dto) {
         Curso curso = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
-        curso.setNome(dto.nome());
-        curso.setPeriodicidade(dto.periodicidade());
-        curso.setStatus(dto.status());
-        curso.setDuracao(dto.duracao());
+        curso.setNome(dto.getNome());
+        curso.setPeriodicidade(dto.getPeriodicidade());
+        curso.setStatus(dto.getStatus());
+        curso.setDuracao(dto.getDuracao());
 
         return CursoMapper.toResponse(repository.save(curso));
     }
 
     @Transactional
     public void deletar(Long id) {
-        repository.deleteById(id);
+        Curso curso = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+
+        repository.delete(curso);
     }
 }

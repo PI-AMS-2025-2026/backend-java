@@ -6,8 +6,10 @@ import com.fatec.horario.dto.curso.CursoResponse;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -21,31 +23,35 @@ public class CursoController {
     }
 
     @PostMapping
-    public CursoResponse criar(@RequestBody @Valid CursoRequest dto) {
-        return service.criar(dto);
+    public ResponseEntity<CursoResponse> criar(@RequestBody @Valid CursoRequest dto) {
+        CursoResponse response = service.criar(dto);
+
+        return ResponseEntity
+                .created(URI.create("/curso/" + response.getId()))
+                .body(response);
     }
 
-    // 🔥 SEM PAGINAÇÃO
     @GetMapping
-    public List<CursoResponse> listar() {
-        return service.listar();
+    public ResponseEntity<List<CursoResponse>> listar() {
+        return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/{id}")
-    public CursoResponse buscar(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public ResponseEntity<CursoResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public CursoResponse atualizar(
+    public ResponseEntity<CursoResponse> atualizar(
             @PathVariable Long id,
             @RequestBody @Valid CursoRequest dto
     ) {
-        return service.atualizar(id, dto);
+        return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

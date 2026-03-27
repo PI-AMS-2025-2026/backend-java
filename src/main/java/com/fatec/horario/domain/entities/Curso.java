@@ -1,6 +1,7 @@
 package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "curso")
@@ -8,7 +9,8 @@ public class Curso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_curso;
+    @Column(name = "id_curso")
+    private Long idCurso;
 
     @Column(nullable = false)
     private String nome;
@@ -22,25 +24,31 @@ public class Curso {
     @Column(nullable = false)
     private Integer duracao;
 
-    // Construtor vazio
+    @OneToMany(mappedBy = "curso")
+    private List<Turma> turmas;
+
+    @OneToMany(mappedBy = "curso")
+    private List<Disciplina> disciplinas;
+
+    @OneToMany(mappedBy = "curso")
+    private List<GradeHoraria> gradeHorarias;
+
     public Curso() {}
 
-    // Construtor com campos
-    public Curso(Long id_curso, String nome, String periodicidade, String status, Integer duracao) {
-        this.id_curso = id_curso;
+    public Curso(Long idCurso, String nome, String periodicidade, String status, Integer duracao) {
+        this.idCurso = idCurso;
         this.nome = nome;
         this.periodicidade = periodicidade;
         this.status = status;
         this.duracao = duracao;
     }
 
-    // Getters e Setters
-    public Long getId_curso() {
-        return id_curso;
+    public Long getIdCurso() {
+        return idCurso;
     }
 
-    public void setId_curso(Long id_curso) {
-        this.id_curso = id_curso;
+    public void setIdCurso(Long idCurso) {
+        this.idCurso = idCurso;
     }
 
     public String getNome() {
@@ -73,5 +81,29 @@ public class Curso {
 
     public void setDuracao(Integer duracao) {
         this.duracao = duracao;
+    }
+
+    public List<Turma> getTurmas() {
+        return turmas;
+    }
+
+    public void setTurmas(List<Turma> turmas) {
+        this.turmas = turmas;
+    }
+
+    public List<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+
+    public void setDisciplinas(List<Disciplina> disciplinas) {
+        this.disciplinas = disciplinas;
+    }
+
+    public List<GradeHoraria> getGradeHorarias() {
+        return gradeHorarias;
+    }
+
+    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
+        this.gradeHorarias = gradeHorarias;
     }
 }
