@@ -9,6 +9,7 @@ public class Horario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_horario")
     private Long id;
 
     @Column(name = "hora_inicio", nullable = false)
@@ -20,19 +21,14 @@ public class Horario {
     @Column(nullable = false)
     private Integer duracao;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "access_level_id", nullable = false)
-    private AccessLevel accessLevel;
-
     public Horario() {
     }
 
-    public Horario(Long id, LocalTime horaInicio, LocalTime horaFim, Integer duracao, AccessLevel accessLevel) {
+    public Horario(Long id, LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
         this.id = id;
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
         this.duracao = duracao;
-        this.accessLevel = accessLevel;
     }
 
     public Long getId() {
@@ -67,11 +63,4 @@ public class Horario {
         this.duracao = duracao;
     }
 
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
-
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
-    }
 }

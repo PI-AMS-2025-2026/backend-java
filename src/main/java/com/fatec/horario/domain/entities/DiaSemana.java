@@ -8,6 +8,7 @@ public class DiaSemana {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_dia_semana")
     private Long id;
 
     @Column(nullable = false, unique = true, length = 20)

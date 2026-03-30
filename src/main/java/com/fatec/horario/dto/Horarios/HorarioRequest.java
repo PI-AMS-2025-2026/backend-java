@@ -17,17 +17,13 @@ public class HorarioRequest {
     @Positive(message = "Duração deve ser positiva")
     private Integer duracao;
 
-    @NotNull(message = "Tipo de usuário é obrigatório.")
-    private Long accessLevelId;
-
     public HorarioRequest() {
     }
 
-    public HorarioRequest(LocalTime horaInicio, LocalTime horaFim, Integer duracao, Long accessLevelId) {
+    public HorarioRequest(LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
         this.duracao = duracao;
-        this.accessLevelId = accessLevelId;
     }
 
     public LocalTime getHoraInicio() {
@@ -54,11 +50,4 @@ public class HorarioRequest {
         this.duracao = duracao;
     }
 
-    public Long getAccessLevelId() {
-        return accessLevelId;
-    }
-
-    public void setAccessLevelId(Long accessLevelId) {
-        this.accessLevelId = accessLevelId;
-    }
 }

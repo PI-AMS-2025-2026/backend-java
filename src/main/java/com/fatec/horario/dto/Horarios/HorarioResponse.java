@@ -8,17 +8,15 @@ public class HorarioResponse {
     private LocalTime horaInicio;
     private LocalTime horaFim;
     private Integer duracao;
-    private Long accessLevelId;
 
     public HorarioResponse() {
     }
 
-    public HorarioResponse(Long id, LocalTime horaInicio, LocalTime horaFim, Integer duracao, Long accessLevelId) {
+    public HorarioResponse(Long id, LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
         this.id = id;
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
         this.duracao = duracao;
-        this.accessLevelId = accessLevelId;
     }
 
     public Long getId() {
@@ -53,11 +51,4 @@ public class HorarioResponse {
         this.duracao = duracao;
     }
 
-    public Long getAccessLevelId() {
-        return accessLevelId;
-    }
-
-    public void setAccessLevelId(Long accessLevelId) {
-        this.accessLevelId = accessLevelId;
-    }
 }

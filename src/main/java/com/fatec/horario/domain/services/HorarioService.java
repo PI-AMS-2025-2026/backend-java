@@ -1,11 +1,9 @@
 package com.fatec.horario.domain.services;
 
-import com.fatec.horario.domain.entities.AccessLevel;
 import com.fatec.horario.domain.entities.Horario;
 import com.fatec.horario.dto.Horarios.HorarioRequest;
 import com.fatec.horario.dto.Horarios.HorarioResponse;
 import com.fatec.horario.infrastructure.mappers.HorarioMapper;
-import com.fatec.horario.infrastructure.repositories.AccessLevelRepository;
 import com.fatec.horario.infrastructure.repositories.HorarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -20,21 +18,16 @@ import java.time.LocalTime;
 public class HorarioService {
 
     private final HorarioRepository repository;
-    private final AccessLevelRepository accessLevelRepository;
 
-    public HorarioService(HorarioRepository repository, AccessLevelRepository accessLevelRepository) {
+    public HorarioService(HorarioRepository repository) {
         this.repository = repository;
-        this.accessLevelRepository = accessLevelRepository;
     }
 
     @Transactional
     public HorarioResponse criar(HorarioRequest request) {
         validarHorario(request);
 
-        AccessLevel accessLevel = accessLevelRepository.findById(request.getAccessLevelId())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de usuário não encontrado com ID: " + request.getAccessLevelId()));
-
-        Horario entity = HorarioMapper.toEntity(request, accessLevel);
+        Horario entity = HorarioMapper.toEntity(request);
 
         entity = repository.save(entity);
         return HorarioMapper.toResponse(entity);
@@ -69,16 +62,12 @@ public class HorarioService {
     public HorarioResponse atualizar(Long id, HorarioRequest request) {
         validarHorario(request);
 
-        AccessLevel accessLevel = accessLevelRepository.findById(request.getAccessLevelId())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de usuário não encontrado com ID: " + request.getAccessLevelId()));
-
         Horario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
 
         entity.setHoraInicio(request.getHoraInicio());
         entity.setHoraFim(request.getHoraFim());
         entity.setDuracao(request.getDuracao());
-        entity.setAccessLevel(accessLevel);
 
         entity = repository.save(entity);
         return HorarioMapper.toResponse(entity);

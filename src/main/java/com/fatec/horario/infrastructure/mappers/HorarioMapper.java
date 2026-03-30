@@ -1,18 +1,16 @@
 package com.fatec.horario.infrastructure.mappers;
 
-import com.fatec.horario.domain.entities.AccessLevel;
 import com.fatec.horario.domain.entities.Horario;
 import com.fatec.horario.dto.Horarios.HorarioRequest;
 import com.fatec.horario.dto.Horarios.HorarioResponse;
 
 public class HorarioMapper {
 
-    public static Horario toEntity(HorarioRequest request, AccessLevel accessLevel) {
+    public static Horario toEntity(HorarioRequest request) {
         Horario entity = new Horario();
         entity.setHoraInicio(request.getHoraInicio());
         entity.setHoraFim(request.getHoraFim());
         entity.setDuracao(request.getDuracao());
-        entity.setAccessLevel(accessLevel);
         return entity;
     }
 
@@ -22,7 +20,6 @@ public class HorarioMapper {
         response.setHoraInicio(entity.getHoraInicio());
         response.setHoraFim(entity.getHoraFim());
         response.setDuracao(entity.getDuracao());
-        response.setAccessLevelId(entity.getAccessLevel() != null ? entity.getAccessLevel().getId() : null);
         return response;
     }
 }
