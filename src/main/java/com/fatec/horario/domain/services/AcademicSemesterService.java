@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.entities.AcademicSemester;
-import com.fatec.horario.domain.entities.Course;
+import com.fatec.horario.domain.entities.Curso;
 import com.fatec.horario.dto.AcademicSemester.AcademicSemesterRequest;
 import com.fatec.horario.dto.AcademicSemester.AcademicSemesterResponse;
 import com.fatec.horario.infrastructure.mappers.AcademicSemesterMapper;
@@ -40,7 +40,7 @@ public class AcademicSemesterService {
         AcademicSemester academicSemester = AcademicSemesterMapper.toEntity(request);
         academicSemester = academicSemesterRepository.save(academicSemester);
         if (request.courseId() != null) {
-            Course course = courseRepository.findById(request.courseId())
+            Curso course = courseRepository.findById(request.courseId())
                     .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + request.courseId()));
             academicSemester.setCourse(course);
         }
@@ -53,7 +53,7 @@ public class AcademicSemesterService {
         academicSemester.setAcademicYear(request.academicYear());
         academicSemester.setStatus(request.status());
         if (request.courseId() != null) {
-            Course course = courseRepository.findById(request.courseId())
+            Curso course = courseRepository.findById(request.courseId())
                     .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + request.courseId()));
             academicSemester.setCourse(course);
         }
