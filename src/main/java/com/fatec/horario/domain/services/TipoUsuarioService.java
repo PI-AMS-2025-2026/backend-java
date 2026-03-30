@@ -6,16 +6,20 @@ import com.fatec.horario.dto.tipoUsuario.TipoUsuarioResponse;
 import com.fatec.horario.infrastructure.repositories.TipoUsuarioRepository;
 import com.fatec.horario.infrastructure.mappers.TipoUsuarioMapper;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class TipoUsuarioService {
 
     private final TipoUsuarioRepository repository;
+
+    public TipoUsuarioService(TipoUsuarioRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     public TipoUsuarioResponse criar(TipoUsuarioRequest dto) {
@@ -27,7 +31,7 @@ public class TipoUsuarioService {
     public TipoUsuarioResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(TipoUsuarioMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("TipoUsuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado"));
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +43,7 @@ public class TipoUsuarioService {
     @Transactional
     public TipoUsuarioResponse atualizar(Long id, TipoUsuarioRequest dto) {
         TipoUsuario tipo = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TipoUsuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado"));
 
         tipo.setNome(dto.nome());
 
@@ -48,6 +52,9 @@ public class TipoUsuarioService {
 
     @Transactional
     public void deletar(Long id) {
-        repository.deleteById(id);
+        TipoUsuario tipo = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado"));
+
+        repository.delete(tipo);
     }
 }

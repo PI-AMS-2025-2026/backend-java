@@ -9,5 +9,6 @@ public record UsuarioResponse(
         String cidade,
         Boolean status,
         LocalDateTime created_at,
+        LocalDateTime updated_at,
         Long tipo_usuario_id
 ) {}

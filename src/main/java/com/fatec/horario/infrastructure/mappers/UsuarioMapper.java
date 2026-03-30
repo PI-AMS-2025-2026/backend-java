@@ -26,6 +26,7 @@ public class UsuarioMapper {
                 u.getCidade(),
                 u.getStatus(),
                 u.getCreated_at(),
+                u.getUpdated_at(),
                 u.getTipo_usuario().getId_tipo_usuario()
         );
     }
