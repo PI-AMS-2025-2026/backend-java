@@ -2,8 +2,9 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.DiaSemanaService;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaRequest;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaResponse;
+import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
+import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,8 @@ public class DiaSemanaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiaSemanaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody DiaSemanaRequest request) {
+    public ResponseEntity<DiaSemanaResponse> atualizar(@PathVariable Long id,
+            @Valid @RequestBody DiaSemanaRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 

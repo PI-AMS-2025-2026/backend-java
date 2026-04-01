@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fatec.horario.domain.services.TipoSalaService;
-import com.fatec.horario.dto.TipoSala.TipoSalaRequest;
-import com.fatec.horario.dto.TipoSala.TipoSalaResponse;
+import com.fatec.horario.dto.tipoSala.TipoSalaRequest;
+import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
 
 import jakarta.validation.Valid;
 

@@ -17,11 +17,10 @@ public class CursoMapper {
 
     public static CursoResponse toResponse(Curso curso) {
         return new CursoResponse(
-                curso.getIdCurso(),
+                curso.getId(),
                 curso.getNome(),
                 curso.getPeriodicidade(),
                 curso.getStatus(),
-                curso.getDuracao()
-        );
+                curso.getDuracao());
     }
 }

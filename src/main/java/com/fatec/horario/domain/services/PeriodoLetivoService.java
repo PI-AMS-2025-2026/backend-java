@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.entities.PeriodoLetivo;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoRequest;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoResponse;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoRequest;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoResponse;
 import com.fatec.horario.infrastructure.mappers.PeriodoLetivoMapper;
 import com.fatec.horario.infrastructure.repositories.PeriodoLetivoRepository;
 

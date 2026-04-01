@@ -1,8 +1,8 @@
 package com.fatec.horario.domain.services;
 
 import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaRequest;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaResponse;
+import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
+import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
 import com.fatec.horario.infrastructure.mappers.DiaSemanaMapper;
 import com.fatec.horario.infrastructure.repositories.DiaSemanaRepository;
 import jakarta.persistence.EntityNotFoundException;

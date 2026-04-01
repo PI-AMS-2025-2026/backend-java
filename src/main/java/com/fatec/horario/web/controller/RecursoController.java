@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fatec.horario.domain.services.RecursoService;
-import com.fatec.horario.dto.Recurso.RecursoRequest;
-import com.fatec.horario.dto.Recurso.RecursoResponse;
+import com.fatec.horario.dto.recurso.RecursoRequest;
+import com.fatec.horario.dto.recurso.RecursoResponse;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
