@@ -13,8 +13,6 @@ import com.fatec.horario.infrastructure.mappers.UserMapper;
 import com.fatec.horario.infrastructure.repositories.AccessLevelRepository;
 import com.fatec.horario.infrastructure.repositories.UserAvailabilityRepository;
 import com.fatec.horario.infrastructure.repositories.UserRepository;
-import com.fatec.horario.infrastructure.repositories.UserSubjectRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -27,8 +25,7 @@ public class UserService {
     @Autowired
     private AccessLevelRepository accessLevelRepository;
 
-    @Autowired
-    private UserSubjectRepository userSubjectRepository;
+
     @Autowired
     private UserAvailabilityRepository userAvailabilityRepository;
 
@@ -84,7 +81,6 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
-        userSubjectRepository.deleteByUserId(id);
         userAvailabilityRepository.deleteByUserId(id);
         userRepository.deleteById(id);
     }

@@ -32,10 +32,6 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<UserAvailability> availabilities;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserSubject> userSubjects;
-   
-
     @ManyToOne
     @JoinColumn(name = "access_level_id")
     private AccessLevel accessLevel;
@@ -88,14 +84,6 @@ public class User implements Serializable {
 
     public void setAvailabilities(List<UserAvailability> availabilities) {
         this.availabilities = availabilities;
-    }
-
-    public List<UserSubject> getUserSubjects() {
-        return userSubjects;
-    }
-
-    public void setUserSubjects(List<UserSubject> userSubjects) {
-        this.userSubjects = userSubjects;
     }
 
     public AccessLevel getAccessLevel() {

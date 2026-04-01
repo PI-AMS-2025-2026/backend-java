@@ -1,8 +1,9 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.HorarioService;
-import com.fatec.horario.dto.Horarios.HorarioRequest;
-import com.fatec.horario.dto.Horarios.HorarioResponse;
+import com.fatec.horario.dto.horarios.HorarioRequest;
+import com.fatec.horario.dto.horarios.HorarioResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
