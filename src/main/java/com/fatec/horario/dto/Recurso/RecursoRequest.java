@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Recurso;
+package com.fatec.horario.dto.recurso;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

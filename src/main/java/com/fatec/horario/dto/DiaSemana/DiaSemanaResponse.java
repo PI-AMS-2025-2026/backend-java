@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.DiaSemana;
+package com.fatec.horario.dto.diaSemana;
 
 public class DiaSemanaResponse {
     private Long id;

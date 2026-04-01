@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.TipoSala;
+package com.fatec.horario.dto.tipoSala;
 
 public record TipoSalaResponse(
 

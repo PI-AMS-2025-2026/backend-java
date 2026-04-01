@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.DiaSemana;
+package com.fatec.horario.dto.diaSemana;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
