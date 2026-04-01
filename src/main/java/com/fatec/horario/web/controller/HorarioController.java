@@ -34,17 +34,19 @@ public class HorarioController {
     @PostMapping
     public ResponseEntity<HorarioResponse> criar(@Valid @RequestBody HorarioRequest request) {
         HorarioResponse response = service.criar(request);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(response.getId()).toUri();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
         return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping
     public ResponseEntity<Page<HorarioResponse>> listar(
-            @RequestParam(value = "hora_inicio", required = false)
-            @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
-            @RequestParam(value = "hora_fim", required = false)
-            @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
+            @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
+            @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(service.listar(horaInicio, horaFim, page, size));
@@ -56,7 +58,8 @@ public class HorarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HorarioResponse> atualizar(@PathVariable Long id, @Valid @RequestBody HorarioRequest request) {
+    public ResponseEntity<HorarioResponse> atualizar(@PathVariable Long id,
+            @Valid @RequestBody HorarioRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 

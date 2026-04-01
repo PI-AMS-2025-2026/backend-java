@@ -44,14 +44,14 @@ public class CursoService {
     }
 
     @Transactional
-    public CursoResponse atualizar(Long id, CursoRequest dto) {
+    public CursoResponse atualizar(Long id, CursoRequest request) {
         Curso curso = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
-        curso.setNome(dto.getNome());
-        curso.setPeriodicidade(dto.getPeriodicidade());
-        curso.setStatus(dto.getStatus());
-        curso.setDuracao(dto.getDuracao());
+        curso.setNome(request.getNome());
+        curso.setPeriodicidade(request.getPeriodicidade());
+        curso.setStatus(request.getStatus());
+        curso.setDuracao(request.getDuracao());
 
         return CursoMapper.toResponse(repository.save(curso));
     }

@@ -32,8 +32,7 @@ public class PeriodoLetivoController {
     private PeriodoLetivoService service;
 
     @PostMapping
-    public ResponseEntity<PeriodoLetivoResponse> criar(
-            @Valid @RequestBody PeriodoLetivoRequest request) {
+    public ResponseEntity<PeriodoLetivoResponse> criar(@Valid @RequestBody PeriodoLetivoRequest request) {
 
         PeriodoLetivoResponse response = service.criar(request);
 

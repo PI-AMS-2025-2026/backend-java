@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -23,12 +24,16 @@ public class CursoController {
     }
 
     @PostMapping
-    public ResponseEntity<CursoResponse> criar(@RequestBody @Valid CursoRequest dto) {
-        CursoResponse response = service.criar(dto);
+    public ResponseEntity<CursoResponse> criar(@RequestBody @Valid CursoRequest request) {
+        CursoResponse response = service.criar(request);
 
-        return ResponseEntity
-                .created(URI.create("/curso/" + response.getId()))
-                .body(response);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping
@@ -44,9 +49,8 @@ public class CursoController {
     @PutMapping("/{id}")
     public ResponseEntity<CursoResponse> atualizar(
             @PathVariable Long id,
-            @RequestBody @Valid CursoRequest dto
-    ) {
-        return ResponseEntity.ok(service.atualizar(id, dto));
+            @RequestBody @Valid CursoRequest request) {
+        return ResponseEntity.ok(service.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")

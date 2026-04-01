@@ -8,18 +8,18 @@ public class HorarioMapper {
 
     public static Horario toEntity(HorarioRequest request) {
         Horario entity = new Horario();
-        entity.setHoraInicio(request.getHoraInicio());
-        entity.setHoraFim(request.getHoraFim());
-        entity.setDuracao(request.getDuracao());
+        entity.setHoraInicio(request.horaInicio());
+        entity.setHoraFim(request.horaFim());
+        entity.setDuracao(request.duracao());
         return entity;
     }
 
     public static HorarioResponse toResponse(Horario entity) {
-        HorarioResponse response = new HorarioResponse();
-        response.setId(entity.getId());
-        response.setHoraInicio(entity.getHoraInicio());
-        response.setHoraFim(entity.getHoraFim());
-        response.setDuracao(entity.getDuracao());
-        return response;
+        return new HorarioResponse(
+            entity.getId(),
+            entity.getHoraInicio(),
+            entity.getHoraFim(),
+            entity.getDuracao()
+        );
     }
 }

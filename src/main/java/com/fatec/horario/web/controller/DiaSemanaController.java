@@ -26,8 +26,13 @@ public class DiaSemanaController {
     @PostMapping
     public ResponseEntity<DiaSemanaResponse> criar(@Valid @RequestBody DiaSemanaRequest request) {
         DiaSemanaResponse response = service.criar(request);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(response.getId()).toUri();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
         return ResponseEntity.created(location).body(response);
     }
 

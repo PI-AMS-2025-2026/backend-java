@@ -1,5 +1,6 @@
 package com.fatec.horario.web.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.RecursoService;
 import com.fatec.horario.dto.recurso.RecursoRequest;
@@ -32,7 +34,14 @@ public class RecursoController {
     // Criar recurso
     @PostMapping
     public ResponseEntity<RecursoResponse> criar(@Valid @RequestBody RecursoRequest request) {
-        return ResponseEntity.ok(service.criar(request));
+        RecursoResponse response = service.criar(request);
+         URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     // Listar com filtros

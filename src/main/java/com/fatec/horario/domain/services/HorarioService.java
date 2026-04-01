@@ -65,9 +65,9 @@ public class HorarioService {
         Horario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
 
-        entity.setHoraInicio(request.getHoraInicio());
-        entity.setHoraFim(request.getHoraFim());
-        entity.setDuracao(request.getDuracao());
+        entity.setHoraInicio(request.horaInicio());
+        entity.setHoraFim(request.horaFim());
+        entity.setDuracao(request.duracao());
 
         entity = repository.save(entity);
         return HorarioMapper.toResponse(entity);
@@ -82,12 +82,12 @@ public class HorarioService {
     }
 
     private void validarHorario(HorarioRequest request) {
-        if (request.getHoraFim().isBefore(request.getHoraInicio())) {
+        if (request.horaFim().isBefore(request.horaInicio())) {
             throw new IllegalArgumentException("Hora de fim deve ser posterior à hora de início");
         }
-        int duracaoCalculada = request.getHoraFim().toSecondOfDay() - request.getHoraInicio().toSecondOfDay();
+        int duracaoCalculada = request.horaFim().toSecondOfDay() - request.horaInicio().toSecondOfDay();
         duracaoCalculada /= 60; // minutos
-        if (duracaoCalculada != request.getDuracao()) {
+        if (duracaoCalculada != request.duracao()) {
             throw new IllegalArgumentException("Duração informada não corresponde ao intervalo entre início e fim");
         }
     }

@@ -46,7 +46,7 @@ public class DiaSemanaService {
     public DiaSemanaResponse atualizar(Long id, DiaSemanaRequest request) {
         DiaSemana entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Dia da semana não encontrado: " + id));
-        entity.setNome(request.getNome());
+        entity.setNome(request.nome());
         entity = repository.save(entity);
         return DiaSemanaMapper.toResponse(entity);
     }
