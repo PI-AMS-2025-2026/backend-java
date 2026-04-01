@@ -2,6 +2,7 @@ package com.fatec.horario.web.exception;
 
 import java.time.Instant;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,40 +14,109 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<StandardError> entityNotFoundException(EntityNotFoundException exception,
-            HttpServletRequest request) {
 
-        StandardError error = new StandardError();
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<StandardError> entityNotFoundException(
+            EntityNotFoundException exception,
+            HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.NOT_FOUND;
 
-        error.setError("Resource not found");
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Recurso não encontrado");
         error.setMessage(exception.getMessage());
         error.setPath(request.getRequestURI());
-        error.setStatus(status.value());
-        error.setTimeStamp(Instant.now());
 
         return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationError> validationException(MethodArgumentNotValidException exception,
+    public ResponseEntity<ValidationError> validationException(
+            MethodArgumentNotValidException exception,
             HttpServletRequest request) {
-
-        ValidationError error = new ValidationError();
 
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 
-        error.setError("Validation Error");
-        error.setMessage(exception.getMessage());
-        error.setPath(request.getRequestURI());
-        error.setStatus(status.value());
+        ValidationError error = new ValidationError();
         error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Erro de validação");
+        error.setMessage("Erro de validação nos campos enviados");
+        error.setPath(request.getRequestURI());
 
         exception.getBindingResult()
                 .getFieldErrors()
                 .forEach(e -> error.addError(e.getDefaultMessage()));
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError> dataIntegrityViolationException(
+            DataIntegrityViolationException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Erro de integridade no banco de dados");
+        error.setMessage(exception.getMessage());
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ParameterException.class)
+    public ResponseEntity<StandardError> parameterException(
+            ParameterException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Erro de parâmetro");
+        error.setMessage(exception.getMessage());
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<StandardError> businessException(
+            BusinessException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Erro de regra de negócio");
+        error.setMessage(exception.getMessage());
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> databaseException(
+            DatabaseException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Erro de banco de dados");
+        error.setMessage(exception.getMessage());
+        error.setPath(request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);
     }
