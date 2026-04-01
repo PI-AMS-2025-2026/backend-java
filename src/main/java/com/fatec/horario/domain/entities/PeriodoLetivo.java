@@ -16,7 +16,7 @@ public class PeriodoLetivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_periodo_letivo")
-    private Long idPeriodoLetivo;
+    private Long id;
 
     private Integer ano;
     private Integer periodo;
@@ -40,12 +40,12 @@ public class PeriodoLetivo {
         this.status = status;
     }
 
-    public Long getIdPeriodoLetivo() {
-        return idPeriodoLetivo;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdPeriodoLetivo(Long idPeriodoLetivo) {
-        this.idPeriodoLetivo = idPeriodoLetivo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Integer getAno() {
@@ -86,14 +86,13 @@ public class PeriodoLetivo {
 
     public void setStatus(String status) {
         this.status = status;
-
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idPeriodoLetivo == null) ? 0 : idPeriodoLetivo.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -106,10 +105,10 @@ public class PeriodoLetivo {
         if (getClass() != obj.getClass())
             return false;
         PeriodoLetivo other = (PeriodoLetivo) obj;
-        if (idPeriodoLetivo == null) {
-            if (other.idPeriodoLetivo != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!idPeriodoLetivo.equals(other.idPeriodoLetivo))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }

@@ -20,7 +20,7 @@ public class PeriodoLetivoMapper {
 
     public static PeriodoLetivoResponse toResponse(PeriodoLetivo periodoLetivo) {
         return new PeriodoLetivoResponse(
-                periodoLetivo.getIdPeriodoLetivo(),
+                periodoLetivo.getId(),
                 periodoLetivo.getAno(),
                 periodoLetivo.getPeriodo(),
                 periodoLetivo.getDataInicio(),
