@@ -27,7 +27,7 @@ public class Subject implements Serializable {
     private String acronym;
 
     @ManyToMany(mappedBy = "subjects")
-    private Set<Course> courses = new HashSet<>();
+    private Set<Curso> courses = new HashSet<>();
 
     @OneToMany(mappedBy = "subject")
     private List<UserSubject> userSubjects;
@@ -61,11 +61,11 @@ public class Subject implements Serializable {
         this.acronym = acronym;
     }
 
-    public Set<Course> getCourses() {
+    public Set<Curso> getCourses() {
         return courses;
     }
 
-    public void setCourses(Set<Course> courses) {
+    public void setCourses(Set<Curso> courses) {
         this.courses = courses;
     }
 
