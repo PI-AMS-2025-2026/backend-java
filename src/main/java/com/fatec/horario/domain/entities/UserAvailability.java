@@ -21,7 +21,7 @@ public class UserAvailability {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private Usuario user;
 
     public UserAvailability(Long id, Integer weekday, Integer lessonNumber) {
         this.id = id;
@@ -30,11 +30,11 @@ public class UserAvailability {
 
     }
 
-    public User getUser() {
+    public Usuario getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Usuario user) {
         this.user = user;
     }
 
