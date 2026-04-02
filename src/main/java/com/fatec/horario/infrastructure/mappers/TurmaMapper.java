@@ -1,7 +1,7 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.domain.entities.Course;
+import com.fatec.horario.domain.entities.Curso;
 import com.fatec.horario.dto.Turma.TurmaRequest;
 import com.fatec.horario.dto.Turma.TurmaResponse;
 
@@ -16,9 +16,9 @@ public class TurmaMapper {
         turma.setAno(request.ano());
         turma.setNumeroAlunos(request.numeroAlunos());
 
-        // Criando o curso apenas com ID
-        Course curso = new Course();
-        curso.setId(request.idCurso());
+        // 🔥 Mantém só o ID (o Service valida e busca no banco)
+        Curso curso = new Curso();
+        curso.setIdCurso(request.idCurso());
 
         turma.setCurso(curso);
 
@@ -28,12 +28,12 @@ public class TurmaMapper {
     public static TurmaResponse toResponse(Turma turma) {
 
         return new TurmaResponse(
-                turma.getId(),
+                turma.getIdTurma(),
                 turma.getCodigo(),
                 turma.getPeriodo(),
                 turma.getAno(),
                 turma.getNumeroAlunos(),
-                turma.getCurso().getId()
+                turma.getCurso().getIdCurso()
         );
     }
 }

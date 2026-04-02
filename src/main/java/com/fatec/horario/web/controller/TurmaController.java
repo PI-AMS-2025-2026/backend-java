@@ -1,9 +1,10 @@
 package com.fatec.horario.web.controller;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +24,15 @@ public class TurmaController {
     @Autowired
     private TurmaService service;
 
+    // PAGINAÇÃO + FILTROS
     @GetMapping
-    public ResponseEntity<List<TurmaResponse>> getAll() {
-        List<TurmaResponse> turmas = service.getAll();
+    public ResponseEntity<Page<TurmaResponse>> getAll(
+            @RequestParam(required = false) Long idCurso,
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) Integer periodo,
+            Pageable pageable) {
+
+        Page<TurmaResponse> turmas = service.getAll(idCurso, ano, periodo, pageable);
         return ResponseEntity.ok(turmas);
     }
 
@@ -44,7 +51,7 @@ public class TurmaController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(turma.id())
+                .buildAndExpand(turma.idTurma()) // corrigido
                 .toUri();
 
         return ResponseEntity.created(location).body(turma);

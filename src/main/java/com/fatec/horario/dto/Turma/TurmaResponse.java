@@ -2,11 +2,11 @@ package com.fatec.horario.dto.Turma;
 
 public record TurmaResponse(
 
-        Long id,
+        Long idTurma,
 
         String codigo,
 
-        String periodo,
+        Integer periodo,
 
         Integer ano,
 

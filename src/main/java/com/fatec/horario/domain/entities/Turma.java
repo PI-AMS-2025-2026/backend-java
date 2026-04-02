@@ -1,6 +1,7 @@
 package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "turma")
@@ -9,13 +10,13 @@ public class Turma {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_turma")
-    private Long id;
+    private Long idTurma;
 
     @Column(nullable = false)
     private String codigo;
 
     @Column(nullable = false)
-    private String periodo;
+    private Integer periodo; // corrigido para Integer
 
     @Column(nullable = false)
     private Integer ano;
@@ -26,15 +27,19 @@ public class Turma {
     // Muitas turmas pertencem a um curso
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
-    private Course curso;
+    private Curso curso; // corrigido nome
+
+    // Uma turma pode ter várias alocações
+    @OneToMany(mappedBy = "turma")
+    private List<Alocacao> alocacoes;
 
     // Construtor vazio (JPA)
     public Turma() {
     }
 
     // Construtor completo
-    public Turma(Long id, String codigo, String periodo, Integer ano, Integer numeroAlunos, Course curso) {
-        this.id = id;
+    public Turma(Long idTurma, String codigo, Integer periodo, Integer ano, Integer numeroAlunos, Curso curso) {
+        this.idTurma = idTurma;
         this.codigo = codigo;
         this.periodo = periodo;
         this.ano = ano;
@@ -42,15 +47,15 @@ public class Turma {
         this.curso = curso;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdTurma() {
+        return idTurma;
     }
 
     public String getCodigo() {
         return codigo;
     }
 
-    public String getPeriodo() {
+    public Integer getPeriodo() {
         return periodo;
     }
 
@@ -62,19 +67,23 @@ public class Turma {
         return numeroAlunos;
     }
 
-    public Course getCurso() {
+    public Curso getCurso() {
         return curso;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public List<Alocacao> getAlocacoes() {
+        return alocacoes;
+    }
+
+    public void setIdTurma(Long idTurma) {
+        this.idTurma = idTurma;
     }
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
-    public void setPeriodo(String periodo) {
+    public void setPeriodo(Integer periodo) {
         this.periodo = periodo;
     }
 
@@ -86,13 +95,17 @@ public class Turma {
         this.numeroAlunos = numeroAlunos;
     }
 
-    public void setCurso(Course curso) {
+    public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public void setAlocacoes(List<Alocacao> alocacoes) {
+        this.alocacoes = alocacoes;
     }
 
     @Override
     public int hashCode() {
-        return id == null ? 0 : id.hashCode();
+        return idTurma == null ? 0 : idTurma.hashCode();
     }
 
     @Override
@@ -100,6 +113,6 @@ public class Turma {
         if (this == obj) return true;
         if (!(obj instanceof Turma)) return false;
         Turma other = (Turma) obj;
-        return id != null && id.equals(other.id);
+        return idTurma != null && idTurma.equals(other.idTurma);
     }
 }
