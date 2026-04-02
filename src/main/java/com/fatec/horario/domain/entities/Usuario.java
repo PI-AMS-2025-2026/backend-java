@@ -16,7 +16,8 @@ public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_usuario;
+    @Column(name = "id_usuario")
+    private Long id;
 
     @Column(nullable = false)
     private String nome;
@@ -43,10 +44,10 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
-    public Usuario(Long id_usuario, String nome, String email, String senha,
+    public Usuario(Long id, String nome, String email, String senha,
                    String cidade, Boolean status, LocalDateTime created_at,
                    LocalDateTime updated_at, TipoUsuario tipo_usuario) {
-        this.id_usuario = id_usuario;
+        this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -57,12 +58,12 @@ public class Usuario implements UserDetails {
         this.tipo_usuario = tipo_usuario;
     }
 
-    public Long getId_usuario() {
-        return id_usuario;
+    public Long getId() {
+        return id;
     }
 
-    public void setId_usuario(Long id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
