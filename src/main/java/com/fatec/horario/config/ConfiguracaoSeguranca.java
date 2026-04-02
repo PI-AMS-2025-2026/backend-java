@@ -1,14 +1,13 @@
 package com.fatec.horario.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@RequiredArgsConstructor
 public class ConfiguracaoSeguranca {
+    /*  TODO: reavaliar implementação de segurança com base nos requisitos do sistema */
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -16,10 +15,10 @@ public class ConfiguracaoSeguranca {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/usuarios").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic();
+                .anyRequest().permitAll()
+            )
+            .httpBasic(httpBasic -> httpBasic.disable())
+            .formLogin(form -> form.disable());
 
         return http.build();
     }
