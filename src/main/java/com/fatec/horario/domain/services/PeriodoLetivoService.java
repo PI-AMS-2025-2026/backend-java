@@ -30,7 +30,7 @@ public class PeriodoLetivoService {
     @Transactional(readOnly = true)
     public PeriodoLetivoResponse buscarPorId(long id) {
         PeriodoLetivo entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Periodo letivo não encontrado com ID: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
         return PeriodoLetivoMapper.toResponse(entity);
     }
 
@@ -52,7 +52,7 @@ public class PeriodoLetivoService {
     @Transactional
     public PeriodoLetivoResponse atualizar(long id, PeriodoLetivoRequest request) {
         PeriodoLetivo entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Periodo letivo não encontrado com ID: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
 
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
@@ -74,7 +74,7 @@ public class PeriodoLetivoService {
     public void inativar(long id) {
 
         var periodo = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Periodo letivo não encontrado com ID: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
 
         periodo.setStatus(Status.INATIVO);
         repository.save(periodo);

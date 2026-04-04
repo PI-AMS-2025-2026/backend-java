@@ -30,7 +30,7 @@ public class TipoUsuarioService {
     public TipoUsuarioResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(TipoUsuarioMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de usuário não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +44,7 @@ public class TipoUsuarioService {
     @Transactional
     public TipoUsuarioResponse atualizar(Long id, TipoUsuarioRequest dto) {
         TipoUsuario tipo = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de usuário não encontrado com ID: " + id));
 
         tipo.setNome(dto.nome());
 
@@ -54,7 +54,7 @@ public class TipoUsuarioService {
     @Transactional
     public void deletar(Long id) {
         TipoUsuario tipo = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de usuário não encontrado com ID: " + id));
 
         repository.delete(tipo);
     }
