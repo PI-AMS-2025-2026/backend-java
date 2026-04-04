@@ -6,6 +6,8 @@ import com.fatec.horario.dto.horarios.HorarioResponse;
 import com.fatec.horario.infrastructure.mappers.HorarioMapper;
 import com.fatec.horario.infrastructure.repositories.HorarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,8 @@ import java.time.LocalTime;
 @Service
 public class HorarioService {
 
-    private final HorarioRepository repository;
+    @Autowired
+    private HorarioRepository repository;
 
     public HorarioService(HorarioRepository repository) {
         this.repository = repository;
@@ -41,21 +44,12 @@ public class HorarioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<HorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, int page, int size) {
+    public Page<HorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Horario> result;
-        if (horaInicio != null && horaFim != null) {
-            result = repository.findByHoraInicioAndHoraFim(horaInicio, horaFim, pageable);
-        } else if (horaInicio != null) {
-            result = repository.findByHoraInicio(horaInicio, pageable);
-        } else if (horaFim != null) {
-            result = repository.findByHoraFim(horaFim, pageable);
-        } else {
-            result = repository.findAll(pageable);
-        }
+        Page<Horario> pageHorario = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
 
-        return result.map(HorarioMapper::toResponse);
+        return pageHorario.map(HorarioMapper::toResponse);
     }
 
     @Transactional
@@ -81,6 +75,7 @@ public class HorarioService {
         repository.deleteById(id);
     }
 
+    // TODO: colocar a validação do local correto
     private void validarHorario(HorarioRequest request) {
         if (request.horaFim().isBefore(request.horaInicio())) {
             throw new IllegalArgumentException("Hora de fim deve ser posterior à hora de início");

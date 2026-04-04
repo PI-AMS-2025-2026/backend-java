@@ -28,6 +28,17 @@ public class Curso {
     @Column(nullable = false)
     private Integer duracao;
 
+    public Curso() {
+    }
+
+    public Curso(Long id, String nome, String periodicidade, String status, Integer duracao) {
+        this.id = id;
+        this.nome = nome;
+        this.periodicidade = periodicidade;
+        this.status = status;
+        this.duracao = duracao;
+    }
+
     public Long getId() {
         return id;
     }

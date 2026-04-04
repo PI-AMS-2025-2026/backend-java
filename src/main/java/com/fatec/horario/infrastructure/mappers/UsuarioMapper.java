@@ -20,14 +20,14 @@ public class UsuarioMapper {
 
     public static UsuarioResponse toResponse(Usuario u) {
         return new UsuarioResponse(
-                u.getId_usuario(),
+                u.getId(),
                 u.getNome(),
                 u.getEmail(),
                 u.getCidade(),
                 u.getStatus(),
                 u.getCreated_at(),
                 u.getUpdated_at(),
-                u.getTipo_usuario().getId_tipo_usuario()
+                u.getTipo_usuario().getId()
         );
     }
 }

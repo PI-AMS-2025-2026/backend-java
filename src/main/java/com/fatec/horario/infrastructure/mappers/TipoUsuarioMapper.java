@@ -14,7 +14,7 @@ public class TipoUsuarioMapper {
 
     public static TipoUsuarioResponse toResponse(TipoUsuario tipo) {
         return new TipoUsuarioResponse(
-                tipo.getId_tipo_usuario(),
+                tipo.getId(),
                 tipo.getNome()
         );
     }

@@ -1,4 +1,3 @@
-// src/main/java/com/fatec/horario/web/controller/DiaSemanaController.java
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.DiaSemanaService;
@@ -6,6 +5,8 @@ import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
 import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
 
 import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,10 +18,17 @@ import java.util.List;
 @RequestMapping("/dias-semana")
 public class DiaSemanaController {
 
-    private final DiaSemanaService service;
+    @Autowired
+    private DiaSemanaService service;
 
-    public DiaSemanaController(DiaSemanaService service) {
-        this.service = service;
+    @GetMapping
+    public ResponseEntity<List<DiaSemanaResponse>> listar() {
+        return ResponseEntity.ok(service.listar());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DiaSemanaResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
@@ -34,16 +42,6 @@ public class DiaSemanaController {
                 .toUri();
 
         return ResponseEntity.created(location).body(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<DiaSemanaResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<DiaSemanaResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PutMapping("/{id}")

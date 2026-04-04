@@ -8,7 +8,8 @@ public class TipoUsuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_tipo_usuario;
+    @Column(name = "id_tipo_usuario")
+    private Long id;
 
     @Column(nullable = false)
     private String nome;
@@ -17,17 +18,17 @@ public class TipoUsuario {
     public TipoUsuario() {
     }
 
-    public TipoUsuario(Long id_tipo_usuario, String nome) {
-        this.id_tipo_usuario = id_tipo_usuario;
+    public TipoUsuario(Long id, String nome) {
+        this.id = id;
         this.nome = nome;
     }
 
-    public Long getId_tipo_usuario() {
-        return id_tipo_usuario;
+    public Long getId() {
+        return id;
     }
 
-    public void setId_tipo_usuario(Long id_tipo_usuario) {
-        this.id_tipo_usuario = id_tipo_usuario;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {

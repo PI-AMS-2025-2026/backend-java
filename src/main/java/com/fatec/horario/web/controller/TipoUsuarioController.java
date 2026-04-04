@@ -6,20 +6,30 @@ import com.fatec.horario.dto.tipoUsuario.TipoUsuarioResponse;
 
 import jakarta.validation.Valid;
 
-import org.springframework.data.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tipo-usuario")
 public class TipoUsuarioController {
 
-    private final TipoUsuarioService service;
+    @Autowired
+    private TipoUsuarioService service;
 
-    public TipoUsuarioController(TipoUsuarioService service) {
-        this.service = service;
+    @GetMapping
+    public ResponseEntity<List<TipoUsuarioResponse>> listar(
+            @RequestParam(required = false) String nome) {
+        return ResponseEntity.ok(service.listar(nome));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TipoUsuarioResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
@@ -27,25 +37,13 @@ public class TipoUsuarioController {
 
         TipoUsuarioResponse response = service.criar(dto);
 
-        return ResponseEntity
-                .created(URI.create("/tipo-usuario/" + response.id()))
-                .body(response);
-    }
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
 
-    @GetMapping
-    public ResponseEntity<Page<TipoUsuarioResponse>> listar(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(service.listar(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<TipoUsuarioResponse> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")

@@ -28,7 +28,8 @@ public class TipoSala {
 
     // Construtor com campo principal
 
-    public TipoSala(String nome) {
+    public TipoSala(Long id, String nome) {
+        this.id = id;
         this.nome = nome;
     }
 

@@ -31,18 +31,6 @@ public class TipoSalaController {
     @Autowired
     private TipoSalaService service;
 
-    // Criação
-    @PostMapping
-    public ResponseEntity<TipoSalaResponse> criar(@Valid @RequestBody TipoSalaRequest request) {
-        TipoSalaResponse response = service.criar(request);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri();
-        return ResponseEntity.created(location).body(service.criar(request));
-    }
-
     // Listagem com filtro
     @GetMapping
     public ResponseEntity<List<TipoSalaResponse>> listar(
@@ -54,6 +42,18 @@ public class TipoSalaController {
     @GetMapping("/{id}")
     public ResponseEntity<TipoSalaResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    // Criação
+    @PostMapping
+    public ResponseEntity<TipoSalaResponse> criar(@Valid @RequestBody TipoSalaRequest request) {
+        TipoSalaResponse response = service.criar(request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     // Atualizar

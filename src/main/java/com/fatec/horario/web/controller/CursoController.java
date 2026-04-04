@@ -6,21 +6,43 @@ import com.fatec.horario.dto.curso.CursoResponse;
 
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/curso")
 public class CursoController {
 
-    private final CursoService service;
+    @Autowired
+    private CursoService service;
 
-    public CursoController(CursoService service) {
-        this.service = service;
+    @GetMapping
+    public ResponseEntity<Page<CursoResponse>> listar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String periodicidade,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Integer duracao,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(service.listar(nome, periodicidade, status, duracao,page,size));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CursoResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
@@ -36,16 +58,6 @@ public class CursoController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CursoResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CursoResponse> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<CursoResponse> atualizar(
             @PathVariable Long id,
@@ -55,7 +67,7 @@ public class CursoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
+        service.inativar(id);
         return ResponseEntity.noContent().build();
     }
 }

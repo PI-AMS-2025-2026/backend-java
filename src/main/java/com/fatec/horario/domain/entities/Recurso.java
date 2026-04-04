@@ -20,9 +20,11 @@ public class Recurso {
 
     private String tipo;
 
-    public Recurso() {}
+    public Recurso() {
+    }
 
-    public Recurso(String nome, String tipo) {
+    public Recurso(Long id, String nome, String tipo) {
+        this.id = id;
         this.nome = nome;
         this.tipo = tipo;
     }

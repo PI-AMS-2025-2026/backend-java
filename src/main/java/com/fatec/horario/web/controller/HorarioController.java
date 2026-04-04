@@ -5,6 +5,7 @@ import com.fatec.horario.dto.horarios.HorarioRequest;
 import com.fatec.horario.dto.horarios.HorarioResponse;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,22 @@ import java.time.LocalTime;
 @RequestMapping("/horarios")
 public class HorarioController {
 
-    private final HorarioService service;
+    @Autowired
+    private HorarioService service;
 
-    public HorarioController(HorarioService service) {
-        this.service = service;
+    @GetMapping
+    public ResponseEntity<Page<HorarioResponse>> listar(
+            @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
+            @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
+            @RequestParam(required = false) int duracao,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(service.listar(horaInicio, horaFim, duracao, page, size));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HorarioResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
@@ -42,20 +55,6 @@ public class HorarioController {
                 .toUri();
 
         return ResponseEntity.created(location).body(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<HorarioResponse>> listar(
-            @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
-            @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.listar(horaInicio, horaFim, page, size));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<HorarioResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PutMapping("/{id}")

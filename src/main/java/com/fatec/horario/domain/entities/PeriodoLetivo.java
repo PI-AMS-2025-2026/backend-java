@@ -32,7 +32,8 @@ public class PeriodoLetivo {
     public PeriodoLetivo() {
     }
 
-    public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, String status) {
+    public PeriodoLetivo(Long id, Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, String status) {
+        this.id = id;
         this.ano = ano;
         this.periodo = periodo;
         this.dataInicio = dataInicio;

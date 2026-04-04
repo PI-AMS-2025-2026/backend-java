@@ -8,10 +8,10 @@ public class CursoMapper {
 
     public static Curso toEntity(CursoRequest dto) {
         Curso curso = new Curso();
-        curso.setNome(dto.getNome());
-        curso.setPeriodicidade(dto.getPeriodicidade());
-        curso.setStatus(dto.getStatus());
-        curso.setDuracao(dto.getDuracao());
+        curso.setNome(dto.nome());
+        curso.setPeriodicidade(dto.periodicidade());
+        curso.setStatus(dto.status());
+        curso.setDuracao(dto.duracao());
         return curso;
     }
 
