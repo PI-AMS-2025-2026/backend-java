@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface TipoUsuarioRepository extends JpaRepository<TipoUsuario, Long> {
 
+	java.util.Optional<TipoUsuario> findByNomeIgnoreCase(String nome);
+
 	/**
 	 * Retorna tipos de usuário aplicando filtro opcional por nome.
 	 *

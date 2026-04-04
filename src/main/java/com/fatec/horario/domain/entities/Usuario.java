@@ -1,6 +1,13 @@
 package com.fatec.horario.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +25,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "usuario", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
-public class Usuario  {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,11 +92,21 @@ public class Usuario  {
         return email;
     }
 
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
     public String getSenha() {
+        return senha;
+    }
+
+    @Override
+    public String getPassword() {
         return senha;
     }
 
@@ -138,6 +155,40 @@ public class Usuario  {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (tipo_usuario == null || tipo_usuario.getNome() == null) {
+            return Collections.emptyList();
+        }
+
+        String role = tipo_usuario.getNome().trim().toUpperCase(Locale.ROOT);
+        if (!role.equals("ADMIN") && !role.equals("COORDENADOR") && !role.equals("PROFESSOR")) {
+            return Collections.emptyList();
+        }
+
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status == Status.ATIVO;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -161,7 +212,4 @@ public class Usuario  {
             return false;
         return true;
     }
-
-    
-
 }

@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +31,10 @@ public class UsuarioService {
     private TipoUsuarioRepository tipoRepository;
 
     @Autowired
-    private BCryptPasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponse criar(UsuarioRequest request) {
 
         Usuario usuario = UsuarioMapper.toEntity(request);
@@ -83,6 +85,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
 
         Usuario usuario = repository.findById(id)
@@ -105,6 +108,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void inativar(Long id) {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
