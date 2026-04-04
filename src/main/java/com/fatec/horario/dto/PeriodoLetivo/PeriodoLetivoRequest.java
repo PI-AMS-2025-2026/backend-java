@@ -2,8 +2,9 @@ package com.fatec.horario.dto.periodoLetivo;
 
 import java.time.LocalDate;
 
+import com.fatec.horario.domain.entities.Status;
+
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -23,8 +24,8 @@ public record PeriodoLetivoRequest(
         @NotNull(message = "A data final é obrigatória")
         LocalDate dataFim,
 
-        @NotBlank(message = "O status é obrigatório") 
-        String status ) {
+        @NotNull(message = "O status é obrigatório")
+        Status status ) {
 
             @AssertTrue(message = "A data final deve ser maior que a data inicial")
             public boolean isDataFimValida() {

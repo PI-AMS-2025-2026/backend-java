@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,12 +29,14 @@ public class PeriodoLetivo {
     @Column(name = "data_fim")
     private LocalDate dataFim;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
     public PeriodoLetivo() {
     }
 
-    public PeriodoLetivo(Long id, Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, String status) {
+    public PeriodoLetivo(Long id, Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
         this.id = id;
         this.ano = ano;
         this.periodo = periodo;
@@ -81,11 +85,11 @@ public class PeriodoLetivo {
         this.dataFim = dataFim;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

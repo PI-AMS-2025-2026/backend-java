@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.PeriodoLetivoService;
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoRequest;
 import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoResponse;
 
@@ -35,7 +36,7 @@ public class PeriodoLetivoController {
     public ResponseEntity<Page<PeriodoLetivoResponse>> listar(
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer periodo,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Status status,
             @RequestParam(required = false) java.time.LocalDate dataInicio,
             @RequestParam(required = false) java.time.LocalDate dataFim,
             @RequestParam(defaultValue = "0") int page,

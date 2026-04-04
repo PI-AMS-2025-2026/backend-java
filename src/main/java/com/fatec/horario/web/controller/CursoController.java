@@ -1,6 +1,7 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.CursoService;
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.curso.CursoRequest;
 import com.fatec.horario.dto.curso.CursoResponse;
 
@@ -33,7 +34,7 @@ public class CursoController {
     public ResponseEntity<Page<CursoResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String periodicidade,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Status status,
             @RequestParam(required = false) Integer duracao,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

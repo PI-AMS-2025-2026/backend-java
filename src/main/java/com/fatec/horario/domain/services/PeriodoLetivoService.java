@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.PeriodoLetivo;
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoRequest;
 import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoResponse;
 import com.fatec.horario.infrastructure.mappers.PeriodoLetivoMapper;
@@ -37,7 +38,7 @@ public class PeriodoLetivoService {
     public Page<PeriodoLetivoResponse> listar(
             Integer ano,
             Integer periodo,
-            String status,
+            Status status,
             java.time.LocalDate dataInicio,
             java.time.LocalDate dataFim,
             int page,
@@ -75,7 +76,7 @@ public class PeriodoLetivoService {
         var periodo = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Periodo letivo não encontrado com ID: " + id));
 
-        periodo.setStatus("Inativo");
+        periodo.setStatus(Status.INATIVO);
         repository.save(periodo);
     }
 

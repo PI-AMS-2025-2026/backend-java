@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.domain.entities.TipoUsuario;
 import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.dto.usuario.UsuarioRequest;
@@ -54,7 +55,7 @@ public class UsuarioService {
             String nome,
             String email,
             String cidade,
-            String status,
+            Status status,
             Long tipoUsuarioId,
             String tipoUsuarioNome,
             int page,
@@ -108,7 +109,7 @@ public class UsuarioService {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
-        usuario.setStatus("Inativo");
+        usuario.setStatus(Status.INATIVO);
         usuario.setUpdated_at(LocalDateTime.now());
 
         repository.save(usuario);

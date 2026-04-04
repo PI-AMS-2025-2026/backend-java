@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Curso;
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.curso.CursoRequest;
 import com.fatec.horario.dto.curso.CursoResponse;
 import com.fatec.horario.infrastructure.mappers.CursoMapper;
@@ -39,7 +40,7 @@ public class CursoService {
     public Page<CursoResponse> listar(
             String nome,
             String periodicidade,
-            String status,
+            Status status,
             Integer duracao,
             int page,
             int size) {
@@ -75,7 +76,7 @@ public class CursoService {
         Curso curso = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        curso.setStatus("Inativo");
+        curso.setStatus(Status.INATIVO);
 
         repository.save(curso);
     }

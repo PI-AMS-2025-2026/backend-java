@@ -1,5 +1,6 @@
 package com.fatec.horario.dto.usuario;
 
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.id.LongDTO;
 
 import jakarta.validation.constraints.Email;
@@ -24,7 +25,7 @@ public record UsuarioRequest(
         String cidade,
 
         @NotNull
-        String status,
+        Status status,
 
         @NotNull
         LongDTO tipoUsuario

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.fatec.horario.domain.entities.PeriodoLetivo;
+import com.fatec.horario.domain.entities.Status;
 
 @Repository
 public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Long> {
@@ -29,14 +30,14 @@ public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Lo
             FROM PeriodoLetivo p
             WHERE (:ano IS NULL OR p.ano = :ano)
               AND (:periodo IS NULL OR p.periodo = :periodo)
-              AND (:status IS NULL OR p.status = :status)
+              AND (:status IS NULL OR LOWER(p.status) = LOWER(:status))
               AND (:dataInicio IS NULL OR p.dataInicio = :dataInicio)
               AND (:dataFim IS NULL OR p.dataFim = :dataFim)
             """)
     Page<PeriodoLetivo> buscarPorFiltros(
             @Param("ano") Integer ano,
             @Param("periodo") Integer periodo,
-            @Param("status") String status,
+            @Param("status") Status status,
             @Param("dataInicio") java.time.LocalDate dataInicio,
             @Param("dataFim") java.time.LocalDate dataFim,
             Pageable pageable);

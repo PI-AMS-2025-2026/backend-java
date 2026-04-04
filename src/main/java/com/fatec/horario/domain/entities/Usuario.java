@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,7 +37,9 @@ public class Usuario  {
     @Column(nullable = false)
     private String cidade;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
     private LocalDateTime created_at;
 
@@ -48,7 +52,7 @@ public class Usuario  {
     public Usuario() {
     }
 
-    public Usuario(Long id, String nome, String email, String senha, String cidade, String status,
+    public Usuario(Long id, String nome, String email, String senha, String cidade, Status status,
             LocalDateTime created_at, LocalDateTime updated_at, TipoUsuario tipo_usuario) {
         this.id = id;
         this.nome = nome;
@@ -101,11 +105,11 @@ public class Usuario  {
         this.cidade = cidade;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

@@ -1,5 +1,7 @@
 package com.fatec.horario.dto.curso;
 
+import com.fatec.horario.domain.entities.Status;
+
 import jakarta.validation.constraints.*;
 
 public record CursoRequest(
@@ -12,9 +14,8 @@ public record CursoRequest(
     @Pattern(regexp = "Semestral|Anual")
     String periodicidade,
 
-    @NotBlank
-    @Pattern(regexp = "Ativo|Inativo")
-    String status,
+    @NotNull
+    Status status,
 
     @NotNull
     @Min(1)

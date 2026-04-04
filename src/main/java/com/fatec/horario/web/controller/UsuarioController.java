@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.UsuarioService;
+import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.usuario.UsuarioRequest;
 import com.fatec.horario.dto.usuario.UsuarioResponse;
 
@@ -34,7 +35,7 @@ public class UsuarioController {
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String cidade,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Status status,
             @RequestParam(name = "tipo_usuario",required = false) Long tipoUsuario,
             @RequestParam(name = "tipo_usuario_nome", required = false) String tipoUsuarioNome,
             @RequestParam(defaultValue = "0") int page,

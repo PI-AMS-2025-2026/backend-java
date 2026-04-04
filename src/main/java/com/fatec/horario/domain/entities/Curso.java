@@ -2,6 +2,8 @@ package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +25,8 @@ public class Curso {
     private String periodicidade;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(nullable = false)
     private Integer duracao;
@@ -31,7 +34,7 @@ public class Curso {
     public Curso() {
     }
 
-    public Curso(Long id, String nome, String periodicidade, String status, Integer duracao) {
+    public Curso(Long id, String nome, String periodicidade, Status status, Integer duracao) {
         this.id = id;
         this.nome = nome;
         this.periodicidade = periodicidade;
@@ -63,11 +66,11 @@ public class Curso {
         this.periodicidade = periodicidade;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

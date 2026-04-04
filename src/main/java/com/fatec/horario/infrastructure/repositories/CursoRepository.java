@@ -1,6 +1,7 @@
 package com.fatec.horario.infrastructure.repositories;
 
 import com.fatec.horario.domain.entities.Curso;
+import com.fatec.horario.domain.entities.Status;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +30,13 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
             FROM Curso c
             WHERE (:nome IS NULL OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
               AND (:periodicidade IS NULL OR LOWER(c.periodicidade) = LOWER(:periodicidade))
-              AND (:status IS NULL OR c.status = :status)
+              AND (:status IS NULL OR LOWE(c.status) = LOWER(:status))
               AND (:duracao IS NULL OR c.duracao = :duracao)
             """)
     Page<Curso> buscarPorFiltros(
             @Param("nome") String nome,
             @Param("periodicidade") String periodicidade,
-            @Param("status") String status,
+            @Param("status") Status status,
             @Param("duracao") Integer duracao,
             Pageable pageable);
 }
