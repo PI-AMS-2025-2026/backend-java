@@ -1,5 +1,14 @@
 package com.fatec.horario.domain.services;
 
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.fatec.horario.domain.entities.TipoUsuario;
 import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.dto.usuario.UsuarioRequest;
@@ -9,15 +18,6 @@ import com.fatec.horario.infrastructure.repositories.TipoUsuarioRepository;
 import com.fatec.horario.infrastructure.repositories.UsuarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 public class UsuarioService {
@@ -32,14 +32,17 @@ public class UsuarioService {
     private BCryptPasswordEncoder encoder;
 
     @Transactional
-    public UsuarioResponse criar(UsuarioRequest dto) {
-        TipoUsuario tipo = tipoRepository.findById(dto.id_tipo_usuario())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "TipoUsuario não encontrado com ID: " + dto.id_tipo_usuario()));
+    public UsuarioResponse criar(UsuarioRequest request) {
 
-        Usuario usuario = UsuarioMapper.toEntity(dto, tipo);
+        Usuario usuario = UsuarioMapper.toEntity(request);
 
-        usuario.setSenha(encoder.encode(dto.senha()));
+        if (request.tipoUsuario() != null) {
+            TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "TipoUsuario não encontrado com ID: " + request.tipoUsuario().id()));
+            usuario.setTipo_usuario(tipo);
+        }
+        usuario.setSenha(encoder.encode(request.senha()));
         usuario.setCreated_at(LocalDateTime.now());
         usuario.setUpdated_at(LocalDateTime.now());
 
@@ -53,12 +56,20 @@ public class UsuarioService {
             String cidade,
             String status,
             Long tipoUsuarioId,
+            String tipoUsuarioNome,
             int page,
             int size
 
     ) {
         var pageRequest = PageRequest.of(page, size);
-        var pageUsuario = repository.buscarPorFiltros(nome, email, cidade, status, tipoUsuarioId, pageRequest);
+        var pageUsuario = repository.buscarPorFiltros(
+            nome,
+            email,
+            cidade,
+            status,
+            tipoUsuarioId,
+            tipoUsuarioNome,
+            pageRequest);
 
         return pageUsuario.map(UsuarioMapper::toResponse);
     }
@@ -71,20 +82,22 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponse atualizar(Long id, UsuarioRequest dto) {
+    public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
 
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
-        TipoUsuario tipo = tipoRepository.findById(dto.id_tipo_usuario())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "TipoUsuario não encontrado com ID: " + dto.id_tipo_usuario()));
+        usuario.setNome(request.nome());
+        usuario.setEmail(request.email());
+        usuario.setCidade(request.cidade());
+        usuario.setStatus(request.status());
+        if (request.tipoUsuario() != null) {
+            TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "TipoUsuario não encontrado com ID: " + request.tipoUsuario().id()));
 
-        usuario.setNome(dto.nome());
-        usuario.setEmail(dto.email());
-        usuario.setCidade(dto.cidade());
-        usuario.setStatus(dto.status());
-        usuario.setTipo_usuario(tipo);
+            usuario.setTipo_usuario(tipo);
+        }
         usuario.setUpdated_at(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(usuario));
@@ -95,7 +108,7 @@ public class UsuarioService {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
-        usuario.setStatus(false);
+        usuario.setStatus("Inativo");
         usuario.setUpdated_at(LocalDateTime.now());
 
         repository.save(usuario);

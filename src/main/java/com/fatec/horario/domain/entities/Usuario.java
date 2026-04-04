@@ -1,18 +1,22 @@
 package com.fatec.horario.domain.entities;
 
-import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "usuario", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
-public class Usuario implements UserDetails {
+public class Usuario  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +35,7 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String cidade;
 
-    private Boolean status;
+    private String status;
 
     private LocalDateTime created_at;
 
@@ -44,9 +48,8 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
-    public Usuario(Long id, String nome, String email, String senha,
-                   String cidade, Boolean status, LocalDateTime created_at,
-                   LocalDateTime updated_at, TipoUsuario tipo_usuario) {
+    public Usuario(Long id, String nome, String email, String senha, String cidade, String status,
+            LocalDateTime created_at, LocalDateTime updated_at, TipoUsuario tipo_usuario) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -98,11 +101,11 @@ public class Usuario implements UserDetails {
         this.cidade = cidade;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -131,37 +134,30 @@ public class Usuario implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
     @Override
-    public String getPassword() {
-        return senha;
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Usuario other = (Usuario) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+    
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return status != null && status;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return status != null && status;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return status != null && status;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return status != null && status;
-    }
 }
