@@ -1,4 +1,4 @@
-package com.fatec.horario.config;
+package com.fatec.horario.web.config;
 
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +14,7 @@ public class ConfiguracaoSeguranca {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
             )

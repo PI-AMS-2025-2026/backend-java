@@ -1,11 +1,9 @@
-package com.fatec.horario.dto.Recurso;
+package com.fatec.horario.dto.recurso;
 
 public record RecursoResponse(
-
-    Long id_recurso,
+    Long id,
     String nome,
     String tipo
-
 ) {
 }
 

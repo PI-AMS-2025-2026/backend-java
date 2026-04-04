@@ -8,18 +8,17 @@ import com.fatec.horario.infrastructure.mappers.TipoUsuarioMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.data.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class TipoUsuarioService {
 
-    private final TipoUsuarioRepository repository;
-
-    public TipoUsuarioService(TipoUsuarioRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private TipoUsuarioRepository repository;
 
     @Transactional
     public TipoUsuarioResponse criar(TipoUsuarioRequest dto) {
@@ -31,19 +30,21 @@ public class TipoUsuarioService {
     public TipoUsuarioResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(TipoUsuarioMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
-    public Page<TipoUsuarioResponse> listar(Pageable pageable) {
-        return repository.findAll(pageable)
-                .map(TipoUsuarioMapper::toResponse);
+    public List<TipoUsuarioResponse> listar(String nome) {
+        return repository.buscarPorFiltro(nome)
+                .stream()
+                .map(TipoUsuarioMapper::toResponse)
+                .toList();
     }
 
     @Transactional
     public TipoUsuarioResponse atualizar(Long id, TipoUsuarioRequest dto) {
         TipoUsuario tipo = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado com ID: " + id));
 
         tipo.setNome(dto.nome());
 
@@ -53,7 +54,7 @@ public class TipoUsuarioService {
     @Transactional
     public void deletar(Long id) {
         TipoUsuario tipo = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoUsuario não encontrado com ID: " + id));
 
         repository.delete(tipo);
     }

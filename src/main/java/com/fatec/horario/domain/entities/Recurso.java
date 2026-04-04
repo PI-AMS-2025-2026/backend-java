@@ -14,26 +14,27 @@ public class Recurso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_recurso")
-    private Long id_recurso;
+    private Long id;
 
     private String nome;
 
     private String tipo;
 
-    public Recurso() {}
+    public Recurso() {
+    }
 
-    public Recurso(String nome, String tipo) {
+    public Recurso(Long id, String nome, String tipo) {
+        this.id = id;
         this.nome = nome;
         this.tipo = tipo;
     }
 
-    // Getters e Setters
-    public Long getid_recurso() {
-        return id_recurso;
+    public Long getId() {
+        return id;
     }
 
-    public void setid_recurso(Long id_recurso) {
-        this.id_recurso = id_recurso;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -56,7 +57,7 @@ public class Recurso {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id_recurso == null) ? 0 : id_recurso.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -69,13 +70,14 @@ public class Recurso {
         if (getClass() != obj.getClass())
             return false;
         Recurso other = (Recurso) obj;
-        if (id_recurso == null) {
-            if (other.id_recurso != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!id_recurso.equals(other.id_recurso))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
+
 
 
 

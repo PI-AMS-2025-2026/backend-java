@@ -18,7 +18,7 @@ public class TipoSala {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     @Column(name = "id_tipo_sala")
-    private Long id_tipo_sala;
+    private Long id;
 
     private String nome;
 
@@ -28,17 +28,17 @@ public class TipoSala {
 
     // Construtor com campo principal
 
-    public TipoSala(String nome) {
+    public TipoSala(Long id, String nome) {
+        this.id = id;
         this.nome = nome;
     }
 
-    // Getters e Setters
-    public Long getid_tipo_sala() {
-        return id_tipo_sala;
+    public Long getId() {
+        return id;
     }
 
-    public void setid_tipo_sala(Long id_tipo_sala) {
-        this.id_tipo_sala = id_tipo_sala;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -53,7 +53,7 @@ public class TipoSala {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id_tipo_sala == null) ? 0 : id_tipo_sala.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -66,12 +66,15 @@ public class TipoSala {
         if (getClass() != obj.getClass())
             return false;
         TipoSala other = (TipoSala) obj;
-        if (id_tipo_sala == null) {
-            if (other.id_tipo_sala != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!id_tipo_sala.equals(other.id_tipo_sala))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
+
+    // Getters e Setters
+  
 
 }
