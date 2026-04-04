@@ -1,5 +1,6 @@
 package com.fatec.horario.web.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.TipoSalaService;
-import com.fatec.horario.dto.TipoSala.TipoSalaRequest;
-import com.fatec.horario.dto.TipoSala.TipoSalaResponse;
+import com.fatec.horario.dto.tipoSala.TipoSalaRequest;
+import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
 
 import jakarta.validation.Valid;
 
@@ -28,12 +30,6 @@ public class TipoSalaController {
 
     @Autowired
     private TipoSalaService service;
-
-    // Criação
-    @PostMapping
-    public ResponseEntity<TipoSalaResponse> criar(@Valid @RequestBody TipoSalaRequest request) {
-        return ResponseEntity.ok(service.criar(request));
-    }
 
     // Listagem com filtro
     @GetMapping
@@ -46,6 +42,18 @@ public class TipoSalaController {
     @GetMapping("/{id}")
     public ResponseEntity<TipoSalaResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    // Criação
+    @PostMapping
+    public ResponseEntity<TipoSalaResponse> criar(@Valid @RequestBody TipoSalaRequest request) {
+        TipoSalaResponse response = service.criar(request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     // Atualizar

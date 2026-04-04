@@ -1,36 +1,35 @@
 package com.fatec.horario.domain.entities;
 
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.List;
 
-// Indica que a classe é uma entidade JPA (tabela no banco)
+import jakarta.persistence.*;
+
 @Entity
-// Define o nome da tabela no banco
-@Table(name = "TIPO_SALA")
-public class TipoSala {
+@Table(name = "tipo_usuario")
+public class TipoUsuario {
 
-    // Chave primária da tabela
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    @Column(name = "id_tipo_sala")
+    @Column(name = "id_tipo_usuario")
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
-    // Construtor vazio obrigatório para o JPA
-    public TipoSala() {
+    @OneToMany(mappedBy = "tipo_usuario")
+    private List<Usuario> usuarios;
+
+    public TipoUsuario() {
     }
 
-    // Construtor com campo principal
-
-    public TipoSala(Long id, String nome) {
+    public TipoUsuario(Long id, String nome, List<Usuario> usuarios) {
         this.id = id;
         this.nome = nome;
+        this.usuarios = usuarios;
+    }
+
+    public TipoUsuario(long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -49,6 +48,14 @@ public class TipoSala {
         this.nome = nome;
     }
 
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -65,7 +72,7 @@ public class TipoSala {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        TipoSala other = (TipoSala) obj;
+        TipoUsuario other = (TipoUsuario) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -73,8 +80,5 @@ public class TipoSala {
             return false;
         return true;
     }
-
-    // Getters e Setters
-  
 
 }

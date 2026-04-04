@@ -1,8 +1,8 @@
 package com.fatec.horario.web.controller;
 
-import com.fatec.horario.domain.services.DiaSemanaService;
-import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
-import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
+import com.fatec.horario.domain.services.TipoUsuarioService;
+import com.fatec.horario.dto.tipoUsuario.TipoUsuarioRequest;
+import com.fatec.horario.dto.tipoUsuario.TipoUsuarioResponse;
 
 import jakarta.validation.Valid;
 
@@ -15,25 +15,27 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/dias-semana")
-public class DiaSemanaController {
+@RequestMapping("/tipo-usuario")
+public class TipoUsuarioController {
 
     @Autowired
-    private DiaSemanaService service;
+    private TipoUsuarioService service;
 
     @GetMapping
-    public ResponseEntity<List<DiaSemanaResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
+    public ResponseEntity<List<TipoUsuarioResponse>> listar(
+            @RequestParam(required = false) String nome) {
+        return ResponseEntity.ok(service.listar(nome));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DiaSemanaResponse> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<TipoUsuarioResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<DiaSemanaResponse> criar(@Valid @RequestBody DiaSemanaRequest request) {
-        DiaSemanaResponse response = service.criar(request);
+    public ResponseEntity<TipoUsuarioResponse> criar(@RequestBody @Valid TipoUsuarioRequest dto) {
+
+        TipoUsuarioResponse response = service.criar(dto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -45,9 +47,11 @@ public class DiaSemanaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiaSemanaResponse> atualizar(@PathVariable Long id,
-            @Valid @RequestBody DiaSemanaRequest request) {
-        return ResponseEntity.ok(service.atualizar(id, request));
+    public ResponseEntity<TipoUsuarioResponse> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid TipoUsuarioRequest dto
+    ) {
+        return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")

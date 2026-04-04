@@ -1,21 +1,21 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaRequest;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaResponse;
+import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
+import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
 
 public class DiaSemanaMapper {
 
     public static DiaSemana toEntity(DiaSemanaRequest request) {
         DiaSemana entity = new DiaSemana();
-        entity.setNome(request.getNome());
+        entity.setNome(request.nome());
         return entity;
     }
 
     public static DiaSemanaResponse toResponse(DiaSemana entity) {
-        DiaSemanaResponse dto = new DiaSemanaResponse();
-        dto.setId(entity.getId());
-        dto.setNome(entity.getNome());
-        return dto;
+     return new DiaSemanaResponse(
+            entity.getId(),
+            entity.getNome()
+        );
     }
 }

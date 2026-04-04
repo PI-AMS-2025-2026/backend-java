@@ -1,7 +1,13 @@
 package com.fatec.horario.domain.entities;
 
-import jakarta.persistence.*;
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "curso")
@@ -10,7 +16,7 @@ public class Curso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_curso")
-    private Long idCurso;
+    private Long id;
 
     @Column(nullable = false)
     private String nome;
@@ -19,37 +25,29 @@ public class Curso {
     private String periodicidade;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(nullable = false)
     private Integer duracao;
 
-    // as classes Turmas, Disciplina e GradeHoraria não foram criadas ou não estão na branch dev
-    @OneToMany(mappedBy = "curso")
-    private List<Turma> turmas;
+    public Curso() {
+    }
 
-    @OneToMany(mappedBy = "curso")
-    private List<Disciplina> disciplinas;
-
-    @OneToMany(mappedBy = "curso")
-    private List<GradeHoraria> gradeHorarias;
-
-    public Curso() {}
-
-    public Curso(Long idCurso, String nome, String periodicidade, String status, Integer duracao) {
-        this.idCurso = idCurso;
+    public Curso(Long id, String nome, String periodicidade, Status status, Integer duracao) {
+        this.id = id;
         this.nome = nome;
         this.periodicidade = periodicidade;
         this.status = status;
         this.duracao = duracao;
     }
 
-    public Long getIdCurso() {
-        return idCurso;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdCurso(Long idCurso) {
-        this.idCurso = idCurso;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -68,11 +66,11 @@ public class Curso {
         this.periodicidade = periodicidade;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -84,27 +82,69 @@ public class Curso {
         this.duracao = duracao;
     }
 
-    public List<Turma> getTurmas() {
-        return turmas;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
-    public void setTurmas(List<Turma> turmas) {
-        this.turmas = turmas;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Curso other = (Curso) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
-    public List<Disciplina> getDisciplinas() {
-        return disciplinas;
-    }
+    /*
+     * as classes Turmas, Disciplina e GradeHoraria não foram criadas ou não estão
+     * na branch dev
+     * 
+     * @OneToMany(mappedBy = "curso")
+     * private List<Turma> turmas;
+     * 
+     * @OneToMany(mappedBy = "curso")
+     * private List<Disciplina> disciplinas;
+     * 
+     * @OneToMany(mappedBy = "curso")
+     * private List<GradeHoraria> gradeHorarias;
+     */
 
-    public void setDisciplinas(List<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
-    }
+    /*
+     * public List<Turma> getTurmas() {
+     * return turmas;
+     * }
+     * 
+     * public void setTurmas(List<Turma> turmas) {
+     * this.turmas = turmas;
+     * }
+     * 
+     * public List<Disciplina> getDisciplinas() {
+     * return disciplinas;
+     * }
+     * 
+     * public void setDisciplinas(List<Disciplina> disciplinas) {
+     * this.disciplinas = disciplinas;
+     * }
+     * 
+     * public List<GradeHoraria> getGradeHorarias() {
+     * return gradeHorarias;
+     * }
+     * 
+     * public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
+     * this.gradeHorarias = gradeHorarias;
+     * }
+     */
 
-    public List<GradeHoraria> getGradeHorarias() {
-        return gradeHorarias;
-    }
-
-    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
-        this.gradeHorarias = gradeHorarias;
-    }
 }

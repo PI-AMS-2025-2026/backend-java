@@ -1,14 +1,14 @@
 package com.fatec.horario.domain.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Recurso;
-import com.fatec.horario.dto.Recurso.RecursoRequest;
-import com.fatec.horario.dto.Recurso.RecursoResponse;
+import com.fatec.horario.dto.recurso.RecursoRequest;
+import com.fatec.horario.dto.recurso.RecursoResponse;
 import com.fatec.horario.infrastructure.mappers.RecursoMapper;
 import com.fatec.horario.infrastructure.repositories.RecursoRepository;
 
@@ -20,48 +20,35 @@ public class RecursoService {
     @Autowired
     private RecursoRepository repository;
 
-    // Cria um novo recurso
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
         Recurso entity = RecursoMapper.toEntity(request);
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
-    // Busca por ID
     @Transactional(readOnly = true)
     public RecursoResponse buscarPorId(Long id) {
         Recurso entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado com ID: " + id));
         return RecursoMapper.toResponse(entity);
-
     }
 
-    // Lista com filtros
     @Transactional(readOnly = true)
-    public List<RecursoResponse> listar(String nome, String tipo) {
+    public Page<RecursoResponse> listar(
+            String nome,
+            String tipo,
+            int page,
+            int size) {
 
-        List<Recurso> lista;
-
-        if (nome != null && tipo != null) {
-            lista = repository.findByNomeContainingIgnoreCaseAndTipoContainingIgnoreCase(nome, tipo);
-        } else if (nome != null) {
-            lista = repository.findByNomeContainingIgnoreCase(nome);
-        } else if (tipo != null) {
-            lista = repository.findByTipoContainingIgnoreCase(tipo);
-        } else {
-            lista = repository.findAll();
-        }
-
-        return lista.stream()
-                .map(RecursoMapper::toResponse)
-                .toList();
+        var pageRequest = PageRequest.of(page, size);
+        var pageRecurso = repository.buscarPorFiltros(nome, tipo, pageRequest);
+        return pageRecurso.map(RecursoMapper::toResponse);
     }
 
-    // Atualiza um recurso
     @Transactional
     public RecursoResponse atualizar(Long id, RecursoRequest request) {
         Recurso entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
         entity.setTipo(request.tipo());
@@ -69,11 +56,17 @@ public class RecursoService {
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
-    // Deleta um recurso
+    /**
+     * Deleta um recurso por ID.
+     *
+     * @param id identificador do recurso
+     * 
+     * @throws EntityNotFoundException caso recurso não encontrado
+     */
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Recurso não encontrado");
+            throw new EntityNotFoundException("Recurso não encontrado com ID: " + id);
         }
         repository.deleteById(id);
     }

@@ -1,6 +1,8 @@
-package com.fatec.horario.dto.PeriodoLetivo;
+package com.fatec.horario.dto.periodoLetivo;
 
 import java.time.LocalDate;
+
+import com.fatec.horario.domain.entities.Status;
 
 public record PeriodoLetivoResponse(
         Long idPeriodoLetivo,
@@ -8,5 +10,5 @@ public record PeriodoLetivoResponse(
         Integer periodo,
         LocalDate dataInicio,
         LocalDate dataFim,
-        String status) {
+        Status status) {
 }

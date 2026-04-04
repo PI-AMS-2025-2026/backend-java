@@ -1,17 +1,18 @@
 package com.fatec.horario.domain.services;
 
-import com.fatec.horario.domain.entities.Curso;
-import com.fatec.horario.dto.curso.CursoRequest;
-import com.fatec.horario.dto.curso.CursoResponse;
-import com.fatec.horario.infrastructure.repositories.CursoRepository;
-import com.fatec.horario.infrastructure.mappers.CursoMapper;
-
-import jakarta.persistence.EntityNotFoundException;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.fatec.horario.domain.entities.Curso;
+import com.fatec.horario.domain.entities.Status;
+import com.fatec.horario.dto.curso.CursoRequest;
+import com.fatec.horario.dto.curso.CursoResponse;
+import com.fatec.horario.infrastructure.mappers.CursoMapper;
+import com.fatec.horario.infrastructure.repositories.CursoRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CursoService {
@@ -32,35 +33,51 @@ public class CursoService {
     public CursoResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(CursoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
-    public List<CursoResponse> listar() {
-        return repository.findAll()
-                .stream()
-                .map(CursoMapper::toResponse)
-                .toList();
+    public Page<CursoResponse> listar(
+            String nome,
+            String periodicidade,
+            Status status,
+            Integer duracao,
+            int page,
+            int size) {
+
+        var pageRequest = PageRequest.of(page, size);
+        var pageCurso = repository.buscarPorFiltros(nome, periodicidade, status, duracao, pageRequest);
+        return pageCurso.map(CursoMapper::toResponse);
     }
 
     @Transactional
-    public CursoResponse atualizar(Long id, CursoRequest dto) {
+    public CursoResponse atualizar(Long id, CursoRequest request) {
         Curso curso = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        curso.setNome(dto.getNome());
-        curso.setPeriodicidade(dto.getPeriodicidade());
-        curso.setStatus(dto.getStatus());
-        curso.setDuracao(dto.getDuracao());
+        curso.setNome(request.nome());
+        curso.setPeriodicidade(request.periodicidade());
+        curso.setStatus(request.status());
+        curso.setDuracao(request.duracao());
 
         return CursoMapper.toResponse(repository.save(curso));
     }
 
+    /**
+     * Essa entidade nunca pode ser deletada; em vez disso, ocorre a mudança de
+     * status.
+     *
+     * @param id identificador do curso
+     * 
+     * @throws EntityNotFoundException caso curso não encontrado
+     */
     @Transactional
-    public void deletar(Long id) {
+    public void inativar(Long id) {
         Curso curso = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        repository.delete(curso);
+        curso.setStatus(Status.INATIVO);
+
+        repository.save(curso);
     }
 }

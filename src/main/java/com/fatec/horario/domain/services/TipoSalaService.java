@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.TipoSala;
-import com.fatec.horario.dto.TipoSala.TipoSalaRequest;
-import com.fatec.horario.dto.TipoSala.TipoSalaResponse;
+import com.fatec.horario.dto.tipoSala.TipoSalaRequest;
+import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
 import com.fatec.horario.infrastructure.mappers.TipoSalaMapper;
 import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;
 
@@ -24,9 +24,7 @@ public class TipoSalaService {
     @Transactional(readOnly = true)
     public List<TipoSalaResponse> listar(String nome) {
 
-        List<TipoSala> lista = (nome != null)
-                ? repository.findByNomeContainingIgnoreCase(nome)
-                : repository.findAll();
+        List<TipoSala> lista = repository.buscarPorFiltro(nome);
 
         return lista.stream()
                 .map(TipoSalaMapper::toResponse)
@@ -44,7 +42,7 @@ public class TipoSalaService {
     @Transactional(readOnly = true)
     public TipoSalaResponse buscarPorId(Long id) {
         TipoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado com ID: " + id));
         return TipoSalaMapper.toResponse(entity);
     }
 
@@ -52,7 +50,7 @@ public class TipoSalaService {
     @Transactional
     public TipoSalaResponse atualizar(Long id, TipoSalaRequest request) {
         TipoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
 
@@ -63,7 +61,7 @@ public class TipoSalaService {
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("TipoSala não encontrado");
+            throw new EntityNotFoundException("TipoSala não encontrado com ID: " + id);
         }
         repository.deleteById(id);
     }
