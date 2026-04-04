@@ -3,7 +3,11 @@ package com.fatec.horario.infrastructure.repositories;
 import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.domain.entities.Status;
 
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
