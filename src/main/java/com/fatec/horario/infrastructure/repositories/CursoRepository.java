@@ -30,7 +30,7 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
             FROM Curso c
             WHERE (:nome IS NULL OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
               AND (:periodicidade IS NULL OR LOWER(c.periodicidade) = LOWER(:periodicidade))
-              AND (:status IS NULL OR LOWE(c.status) = LOWER(:status))
+                                                        AND (:status IS NULL OR c.status = :status)
               AND (:duracao IS NULL OR c.duracao = :duracao)
             """)
     Page<Curso> buscarPorFiltros(

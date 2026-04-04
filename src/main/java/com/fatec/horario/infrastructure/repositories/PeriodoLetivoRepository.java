@@ -30,7 +30,7 @@ public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Lo
             FROM PeriodoLetivo p
             WHERE (:ano IS NULL OR p.ano = :ano)
               AND (:periodo IS NULL OR p.periodo = :periodo)
-              AND (:status IS NULL OR LOWER(p.status) = LOWER(:status))
+                                                        AND (:status IS NULL OR p.status = :status)
               AND (:dataInicio IS NULL OR p.dataInicio = :dataInicio)
               AND (:dataFim IS NULL OR p.dataFim = :dataFim)
             """)

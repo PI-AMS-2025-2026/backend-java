@@ -31,7 +31,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
         WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
           AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
           AND (:cidade IS NULL OR LOWER(u.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
-          AND (:status IS NULL OR LOWER(u.status) = LOWER(:status))
+          AND (:status IS NULL OR u.status = :status)
           AND (:tipoUsuarioId IS NULL OR u.tipo_usuario.id = :tipoUsuarioId)
           AND (:tipoUsuarioNome IS NULL OR LOWER(t.nome) LIKE LOWER(CONCAT('%', :tipoUsuarioNome, '%')))
         """)
