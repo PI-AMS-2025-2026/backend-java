@@ -40,7 +40,7 @@ public class UsuarioService {
         if (request.tipoUsuario() != null) {
             TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
                     .orElseThrow(() -> new EntityNotFoundException(
-                            "TipoUsuario não encontrado com ID: " + request.tipoUsuario().id()));
+                        "Tipo de usuário não encontrado com ID: " + request.tipoUsuario().id()));
             usuario.setTipo_usuario(tipo);
         }
         usuario.setSenha(encoder.encode(request.senha()));
@@ -95,7 +95,7 @@ public class UsuarioService {
         if (request.tipoUsuario() != null) {
             TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
                     .orElseThrow(() -> new EntityNotFoundException(
-                            "TipoUsuario não encontrado com ID: " + request.tipoUsuario().id()));
+                        "Tipo de usuário não encontrado com ID: " + request.tipoUsuario().id()));
 
             usuario.setTipo_usuario(tipo);
         }

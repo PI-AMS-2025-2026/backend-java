@@ -42,7 +42,7 @@ public class TipoSalaService {
     @Transactional(readOnly = true)
     public TipoSalaResponse buscarPorId(Long id) {
         TipoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id));
         return TipoSalaMapper.toResponse(entity);
     }
 
@@ -50,7 +50,7 @@ public class TipoSalaService {
     @Transactional
     public TipoSalaResponse atualizar(Long id, TipoSalaRequest request) {
         TipoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoSala não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
 
@@ -61,7 +61,7 @@ public class TipoSalaService {
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("TipoSala não encontrado com ID: " + id);
+            throw new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id);
         }
         repository.deleteById(id);
     }

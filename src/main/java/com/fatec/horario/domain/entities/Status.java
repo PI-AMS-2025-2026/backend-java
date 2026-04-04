@@ -15,7 +15,11 @@ public enum Status {
             return null;
         }
 
-        return Status.valueOf(value.trim().toUpperCase(Locale.ROOT));
+        try {
+            return Status.valueOf(value.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Status inválido: " + value, exception);
+        }
     }
 
     @JsonValue
