@@ -1,18 +1,19 @@
 package com.fatec.horario.domain.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.PeriodoLetivo;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoRequest;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoResponse;
+import com.fatec.horario.domain.entities.Status;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoRequest;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoResponse;
 import com.fatec.horario.infrastructure.mappers.PeriodoLetivoMapper;
 import com.fatec.horario.infrastructure.repositories.PeriodoLetivoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PeriodoLetivoService {
@@ -29,40 +30,29 @@ public class PeriodoLetivoService {
     @Transactional(readOnly = true)
     public PeriodoLetivoResponse buscarPorId(long id) {
         PeriodoLetivo entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Periodo letivo não encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
         return PeriodoLetivoMapper.toResponse(entity);
     }
 
     @Transactional(readOnly = true)
-    public List<PeriodoLetivoResponse> listar(Integer ano, Integer periodo, String status) {
+    public Page<PeriodoLetivoResponse> listar(
+            Integer ano,
+            Integer periodo,
+            Status status,
+            java.time.LocalDate dataInicio,
+            java.time.LocalDate dataFim,
+            int page,
+            int size) {
 
-        List<PeriodoLetivo> lista;
-
-        if (ano != null && periodo != null && status != null) {
-            lista = repository.findByAnoAndPeriodoAndStatus(ano, periodo, status);
-
-        } else if (ano != null) {
-            lista = repository.findByAno(ano);
-
-        } else if (periodo != null) {
-            lista = repository.findByPeriodo(periodo);
-
-        } else if (status != null) {
-            lista = repository.findByStatus(status);
-
-        } else {
-            lista = repository.findAll();
-        }
-
-        return lista.stream()
-                .map(PeriodoLetivoMapper::toResponse)
-                .toList();
+        var pageRequest = PageRequest.of(page, size);
+        var pagePeriodo = repository.buscarPorFiltros(ano, periodo, status, dataInicio, dataFim, pageRequest);
+        return pagePeriodo.map(PeriodoLetivoMapper::toResponse);
     }
 
     @Transactional
     public PeriodoLetivoResponse atualizar(long id, PeriodoLetivoRequest request) {
         PeriodoLetivo entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Periodo letivo não encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
 
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
@@ -73,12 +63,21 @@ public class PeriodoLetivoService {
         return PeriodoLetivoMapper.toResponse(repository.save(entity));
     }
 
+    /**
+     * Inativa um período letivo; em vez disso, ocorre a mudança de status.
+     *
+     * @param id identificador do período letivo
+     * 
+     * @throws EntityNotFoundException caso período não encontrado
+     */
     @Transactional
-    public void deletar(long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Periodo letivo não existe");
-        }
-        repository.deleteById(id);
+    public void inativar(long id) {
+
+        var periodo = repository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
+
+        periodo.setStatus(Status.INATIVO);
+        repository.save(periodo);
     }
 
 }

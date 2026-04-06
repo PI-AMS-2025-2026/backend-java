@@ -1,10 +1,12 @@
-// src/main/java/com/fatec/horario/web/controller/DiaSemanaController.java
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.DiaSemanaService;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaRequest;
-import com.fatec.horario.dto.DiaSemana.DiaSemanaResponse;
+import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
+import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
+
 import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,19 +18,8 @@ import java.util.List;
 @RequestMapping("/dias-semana")
 public class DiaSemanaController {
 
-    private final DiaSemanaService service;
-
-    public DiaSemanaController(DiaSemanaService service) {
-        this.service = service;
-    }
-
-    @PostMapping
-    public ResponseEntity<DiaSemanaResponse> criar(@Valid @RequestBody DiaSemanaRequest request) {
-        DiaSemanaResponse response = service.criar(request);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(response.getId()).toUri();
-        return ResponseEntity.created(location).body(response);
-    }
+    @Autowired
+    private DiaSemanaService service;
 
     @GetMapping
     public ResponseEntity<List<DiaSemanaResponse>> listar() {
@@ -40,8 +31,22 @@ public class DiaSemanaController {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
+    @PostMapping
+    public ResponseEntity<DiaSemanaResponse> criar(@Valid @RequestBody DiaSemanaRequest request) {
+        DiaSemanaResponse response = service.criar(request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<DiaSemanaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody DiaSemanaRequest request) {
+    public ResponseEntity<DiaSemanaResponse> atualizar(@PathVariable Long id,
+            @Valid @RequestBody DiaSemanaRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 

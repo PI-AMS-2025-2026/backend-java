@@ -1,11 +1,13 @@
 package com.fatec.horario.domain.services;
 
 import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.dto.Horarios.HorarioRequest;
-import com.fatec.horario.dto.Horarios.HorarioResponse;
+import com.fatec.horario.dto.horarios.HorarioRequest;
+import com.fatec.horario.dto.horarios.HorarioResponse;
 import com.fatec.horario.infrastructure.mappers.HorarioMapper;
 import com.fatec.horario.infrastructure.repositories.HorarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,8 @@ import java.time.LocalTime;
 @Service
 public class HorarioService {
 
-    private final HorarioRepository repository;
+    @Autowired
+    private HorarioRepository repository;
 
     public HorarioService(HorarioRepository repository) {
         this.repository = repository;
@@ -41,21 +44,12 @@ public class HorarioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<HorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, int page, int size) {
+    public Page<HorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Horario> result;
-        if (horaInicio != null && horaFim != null) {
-            result = repository.findByHoraInicioAndHoraFim(horaInicio, horaFim, pageable);
-        } else if (horaInicio != null) {
-            result = repository.findByHoraInicio(horaInicio, pageable);
-        } else if (horaFim != null) {
-            result = repository.findByHoraFim(horaFim, pageable);
-        } else {
-            result = repository.findAll(pageable);
-        }
+        Page<Horario> pageHorario = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
 
-        return result.map(HorarioMapper::toResponse);
+        return pageHorario.map(HorarioMapper::toResponse);
     }
 
     @Transactional
@@ -65,9 +59,9 @@ public class HorarioService {
         Horario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
 
-        entity.setHoraInicio(request.getHoraInicio());
-        entity.setHoraFim(request.getHoraFim());
-        entity.setDuracao(request.getDuracao());
+        entity.setHoraInicio(request.horaInicio());
+        entity.setHoraFim(request.horaFim());
+        entity.setDuracao(request.duracao());
 
         entity = repository.save(entity);
         return HorarioMapper.toResponse(entity);
@@ -81,13 +75,14 @@ public class HorarioService {
         repository.deleteById(id);
     }
 
+    // TODO: colocar a validação do local correto
     private void validarHorario(HorarioRequest request) {
-        if (request.getHoraFim().isBefore(request.getHoraInicio())) {
+        if (request.horaFim().isBefore(request.horaInicio())) {
             throw new IllegalArgumentException("Hora de fim deve ser posterior à hora de início");
         }
-        int duracaoCalculada = request.getHoraFim().toSecondOfDay() - request.getHoraInicio().toSecondOfDay();
+        int duracaoCalculada = request.horaFim().toSecondOfDay() - request.horaInicio().toSecondOfDay();
         duracaoCalculada /= 60; // minutos
-        if (duracaoCalculada != request.getDuracao()) {
+        if (duracaoCalculada != request.duracao()) {
             throw new IllegalArgumentException("Duração informada não corresponde ao intervalo entre início e fim");
         }
     }

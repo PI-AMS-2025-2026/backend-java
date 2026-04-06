@@ -8,20 +8,19 @@ public class CursoMapper {
 
     public static Curso toEntity(CursoRequest dto) {
         Curso curso = new Curso();
-        curso.setNome(dto.getNome());
-        curso.setPeriodicidade(dto.getPeriodicidade());
-        curso.setStatus(dto.getStatus());
-        curso.setDuracao(dto.getDuracao());
+        curso.setNome(dto.nome());
+        curso.setPeriodicidade(dto.periodicidade());
+        curso.setStatus(dto.status());
+        curso.setDuracao(dto.duracao());
         return curso;
     }
 
     public static CursoResponse toResponse(Curso curso) {
         return new CursoResponse(
-                curso.getIdCurso(),
+                curso.getId(),
                 curso.getNome(),
                 curso.getPeriodicidade(),
                 curso.getStatus(),
-                curso.getDuracao()
-        );
+                curso.getDuracao());
     }
 }

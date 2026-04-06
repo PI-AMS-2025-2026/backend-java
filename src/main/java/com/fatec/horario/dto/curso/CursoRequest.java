@@ -1,43 +1,24 @@
 package com.fatec.horario.dto.curso;
 
+import com.fatec.horario.domain.entities.Status;
+
 import jakarta.validation.constraints.*;
 
-public class CursoRequest {
+public record CursoRequest(
 
-    @NotBlank
-    @Size(min = 2, max = 100)
-    private String nome;
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
+    String nome,
 
-    @NotBlank
-    @Pattern(regexp = "Semestral|Anual")
-    private String periodicidade;
+    @NotBlank(message = "Periodicidade é obrigatória")
+    @Pattern(regexp = "Semestral|Anual", message = "Periodicidade deve ser 'Semestral' ou 'Anual'")
+    String periodicidade,
 
-    @NotBlank
-    @Pattern(regexp = "Ativo|Inativo")
-    private String status;
+    @NotNull(message = "Status é obrigatório")
+    Status status,
 
-    @NotNull
-    @Min(1)
-    private Integer duracao;
-
-    public CursoRequest() {}
-
-    public CursoRequest(String nome, String periodicidade, String status, Integer duracao) {
-        this.nome = nome;
-        this.periodicidade = periodicidade;
-        this.status = status;
-        this.duracao = duracao;
-    }
-
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-
-    public String getPeriodicidade() { return periodicidade; }
-    public void setPeriodicidade(String periodicidade) { this.periodicidade = periodicidade; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public Integer getDuracao() { return duracao; }
-    public void setDuracao(Integer duracao) { this.duracao = duracao; }
+    @NotNull(message = "Duração é obrigatória")
+    @Min(value = 1, message = "Duração deve ser maior ou igual a 1")
+    Integer duracao
+) {
 }

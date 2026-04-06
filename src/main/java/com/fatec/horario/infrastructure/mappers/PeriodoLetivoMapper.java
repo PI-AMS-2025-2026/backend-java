@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.PeriodoLetivo;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoRequest;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoResponse;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoRequest;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoResponse;
 
 public class PeriodoLetivoMapper {
 
@@ -20,7 +20,7 @@ public class PeriodoLetivoMapper {
 
     public static PeriodoLetivoResponse toResponse(PeriodoLetivo periodoLetivo) {
         return new PeriodoLetivoResponse(
-                periodoLetivo.getIdPeriodoLetivo(),
+                periodoLetivo.getId(),
                 periodoLetivo.getAno(),
                 periodoLetivo.getPeriodo(),
                 periodoLetivo.getDataInicio(),

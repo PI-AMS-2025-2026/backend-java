@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.TipoSala;
-import com.fatec.horario.dto.TipoSala.TipoSalaRequest;
-import com.fatec.horario.dto.TipoSala.TipoSalaResponse;
+import com.fatec.horario.dto.tipoSala.TipoSalaRequest;
+import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
 
 public class TipoSalaMapper {
 
@@ -14,8 +14,7 @@ public class TipoSalaMapper {
 
     public static TipoSalaResponse toResponse(TipoSala entity) {
         return new TipoSalaResponse(
-            entity.getid_tipo_sala(),
-            entity.getNome()
-        );
+                entity.getId(),
+                entity.getNome());
     }
 }
