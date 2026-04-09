@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.TipoSala;
-import com.fatec.horario.dto.tipoSala.TipoSalaRequest;
-import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
+import com.fatec.horario.dto.TipoSala.TipoSalaRequest;
+import com.fatec.horario.dto.TipoSala.TipoSalaResponse;
 import com.fatec.horario.infrastructure.mappers.TipoSalaMapper;
 import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;
 

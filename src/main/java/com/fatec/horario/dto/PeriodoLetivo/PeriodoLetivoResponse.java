@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.periodoLetivo;
+package com.fatec.horario.dto.PeriodoLetivo;
 
 import java.time.LocalDate;
 

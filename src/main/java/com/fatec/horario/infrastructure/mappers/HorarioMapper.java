@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.dto.horarios.HorarioRequest;
-import com.fatec.horario.dto.horarios.HorarioResponse;
+import com.fatec.horario.dto.Horarios.HorarioRequest;
+import com.fatec.horario.dto.Horarios.HorarioResponse;
 
 public class HorarioMapper {
 

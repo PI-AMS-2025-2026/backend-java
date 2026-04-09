@@ -1,7 +1,7 @@
 package com.fatec.horario.dto.Disciplina;
 
 public record DisciplinaResponse(
-    Long idDisciplina,
+    Long id,
     String nome,
     Integer cargaHoraria,
     String tipoDisciplina,

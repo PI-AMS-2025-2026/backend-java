@@ -1,7 +1,7 @@
 package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.*;
-import com.fatec.horario.domain.entities.TipoSala;
+import java.util.Objects;
 
 @Entity
 @Table(name = "sala")
@@ -12,13 +12,13 @@ public class Sala {
     @Column(name = "id_sala")
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(nullable = false)
     private String codigo;
 
     @Column(nullable = false)
     private Integer capacidade;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_tipo_sala", nullable = false)
     private TipoSala tipoSala;
 
@@ -32,16 +32,48 @@ public class Sala {
         this.tipoSala = tipoSala;
     }
 
-    // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getCodigo() { return codigo; }
-    public void setCodigo(String codigo) { this.codigo = codigo; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Integer getCapacidade() { return capacidade; }
-    public void setCapacidade(Integer capacidade) { this.capacidade = capacidade; }
+    public String getCodigo() {
+        return codigo;
+    }
 
-    public TipoSala getTipoSala() { return tipoSala; }
-    public void setTipoSala(TipoSala tipoSala) { this.tipoSala = tipoSala; }
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public Integer getCapacidade() {
+        return capacidade;
+    }
+
+    public void setCapacidade(Integer capacidade) {
+        this.capacidade = capacidade;
+    }
+
+    public TipoSala getTipoSala() {
+        return tipoSala;
+    }
+
+    public void setTipoSala(TipoSala tipoSala) {
+        this.tipoSala = tipoSala;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Sala other = (Sala) obj;
+        return Objects.equals(id, other.id);
+    }
 }

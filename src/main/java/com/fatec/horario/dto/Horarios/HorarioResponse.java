@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.horarios;
+package com.fatec.horario.dto.Horarios;
 
 import java.time.LocalTime;
 
