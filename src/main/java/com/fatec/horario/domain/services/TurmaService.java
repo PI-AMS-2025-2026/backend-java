@@ -42,9 +42,14 @@ public class TurmaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<TurmaResponse> listar(Long idCurso, Integer ano, Integer periodo, String codigo, int page, int size) {
+    public Page<TurmaResponse> listar(
+        Long idCurso, 
+        Integer ano, 
+        Integer periodo, 
+        String codigo, 
+        int page, 
+        int size) {       
         var pageRequest = PageRequest.of(page, size);
-        // O repository agora recebe o parâmetro 'codigo' para o filtro Case Insensitive
         return repository.buscarPorFiltros(idCurso, ano, periodo, codigo, pageRequest)
                 .map(TurmaMapper::toResponse);
     }

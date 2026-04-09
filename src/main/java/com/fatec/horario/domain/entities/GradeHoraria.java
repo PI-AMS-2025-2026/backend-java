@@ -40,7 +40,6 @@ public class GradeHoraria {
         this.periodoLetivo = periodoLetivo;
     }
 
-    // Getters e Setters
     public Long getId() { 
         
         return id; 

@@ -22,6 +22,7 @@ import com.fatec.horario.domain.entities.Status;
 import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoRequest;
 import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoResponse;
 
+
 import jakarta.validation.Valid;
 
 @RestController
