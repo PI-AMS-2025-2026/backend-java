@@ -16,3 +16,4 @@ public record RecursoSalaRequest(
     Integer quantidade
 
 ) {}
+

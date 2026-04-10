@@ -11,53 +11,50 @@ import com.fatec.horario.infrastructure.repositories.RecursoSalaRepository;
 import com.fatec.horario.infrastructure.repositories.SalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.domain.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RecursoSalaService {
 
-    private final RecursoSalaRepository repository;
-    private final SalaRepository salaRepository;
-    private final RecursoRepository recursoRepository;
-
-    public RecursoSalaService(RecursoSalaRepository repository,
-                              SalaRepository salaRepository,
-                              RecursoRepository recursoRepository) {
-        this.repository = repository;
-        this.salaRepository = salaRepository;
-        this.recursoRepository = recursoRepository;
-    }
+    @Autowired
+    private RecursoSalaRepository repository;
+    private SalaRepository salaRepository;
+    private RecursoRepository recursoRepository;
 
     @Transactional
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
-
-        if (repository.existsBySalaIdAndRecursoId(request.getSalaId(), request.getRecursoId())) {
+        RecursoSala entity = RecursoSalaMapper.toEntity(request);
+    
+        if (repository.existsBySalaIdAndRecursoId(request.salaId(), request.recursoId())) {
             throw new IllegalArgumentException("Recurso já vinculado a essa sala");
         }
 
-        if (request.getQuantidade() <= 0) {
+        if (request.quantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
         }
 
-        Sala sala = salaRepository.findById(request.getSalaId())
+        Sala sala = salaRepository.findById(request.salaId())
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
 
-        Recurso recurso = recursoRepository.findById(request.getRecursoId())
+        Recurso recurso = recursoRepository.findById(request.recursoId())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
-        RecursoSala entity = new RecursoSala(null, request.getQuantidade(), sala, recurso);
+        RecursoSala entity = new RecursoSala(null, request.quantidade(), sala, recurso);
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
     public RecursoSalaResponse buscarPorId(Long id) {
-        RecursoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("RecursoSala não encontrado"));
-
-        return RecursoSalaMapper.toResponse(entity);
+        return repository.findById(id)
+                .map(RecursoSalaMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("RecursoSala não foi encontrado." + id));
     }
 
     @Transactional(readOnly = true)
@@ -83,11 +80,11 @@ public class RecursoSalaService {
         RecursoSala entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("RecursoSala não encontrado"));
 
-        if (request.getQuantidade() <= 0) {
+        if (request.quantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
         }
 
-        entity.setQuantidade(request.getQuantidade());
+        entity.setQuantidade(request.quantidade());
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
@@ -99,4 +96,5 @@ public class RecursoSalaService {
         }
         repository.deleteById(id);
     }
+
 }
