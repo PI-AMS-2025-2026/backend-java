@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.dto.Turma.TurmaRequest;
-import com.fatec.horario.dto.Turma.TurmaResponse;
+import com.fatec.horario.dto.turma.TurmaRequest;
+import com.fatec.horario.dto.turma.TurmaResponse;
 
 public class TurmaMapper {
 

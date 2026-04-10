@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Sala;
-import com.fatec.horario.dto.Sala.SalaRequest;
-import com.fatec.horario.dto.Sala.SalaResponse;
+import com.fatec.horario.dto.sala.SalaRequest;
+import com.fatec.horario.dto.sala.SalaResponse;
 
 public class SalaMapper {
 

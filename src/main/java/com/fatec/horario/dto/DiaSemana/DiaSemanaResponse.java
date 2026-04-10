@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.DiaSemana;
+package com.fatec.horario.dto.diaSemana;
 
 public record DiaSemanaResponse(
     Long id,

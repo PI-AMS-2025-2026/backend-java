@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Sala;
 import com.fatec.horario.domain.entities.TipoSala;
-import com.fatec.horario.dto.Sala.SalaRequest;
-import com.fatec.horario.dto.Sala.SalaResponse;
+import com.fatec.horario.dto.sala.SalaRequest;
+import com.fatec.horario.dto.sala.SalaResponse;
 import com.fatec.horario.infrastructure.mappers.SalaMapper;
 import com.fatec.horario.infrastructure.repositories.SalaRepository;
 import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;

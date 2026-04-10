@@ -1,61 +1,71 @@
 package com.fatec.horario.web.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import java.net.URI;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.fatec.horario.domain.entities.Status; 
 import com.fatec.horario.domain.services.GradeHorariaService;
-import com.fatec.horario.dto.GradeHoraria.GradeHorariaRequest;
-import com.fatec.horario.dto.GradeHoraria.GradeHorariaResponse;
+import com.fatec.horario.dto.gradeHoraria.GradeHorariaRequest;
+import com.fatec.horario.dto.gradeHoraria.GradeHorariaResponse;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/grades-horarias")
+@CrossOrigin
 public class GradeHorariaController {
 
-    private final GradeHorariaService service;
-
-    public GradeHorariaController(GradeHorariaService service) {
-        this.service = service;
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public GradeHorariaResponse criar(
-            @RequestBody @Valid GradeHorariaRequest request) {
-
-        return service.criar(request);
-    }
+    @Autowired
+    private GradeHorariaService service;
 
     @GetMapping
-    public Page<GradeHorariaResponse> listar(
-            @RequestParam(required = false) Long curso,
-            @RequestParam(required = false, name = "periodo_letivo") Long periodoLetivo,
-            @RequestParam(required = false) String status,
-            Pageable pageable) {
+    public ResponseEntity<Page<GradeHorariaResponse>> listar(
+            @RequestParam(name = "curso", required = false) Long idCurso, 
+            @RequestParam(name = "periodo_letivo", required = false) Long idPeriodoLetivo, 
+            @RequestParam(required = false) Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        return service.listar(curso, periodoLetivo, status, pageable);
+        return ResponseEntity.ok(
+                service.listar(idCurso, idPeriodoLetivo, status, page, size));
     }
 
     @GetMapping("/{id}")
-    public GradeHorariaResponse buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<GradeHorariaResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
 
-        return service.buscarPorId(id);
+    @PostMapping
+    public ResponseEntity<GradeHorariaResponse> criar(
+            @Valid @RequestBody GradeHorariaRequest request) {
+
+        GradeHorariaResponse response = service.criar(request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
-    public GradeHorariaResponse atualizar(
+    public ResponseEntity<GradeHorariaResponse> atualizar(
             @PathVariable Long id,
-            @RequestBody @Valid GradeHorariaRequest request) {
+            @Valid @RequestBody GradeHorariaRequest request) {
 
-        return service.atualizar(id, request);
+        return ResponseEntity.ok(service.atualizar(id, request));
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        service.deletar(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.inativar(id);
+        return ResponseEntity.noContent().build();
     }
 }

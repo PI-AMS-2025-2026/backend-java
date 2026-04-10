@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Sala;
+package com.fatec.horario.dto.sala;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Horarios;
+package com.fatec.horario.dto.horarios;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

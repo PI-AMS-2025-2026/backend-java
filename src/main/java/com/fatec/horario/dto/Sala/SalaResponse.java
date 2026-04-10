@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Sala;
+package com.fatec.horario.dto.sala;
 
 public record SalaResponse(
         Long id,

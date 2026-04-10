@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Turma;
+package com.fatec.horario.dto.turma;
 
 public record TurmaResponse(
     Long id,

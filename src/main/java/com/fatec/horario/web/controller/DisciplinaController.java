@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.DisciplinaService;
-import com.fatec.horario.dto.Disciplina.DisciplinaRequest;
-import com.fatec.horario.dto.Disciplina.DisciplinaResponse;
+import com.fatec.horario.dto.disciplina.DisciplinaRequest;
+import com.fatec.horario.dto.disciplina.DisciplinaResponse;
 
 import jakarta.validation.Valid;
 

@@ -1,8 +1,8 @@
 package com.fatec.horario.domain.services;
 
 import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.dto.Horarios.HorarioRequest;
-import com.fatec.horario.dto.Horarios.HorarioResponse;
+import com.fatec.horario.dto.horarios.HorarioRequest;
+import com.fatec.horario.dto.horarios.HorarioResponse;
 import com.fatec.horario.infrastructure.mappers.HorarioMapper;
 import com.fatec.horario.infrastructure.repositories.HorarioRepository;
 import jakarta.persistence.EntityNotFoundException;

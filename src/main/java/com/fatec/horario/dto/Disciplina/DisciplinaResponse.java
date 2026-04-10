@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Disciplina;
+package com.fatec.horario.dto.disciplina;
 
 public record DisciplinaResponse(
     Long id,

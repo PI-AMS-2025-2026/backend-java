@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Disciplina;
-import com.fatec.horario.dto.Disciplina.DisciplinaRequest;
-import com.fatec.horario.dto.Disciplina.DisciplinaResponse;
+import com.fatec.horario.dto.disciplina.DisciplinaRequest;
+import com.fatec.horario.dto.disciplina.DisciplinaResponse;
 
 public class DisciplinaMapper {
 

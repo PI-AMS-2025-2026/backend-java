@@ -1,8 +1,9 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.TurmaService;
-import com.fatec.horario.dto.Turma.TurmaRequest;
-import com.fatec.horario.dto.Turma.TurmaResponse;
+import com.fatec.horario.dto.turma.TurmaRequest;
+import com.fatec.horario.dto.turma.TurmaResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -2,6 +2,7 @@ package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,8 +37,13 @@ public class Turma {
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
 
-    @OneToMany(mappedBy = "turma")
-    private List<Alocacao> alocacoes;
+     /**
+     * Implementar relacionamento com Alocação no futuro
+     * 
+     * @OneToMany(mappedBy = "turma")
+     * private List<Alocacao> alocacoes;
+     * 
+     */
 
     public Turma() {
     }
@@ -99,6 +105,7 @@ public class Turma {
         this.curso = curso;
     }
 
+    /* 
     public List<Alocacao> getAlocacoes() {
         return alocacoes;
     }
@@ -106,7 +113,8 @@ public class Turma {
     public void setAlocacoes(List<Alocacao> alocacoes) {
         this.alocacoes = alocacoes;
     }
-
+    */
+   
     @Override
     public int hashCode() {
         final int prime = 31;
