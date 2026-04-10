@@ -1,7 +1,6 @@
 package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.*;
-import com.fatec.horario.domain.entities.TipoSala;
 
 @Entity
 @Table(name = "sala")
