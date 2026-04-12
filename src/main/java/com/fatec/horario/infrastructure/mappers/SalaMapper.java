@@ -20,7 +20,7 @@ public class SalaMapper {
             entity.getId(),
             entity.getCodigo(),
             entity.getCapacidade(),
-            entity.getTipoSala().getid_tipo_sala()
+            entity.getTipoSala().getId()
         );
     }
 }

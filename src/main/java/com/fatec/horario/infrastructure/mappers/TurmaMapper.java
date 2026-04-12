@@ -18,7 +18,7 @@ public class TurmaMapper {
 
         // 🔥 Mantém só o ID (o Service valida e busca no banco)
         Curso curso = new Curso();
-        curso.setIdCurso(request.idCurso());
+        curso.setId(request.idCurso());
 
         turma.setCurso(curso);
 
@@ -33,7 +33,7 @@ public class TurmaMapper {
                 turma.getPeriodo(),
                 turma.getAno(),
                 turma.getNumeroAlunos(),
-                turma.getCurso().getIdCurso()
+                turma.getCurso().getId()
         );
     }
 }

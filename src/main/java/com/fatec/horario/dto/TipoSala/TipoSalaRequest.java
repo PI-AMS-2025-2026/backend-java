@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.tipoSala;
+package com.fatec.horario.dto.TipoSala;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

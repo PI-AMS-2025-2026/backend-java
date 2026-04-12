@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Recurso;
-import com.fatec.horario.dto.recurso.RecursoRequest;
-import com.fatec.horario.dto.recurso.RecursoResponse;
+import com.fatec.horario.dto.Recurso.RecursoRequest;
+import com.fatec.horario.dto.Recurso.RecursoResponse;
 import com.fatec.horario.infrastructure.mappers.RecursoMapper;
 import com.fatec.horario.infrastructure.repositories.RecursoRepository;
 

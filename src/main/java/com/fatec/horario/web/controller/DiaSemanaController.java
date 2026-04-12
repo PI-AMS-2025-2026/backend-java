@@ -1,8 +1,8 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.DiaSemanaService;
-import com.fatec.horario.dto.diaSemana.DiaSemanaRequest;
-import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
+import com.fatec.horario.dto.DiaSemana.DiaSemanaRequest;
+import com.fatec.horario.dto.DiaSemana.DiaSemanaResponse;
 
 import jakarta.validation.Valid;
 

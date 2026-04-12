@@ -19,13 +19,13 @@ public class DisciplinaMapper {
         disciplina.setCor(request.getCor());
         if (request.getIdCurso() != null) {
             Curso curso = new Curso();
-            curso.setIdCurso(request.getIdCurso());
+            curso.setId(request.getIdCurso());
             disciplina.setCurso(curso);
         }
 
         if (request.getIdTipoSala() != null) {
             TipoSala tipoSala = new TipoSala();
-            tipoSala.setIdTipoSala(request.getIdTipoSala());
+            tipoSala.setId(request.getIdTipoSala());
             disciplina.setTipoSala(tipoSala);
         }
 
@@ -42,8 +42,8 @@ public class DisciplinaMapper {
                 disciplina.getModalidade(),
                 disciplina.getCodDisciplina(),
                 disciplina.getCor(),
-                disciplina.getCurso() != null ? disciplina.getCurso().getIdCurso() : null,
-                disciplina.getTipoSala() != null ? disciplina.getTipoSala().getIdTipoSala() : null
+                disciplina.getCurso() != null ? disciplina.getCurso().getId() : null,
+                disciplina.getTipoSala() != null ? disciplina.getTipoSala().getId() : null
         );
     }
     

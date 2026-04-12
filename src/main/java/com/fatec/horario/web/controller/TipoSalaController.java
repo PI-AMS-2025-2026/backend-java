@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.TipoSalaService;
-import com.fatec.horario.dto.tipoSala.TipoSalaRequest;
-import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
+import com.fatec.horario.dto.TipoSala.TipoSalaRequest;
+import com.fatec.horario.dto.TipoSala.TipoSalaResponse;
 
 import jakarta.validation.Valid;
 
