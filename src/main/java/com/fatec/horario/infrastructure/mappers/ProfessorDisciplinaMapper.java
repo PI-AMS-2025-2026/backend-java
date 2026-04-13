@@ -1,16 +1,16 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.*;
-import com.fatec.horario.dto.ProfessorDisciplina.ProfessorDisciplinaRequest;
-import com.fatec.horario.dto.ProfessorDisciplina.ProfessorDisciplinaResponse;
+import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaRequest;
+import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaResponse;
 
 public class ProfessorDisciplinaMapper {
 
     public static ProfessorDisciplinaResponse toResponse(ProfessorDisciplina entity) {
         return new ProfessorDisciplinaResponse(
                 entity.getIdProfessorDisciplina(),
-                entity.getUsuario().getUsuarioId(),
-                entity.getDisciplina().getIdDisciplina()
+                entity.getUsuario().getId(),
+                entity.getDisciplina().getId()
         );
     }
 

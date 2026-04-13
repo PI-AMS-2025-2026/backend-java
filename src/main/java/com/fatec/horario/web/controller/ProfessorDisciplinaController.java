@@ -1,15 +1,18 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.ProfessorDisciplinaService;
-import com.fatec.horario.dto.ProfessorDisciplina.ProfessorDisciplinaRequest;
-import com.fatec.horario.dto.ProfessorDisciplina.ProfessorDisciplinaResponse;
+import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaRequest;
+import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaResponse;
 import com.fatec.horario.infrastructure.mappers.ProfessorDisciplinaMapper;
 
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/professores-disciplinas")
@@ -23,52 +26,58 @@ public class ProfessorDisciplinaController {
 
     // CREATE
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProfessorDisciplinaResponse criar(
+        public ResponseEntity<ProfessorDisciplinaResponse> criar(
             @RequestBody @Valid ProfessorDisciplinaRequest request) {
 
-        return ProfessorDisciplinaMapper.toResponse(
-                service.criar(request)
+        ProfessorDisciplinaResponse response = ProfessorDisciplinaMapper.toResponse(
+            service.criar(request)
         );
+
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.id())
+            .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     // READ BY ID
     @GetMapping("/{id}")
-    public ProfessorDisciplinaResponse buscar(@PathVariable Long id) {
-        return ProfessorDisciplinaMapper.toResponse(
+    public ResponseEntity<ProfessorDisciplinaResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(ProfessorDisciplinaMapper.toResponse(
                 service.buscarPorId(id)
-        );
+        ));
     }
 
     // LIST + FILTROS + PAGINAÇÃO
     @GetMapping
-    public Page<ProfessorDisciplinaResponse> listar(
+    public ResponseEntity<Page<ProfessorDisciplinaResponse>> listar(
             @RequestParam(required = false) Long usuario,
             @RequestParam(required = false) Long disciplina,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        return service.listar(usuario, disciplina, pageable)
-                .map(ProfessorDisciplinaMapper::toResponse);
+        return ResponseEntity.ok(
+                service.listar(usuario, disciplina, page, size)
+                        .map(ProfessorDisciplinaMapper::toResponse)
+        );
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ProfessorDisciplinaResponse atualizar(
+    public ResponseEntity<ProfessorDisciplinaResponse> atualizar(
             @PathVariable Long id,
             @RequestBody @Valid ProfessorDisciplinaRequest request) {
 
-        return ProfessorDisciplinaMapper.toResponse(
+        return ResponseEntity.ok(ProfessorDisciplinaMapper.toResponse(
                 service.atualizar(id, request)
-        );
+        ));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

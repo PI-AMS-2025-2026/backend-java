@@ -1,9 +1,10 @@
 package com.fatec.horario.domain.services;
 
 import com.fatec.horario.domain.entities.*;
-import com.fatec.horario.dto.ProfessorDisciplina.ProfessorDisciplinaRequest;
+import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaRequest;
 import com.fatec.horario.infrastructure.repositories.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,31 +12,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProfessorDisciplinaService {
 
-    private final ProfessorDisciplinaRepository repository;
-    private final UsuarioRepository usuarioRepository;
-    private final DisciplinaRepository disciplinaRepository;
-
-    public ProfessorDisciplinaService(
-            ProfessorDisciplinaRepository repository,
-            UsuarioRepository usuarioRepository,
-            DisciplinaRepository disciplinaRepository) {
-        this.repository = repository;
-        this.usuarioRepository = usuarioRepository;
-        this.disciplinaRepository = disciplinaRepository;
-    }
+    @Autowired
+    private ProfessorDisciplinaRepository repository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
 
     @Transactional
     public ProfessorDisciplina criar(ProfessorDisciplinaRequest request) {
 
+        //TODO: Estudar melhor a validação de unico
         if (repository.existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(
-                request.getUsuarioId(), request.getDisciplinaId())) {
+            request.usuarioId(), request.disciplinaId())) {
             throw new RuntimeException("Relação já existe");
         }
 
-        Usuario usuario = usuarioRepository.findById(request.getUsuarioId())
+        Usuario usuario = usuarioRepository.findById(request.usuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Disciplina disciplina = disciplinaRepository.findById(request.getDisciplinaId())
+        Disciplina disciplina = disciplinaRepository.findById(request.disciplinaId())
                 .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
         ProfessorDisciplina entity = new ProfessorDisciplina(usuario, disciplina);
@@ -50,17 +46,14 @@ public class ProfessorDisciplinaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProfessorDisciplina> listar(Long usuarioId, Long disciplinaId, Pageable pageable) {
+    public Page<ProfessorDisciplina> listar(
+            Long usuarioId,
+            Long disciplinaId,
+            int page,
+            int size) {
 
-        if (usuarioId != null) {
-            return repository.findByUsuarioIdUsuario(usuarioId, pageable);
-        }
-
-        if (disciplinaId != null) {
-            return repository.findByDisciplinaIdDisciplina(disciplinaId, pageable);
-        }
-
-        return repository.findAll(pageable);
+        var pageRequest = PageRequest.of(page, size);
+        return repository.buscarPorFiltros(usuarioId, disciplinaId, pageRequest);
     }
 
     @Transactional
@@ -68,10 +61,10 @@ public class ProfessorDisciplinaService {
 
         ProfessorDisciplina entity = buscarPorId(id);
 
-        Usuario usuario = usuarioRepository.findById(request.getUsuarioId())
+        Usuario usuario = usuarioRepository.findById(request.usuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Disciplina disciplina = disciplinaRepository.findById(request.getDisciplinaId())
+        Disciplina disciplina = disciplinaRepository.findById(request.disciplinaId())
                 .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
         entity.setUsuario(usuario);

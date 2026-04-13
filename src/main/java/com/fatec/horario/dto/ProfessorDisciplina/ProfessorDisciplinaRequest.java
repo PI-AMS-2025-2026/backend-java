@@ -1,21 +1,10 @@
-package com.fatec.horario.dto;
+package com.fatec.horario.dto.professorDisciplina;
 
 import jakarta.validation.constraints.NotNull;
 
-public class ProfessorDisciplinaRequest {
-
-    @NotNull
-    private Long usuarioId;
-
-    @NotNull
-    private Long disciplinaId;
-
-    public Long getUsuarioId() {
-        return usuarioId;
-    }
-
-    public Long getDisciplinaId() {
-        return disciplinaId;
-    }
+public record ProfessorDisciplinaRequest(
+        @NotNull Long usuarioId,
+        @NotNull Long disciplinaId
+) {
 }
 

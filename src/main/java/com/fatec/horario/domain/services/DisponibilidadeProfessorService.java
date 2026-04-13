@@ -2,6 +2,7 @@ package com.fatec.horario.domain.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +23,14 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class DisponibilidadeProfessorService {
 
-    private final DisponibilidadeProfessorRepository repository;
-    private final UsuarioRepository usuarioRepository;
-    private final DiaSemanaRepository diaSemanaRepository;
-    private final HorarioRepository horarioRepository;
-
-    public DisponibilidadeProfessorService(
-            DisponibilidadeProfessorRepository repository,
-            UsuarioRepository usuarioRepository,
-            DiaSemanaRepository diaSemanaRepository,
-            HorarioRepository horarioRepository) {
-
-        this.repository = repository;
-        this.usuarioRepository = usuarioRepository;
-        this.diaSemanaRepository = diaSemanaRepository;
-        this.horarioRepository = horarioRepository;
-    }
+        @Autowired
+        private DisponibilidadeProfessorRepository repository;
+        @Autowired
+        private UsuarioRepository usuarioRepository;
+        @Autowired
+        private DiaSemanaRepository diaSemanaRepository;
+        @Autowired
+        private HorarioRepository horarioRepository;
 
     @Transactional
     public DisponibilidadeProfessorResponse criar(DisponibilidadeProfessorRequest request) {
