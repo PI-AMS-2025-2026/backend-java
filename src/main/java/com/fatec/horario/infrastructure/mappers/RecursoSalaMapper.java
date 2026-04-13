@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.RecursoSala;
-import com.fatec.horario.dto.RecursoSala.RecursoSalaResponse;
-import com.fatec.horario.dto.RecursoSala.RecursoSalaRequest;;
+import com.fatec.horario.dto.recursoSala.RecursoSalaRequest;
+import com.fatec.horario.dto.recursoSala.RecursoSalaResponse;;
 
 
 public class RecursoSalaMapper {

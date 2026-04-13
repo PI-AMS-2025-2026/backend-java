@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.RecursoSala;
+package com.fatec.horario.dto.recursoSala;
 
 public record RecursoSalaResponse(
     Long id,
