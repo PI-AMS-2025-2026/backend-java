@@ -2,6 +2,7 @@ package com.fatec.horario.domain.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,8 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class CursoService {
 
-    private final CursoRepository repository;
-
-    public CursoService(CursoRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private CursoRepository repository;
 
     @Transactional
     public CursoResponse criar(CursoRequest dto) {

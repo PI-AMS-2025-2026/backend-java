@@ -22,10 +22,6 @@ public class HorarioService {
     @Autowired
     private HorarioRepository repository;
 
-    public HorarioService(HorarioRepository repository) {
-        this.repository = repository;
-    }
-
     @Transactional
     public HorarioResponse criar(HorarioRequest request) {
         validarHorario(request);
