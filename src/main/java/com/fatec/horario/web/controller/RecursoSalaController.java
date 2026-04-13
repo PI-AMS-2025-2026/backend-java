@@ -2,8 +2,8 @@ package com.fatec.horario.web.controller;
 
 
 import com.fatec.horario.domain.services.RecursoSalaService;
-import com.fatec.horario.dto.RecursoSala.RecursoSalaRequest;
-import com.fatec.horario.dto.RecursoSala.RecursoSalaResponse;
+import com.fatec.horario.dto.recursoSala.RecursoSalaRequest;
+import com.fatec.horario.dto.recursoSala.RecursoSalaResponse;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -29,7 +29,7 @@ public class RecursoSalaController {
         var response = service.criar(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(response.getId())
+                .buildAndExpand(response.id())
                 .toUri();
         return ResponseEntity.created(location).body(response);
     }
