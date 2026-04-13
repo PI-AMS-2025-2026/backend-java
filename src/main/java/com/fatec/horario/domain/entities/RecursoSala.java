@@ -2,40 +2,43 @@ package com.fatec.horario.domain.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "sala")
-public class Sala {
+@Table(name = "recurso_sala",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"id_sala", "id_recurso"}))
+public class RecursoSala {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_sala")
+    @Column(name = "id_recurso_sala")
     private Long id;
 
     @Column(nullable = false)
-    private String codigo;
+    private Integer quantidade;
 
-    @Column(nullable = false)
-    private Integer capacidade;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sala", nullable = false)
+    private Sala sala;
 
-    @ManyToOne
-    @JoinColumn(name = "id_tipo_sala", nullable = false)
-    private TipoSala tipoSala;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_recurso", nullable = false)
+    private Recurso recurso;
 
-    public Sala() {
-    }
+    public RecursoSala() {}
 
-    public Sala(Long id, String codigo, Integer capacidade, TipoSala tipoSala) {
+    public RecursoSala(Long id, Integer quantidade, Sala sala, Recurso recurso) {
         this.id = id;
-        this.codigo = codigo;
-        this.capacidade = capacidade;
-        this.tipoSala = tipoSala;
+        this.quantidade = quantidade;
+        this.sala = sala;
+        this.recurso = recurso;
     }
 
     public Long getId() {
@@ -46,28 +49,28 @@ public class Sala {
         this.id = id;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public Integer getQuantidade() {
+        return quantidade;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public Integer getCapacidade() {
-        return capacidade;
+    public Sala getSala() {
+        return sala;
     }
 
-    public void setCapacidade(Integer capacidade) {
-        this.capacidade = capacidade;
+    public void setSala(Sala sala) {
+        this.sala = sala;
     }
 
-    public TipoSala getTipoSala() {
-        return tipoSala;
+    public Recurso getRecurso() {
+        return recurso;
     }
 
-    public void setTipoSala(TipoSala tipoSala) {
-        this.tipoSala = tipoSala;
+    public void setRecurso(Recurso recurso) {
+        this.recurso = recurso;
     }
 
     @Override
@@ -86,7 +89,7 @@ public class Sala {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Sala other = (Sala) obj;
+        RecursoSala other = (RecursoSala) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -95,5 +98,6 @@ public class Sala {
         return true;
     }
 
-    
+
+
 }
