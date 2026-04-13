@@ -15,7 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +23,22 @@ public class RecursoSalaService {
 
     @Autowired
     private RecursoSalaRepository repository;
+
+    @Autowired
     private SalaRepository salaRepository;
+
+    @Autowired
     private RecursoRepository recursoRepository;
 
     @Transactional
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
-        RecursoSala entity = RecursoSalaMapper.toEntity(request);
-    
+
+        // valida duplicidade
         if (repository.existsBySalaIdAndRecursoId(request.salaId(), request.recursoId())) {
             throw new IllegalArgumentException("Recurso já vinculado a essa sala");
         }
 
+        // valida quantidade
         if (request.quantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
         }
@@ -54,22 +58,18 @@ public class RecursoSalaService {
     public RecursoSalaResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(RecursoSalaMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("RecursoSala não foi encontrado." + id));
+                .orElseThrow(() -> new EntityNotFoundException("Recurso da sala não encontrado: " + id));
     }
 
     @Transactional(readOnly = true)
-    public Page<RecursoSalaResponse> listar(Long salaId, Long recursoId, int page, int size) {
+    public Page<RecursoSalaResponse> listar(
+            Long salaId,
+            Long recursoId,
+            int page,
+            int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<RecursoSala> result;
-
-        if (salaId != null) {
-            result = repository.findBySalaId(salaId, pageable);
-        } else if (recursoId != null) {
-            result = repository.findByRecursoId(recursoId, pageable);
-        } else {
-            result = repository.findAll(pageable);
-        }
+        var pageRequest = PageRequest.of(page, size);
+        var result = repository.buscarPorFiltros(salaId, recursoId, pageRequest);
 
         return result.map(RecursoSalaMapper::toResponse);
     }
@@ -78,7 +78,7 @@ public class RecursoSalaService {
     public RecursoSalaResponse atualizar(Long id, RecursoSalaRequest request) {
 
         RecursoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("RecursoSala não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Recurso da Sala não encontrado"));
 
         if (request.quantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
@@ -92,9 +92,8 @@ public class RecursoSalaService {
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("RecursoSala não encontrado");
+            throw new EntityNotFoundException("Recurso da Sala não encontrado");
         }
         repository.deleteById(id);
     }
-
 }

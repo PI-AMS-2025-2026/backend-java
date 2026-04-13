@@ -12,11 +12,13 @@ public class RecursoSalaMapper {
         entity.setQuantidade(request.quantidade());
         return entity;
     }
+
     public static RecursoSalaResponse toResponse(RecursoSala entity) {
         return new RecursoSalaResponse(
                 entity.getId(),
                 entity.getSala().getId(),
                 entity.getRecurso().getId(),
-                entity.getQuantidade());
+                entity.getQuantidade()
+        );
     }
 }

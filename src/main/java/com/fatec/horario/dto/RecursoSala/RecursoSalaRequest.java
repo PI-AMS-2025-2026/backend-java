@@ -1,7 +1,7 @@
 package com.fatec.horario.dto.RecursoSala;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Min;
 
 public record RecursoSalaRequest(
 
@@ -12,8 +12,7 @@ public record RecursoSalaRequest(
     Long recursoId,
 
     @NotNull
-    @Positive(message = "Quantidade deve ser maior que zero")
+    @Min(value = 1, message = "Quantidade deve ser maior que zero.")
     Integer quantidade
 
 ) {}
-
