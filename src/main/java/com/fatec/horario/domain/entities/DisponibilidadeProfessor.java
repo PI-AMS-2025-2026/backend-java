@@ -10,33 +10,35 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "sala")
-public class Sala {
-
+@Table(name = "disponibilidade_professor")
+public class DisponibilidadeProfessor {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_sala")
+    @Column(name = "id_disponibilidade_professor")
     private Long id;
 
-    @Column(nullable = false)
-    private String codigo;
-
-    @Column(nullable = false)
-    private Integer capacidade;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_sala", nullable = false)
-    private TipoSala tipoSala;
+    @JoinColumn(name = "id_dia_semana", nullable = false)
+    private DiaSemana diaSemana;
 
-    public Sala() {
+    @ManyToOne
+    @JoinColumn(name = "id_horario", nullable = false)
+    private Horario horario;
+
+    public DisponibilidadeProfessor() {}
+
+    public DisponibilidadeProfessor(Usuario usuario, DiaSemana diaSemana, Horario horario) {
+        this.usuario = usuario;
+        this.diaSemana = diaSemana;
+        this.horario = horario;
     }
 
-    public Sala(Long id, String codigo, Integer capacidade, TipoSala tipoSala) {
-        this.id = id;
-        this.codigo = codigo;
-        this.capacidade = capacidade;
-        this.tipoSala = tipoSala;
-    }
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -46,28 +48,28 @@ public class Sala {
         this.id = id;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public Integer getCapacidade() {
-        return capacidade;
+    public DiaSemana getDiaSemana() {
+        return diaSemana;
     }
 
-    public void setCapacidade(Integer capacidade) {
-        this.capacidade = capacidade;
+    public void setDiaSemana(DiaSemana diaSemana) {
+        this.diaSemana = diaSemana;
     }
 
-    public TipoSala getTipoSala() {
-        return tipoSala;
+    public Horario getHorario() {
+        return horario;
     }
 
-    public void setTipoSala(TipoSala tipoSala) {
-        this.tipoSala = tipoSala;
+    public void setHorario(Horario horario) {
+        this.horario = horario;
     }
 
     @Override
@@ -86,7 +88,7 @@ public class Sala {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Sala other = (Sala) obj;
+        DisponibilidadeProfessor other = (DisponibilidadeProfessor) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -94,6 +96,4 @@ public class Sala {
             return false;
         return true;
     }
-
-    
 }
