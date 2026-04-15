@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.DisponibilidadeProfessor;
+package com.fatec.horario.dto.disponibilidadeProfessor;
 
 import jakarta.validation.constraints.NotNull;
 

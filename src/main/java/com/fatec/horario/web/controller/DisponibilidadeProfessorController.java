@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.fatec.horario.domain.services.DisponibilidadeProfessorService;
-import com.fatec.horario.dto.DisponibilidadeProfessor.DisponibilidadeProfessorRequest;
-import com.fatec.horario.dto.DisponibilidadeProfessor.DisponibilidadeProfessorResponse;
+import com.fatec.horario.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
+import com.fatec.horario.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
 
 import jakarta.validation.Valid;
 

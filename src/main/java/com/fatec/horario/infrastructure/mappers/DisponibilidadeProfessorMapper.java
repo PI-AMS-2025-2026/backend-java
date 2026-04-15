@@ -1,11 +1,11 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Usuario;
+import com.fatec.horario.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
+import com.fatec.horario.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
 import com.fatec.horario.domain.entities.DiaSemana;
 import com.fatec.horario.domain.entities.Horario;
 import com.fatec.horario.domain.entities.DisponibilidadeProfessor;
-import com.fatec.horario.dto.DisponibilidadeProfessor.DisponibilidadeProfessorRequest;
-import com.fatec.horario.dto.DisponibilidadeProfessor.DisponibilidadeProfessorResponse;
 
 public class DisponibilidadeProfessorMapper{
 
