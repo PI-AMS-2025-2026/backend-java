@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Recurso;
-import com.fatec.horario.dto.Recurso.RecursoRequest;
-import com.fatec.horario.dto.Recurso.RecursoResponse;
+import com.fatec.horario.dto.recurso.RecursoRequest;
+import com.fatec.horario.dto.recurso.RecursoResponse;
 import com.fatec.horario.infrastructure.mappers.RecursoMapper;
 import com.fatec.horario.infrastructure.repositories.RecursoRepository;
 
@@ -56,13 +56,6 @@ public class RecursoService {
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
-    /**
-     * Deleta um recurso por ID.
-     *
-     * @param id identificador do recurso
-     * 
-     * @throws EntityNotFoundException caso recurso não encontrado
-     */
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {

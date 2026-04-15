@@ -1,8 +1,9 @@
 package com.fatec.horario.web.controller;
 
 import com.fatec.horario.domain.services.AlocacaoService;
-import com.fatec.horario.dto.Alocacao.AlocacaoRequest;
-import com.fatec.horario.dto.Alocacao.AlocacaoResponse;
+import com.fatec.horario.dto.alocacao.AlocacaoRequest;
+import com.fatec.horario.dto.alocacao.AlocacaoResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

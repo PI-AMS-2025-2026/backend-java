@@ -1,4 +1,4 @@
-package com.fatec.horario.dto.Alocacao;
+package com.fatec.horario.dto.alocacao;
 
 import com.fatec.horario.domain.entities.DiaSemana;
 import com.fatec.horario.domain.entities.Disciplina;

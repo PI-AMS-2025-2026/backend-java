@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.*;
-import com.fatec.horario.dto.Alocacao.AlocacaoRequest;
-import com.fatec.horario.dto.Alocacao.AlocacaoResponse;
+import com.fatec.horario.dto.alocacao.AlocacaoRequest;
+import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
 

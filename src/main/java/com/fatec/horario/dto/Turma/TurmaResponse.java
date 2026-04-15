@@ -1,18 +1,10 @@
-package com.fatec.horario.dto.Turma;
+package com.fatec.horario.dto.turma;
 
 public record TurmaResponse(
-
-        Long idTurma,
-
-        String codigo,
-
-        Integer periodo,
-
-        Integer ano,
-
-        Integer numeroAlunos,
-
-        Long idCurso
-
-) {
-}
+    Long id,
+    String codigo,
+    Integer periodo,
+    Integer ano,
+    Integer numeroAlunos,
+    Long idCurso
+) {}

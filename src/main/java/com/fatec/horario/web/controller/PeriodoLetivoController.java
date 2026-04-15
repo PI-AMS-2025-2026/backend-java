@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.horario.domain.services.PeriodoLetivoService;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoRequest;
+import com.fatec.horario.dto.periodoLetivo.PeriodoLetivoResponse;
 import com.fatec.horario.domain.entities.Status;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoRequest;
-import com.fatec.horario.dto.PeriodoLetivo.PeriodoLetivoResponse;
 
 import jakarta.validation.Valid;
 

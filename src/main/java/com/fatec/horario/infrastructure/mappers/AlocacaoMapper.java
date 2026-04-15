@@ -1,8 +1,8 @@
 package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.dto.Alocacao.AlocacaoRequest;
-import com.fatec.horario.dto.Alocacao.AlocacaoResponse;
+import com.fatec.horario.dto.alocacao.AlocacaoRequest;
+import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 
 public class AlocacaoMapper {
 
