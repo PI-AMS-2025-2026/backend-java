@@ -1,32 +1,30 @@
 package com.fatec.horario.infrastructure.mappers;
 
-import java.time.LocalDateTime;
-import com.fatec.horario.domain.entities.Curso;
 import com.fatec.horario.domain.entities.GradeHoraria;
-import com.fatec.horario.domain.entities.PeriodoLetivo;
-import com.fatec.horario.dto.GradeHoraria.GradeHorariaRequest;
-import com.fatec.horario.dto.GradeHoraria.GradeHorariaResponse;
+import com.fatec.horario.dto.gradeHoraria.GradeHorariaRequest;
+import com.fatec.horario.dto.gradeHoraria.GradeHorariaResponse;
 
 public class GradeHorariaMapper {
 
-    public static GradeHoraria toEntity(GradeHorariaRequest request, Curso curso, PeriodoLetivo periodo) {
-        GradeHoraria grade = new GradeHoraria();
-        grade.setVersao(request.versao());
-        grade.setStatus(request.status());
-        grade.setCurso(curso);
-        grade.setPeriodoLetivo(periodo);
-        grade.setDataCriacao(LocalDateTime.now());
-        return grade;
+    public static GradeHoraria toEntity(GradeHorariaRequest request) {
+
+        GradeHoraria entity = new GradeHoraria();
+
+        entity.setVersao(request.versao());
+        entity.setStatus(request.status());
+
+        return entity;
     }
 
-    public static GradeHorariaResponse toResponse(GradeHoraria grade) {
+    public static GradeHorariaResponse toResponse(GradeHoraria entity) {
+
         return new GradeHorariaResponse(
-                grade.getId(),
-                grade.getVersao(),
-                grade.getDataCriacao(),
-                grade.getStatus(),
-                grade.getCurso().getId(),
-                grade.getPeriodoLetivo().getId()
+                entity.getId(),
+                entity.getVersao(),
+                entity.getDataCriacao(),
+                entity.getStatus(),
+                entity.getCurso().getId(),
+                entity.getPeriodoLetivo().getId()
         );
     }
 }

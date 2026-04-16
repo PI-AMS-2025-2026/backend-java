@@ -18,8 +18,9 @@ public class GradeHoraria {
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
@@ -32,7 +33,8 @@ public class GradeHoraria {
     public GradeHoraria() {
     }
 
-    public GradeHoraria(Integer versao, LocalDateTime dataCriacao, String status, Curso curso, PeriodoLetivo periodoLetivo) {
+    // ALTERAÇÃO: Construtor agora aceita Status
+    public GradeHoraria(Integer versao, LocalDateTime dataCriacao, Status status, Curso curso, PeriodoLetivo periodoLetivo) {
         this.versao = versao;
         this.dataCriacao = dataCriacao;
         this.status = status;
@@ -40,70 +42,75 @@ public class GradeHoraria {
         this.periodoLetivo = periodoLetivo;
     }
 
-    // Getters e Setters
     public Long getId() { 
-        
         return id; 
-    
     }
 
     public Integer getVersao() { 
-        
         return versao; 
-    
     }
 
     public void setVersao(Integer versao) { 
-        
         this.versao = versao; 
-    
     }
 
     public LocalDateTime getDataCriacao() { 
-        
         return dataCriacao; 
-    
     }
 
     public void setDataCriacao(LocalDateTime dataCriacao) { 
-        
         this.dataCriacao = dataCriacao; 
-    
     }
 
-    public String getStatus() { 
-        
+    public Status getStatus() { 
         return status; 
-    
     }
 
-    public void setStatus(String status) { 
-        
+    public void setStatus(Status status) { 
         this.status = status; 
-    
     }
 
     public Curso getCurso() { 
-        
         return curso; 
-    
     }
 
     public void setCurso(Curso curso) { 
-        
         this.curso = curso; 
-    
     }
 
     public PeriodoLetivo getPeriodoLetivo() { 
-        
         return periodoLetivo; 
-    
     }
 
     public void setPeriodoLetivo(PeriodoLetivo periodoLetivo) { 
-        
         this.periodoLetivo = periodoLetivo; 
-    
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        
+        // Ajustado de PeriodoLetivo para GradeHoraria
+        GradeHoraria other = (GradeHoraria) obj; 
+        
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 }

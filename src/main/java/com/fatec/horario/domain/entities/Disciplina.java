@@ -12,11 +12,11 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "disciplina")
 public class Disciplina {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_disciplina")
-    private Long idDisciplina;
+    private Long id;
 
     private String nome;
 
@@ -27,6 +27,7 @@ public class Disciplina {
     private String tipoDisciplina;
 
     private Integer periodo;
+    
     private String modalidade;
 
     @Column(name = "cod_disciplina")
@@ -45,8 +46,9 @@ public class Disciplina {
     public Disciplina() {
     }
 
-    public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo,
-            String modalidade, String codDisciplina, String cor, Curso curso, TipoSala tipoSala) {
+    public Disciplina(Long id, String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo,
+                     String modalidade, String codDisciplina, String cor, Curso curso, TipoSala tipoSala) {
+        this.id = id;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.tipoDisciplina = tipoDisciplina;
@@ -58,13 +60,12 @@ public class Disciplina {
         this.tipoSala = tipoSala;
     }
 
-    //Getters e Setters
-    public Long getIdDisciplina() {
-        return idDisciplina;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdDisciplina(Long idDisciplina) {
-        this.idDisciplina = idDisciplina;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -143,7 +144,7 @@ public class Disciplina {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idDisciplina == null) ? 0 : idDisciplina.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -156,10 +157,10 @@ public class Disciplina {
         if (getClass() != obj.getClass())
             return false;
         Disciplina other = (Disciplina) obj;
-        if (idDisciplina == null) {
-            if (other.idDisciplina != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!idDisciplina.equals(other.idDisciplina))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }

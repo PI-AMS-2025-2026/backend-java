@@ -1,20 +1,33 @@
 package com.fatec.horario.infrastructure.repositories;
 
+import com.fatec.horario.domain.entities.ProfessorDisciplina;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-// classe "ProfessorDisciplina" não existe até o momento em que estou fazendo a issue
 public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDisciplina, Long> {
 
+    // 🔹 Verifica se professor já leciona a disciplina
+    boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(Long usuarioId, Long disciplinaId);
+
+    // 🔹 Listagem por professor
+    Page<ProfessorDisciplina> findByUsuarioIdUsuario(Long usuarioId, Pageable pageable);
+
+    // 🔹 Listagem por disciplina
+    Page<ProfessorDisciplina> findByDisciplinaIdDisciplina(Long disciplinaId, Pageable pageable);
+
+    // 🔹 Filtro flexível combinado
     @Query("""
-        SELECT COUNT(pd) > 0 
+        SELECT pd
         FROM ProfessorDisciplina pd
-        WHERE pd.professor.id_usuario = :idProfessor
-        AND pd.disciplina.id_disciplina = :idDisciplina
+        WHERE (:usuarioId IS NULL OR pd.usuario.idUsuario = :usuarioId)
+          AND (:disciplinaId IS NULL OR pd.disciplina.idDisciplina = :disciplinaId)
     """)
-    boolean existsByProfessorAndDisciplina(
-            @Param("idProfessor") Long idProfessor,
-            @Param("idDisciplina") Long idDisciplina
+    Page<ProfessorDisciplina> buscarPorFiltros(
+        @Param("usuarioId") Long usuarioId,
+        @Param("disciplinaId") Long disciplinaId,
+        Pageable pageable
     );
 }
