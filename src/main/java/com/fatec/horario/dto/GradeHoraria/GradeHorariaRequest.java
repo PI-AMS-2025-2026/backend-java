@@ -1,18 +1,18 @@
-package com.fatec.horario.dto.GradeHoraria;
+package com.fatec.horario.dto.gradeHoraria;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fatec.horario.domain.entities.Status; // Importe o Enum
 import jakarta.validation.constraints.NotNull;
 
 public record GradeHorariaRequest(
     @NotNull(message = "Versão é obrigatória")
     Integer versao,
     
-    @NotBlank(message = "Status é obrigatório")
-    String status,
+    @NotNull(message = "Status é obrigatório") // Enums usam NotNull, não NotBlank
+    Status status,
     
     @NotNull(message = "Curso é obrigatório")
-    Long cursoId,
+    Long idCurso,
     
     @NotNull(message = "Período Letivo é obrigatório")
-    Long periodoLetivoId
+    Long idPeriodoLetivo
 ) {}

@@ -1,6 +1,14 @@
 package com.fatec.horario.domain.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -10,13 +18,13 @@ public class Turma {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_turma")
-    private Long idTurma;
+    private Long id;
 
     @Column(nullable = false)
     private String codigo;
 
     @Column(nullable = false)
-    private Integer periodo; // corrigido para Integer
+    private Integer periodo;
 
     @Column(nullable = false)
     private Integer ano;
@@ -24,22 +32,18 @@ public class Turma {
     @Column(name = "numero_alunos", nullable = false)
     private Integer numeroAlunos;
 
-    // Muitas turmas pertencem a um curso
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
-    private Curso curso; // corrigido nome
+    private Curso curso;
 
-    // Uma turma pode ter várias alocações
     @OneToMany(mappedBy = "turma")
     private List<Alocacao> alocacoes;
 
-    // Construtor vazio (JPA)
     public Turma() {
     }
 
-    // Construtor completo
-    public Turma(Long idTurma, String codigo, Integer periodo, Integer ano, Integer numeroAlunos, Curso curso) {
-        this.idTurma = idTurma;
+    public Turma(Long id, String codigo, Integer periodo, Integer ano, Integer numeroAlunos, Curso curso) {
+        this.id = id;
         this.codigo = codigo;
         this.periodo = periodo;
         this.ano = ano;
@@ -47,56 +51,56 @@ public class Turma {
         this.curso = curso;
     }
 
-    public Long getIdTurma() {
-        return idTurma;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCodigo() {
         return codigo;
     }
 
-    public Integer getPeriodo() {
-        return periodo;
-    }
-
-    public Integer getAno() {
-        return ano;
-    }
-
-    public Integer getNumeroAlunos() {
-        return numeroAlunos;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public List<Alocacao> getAlocacoes() {
-        return alocacoes;
-    }
-
-    public void setIdTurma(Long idTurma) {
-        this.idTurma = idTurma;
-    }
-
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public Integer getPeriodo() {
+        return periodo;
     }
 
     public void setPeriodo(Integer periodo) {
         this.periodo = periodo;
     }
 
+    public Integer getAno() {
+        return ano;
+    }
+
     public void setAno(Integer ano) {
         this.ano = ano;
+    }
+
+    public Integer getNumeroAlunos() {
+        return numeroAlunos;
     }
 
     public void setNumeroAlunos(Integer numeroAlunos) {
         this.numeroAlunos = numeroAlunos;
     }
 
+    public Curso getCurso() {
+        return curso;
+    }
+
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public List<Alocacao> getAlocacoes() {
+        return alocacoes;
     }
 
     public void setAlocacoes(List<Alocacao> alocacoes) {
@@ -105,14 +109,26 @@ public class Turma {
 
     @Override
     public int hashCode() {
-        return idTurma == null ? 0 : idTurma.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Turma)) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         Turma other = (Turma) obj;
-        return idTurma != null && idTurma.equals(other.idTurma);
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 }
