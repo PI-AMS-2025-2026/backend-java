@@ -1,6 +1,8 @@
 package com.fatec.horario.domain.services.usecase.read;
 
+import com.fatec.horario.web.exception.BusinessException;
 import com.fatec.horario.infrastructure.repositories.ProfessorDisciplinaRepository;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,12 +14,16 @@ public class ValidarProfessorDisciplinaService {
         this.repository = repository;
     }
 
-    public void validarProfessorPodeLecionarOuLancarExcecao(Long idProfessor, Long idDisciplina) {
+    public void validarProfessorPodeLecionarOuLancarExcecao(
+            Long idProfessor,
+            Long idDisciplina
+    ) {
 
-        boolean vinculado = repository.existsByProfessorAndDisciplina(idProfessor, idDisciplina);
+        boolean vinculado = repository
+                .existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(idProfessor, idDisciplina);
 
         if (!vinculado) {
-            throw new IllegalStateException(
+            throw new BusinessException(
                 "O professor selecionado não está apto a lecionar esta disciplina"
             );
         }

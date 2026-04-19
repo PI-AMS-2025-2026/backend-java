@@ -24,10 +24,9 @@ public class CriarGradeHorariaUseCase {
     @Transactional
     public GradeHoraria executar(GradeHoraria grade) {
 
-        // métodos não existem nas entidades até o momento em que estou fazendo a issue
         validarService.validarProfessorPodeLecionarOuLancarExcecao(
-                grade.getProfessor().getId_usuario(),
-                grade.getDisciplina().getId_disciplina()
+                grade.getProfessor().getId(),
+                grade.getDisciplina().getId()
         );
 
         return repository.save(grade);
