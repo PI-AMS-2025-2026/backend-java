@@ -31,20 +31,17 @@ public class TipoSalaController {
     @Autowired
     private TipoSalaService service;
 
-    // Listagem com filtro
     @GetMapping
     public ResponseEntity<List<TipoSalaResponse>> listar(
             @RequestParam(required = false) String nome) {
         return ResponseEntity.ok(service.listar(nome));
     }
 
-    // Buscar por ID
     @GetMapping("/{id}")
     public ResponseEntity<TipoSalaResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    // Criação
     @PostMapping
     public ResponseEntity<TipoSalaResponse> criar(@Valid @RequestBody TipoSalaRequest request) {
         TipoSalaResponse response = service.criar(request);
@@ -56,7 +53,6 @@ public class TipoSalaController {
         return ResponseEntity.created(location).body(response);
     }
 
-    // Atualizar
     @PutMapping("/{id}")
     public ResponseEntity<TipoSalaResponse> atualizar(
             @PathVariable Long id,
@@ -64,7 +60,6 @@ public class TipoSalaController {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 
-    // Deletar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);

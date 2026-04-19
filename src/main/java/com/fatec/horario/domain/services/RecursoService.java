@@ -56,13 +56,6 @@ public class RecursoService {
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
-    /**
-     * Deleta um recurso por ID.
-     *
-     * @param id identificador do recurso
-     * 
-     * @throws EntityNotFoundException caso recurso não encontrado
-     */
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {

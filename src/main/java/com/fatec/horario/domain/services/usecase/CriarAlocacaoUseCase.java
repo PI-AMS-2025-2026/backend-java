@@ -1,6 +1,5 @@
 package com.fatec.horario.domain.services.usecase;
 
-//classe Alocacao.java não existe até o momento
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioService;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
