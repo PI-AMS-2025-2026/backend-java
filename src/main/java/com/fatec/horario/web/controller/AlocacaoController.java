@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/alocacoes")
+@CrossOrigin
 public class AlocacaoController {
 
     @Autowired

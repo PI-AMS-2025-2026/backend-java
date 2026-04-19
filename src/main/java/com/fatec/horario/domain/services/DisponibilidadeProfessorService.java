@@ -50,7 +50,10 @@ public class DisponibilidadeProfessorService {
         Horario horario = horarioRepository.findById(request.idHorario())
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado"));
 
-        DisponibilidadeProfessor disponibilidade = DisponibilidadeProfessorMapper.toEntity(request, usuario, dia, horario);
+        DisponibilidadeProfessor disponibilidade = DisponibilidadeProfessorMapper.toEntity(request);
+        disponibilidade.setUsuario(usuario);
+        disponibilidade.setDiaSemana(dia);
+        disponibilidade.setHorario(horario);
 
         repository.save(disponibilidade);
 

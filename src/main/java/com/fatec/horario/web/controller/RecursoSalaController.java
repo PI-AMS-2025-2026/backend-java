@@ -6,6 +6,7 @@ import com.fatec.horario.dto.recursoSala.RecursoSalaRequest;
 import com.fatec.horario.dto.recursoSala.RecursoSalaResponse;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @CrossOrigin
 public class RecursoSalaController {
 
-    private final RecursoSalaService service;
-
-    public RecursoSalaController(RecursoSalaService service) {
-        this.service = service;
-    }
+    @Autowired
+    private RecursoSalaService service;
 
     @PostMapping
     public ResponseEntity<RecursoSalaResponse> criar(@Valid @RequestBody RecursoSalaRequest request) {

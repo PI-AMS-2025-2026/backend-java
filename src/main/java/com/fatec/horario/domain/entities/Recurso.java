@@ -1,14 +1,17 @@
 package com.fatec.horario.domain.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "RECURSO")
+@Table(name = "recurso")
 public class Recurso {
 
     @Id
@@ -16,15 +19,18 @@ public class Recurso {
     @Column(name = "id_recurso")
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String nome;
 
     private String tipo;
 
+    @OneToMany(mappedBy = "recurso")
+    private List<RecursoSala> recursoSalas;
+
     public Recurso() {
     }
 
-    public Recurso(Long id, String nome, String tipo) {
-        this.id = id;
+    public Recurso(String nome, String tipo) {
         this.nome = nome;
         this.tipo = tipo;
     }
@@ -53,6 +59,14 @@ public class Recurso {
         this.tipo = tipo;
     }
 
+    public List<RecursoSala> getRecursoSalas() {
+        return recursoSalas;
+    }
+
+    public void setRecursoSalas(List<RecursoSala> recursoSalas) {
+        this.recursoSalas = recursoSalas;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -77,8 +91,5 @@ public class Recurso {
             return false;
         return true;
     }
-
-
-
 
 }

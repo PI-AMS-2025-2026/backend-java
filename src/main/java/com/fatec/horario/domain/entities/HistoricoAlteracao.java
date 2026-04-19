@@ -3,12 +3,16 @@ package com.fatec.horario.domain.entities;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "historico_alteracao")
 public class HistoricoAlteracao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

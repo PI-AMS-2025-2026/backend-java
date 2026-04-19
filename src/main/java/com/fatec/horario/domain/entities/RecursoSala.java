@@ -9,11 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "recurso_sala",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"id_sala", "id_recurso"}))
+@Table(name = "recurso_sala")
 public class RecursoSala {
 
     @Id
@@ -32,7 +30,8 @@ public class RecursoSala {
     @JoinColumn(name = "id_recurso", nullable = false)
     private Recurso recurso;
 
-    public RecursoSala() {}
+    public RecursoSala() {
+    }
 
     public RecursoSala(Long id, Integer quantidade, Sala sala, Recurso recurso) {
         this.id = id;
@@ -97,7 +96,5 @@ public class RecursoSala {
             return false;
         return true;
     }
-
-
 
 }

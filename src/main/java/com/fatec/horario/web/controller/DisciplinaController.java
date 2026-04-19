@@ -36,7 +36,7 @@ public class DisciplinaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DisciplinaResponse> buscar(@PathVariable Long id) {
+    public ResponseEntity<DisciplinaResponse> buscarPorId(@PathVariable Long id) {
 
         return ResponseEntity.ok(service.buscarPorId(id));
     }
