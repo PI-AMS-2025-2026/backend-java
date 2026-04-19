@@ -1,5 +1,7 @@
 package com.fatec.horario.dto.sala;
 
+import com.fatec.horario.dto.id.LongDTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,5 +17,5 @@ public record SalaRequest(
         Integer capacidade,
 
         @NotNull(message = "O tipo de sala é obrigatório")
-        Long idTipoSala
+        LongDTO tipoSala
 ) {}

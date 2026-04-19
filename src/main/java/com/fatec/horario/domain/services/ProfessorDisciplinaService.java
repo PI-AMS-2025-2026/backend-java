@@ -26,14 +26,14 @@ public class ProfessorDisciplinaService {
     public ProfessorDisciplinaResponse criar(ProfessorDisciplinaRequest request) {
 
         if (repository.existsByUsuarioIdAndDisciplinaId(
-            request.usuarioId(), request.disciplinaId())) {
+            request.usuario().id(), request.disciplina().id())) {
             throw new RuntimeException("Relação já existe");
         }
 
-        Usuario usuario = usuarioRepository.findById(request.usuarioId())
+        Usuario usuario = usuarioRepository.findById(request.usuario().id())
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        Disciplina disciplina = disciplinaRepository.findById(request.disciplinaId())
+        Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
                 .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
 
         ProfessorDisciplina entity = ProfessorDisciplinaMapper.toEntity(request);
@@ -69,10 +69,10 @@ public class ProfessorDisciplinaService {
     ProfessorDisciplina entity = repository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
 
-        Usuario usuario = usuarioRepository.findById(request.usuarioId())
+        Usuario usuario = usuarioRepository.findById(request.usuario().id())
         .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        Disciplina disciplina = disciplinaRepository.findById(request.disciplinaId())
+        Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
         .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
 
         entity.setUsuario(usuario);

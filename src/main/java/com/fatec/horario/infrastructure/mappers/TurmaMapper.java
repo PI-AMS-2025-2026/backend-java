@@ -22,7 +22,7 @@ public class TurmaMapper {
             entity.getPeriodo(),
             entity.getAno(),
             entity.getNumeroAlunos(),
-            entity.getCurso().getId()
+            entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null
         );
     }
 }

@@ -7,39 +7,23 @@ import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 public class AlocacaoMapper {
 
     // Request -> Entity
-    public static Alocacao toEntity(AlocacaoRequest dto) {
-        if (dto == null) {
+    public static Alocacao toEntity(AlocacaoRequest request) {
+        if (request == null) {
             return null;
         }
-
-        Alocacao alocacao = new Alocacao();
-        
-        alocacao.setTurma(dto.turma());
-        alocacao.setDisciplina(dto.disciplina());
-        alocacao.setSala(dto.sala());
-        alocacao.setUsuario(dto.usuario());
-        alocacao.setDiaSemana(dto.diaSemana());
-        alocacao.setHorario(dto.horario());
-        alocacao.setGradeHoraria(dto.gradeHoraria());
-        
-        return alocacao;
+        return new Alocacao();
     }
 
     // Entity -> Response
-    public static AlocacaoResponse toResponse(Alocacao alocacao) {
-        if (alocacao == null) {
-            return null;
-        }
-
+    public static AlocacaoResponse toResponse(Alocacao entity) {
         return new AlocacaoResponse(
-                alocacao.getId(),
-                alocacao.getTurma(),
-                alocacao.getDisciplina(),
-                alocacao.getSala(),
-                alocacao.getUsuario(),
-                alocacao.getDiaSemana(),
-                alocacao.getHorario(),
-                alocacao.getGradeHoraria()
-        );
+                entity.getId(),
+                entity.getTurma() != null ? TurmaMapper.toResponse(entity.getTurma()) : null,
+                entity.getDisciplina() != null ? DisciplinaMapper.toResponse(entity.getDisciplina()) : null,
+                entity.getSala() != null ? SalaMapper.toResponse(entity.getSala()) : null,
+                entity.getUsuario() != null ? UsuarioMapper.toResponse(entity.getUsuario()) : null,
+                entity.getDiaSemana() != null ? DiaSemanaMapper.toResponse(entity.getDiaSemana()) : null,
+                entity.getHorario() != null ? HorarioMapper.toResponse(entity.getHorario()) : null,
+                entity.getGradeHoraria() != null ? GradeHorariaMapper.toResponse(entity.getGradeHoraria()) : null);
     }
 }

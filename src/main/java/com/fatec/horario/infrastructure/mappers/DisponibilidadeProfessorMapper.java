@@ -13,8 +13,8 @@ public class DisponibilidadeProfessorMapper {
     public static DisponibilidadeProfessorResponse toResponse(DisponibilidadeProfessor disponibilidade) {
         return new DisponibilidadeProfessorResponse(
                 disponibilidade.getId(),
-                disponibilidade.getUsuario().getId(),
-                disponibilidade.getDiaSemana().getId(),
-                disponibilidade.getHorario().getId());
+                disponibilidade.getUsuario() != null ? UsuarioMapper.toResponse(disponibilidade.getUsuario()) : null,
+                disponibilidade.getDiaSemana() != null ? DiaSemanaMapper.toResponse(disponibilidade.getDiaSemana()) : null,
+                disponibilidade.getHorario() != null ? HorarioMapper.toResponse(disponibilidade.getHorario()) : null);
     }
 }

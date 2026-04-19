@@ -1,8 +1,11 @@
 package com.fatec.horario.dto.professorDisciplina;
 
+import com.fatec.horario.dto.disciplina.DisciplinaResponse;
+import com.fatec.horario.dto.usuario.UsuarioResponse;
+
 public record ProfessorDisciplinaResponse(
         Long id,
-        Long usuarioId,
-        Long disciplinaId
+        UsuarioResponse usuario,
+        DisciplinaResponse disciplina
 ) {
 }

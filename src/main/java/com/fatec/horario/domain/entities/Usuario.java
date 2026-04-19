@@ -49,6 +49,10 @@ public class Usuario {
     @JoinColumn(name = "id_tipo_usuario", nullable = false)
     private TipoUsuario tipo_usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "id_curso", nullable = false)
+    private Curso curso;
+
     public Usuario() {
     }
 

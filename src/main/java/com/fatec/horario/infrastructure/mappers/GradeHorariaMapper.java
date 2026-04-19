@@ -23,8 +23,8 @@ public class GradeHorariaMapper {
                 entity.getVersao(),
                 entity.getDataCriacao(),
                 entity.getStatus(),
-                entity.getCurso().getId(),
-                entity.getPeriodoLetivo().getId()
+                entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
+                entity.getPeriodoLetivo() != null ? PeriodoLetivoMapper.toResponse(entity.getPeriodoLetivo()) : null
         );
     }
 }

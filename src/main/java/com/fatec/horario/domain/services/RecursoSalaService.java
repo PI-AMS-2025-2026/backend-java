@@ -34,7 +34,7 @@ public class RecursoSalaService {
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
 
         // valida duplicidade
-        if (repository.existsBySalaIdAndRecursoId(request.salaId(), request.recursoId())) {
+        if (repository.existsBySalaIdAndRecursoId(request.sala().id(), request.recurso().id())) {
             throw new IllegalArgumentException("Recurso já vinculado a essa sala");
         }
 
@@ -43,10 +43,10 @@ public class RecursoSalaService {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
         }
 
-        Sala sala = salaRepository.findById(request.salaId())
+        Sala sala = salaRepository.findById(request.sala().id())
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
 
-        Recurso recurso = recursoRepository.findById(request.recursoId())
+        Recurso recurso = recursoRepository.findById(request.recurso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
         RecursoSala entity = new RecursoSala(null, request.quantidade(), sala, recurso);
