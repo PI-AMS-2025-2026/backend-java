@@ -1,5 +1,6 @@
 package com.fatec.horario.domain.services.usecase;
 
+//classe Alocacao.java não existe até o momento
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioService;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
@@ -11,24 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriarAlocacaoUseCase {
 
     private final AlocacaoRepository repository;
-    private final ValidarConflitoTurmaHorarioService validarConflitoService;
+    private final ValidarConflitoTurmaHorarioService validarService;
 
     public CriarAlocacaoUseCase(
             AlocacaoRepository repository,
-            ValidarConflitoTurmaHorarioService validarConflitoService
+            ValidarConflitoTurmaHorarioService validarService
     ) {
         this.repository = repository;
-        this.validarConflitoService = validarConflitoService;
+        this.validarService = validarService;
     }
 
     @Transactional
     public Alocacao executar(Alocacao alocacao) {
 
-        // métodos não existem nas entidades até o momento que estou fazendo a issue
-        validarConflitoService.validarTurmaSemConflitoOuLancarExcecao(
-                alocacao.getTurma().getId_turma(),
-                alocacao.getDiaSemana().getId_dia_semana(),
-                alocacao.getHorario().getId_horario()
+        validarService.validarTurmaSemConflitoOuLancarExcecao(
+                alocacao.getTurma().getId(),
+                alocacao.getDiaSemana().getId(),
+                alocacao.getHorario().getId()
         );
 
         return repository.save(alocacao);

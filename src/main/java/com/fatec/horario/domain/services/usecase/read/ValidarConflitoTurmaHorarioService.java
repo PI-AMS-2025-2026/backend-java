@@ -1,6 +1,8 @@
 package com.fatec.horario.domain.services.usecase.read;
 
+import com.fatec.horario.web.exception.BusinessException;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +27,7 @@ public class ValidarConflitoTurmaHorarioService {
         );
 
         if (existeConflito) {
-            throw new IllegalStateException(
+            throw new BusinessException(
                 "A turma já possui uma disciplina alocada neste dia e horário"
             );
         }
