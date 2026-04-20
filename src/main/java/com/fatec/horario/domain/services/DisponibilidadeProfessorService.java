@@ -1,22 +1,22 @@
 package com.fatec.horario.domain.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fatec.horario.domain.entities.DiaSemana;
 import com.fatec.horario.domain.entities.DisponibilidadeProfessor;
+import com.fatec.horario.domain.entities.Horario;
 import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.horario.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
-import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.infrastructure.repositories.DisponibilidadeProfessorRepository;
-import com.fatec.horario.infrastructure.repositories.UsuarioRepository;
-import com.fatec.horario.infrastructure.repositories.DiaSemanaRepository;
-import com.fatec.horario.infrastructure.repositories.HorarioRepository;
 import com.fatec.horario.infrastructure.mappers.DisponibilidadeProfessorMapper;
+import com.fatec.horario.infrastructure.repositories.DiaSemanaRepository;
+import com.fatec.horario.infrastructure.repositories.DisponibilidadeProfessorRepository;
+import com.fatec.horario.infrastructure.repositories.HorarioRepository;
+import com.fatec.horario.infrastructure.repositories.UsuarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -80,15 +80,17 @@ public class DisponibilidadeProfessorService {
                         Long usuario,
                         Long diaSemana,
                         Long horario,
-                        Pageable pageable) {
+                        int page, int size) {
 
-                Page<DisponibilidadeProfessor> page = repository.buscarComFiltros(
+                var pageRequest = PageRequest.of(page, size);
+
+                var pageDisponibilidade = repository.buscarComFiltros(
                                 usuario,
                                 diaSemana,
                                 horario,
-                                pageable);
+                                pageRequest);
 
-                return page.map(DisponibilidadeProfessorMapper::toResponse);
+                return pageDisponibilidade.map(DisponibilidadeProfessorMapper::toResponse);
         }
 
         @Transactional

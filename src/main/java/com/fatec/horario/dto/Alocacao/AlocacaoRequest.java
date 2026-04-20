@@ -27,7 +27,7 @@ public record AlocacaoRequest(
     @NotNull(message = "Grade horária é obrigatória")
     LongDTO gradeHoraria,
     
-    //Campos de Historico de Alteração (opcionais para criação, usados para registrar mudanças)
+    //Campos de Histórico de Alteração (opcionais para criação,obrigatorios para registrar mudanças)
     String justificativaAlteracao,
 
     LongDTO usuarioAlteracao
