@@ -1,20 +1,20 @@
 package com.fatec.horario.dto.alocacao;
 
-import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.domain.entities.Disciplina;
-import com.fatec.horario.domain.entities.GradeHoraria;
-import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.domain.entities.Sala;
-import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.domain.entities.Usuario;
+import com.fatec.horario.dto.diaSemana.DiaSemanaResponse;
+import com.fatec.horario.dto.disciplina.DisciplinaResponse;
+import com.fatec.horario.dto.gradeHoraria.GradeHorariaResponse;
+import com.fatec.horario.dto.horarios.HorarioResponse;
+import com.fatec.horario.dto.sala.SalaResponse;
+import com.fatec.horario.dto.turma.TurmaResponse;
+import com.fatec.horario.dto.usuario.UsuarioResponse;
 
 public record AlocacaoResponse(
         Long id,
-        Turma turma,
-        Disciplina disciplina,
-        Sala sala,
-        Usuario usuario,
-        DiaSemana diaSemana,
-        Horario horario,
-        GradeHoraria gradehoraria) {
+        TurmaResponse turma,
+        DisciplinaResponse disciplina,
+        SalaResponse sala,
+        UsuarioResponse usuario,
+        DiaSemanaResponse diaSemana,
+        HorarioResponse horario,
+        GradeHorariaResponse gradehoraria) {
 }

@@ -2,7 +2,7 @@ package com.fatec.horario.infrastructure.mappers;
 
 import com.fatec.horario.domain.entities.RecursoSala;
 import com.fatec.horario.dto.recursoSala.RecursoSalaRequest;
-import com.fatec.horario.dto.recursoSala.RecursoSalaResponse;;
+import com.fatec.horario.dto.recursoSala.RecursoSalaResponse;
 
 
 public class RecursoSalaMapper {
@@ -16,8 +16,8 @@ public class RecursoSalaMapper {
     public static RecursoSalaResponse toResponse(RecursoSala entity) {
         return new RecursoSalaResponse(
                 entity.getId(),
-                entity.getSala().getId(),
-                entity.getRecurso().getId(),
+                entity.getSala() != null ? SalaMapper.toResponse(entity.getSala()) : null,
+                entity.getRecurso() != null ? RecursoMapper.toResponse(entity.getRecurso()) : null,
                 entity.getQuantidade()
         );
     }

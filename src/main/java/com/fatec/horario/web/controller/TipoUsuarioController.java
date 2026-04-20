@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tipo-usuario")
+@CrossOrigin
 public class TipoUsuarioController {
 
     @Autowired

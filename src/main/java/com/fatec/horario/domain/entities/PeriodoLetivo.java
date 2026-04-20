@@ -1,6 +1,7 @@
 package com.fatec.horario.domain.entities;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -33,11 +35,13 @@ public class PeriodoLetivo {
     @Column(nullable = false)
     private Status status;
 
+    @OneToMany(mappedBy = "periodoLetivo")
+    private List<GradeHoraria> gradeHorarias;
+
     public PeriodoLetivo() {
     }
 
-    public PeriodoLetivo(Long id, Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
-        this.id = id;
+    public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
         this.ano = ano;
         this.periodo = periodo;
         this.dataInicio = dataInicio;
@@ -93,6 +97,14 @@ public class PeriodoLetivo {
         this.status = status;
     }
 
+    public List<GradeHoraria> getGradeHorarias() {
+        return gradeHorarias;
+    }
+
+    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
+        this.gradeHorarias = gradeHorarias;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -117,4 +129,5 @@ public class PeriodoLetivo {
             return false;
         return true;
     }
+
 }

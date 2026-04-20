@@ -1,5 +1,7 @@
 package com.fatec.horario.dto.turma;
 
+import com.fatec.horario.dto.id.LongDTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,5 +23,5 @@ public record TurmaRequest(
     Integer numeroAlunos,
 
     @NotNull(message = "O curso é obrigatório")
-    Long idCurso
+    LongDTO curso
 ) {}

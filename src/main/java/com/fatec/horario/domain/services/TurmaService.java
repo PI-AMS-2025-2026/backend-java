@@ -27,8 +27,8 @@ public class TurmaService {
     public TurmaResponse criar(TurmaRequest request) {
         Turma entity = TurmaMapper.toEntity(request);
         
-        Curso curso = cursoRepository.findById(request.idCurso())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.idCurso()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+            .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
         entity.setCurso(curso);
 
         return TurmaMapper.toResponse(repository.save(entity));
@@ -59,8 +59,8 @@ public class TurmaService {
         Turma entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
 
-        Curso curso = cursoRepository.findById(request.idCurso())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.idCurso()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+            .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
         entity.setCodigo(request.codigo());
         entity.setAno(request.ano());

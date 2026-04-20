@@ -35,11 +35,12 @@ public class DisciplinaService {
 
         Disciplina entity = DisciplinaMapper.toEntity(request);
 
-        Curso curso = cursoRepository.findById(request.idCurso())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.idCurso()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
-        TipoSala tipoSala = tipoSalaRepository.findById(request.idTipoSala())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.idTipoSala()));
+        TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSala().id())
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+
 
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
@@ -81,11 +82,11 @@ public class DisciplinaService {
         Disciplina entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
 
-        Curso curso = cursoRepository.findById(request.idCurso())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.idCurso()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
-        TipoSala tipoSala = tipoSalaRepository.findById(request.idTipoSala())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.idTipoSala()));
+        TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSala().id())
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
 
         entity.setNome(request.nome());
         entity.setCargaHoraria(request.cargaHoraria());

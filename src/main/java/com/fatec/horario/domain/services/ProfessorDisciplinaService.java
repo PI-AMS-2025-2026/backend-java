@@ -2,7 +2,10 @@ package com.fatec.horario.domain.services;
 
 import com.fatec.horario.domain.entities.*;
 import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaRequest;
+import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaResponse;
+import com.fatec.horario.infrastructure.mappers.ProfessorDisciplinaMapper;
 import com.fatec.horario.infrastructure.repositories.*;
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -20,61 +23,69 @@ public class ProfessorDisciplinaService {
     private DisciplinaRepository disciplinaRepository;
 
     @Transactional
-    public ProfessorDisciplina criar(ProfessorDisciplinaRequest request) {
+    public ProfessorDisciplinaResponse criar(ProfessorDisciplinaRequest request) {
 
-        //TODO: Estudar melhor a validação de unico
-        if (repository.existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(
-            request.usuarioId(), request.disciplinaId())) {
+        if (repository.existsByUsuarioIdAndDisciplinaId(
+            request.usuario().id(), request.disciplina().id())) {
             throw new RuntimeException("Relação já existe");
         }
 
-        Usuario usuario = usuarioRepository.findById(request.usuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        Usuario usuario = usuarioRepository.findById(request.usuario().id())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        Disciplina disciplina = disciplinaRepository.findById(request.disciplinaId())
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+        Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
 
-        ProfessorDisciplina entity = new ProfessorDisciplina(usuario, disciplina);
+        ProfessorDisciplina entity = ProfessorDisciplinaMapper.toEntity(request);
+        entity.setUsuario(usuario);
+        entity.setDisciplina(disciplina);
 
-        return repository.save(entity);
+        return ProfessorDisciplinaMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
-    public ProfessorDisciplina buscarPorId(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Não encontrado"));
+    public ProfessorDisciplinaResponse buscarPorId(Long id) {
+        ProfessorDisciplina entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+
+        return ProfessorDisciplinaMapper.toResponse(entity);
     }
 
     @Transactional(readOnly = true)
-    public Page<ProfessorDisciplina> listar(
+    public Page<ProfessorDisciplinaResponse> listar(
             Long usuarioId,
             Long disciplinaId,
             int page,
             int size) {
 
         var pageRequest = PageRequest.of(page, size);
-        return repository.buscarPorFiltros(usuarioId, disciplinaId, pageRequest);
+    return repository.buscarPorFiltros(usuarioId, disciplinaId, pageRequest)
+        .map(ProfessorDisciplinaMapper::toResponse);
     }
 
     @Transactional
-    public ProfessorDisciplina atualizar(Long id, ProfessorDisciplinaRequest request) {
+    public ProfessorDisciplinaResponse atualizar(Long id, ProfessorDisciplinaRequest request) {
 
-        ProfessorDisciplina entity = buscarPorId(id);
+    ProfessorDisciplina entity = repository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
 
-        Usuario usuario = usuarioRepository.findById(request.usuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        Usuario usuario = usuarioRepository.findById(request.usuario().id())
+        .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        Disciplina disciplina = disciplinaRepository.findById(request.disciplinaId())
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+        Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
+        .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
 
         entity.setUsuario(usuario);
         entity.setDisciplina(disciplina);
 
-        return repository.save(entity);
+    return ProfessorDisciplinaMapper.toResponse(repository.save(entity));
     }
 
     @Transactional
     public void deletar(Long id) {
-        repository.deleteById(id);
+    ProfessorDisciplina entity = repository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+
+    repository.delete(entity);
     }
 }

@@ -1,5 +1,8 @@
 package com.fatec.horario.dto.disciplina;
 
+import com.fatec.horario.dto.curso.CursoResponse;
+import com.fatec.horario.dto.tipoSala.TipoSalaResponse;
+
 public record DisciplinaResponse(
     Long id,
     String nome,
@@ -9,7 +12,7 @@ public record DisciplinaResponse(
     String modalidade,
     String codDisciplina,
     String cor,
-    Long idCurso,
-    Long idTipoSala
+    CursoResponse curso,
+    TipoSalaResponse tipoSala
 ) {
 }

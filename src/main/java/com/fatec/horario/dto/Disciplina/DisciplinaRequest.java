@@ -1,5 +1,7 @@
 package com.fatec.horario.dto.disciplina;
 
+import com.fatec.horario.dto.id.LongDTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -29,8 +31,8 @@ public record DisciplinaRequest(
     String cor,
 
     @NotNull(message = "O curso é obrigatório")
-    Long idCurso,
+    LongDTO curso,
 
     @NotNull(message = "O tipo de sala é obrigatório")
-    Long idTipoSala
+    LongDTO tipoSala
 ) {}
