@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.entities.DiaSemana;
@@ -14,6 +15,7 @@ import com.fatec.horario.domain.entities.Horario;
 import com.fatec.horario.domain.entities.Sala;
 import com.fatec.horario.domain.entities.Turma;
 import com.fatec.horario.domain.entities.Usuario;
+import com.fatec.horario.domain.services.usecase.write.AlteracaoAlocacaoUseCase;
 import com.fatec.horario.dto.alocacao.AlocacaoRequest;
 import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
@@ -48,6 +50,8 @@ public class AlocacaoService {
     private HorarioRepository horarioRepository;
     @Autowired
     private GradeHorariaRepository gradeHorariaRepository;
+    @Autowired
+    private AlteracaoAlocacaoUseCase alteracaoAlocacaoUseCase;
 
     @Transactional
     public AlocacaoResponse criar(AlocacaoRequest request) {
@@ -70,15 +74,38 @@ public class AlocacaoService {
         Alocacao entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + id));
 
+        validarJustificativaAlteracao(request);
+        validarUsuarioAlteracao(request);
         validarRegrasDeNegocio(id, request);
 
-        entity.setTurma(buscarTurmaPorId(request.turma().id()));
-        entity.setDisciplina(buscarDisciplinaPorId(request.disciplina().id()));
-        entity.setSala(buscarSalaPorId(request.sala().id()));
-        entity.setUsuario(buscarUsuarioPorId(request.usuario().id()));
-        entity.setDiaSemana(buscarDiaSemanaPorId(request.diaSemana().id()));
-        entity.setHorario(buscarHorarioPorId(request.horario().id()));
-        entity.setGradeHoraria(buscarGradeHorariaPorId(request.gradeHoraria().id()));
+        Turma novaTurma = buscarTurmaPorId(request.turma().id());
+        Disciplina novaDisciplina = buscarDisciplinaPorId(request.disciplina().id());
+        Sala novaSala = buscarSalaPorId(request.sala().id());
+        Usuario novoUsuario = buscarUsuarioPorId(request.usuario().id());
+        Usuario usuarioAlteracao = buscarUsuarioPorId(request.usuarioAlteracao().id());
+        DiaSemana novoDiaSemana = buscarDiaSemanaPorId(request.diaSemana().id());
+        Horario novoHorario = buscarHorarioPorId(request.horario().id());
+        GradeHoraria novaGradeHoraria = buscarGradeHorariaPorId(request.gradeHoraria().id());
+
+        alteracaoAlocacaoUseCase.executarCasoUso(
+            entity,
+            novaTurma,
+            novaDisciplina,
+            novaSala,
+            novoUsuario,
+            usuarioAlteracao,
+            novoDiaSemana,
+            novoHorario,
+            novaGradeHoraria,
+            request.justificativaAlteracao());
+
+        entity.setTurma(novaTurma);
+        entity.setDisciplina(novaDisciplina);
+        entity.setSala(novaSala);
+        entity.setUsuario(novoUsuario);
+        entity.setDiaSemana(novoDiaSemana);
+        entity.setHorario(novoHorario);
+        entity.setGradeHoraria(novaGradeHoraria);
 
         return AlocacaoMapper.toResponse(repository.save(entity));
     }
@@ -200,5 +227,17 @@ public class AlocacaoService {
     private GradeHoraria buscarGradeHorariaPorId(Long id) {
         return gradeHorariaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
+    }
+
+    private void validarJustificativaAlteracao(AlocacaoRequest request) {
+        if (!StringUtils.hasText(request.justificativaAlteracao())) {
+            throw new BusinessException("A justificativa da alteração é obrigatória para atualizar a alocação.");
+        }
+    }
+
+    private void validarUsuarioAlteracao(AlocacaoRequest request) {
+        if (request.usuarioAlteracao() == null) {
+            throw new BusinessException("O usuário responsável pela alteração é obrigatório para atualizar a alocação.");
+        }
     }
 }

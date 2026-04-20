@@ -1,6 +1,5 @@
 package com.fatec.horario.dto.alocacao;
 
-
 import com.fatec.horario.dto.id.LongDTO;
 
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +25,11 @@ public record AlocacaoRequest(
     LongDTO horario,
 
     @NotNull(message = "Grade horária é obrigatória")
-    LongDTO gradeHoraria
+    LongDTO gradeHoraria,
+    
+    //Campos de Historico de Alteração (opcionais para criação, usados para registrar mudanças)
+    String justificativaAlteracao,
+
+    LongDTO usuarioAlteracao
 ) {
 }
