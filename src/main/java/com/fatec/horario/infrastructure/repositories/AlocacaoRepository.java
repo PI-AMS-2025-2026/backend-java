@@ -28,6 +28,30 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
         boolean existsByUsuarioIdAndDiaSemanaIdAndHorarioId(Long usuarioId, Long diaId, Long horarioId);
 
         /**
+         * REGRA DE DUPLICIDADE: "A alocação já existe com os mesmos vínculos?"
+         * Verifica se já existe alocação com os mesmos ids de turma, disciplina, sala,
+         * dia da semana e horário.
+         */
+        boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
+                        Long turmaId,
+                        Long disciplinaId,
+                        Long salaId,
+                        Long diaSemanaId,
+                        Long horarioId);
+
+        /**
+         * REGRA DE DUPLICIDADE (ATUALIZAÇÃO):
+         * mesma verificação de duplicidade, desconsiderando a própria alocação em edição.
+         */
+        boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
+                        Long turmaId,
+                        Long disciplinaId,
+                        Long salaId,
+                        Long diaSemanaId,
+                        Long horarioId,
+                        Long alocacaoId);
+
+        /**
          * REGRA DE DISPONIBILIDADE: "O professor pode trabalhar agora?"
          * A regra verifica se existe um registro prévio que autorize a alocação do usuário para o par DiaSemana/Horário informado.
          * retorna true se o contador for > 0 (possui permissão), false caso contrário.

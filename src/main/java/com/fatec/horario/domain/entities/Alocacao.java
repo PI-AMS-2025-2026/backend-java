@@ -66,6 +66,18 @@ public class Alocacao {
         this.gradeHoraria = gradehoraria;
     }
 
+    public Alocacao(Long id, Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana,
+            Horario horario, GradeHoraria gradeHoraria) {
+        this.id = id;
+        this.turma = turma;
+        this.disciplina = disciplina;
+        this.sala = sala;
+        this.usuario = usuario;
+        this.diaSemana = diaSemana;
+        this.horario = horario;
+        this.gradeHoraria = gradeHoraria;
+    }
+
     public Long getId() {
         return id;
     }
