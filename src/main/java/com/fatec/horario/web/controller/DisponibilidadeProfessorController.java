@@ -39,12 +39,13 @@ public class DisponibilidadeProfessorController {
 
     @GetMapping
     public ResponseEntity<Page<DisponibilidadeProfessorResponse>> listar(
-            @RequestParam(required = false, name = "usuario") Long usuario,
+            @RequestParam(required = false) Long usuario,
             @RequestParam(required = false, name = "dia_semana") Long diaSemana,
-            @RequestParam(required = false, name = "horario") Long horario,
-            Pageable pageable) {
+            @RequestParam(required = false) Long horario,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(service.listar(usuario, diaSemana, horario, pageable));
+        return ResponseEntity.ok(service.listar(usuario, diaSemana, horario, page,size));
     }
 
     @GetMapping("/{id}")

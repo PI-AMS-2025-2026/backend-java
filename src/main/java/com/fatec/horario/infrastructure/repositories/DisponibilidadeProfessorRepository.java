@@ -1,12 +1,13 @@
 package com.fatec.horario.infrastructure.repositories;
 
-import com.fatec.horario.domain.entities.DisponibilidadeProfessor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.fatec.horario.domain.entities.DisponibilidadeProfessor;
 
 @Repository
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {

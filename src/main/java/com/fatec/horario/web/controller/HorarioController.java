@@ -36,7 +36,7 @@ public class HorarioController {
     public ResponseEntity<Page<HorarioResponse>> listar(
             @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
             @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
-            @RequestParam(required = false) int duracao,
+            @RequestParam(required = false) Integer duracao,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(service.listar(horaInicio, horaFim, duracao, page, size));

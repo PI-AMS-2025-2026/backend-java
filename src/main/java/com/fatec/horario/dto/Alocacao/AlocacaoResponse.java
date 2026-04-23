@@ -16,5 +16,5 @@ public record AlocacaoResponse(
         UsuarioResponse usuario,
         DiaSemanaResponse diaSemana,
         HorarioResponse horario,
-        GradeHorariaResponse gradehoraria) {
+        GradeHorariaResponse gradeHoraria) {
 }

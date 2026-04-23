@@ -2,9 +2,10 @@ package com.fatec.horario.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.entities.DiaSemana;
@@ -14,6 +15,7 @@ import com.fatec.horario.domain.entities.Horario;
 import com.fatec.horario.domain.entities.Sala;
 import com.fatec.horario.domain.entities.Turma;
 import com.fatec.horario.domain.entities.Usuario;
+import com.fatec.horario.domain.services.usecase.write.AlteracaoAlocacaoUseCase;
 import com.fatec.horario.dto.alocacao.AlocacaoRequest;
 import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
@@ -48,10 +50,11 @@ public class AlocacaoService {
     private HorarioRepository horarioRepository;
     @Autowired
     private GradeHorariaRepository gradeHorariaRepository;
+    @Autowired
+    private AlteracaoAlocacaoUseCase alteracaoAlocacaoUseCase;
 
     @Transactional
     public AlocacaoResponse criar(AlocacaoRequest request) {
-        validarRegrasDeNegocio(null, request);
 
         Alocacao entity = AlocacaoMapper.toEntity(request);
         entity.setTurma(buscarTurmaPorId(request.turma().id()));
@@ -70,15 +73,42 @@ public class AlocacaoService {
         Alocacao entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + id));
 
-        validarRegrasDeNegocio(id, request);
+        validarJustificativaAlteracao(request);
+        validarUsuarioAlteracao(request);
 
-        entity.setTurma(buscarTurmaPorId(request.turma().id()));
-        entity.setDisciplina(buscarDisciplinaPorId(request.disciplina().id()));
-        entity.setSala(buscarSalaPorId(request.sala().id()));
-        entity.setUsuario(buscarUsuarioPorId(request.usuario().id()));
-        entity.setDiaSemana(buscarDiaSemanaPorId(request.diaSemana().id()));
-        entity.setHorario(buscarHorarioPorId(request.horario().id()));
-        entity.setGradeHoraria(buscarGradeHorariaPorId(request.gradeHoraria().id()));
+        var usuarioAlteracaoRequest = request.usuarioAlteracao();
+        if (usuarioAlteracaoRequest == null) {
+            throw new BusinessException("Usuário de alteração é obrigatório.");
+        }
+
+        Turma novaTurma = buscarTurmaPorId(request.turma().id());
+        Disciplina novaDisciplina = buscarDisciplinaPorId(request.disciplina().id());
+        Sala novaSala = buscarSalaPorId(request.sala().id());
+        Usuario novoUsuario = buscarUsuarioPorId(request.usuario().id());
+        Usuario usuarioAlteracao = buscarUsuarioPorId(usuarioAlteracaoRequest.id());
+        DiaSemana novoDiaSemana = buscarDiaSemanaPorId(request.diaSemana().id());
+        Horario novoHorario = buscarHorarioPorId(request.horario().id());
+        GradeHoraria novaGradeHoraria = buscarGradeHorariaPorId(request.gradeHoraria().id());
+
+        alteracaoAlocacaoUseCase.executarCasoUso(
+                entity,
+                novaTurma,
+                novaDisciplina,
+                novaSala,
+                novoUsuario,
+                usuarioAlteracao,
+                novoDiaSemana,
+                novoHorario,
+                novaGradeHoraria,
+                request.justificativaAlteracao());
+
+        entity.setTurma(novaTurma);
+        entity.setDisciplina(novaDisciplina);
+        entity.setSala(novaSala);
+        entity.setUsuario(novoUsuario);
+        entity.setDiaSemana(novoDiaSemana);
+        entity.setHorario(novoHorario);
+        entity.setGradeHoraria(novaGradeHoraria);
 
         return AlocacaoMapper.toResponse(repository.save(entity));
     }
@@ -86,10 +116,12 @@ public class AlocacaoService {
     @Transactional(readOnly = true)
     public Page<AlocacaoResponse> listar(
             Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
-            Long diaSemanaId, Long horarioId, Long gradeId, Pageable pageable) {
+            Long diaSemanaId, Long horarioId, Long gradeId, int page,
+            int size) {
 
+        var pageRequest = PageRequest.of(page, size);
         var pageAlocacao = repository.buscarPorFiltros(
-                turmaId, disciplinaId, salaId, usuarioId, diaSemanaId, horarioId, gradeId, pageable);
+                turmaId, disciplinaId, salaId, usuarioId, diaSemanaId, horarioId, gradeId, pageRequest);
 
         return pageAlocacao.map(AlocacaoMapper::toResponse);
     }
@@ -109,64 +141,20 @@ public class AlocacaoService {
         repository.deleteById(id);
     }
 
-    //TODO: Passar validações para um service específico de regras de negócio
-
-    private void validarRegrasDeNegocio(Long idAtual, AlocacaoRequest req) {
-
-        boolean salaOcupada = repository.existsBySalaIdAndDiaSemanaIdAndHorarioId(
-                req.sala().id(), req.diaSemana().id(), req.horario().id());
-
-        if (salaOcupada && isConflitoSalaComOutraAlocacao(idAtual, req)) {
-            throw new BusinessException("A sala informada já está ocupada neste horário.");
-        }
-
-        boolean professorOcupado = repository.existsByUsuarioIdAndDiaSemanaIdAndHorarioId(
-                req.usuario().id(), req.diaSemana().id(), req.horario().id());
-
-        if (professorOcupado && isConflitoProfessorComOutraAlocacao(idAtual, req)) {
-            throw new BusinessException("O professor já possui uma alocação neste horário.");
-        }
-
-        boolean possuiDisponibilidade = repository.verificarDisponibilidadeProfessor(
-                req.usuario().id(),
-                req.diaSemana().id(),
-                req.horario().id());
-
-        if (!possuiDisponibilidade) {
-            throw new BusinessException("O professor não possui disponibilidade cadastrada para este horário.");
+    private void validarJustificativaAlteracao(AlocacaoRequest request) {
+        if (!StringUtils.hasText(request.justificativaAlteracao())) {
+            throw new BusinessException("A justificativa da alteração é obrigatória para atualizar a alocação.");
         }
     }
 
-    private boolean isConflitoSalaComOutraAlocacao(Long idAtual, AlocacaoRequest req) {
-        if (idAtual == null) {
-            return true;
+    private void validarUsuarioAlteracao(AlocacaoRequest request) {
+        if (request.usuarioAlteracao() == null) {
+            throw new BusinessException(
+                    "O usuário responsável pela alteração é obrigatório para atualizar a alocação.");
         }
-
-        Alocacao alocacaoAtual = repository.findById(idAtual)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + idAtual));
-
-        boolean mesmaCombinacaoAtual = alocacaoAtual.getSala().getId().equals(req.sala().id())
-                && alocacaoAtual.getDiaSemana().getId().equals(req.diaSemana().id())
-                && alocacaoAtual.getHorario().getId().equals(req.horario().id());
-
-        return !mesmaCombinacaoAtual;
     }
 
-    private boolean isConflitoProfessorComOutraAlocacao(Long idAtual, AlocacaoRequest req) {
-        if (idAtual == null) {
-            return true;
-        }
-
-        Alocacao alocacaoAtual = repository.findById(idAtual)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + idAtual));
-
-        boolean mesmaCombinacaoAtual = alocacaoAtual.getUsuario().getId().equals(req.usuario().id())
-                && alocacaoAtual.getDiaSemana().getId().equals(req.diaSemana().id())
-                && alocacaoAtual.getHorario().getId().equals(req.horario().id());
-
-        return !mesmaCombinacaoAtual;
-    }
-
+    // Buscar entidades da relação
     private Turma buscarTurmaPorId(Long id) {
         return turmaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
