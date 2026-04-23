@@ -55,7 +55,6 @@ public class AlocacaoService {
 
     @Transactional
     public AlocacaoResponse criar(AlocacaoRequest request) {
-        validarRegrasDeNegocio(null, request);
 
         Alocacao entity = AlocacaoMapper.toEntity(request);
         entity.setTurma(buscarTurmaPorId(request.turma().id()));
@@ -76,7 +75,6 @@ public class AlocacaoService {
 
         validarJustificativaAlteracao(request);
         validarUsuarioAlteracao(request);
-        validarRegrasDeNegocio(id, request);
 
         var usuarioAlteracaoRequest = request.usuarioAlteracao();
         if (usuarioAlteracaoRequest == null) {
@@ -143,100 +141,6 @@ public class AlocacaoService {
         repository.deleteById(id);
     }
 
-    // TODO: Passar validações para um service específico de regras de negócio
-
-    private void validarRegrasDeNegocio(Long idAtual, AlocacaoRequest req) {
-        if(true) return;
-
-        boolean salaOcupada = repository.existsBySalaIdAndDiaSemanaIdAndHorarioId(
-                req.sala().id(), req.diaSemana().id(), req.horario().id());
-
-        if (salaOcupada && isConflitoSalaComOutraAlocacao(idAtual, req)) {
-            throw new BusinessException("A sala informada já está ocupada neste horário.");
-        }
-
-        boolean professorOcupado = repository.existsByUsuarioIdAndDiaSemanaIdAndHorarioId(
-                req.usuario().id(), req.diaSemana().id(), req.horario().id());
-
-        if (professorOcupado && isConflitoProfessorComOutraAlocacao(idAtual, req)) {
-            throw new BusinessException("O professor já possui uma alocação neste horário.");
-        }
-
-        boolean possuiDisponibilidade = repository.verificarDisponibilidadeProfessor(
-                req.usuario().id(),
-                req.diaSemana().id(),
-                req.horario().id());
-
-        if (!possuiDisponibilidade) {
-            throw new BusinessException("O professor não possui disponibilidade cadastrada para este horário.");
-        }
-    }
-
-    private boolean isConflitoSalaComOutraAlocacao(Long idAtual, AlocacaoRequest req) {
-        if (idAtual == null) {
-            return true;
-        }
-
-        Alocacao alocacaoAtual = repository.findById(idAtual)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + idAtual));
-
-        boolean mesmaCombinacaoAtual = alocacaoAtual.getSala().getId().equals(req.sala().id())
-                && alocacaoAtual.getDiaSemana().getId().equals(req.diaSemana().id())
-                && alocacaoAtual.getHorario().getId().equals(req.horario().id());
-
-        return !mesmaCombinacaoAtual;
-    }
-
-    private boolean isConflitoProfessorComOutraAlocacao(Long idAtual, AlocacaoRequest req) {
-        if (idAtual == null) {
-            return true;
-        }
-
-        Alocacao alocacaoAtual = repository.findById(idAtual)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + idAtual));
-
-        boolean mesmaCombinacaoAtual = alocacaoAtual.getUsuario().getId().equals(req.usuario().id())
-                && alocacaoAtual.getDiaSemana().getId().equals(req.diaSemana().id())
-                && alocacaoAtual.getHorario().getId().equals(req.horario().id());
-
-        return !mesmaCombinacaoAtual;
-    }
-
-    private Turma buscarTurmaPorId(Long id) {
-        return turmaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
-    }
-
-    private Disciplina buscarDisciplinaPorId(Long id) {
-        return disciplinaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
-    }
-
-    private Sala buscarSalaPorId(Long id) {
-        return salaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com ID: " + id));
-    }
-
-    private Usuario buscarUsuarioPorId(Long id) {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
-    }
-
-    private DiaSemana buscarDiaSemanaPorId(Long id) {
-        return diaSemanaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Dia da semana não encontrado com ID: " + id));
-    }
-
-    private Horario buscarHorarioPorId(Long id) {
-        return horarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
-    }
-
-    private GradeHoraria buscarGradeHorariaPorId(Long id) {
-        return gradeHorariaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
-    }
-
     private void validarJustificativaAlteracao(AlocacaoRequest request) {
         if (!StringUtils.hasText(request.justificativaAlteracao())) {
             throw new BusinessException("A justificativa da alteração é obrigatória para atualizar a alocação.");
@@ -248,32 +152,9 @@ public class AlocacaoService {
             throw new BusinessException(
                     "O usuário responsável pela alteração é obrigatório para atualizar a alocação.");
         }
-
-        Alocacao alocacaoAtual = repository.findById(idAtual)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + idAtual));
-
-        boolean mesmaCombinacaoAtual = alocacaoAtual.getSala().getId().equals(req.sala().id())
-                && alocacaoAtual.getDiaSemana().getId().equals(req.diaSemana().id())
-                && alocacaoAtual.getHorario().getId().equals(req.horario().id());
-
-        return !mesmaCombinacaoAtual;
     }
 
-    private boolean isConflitoProfessorComOutraAlocacao(Long idAtual, AlocacaoRequest req) {
-        if (idAtual == null) {
-            return true;
-        }
-
-        Alocacao alocacaoAtual = repository.findById(idAtual)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + idAtual));
-
-        boolean mesmaCombinacaoAtual = alocacaoAtual.getUsuario().getId().equals(req.usuario().id())
-                && alocacaoAtual.getDiaSemana().getId().equals(req.diaSemana().id())
-                && alocacaoAtual.getHorario().getId().equals(req.horario().id());
-
-        return !mesmaCombinacaoAtual;
-    }
-
+    // Buscar entidades da relação
     private Turma buscarTurmaPorId(Long id) {
         return turmaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
