@@ -18,7 +18,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "usuario", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
-public class Usuario  {
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,12 +49,15 @@ public class Usuario  {
     @JoinColumn(name = "id_tipo_usuario", nullable = false)
     private TipoUsuario tipo_usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "id_curso", nullable = false)
+    private Curso curso;
+
     public Usuario() {
     }
 
-    public Usuario(Long id, String nome, String email, String senha, String cidade, Status status,
+    public Usuario(String nome, String email, String senha, String cidade, Status status,
             LocalDateTime created_at, LocalDateTime updated_at, TipoUsuario tipo_usuario) {
-        this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -161,7 +164,5 @@ public class Usuario  {
             return false;
         return true;
     }
-
-    
 
 }

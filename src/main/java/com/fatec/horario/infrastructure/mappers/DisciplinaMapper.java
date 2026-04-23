@@ -32,8 +32,8 @@ public class DisciplinaMapper {
                 disciplina.getModalidade(),
                 disciplina.getCodDisciplina(),
                 disciplina.getCor(),
-                disciplina.getCurso().getId(),
-                disciplina.getTipoSala().getId()
+                disciplina.getCurso() != null ? CursoMapper.toResponse(disciplina.getCurso()) : null,
+                disciplina.getTipoSala() != null ? TipoSalaMapper.toResponse(disciplina.getTipoSala()) : null
         );
     }
 }

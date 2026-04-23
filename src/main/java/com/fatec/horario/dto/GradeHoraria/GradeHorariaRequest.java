@@ -1,6 +1,7 @@
 package com.fatec.horario.dto.gradeHoraria;
 
 import com.fatec.horario.domain.entities.Status; // Importe o Enum
+import com.fatec.horario.dto.id.LongDTO;
 import jakarta.validation.constraints.NotNull;
 
 public record GradeHorariaRequest(
@@ -11,8 +12,8 @@ public record GradeHorariaRequest(
     Status status,
     
     @NotNull(message = "Curso é obrigatório")
-    Long idCurso,
+    LongDTO curso,
     
     @NotNull(message = "Período Letivo é obrigatório")
-    Long idPeriodoLetivo
+    LongDTO periodoLetivo
 ) {}

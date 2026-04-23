@@ -37,11 +37,11 @@ public class GradeHorariaService {
     public GradeHorariaResponse criar(GradeHorariaRequest request) {
         GradeHoraria entity = GradeHorariaMapper.toEntity(request);
 
-        Curso curso = cursoRepository.findById(request.idCurso())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.idCurso()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
-        PeriodoLetivo periodo = periodoRepository.findById(request.idPeriodoLetivo())
-                .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + request.idPeriodoLetivo()));
+        PeriodoLetivo periodo = periodoRepository.findById(request.periodoLetivo().id())
+                .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + request.periodoLetivo().id()));
 
         entity.setCurso(curso);
         entity.setPeriodoLetivo(periodo);
@@ -82,11 +82,11 @@ public class GradeHorariaService {
         GradeHoraria entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
 
-        Curso curso = cursoRepository.findById(request.idCurso())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.idCurso()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
-        PeriodoLetivo periodo = periodoRepository.findById(request.idPeriodoLetivo())
-                .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + request.idPeriodoLetivo()));
+        PeriodoLetivo periodo = periodoRepository.findById(request.periodoLetivo().id())
+                .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + request.periodoLetivo().id()));
 
         entity.setVersao(request.versao());
         entity.setStatus(request.status());

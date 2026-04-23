@@ -6,19 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDisciplina, Long> {
 
-    // 🔹 Verifica se professor já leciona a disciplina
     boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(Long usuarioId, Long disciplinaId);
 
-    // 🔹 Listagem por professor
     Page<ProfessorDisciplina> findByUsuarioIdUsuario(Long usuarioId, Pageable pageable);
 
-    // 🔹 Listagem por disciplina
     Page<ProfessorDisciplina> findByDisciplinaIdDisciplina(Long disciplinaId, Pageable pageable);
 
-    // 🔹 Filtro flexível combinado
     @Query("""
         SELECT pd
         FROM ProfessorDisciplina pd

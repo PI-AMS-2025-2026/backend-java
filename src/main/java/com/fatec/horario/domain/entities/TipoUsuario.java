@@ -2,7 +2,13 @@ package com.fatec.horario.domain.entities;
 
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tipo_usuario")
@@ -22,8 +28,7 @@ public class TipoUsuario {
     public TipoUsuario() {
     }
 
-    public TipoUsuario(Long id, String nome, List<Usuario> usuarios) {
-        this.id = id;
+    public TipoUsuario(String nome, List<Usuario> usuarios) {
         this.nome = nome;
         this.usuarios = usuarios;
     }

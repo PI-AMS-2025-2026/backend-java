@@ -1,37 +1,35 @@
 package com.fatec.horario.dto.alocacao;
 
-import com.fatec.horario.domain.entities.*;
-import jakarta.validation.Valid;
+import com.fatec.horario.dto.id.LongDTO;
+
 import jakarta.validation.constraints.NotNull;
 
 public record AlocacaoRequest(
 
     @NotNull(message = "Turma é obrigatória")
-    @Valid // Isso faz o Spring validar os campos dentro de Turma
-    Turma turma,
+    LongDTO turma,
 
     @NotNull(message = "Disciplina é obrigatória")
-    @Valid
-    Disciplina disciplina,
+    LongDTO disciplina,
 
     @NotNull(message = "Sala é obrigatória")
-    @Valid
-    Sala sala,
+    LongDTO sala,
 
     @NotNull(message = "Usuário é obrigatório")
-    @Valid
-    Usuario usuario,
+    LongDTO usuario,
 
     @NotNull(message = "Dia da semana é obrigatório")
-    @Valid
-    DiaSemana diaSemana,
+    LongDTO diaSemana,
 
     @NotNull(message = "Horário é obrigatório")
-    @Valid
-    Horario horario,
+    LongDTO horario,
 
     @NotNull(message = "Grade horária é obrigatória")
-    @Valid
-    GradeHoraria gradeHoraria
+    LongDTO gradeHoraria,
+    
+    //Campos de Histórico de Alteração (opcionais para criação,obrigatorios para registrar mudanças)
+    String justificativaAlteracao,
+
+    LongDTO usuarioAlteracao
 ) {
 }

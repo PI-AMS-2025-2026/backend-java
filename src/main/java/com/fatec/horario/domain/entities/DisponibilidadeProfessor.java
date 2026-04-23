@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "disponibilidade_professor")
 public class DisponibilidadeProfessor {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_disponibilidade_professor")
@@ -30,15 +30,14 @@ public class DisponibilidadeProfessor {
     @JoinColumn(name = "id_horario", nullable = false)
     private Horario horario;
 
-    public DisponibilidadeProfessor() {}
+    public DisponibilidadeProfessor() {
+    }
 
     public DisponibilidadeProfessor(Usuario usuario, DiaSemana diaSemana, Horario horario) {
         this.usuario = usuario;
         this.diaSemana = diaSemana;
         this.horario = horario;
     }
-
-    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -96,4 +95,5 @@ public class DisponibilidadeProfessor {
             return false;
         return true;
     }
+
 }
