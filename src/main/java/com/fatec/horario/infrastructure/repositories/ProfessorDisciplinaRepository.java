@@ -13,9 +13,9 @@ public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDi
 
     boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(Long usuarioId, Long disciplinaId);
 
-    Page<ProfessorDisciplina> findByUsuarioIdUsuario(Long usuarioId, Pageable pageable);
+    Page<ProfessorDisciplina> findByUsuarioId(Long usuarioId, Pageable pageable);
 
-    Page<ProfessorDisciplina> findByDisciplinaIdDisciplina(Long disciplinaId, Pageable pageable);
+    Page<ProfessorDisciplina> findByDisciplinaId(Long disciplinaId, Pageable pageable);
 
     @Query("""
         SELECT pd
