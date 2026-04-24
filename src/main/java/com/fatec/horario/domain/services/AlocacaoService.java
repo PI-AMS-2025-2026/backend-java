@@ -16,6 +16,8 @@ import com.fatec.horario.domain.entities.Sala;
 import com.fatec.horario.domain.entities.Turma;
 import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.domain.services.usecase.write.AlteracaoAlocacaoUseCase;
+import com.fatec.horario.domain.services.usecase.write.DuplicidadeAlocacaoUseCase;
+import com.fatec.horario.domain.services.usecase.write.ValidacaoGradeHorariaUseCase;
 import com.fatec.horario.dto.alocacao.AlocacaoRequest;
 import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
@@ -52,18 +54,18 @@ public class AlocacaoService {
     private GradeHorariaRepository gradeHorariaRepository;
     @Autowired
     private AlteracaoAlocacaoUseCase alteracaoAlocacaoUseCase;
+    @Autowired
+    private DuplicidadeAlocacaoUseCase duplicidadeAlocacaoUseCase;
+    @Autowired
+    private ValidacaoGradeHorariaUseCase validacaoGradeHorariaUseCase;
 
     @Transactional
     public AlocacaoResponse criar(AlocacaoRequest request) {
+        Alocacao entity = montarAlocacao(request);
 
-        Alocacao entity = AlocacaoMapper.toEntity(request);
-        entity.setTurma(buscarTurmaPorId(request.turma().id()));
-        entity.setDisciplina(buscarDisciplinaPorId(request.disciplina().id()));
-        entity.setSala(buscarSalaPorId(request.sala().id()));
-        entity.setUsuario(buscarUsuarioPorId(request.usuario().id()));
-        entity.setDiaSemana(buscarDiaSemanaPorId(request.diaSemana().id()));
-        entity.setHorario(buscarHorarioPorId(request.horario().id()));
-        entity.setGradeHoraria(buscarGradeHorariaPorId(request.gradeHoraria().id()));
+        validacaoGradeHorariaUseCase.validarGradeHorariaAtivaEUltimaVersao(entity.getGradeHoraria());
+
+        duplicidadeAlocacaoUseCase.validarNaoExisteDuplicidadeParaCriacao(entity);
 
         return AlocacaoMapper.toResponse(repository.save(entity));
     }
@@ -89,6 +91,19 @@ public class AlocacaoService {
         DiaSemana novoDiaSemana = buscarDiaSemanaPorId(request.diaSemana().id());
         Horario novoHorario = buscarHorarioPorId(request.horario().id());
         GradeHoraria novaGradeHoraria = buscarGradeHorariaPorId(request.gradeHoraria().id());
+        validacaoGradeHorariaUseCase.validarGradeHorariaAtivaEUltimaVersao(novaGradeHoraria);
+
+        Alocacao alocacaoAtualizada = new Alocacao(
+            id,
+            novaTurma,
+            novaDisciplina,
+            novaSala,
+            novoUsuario,
+            novoDiaSemana,
+            novoHorario,
+            novaGradeHoraria);
+
+        duplicidadeAlocacaoUseCase.validarNaoExisteDuplicidadeParaAtualizacao(alocacaoAtualizada);
 
         alteracaoAlocacaoUseCase.executarCasoUso(
                 entity,
@@ -102,15 +117,7 @@ public class AlocacaoService {
                 novaGradeHoraria,
                 request.justificativaAlteracao());
 
-        entity.setTurma(novaTurma);
-        entity.setDisciplina(novaDisciplina);
-        entity.setSala(novaSala);
-        entity.setUsuario(novoUsuario);
-        entity.setDiaSemana(novoDiaSemana);
-        entity.setHorario(novoHorario);
-        entity.setGradeHoraria(novaGradeHoraria);
-
-        return AlocacaoMapper.toResponse(repository.save(entity));
+            return AlocacaoMapper.toResponse(repository.save(alocacaoAtualizada));
     }
 
     @Transactional(readOnly = true)
@@ -140,6 +147,8 @@ public class AlocacaoService {
         }
         repository.deleteById(id);
     }
+
+    // Validações
 
     private void validarJustificativaAlteracao(AlocacaoRequest request) {
         if (!StringUtils.hasText(request.justificativaAlteracao())) {
@@ -188,5 +197,16 @@ public class AlocacaoService {
     private GradeHoraria buscarGradeHorariaPorId(Long id) {
         return gradeHorariaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
+    }
+
+    private Alocacao montarAlocacao(AlocacaoRequest request) {
+        return new Alocacao(
+                buscarTurmaPorId(request.turma().id()),
+                buscarDisciplinaPorId(request.disciplina().id()),
+                buscarSalaPorId(request.sala().id()),
+                buscarUsuarioPorId(request.usuario().id()),
+                buscarDiaSemanaPorId(request.diaSemana().id()),
+                buscarHorarioPorId(request.horario().id()),
+                buscarGradeHorariaPorId(request.gradeHoraria().id()));
     }
 }
