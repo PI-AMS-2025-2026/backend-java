@@ -6,20 +6,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDisciplina, Long> {
 
-    boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(Long usuarioId, Long disciplinaId);
+    //TODO: verificar nescessidade de query customizadas e de paginação com filtro
+    boolean existsByUsuarioIdAndDisciplinaId(Long usuarioId, Long disciplinaId);
 
-    Page<ProfessorDisciplina> findByUsuarioIdUsuario(Long usuarioId, Pageable pageable);
+    Page<ProfessorDisciplina> findByUsuarioId(Long usuarioId, Pageable pageable);
 
-    Page<ProfessorDisciplina> findByDisciplinaIdDisciplina(Long disciplinaId, Pageable pageable);
+    Page<ProfessorDisciplina> findByDisciplinaId(Long disciplinaId, Pageable pageable);
 
         @Query("""
             SELECT pd
             FROM ProfessorDisciplina pd
-            WHERE (:usuarioId IS NULL OR pd.usuario.idUsuario = :usuarioId)
-              AND (:disciplinaId IS NULL OR pd.disciplina.idDisciplina = :disciplinaId)
+                        WHERE (:usuarioId IS NULL OR pd.usuario.id = :usuarioId)
+                            AND (:disciplinaId IS NULL OR pd.disciplina.id = :disciplinaId)
             """)
         Page<ProfessorDisciplina> buscarPorFiltros(
             @Param("usuarioId") Long usuarioId,

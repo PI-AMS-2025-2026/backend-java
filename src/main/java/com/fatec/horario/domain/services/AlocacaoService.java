@@ -2,15 +2,34 @@ package com.fatec.horario.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import com.fatec.horario.domain.entities.*;
+import com.fatec.horario.domain.entities.Alocacao;
+import com.fatec.horario.domain.entities.DiaSemana;
+import com.fatec.horario.domain.entities.Disciplina;
+import com.fatec.horario.domain.entities.GradeHoraria;
+import com.fatec.horario.domain.entities.Horario;
+import com.fatec.horario.domain.entities.Sala;
+import com.fatec.horario.domain.entities.Turma;
+import com.fatec.horario.domain.entities.Usuario;
+import com.fatec.horario.domain.services.usecase.write.AlteracaoAlocacaoUseCase;
+import com.fatec.horario.domain.services.usecase.write.DuplicidadeAlocacaoUseCase;
+import com.fatec.horario.domain.services.usecase.write.ValidacaoGradeHorariaUseCase;
 import com.fatec.horario.dto.alocacao.AlocacaoRequest;
 import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.horario.infrastructure.repositories.DiaSemanaRepository;
+import com.fatec.horario.infrastructure.repositories.DisciplinaRepository;
+import com.fatec.horario.infrastructure.repositories.GradeHorariaRepository;
+import com.fatec.horario.infrastructure.repositories.HorarioRepository;
+import com.fatec.horario.infrastructure.repositories.SalaRepository;
+import com.fatec.horario.infrastructure.repositories.TurmaRepository;
+import com.fatec.horario.infrastructure.repositories.UsuarioRepository;
+import com.fatec.horario.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -19,32 +38,36 @@ public class AlocacaoService {
 
     @Autowired
     private AlocacaoRepository repository;
+    @Autowired
+    private TurmaRepository turmaRepository;
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
+    @Autowired
+    private SalaRepository salaRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private DiaSemanaRepository diaSemanaRepository;
+    @Autowired
+    private HorarioRepository horarioRepository;
+    @Autowired
+    private GradeHorariaRepository gradeHorariaRepository;
+    @Autowired
+    private AlteracaoAlocacaoUseCase alteracaoAlocacaoUseCase;
+    @Autowired
+    private DuplicidadeAlocacaoUseCase duplicidadeAlocacaoUseCase;
+    @Autowired
+    private ValidacaoGradeHorariaUseCase validacaoGradeHorariaUseCase;
 
     @Transactional
     public AlocacaoResponse criar(AlocacaoRequest request) {
-        // Validação de regras de negócio antes de salvar
-        validarRegrasDeNegocio(null, request);
+        Alocacao entity = montarAlocacao(request);
 
-        Alocacao entity = AlocacaoMapper.toEntity(request);
+        validacaoGradeHorariaUseCase.validarGradeHorariaAtivaEUltimaVersao(entity.getGradeHoraria());
+
+        duplicidadeAlocacaoUseCase.validarNaoExisteDuplicidadeParaCriacao(entity);
+
         return AlocacaoMapper.toResponse(repository.save(entity));
-    }
-
-    @Transactional(readOnly = true)
-    public AlocacaoResponse buscarPorId(Long id) {
-        return repository.findById(id)
-                .map(AlocacaoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + id));
-    }
-
-    @Transactional(readOnly = true)
-    public Page<AlocacaoResponse> listar(
-            Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
-            Long diaSemanaId, Long horarioId, Long gradeId, Pageable pageable) {
-
-        Page<Alocacao> pageAlocacao = repository.buscarPorFiltros(
-                turmaId, disciplinaId, salaId, usuarioId, diaSemanaId, horarioId, gradeId, pageable);
-
-        return pageAlocacao.map(AlocacaoMapper::toResponse);
     }
 
     @Transactional
@@ -52,18 +75,69 @@ public class AlocacaoService {
         Alocacao entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + id));
 
-        // Valida conflitos ignorando o próprio ID da alocação que está sendo editada
-        validarRegrasDeNegocio(id, request);
+        validarJustificativaAlteracao(request);
+        validarUsuarioAlteracao(request);
 
-        entity.setTurma(request.turma());
-        entity.setDisciplina(request.disciplina());
-        entity.setSala(request.sala());
-        entity.setUsuario(request.usuario());
-        entity.setDiaSemana(request.diaSemana());
-        entity.setHorario(request.horario());
-        entity.setGradeHoraria(request.gradeHoraria());
+        var usuarioAlteracaoRequest = request.usuarioAlteracao();
+        if (usuarioAlteracaoRequest == null) {
+            throw new BusinessException("Usuário de alteração é obrigatório.");
+        }
 
-        return AlocacaoMapper.toResponse(repository.save(entity));
+        Turma novaTurma = buscarTurmaPorId(request.turma().id());
+        Disciplina novaDisciplina = buscarDisciplinaPorId(request.disciplina().id());
+        Sala novaSala = buscarSalaPorId(request.sala().id());
+        Usuario novoUsuario = buscarUsuarioPorId(request.usuario().id());
+        Usuario usuarioAlteracao = buscarUsuarioPorId(usuarioAlteracaoRequest.id());
+        DiaSemana novoDiaSemana = buscarDiaSemanaPorId(request.diaSemana().id());
+        Horario novoHorario = buscarHorarioPorId(request.horario().id());
+        GradeHoraria novaGradeHoraria = buscarGradeHorariaPorId(request.gradeHoraria().id());
+        validacaoGradeHorariaUseCase.validarGradeHorariaAtivaEUltimaVersao(novaGradeHoraria);
+
+        Alocacao alocacaoAtualizada = new Alocacao(
+            id,
+            novaTurma,
+            novaDisciplina,
+            novaSala,
+            novoUsuario,
+            novoDiaSemana,
+            novoHorario,
+            novaGradeHoraria);
+
+        duplicidadeAlocacaoUseCase.validarNaoExisteDuplicidadeParaAtualizacao(alocacaoAtualizada);
+
+        alteracaoAlocacaoUseCase.executarCasoUso(
+                entity,
+                novaTurma,
+                novaDisciplina,
+                novaSala,
+                novoUsuario,
+                usuarioAlteracao,
+                novoDiaSemana,
+                novoHorario,
+                novaGradeHoraria,
+                request.justificativaAlteracao());
+
+            return AlocacaoMapper.toResponse(repository.save(alocacaoAtualizada));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AlocacaoResponse> listar(
+            Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
+            Long diaSemanaId, Long horarioId, Long gradeId, int page,
+            int size) {
+
+        var pageRequest = PageRequest.of(page, size);
+        var pageAlocacao = repository.buscarPorFiltros(
+                turmaId, disciplinaId, salaId, usuarioId, diaSemanaId, horarioId, gradeId, pageRequest);
+
+        return pageAlocacao.map(AlocacaoMapper::toResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public AlocacaoResponse buscarPorId(Long id) {
+        return repository.findById(id)
+                .map(AlocacaoMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + id));
     }
 
     @Transactional
@@ -74,34 +148,65 @@ public class AlocacaoService {
         repository.deleteById(id);
     }
 
-   
-    private void validarRegrasDeNegocio(Long idAtual, AlocacaoRequest req) {
+    // Validações
 
-        // 1. Não permitir conflito de sala no mesmo horário
-        boolean salaOcupada = repository.existsBySalaIdAndDiaSemanaIdAndHorarioId(
-                req.sala().getId(), req.diaSemana().getId(), req.horario().getId());
-
-       
-        if (salaOcupada && idAtual == null) {
-            throw new RuntimeException("A sala informada já está ocupada neste horário.");
+    private void validarJustificativaAlteracao(AlocacaoRequest request) {
+        if (!StringUtils.hasText(request.justificativaAlteracao())) {
+            throw new BusinessException("A justificativa da alteração é obrigatória para atualizar a alocação.");
         }
+    }
 
-        // 2. Não permitir conflito de professor no mesmo horário
-        boolean professorOcupado = repository.existsByUsuarioIdAndDiaSemanaIdAndHorarioId(
-                req.usuario().getId(), req.diaSemana().getId(), req.horario().getId());
-
-        if (professorOcupado && idAtual == null) {
-            throw new RuntimeException("O professor já possui uma alocação neste horário.");
+    private void validarUsuarioAlteracao(AlocacaoRequest request) {
+        if (request.usuarioAlteracao() == null) {
+            throw new BusinessException(
+                    "O usuário responsável pela alteração é obrigatório para atualizar a alocação.");
         }
+    }
 
-        // 3. Respeitar disponibilidade do professor
-        boolean possuiDisponibilidade = repository.verificarDisponibilidadeProfessor(
-                req.usuario().getId(),
-                req.diaSemana().getId(),
-                req.horario().getId());
+    // Buscar entidades da relação
+    private Turma buscarTurmaPorId(Long id) {
+        return turmaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
+    }
 
-        if (!possuiDisponibilidade) {
-            throw new RuntimeException("O professor não possui disponibilidade cadastrada para este horário.");
-        }
+    private Disciplina buscarDisciplinaPorId(Long id) {
+        return disciplinaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
+    }
+
+    private Sala buscarSalaPorId(Long id) {
+        return salaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com ID: " + id));
+    }
+
+    private Usuario buscarUsuarioPorId(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+    }
+
+    private DiaSemana buscarDiaSemanaPorId(Long id) {
+        return diaSemanaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Dia da semana não encontrado com ID: " + id));
+    }
+
+    private Horario buscarHorarioPorId(Long id) {
+        return horarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
+    }
+
+    private GradeHoraria buscarGradeHorariaPorId(Long id) {
+        return gradeHorariaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
+    }
+
+    private Alocacao montarAlocacao(AlocacaoRequest request) {
+        return new Alocacao(
+                buscarTurmaPorId(request.turma().id()),
+                buscarDisciplinaPorId(request.disciplina().id()),
+                buscarSalaPorId(request.sala().id()),
+                buscarUsuarioPorId(request.usuario().id()),
+                buscarDiaSemanaPorId(request.diaSemana().id()),
+                buscarHorarioPorId(request.horario().id()),
+                buscarGradeHorariaPorId(request.gradeHoraria().id()));
     }
 }

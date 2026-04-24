@@ -1,5 +1,7 @@
 package com.fatec.horario.domain.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +30,9 @@ public class Sala {
     @ManyToOne
     @JoinColumn(name = "id_tipo_sala", nullable = false)
     private TipoSala tipoSala;
+
+    @OneToMany(mappedBy = "sala")
+    private List<RecursoSala> recursoSalas;
 
     public Sala() {
     }
@@ -56,6 +62,14 @@ public class Sala {
 
     public Integer getCapacidade() {
         return capacidade;
+    }
+
+    public List<RecursoSala> getRecursoSalas() {
+        return recursoSalas;
+    }
+
+    public void setRecursoSalas(List<RecursoSala> recursoSalas) {
+        this.recursoSalas = recursoSalas;
     }
 
     public void setCapacidade(Integer capacidade) {
@@ -95,5 +109,4 @@ public class Sala {
         return true;
     }
 
-    
 }

@@ -1,5 +1,7 @@
 package com.fatec.horario.domain.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,7 +21,7 @@ public class Curso {
     @Column(name = "id_curso")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nome;
 
     @Column(nullable = false)
@@ -30,6 +33,18 @@ public class Curso {
 
     @Column(nullable = false)
     private Integer duracao;
+
+    @OneToMany(mappedBy = "curso")
+    private List<Turma> turmas;
+
+    @OneToMany(mappedBy = "curso")
+    private List<Disciplina> disciplinas;
+
+    @OneToMany(mappedBy = "curso")
+    private List<GradeHoraria> gradeHorarias;
+
+    @OneToMany(mappedBy = "curso")
+    private List<Usuario> usuarios;
 
     public Curso() {
     }
@@ -82,6 +97,38 @@ public class Curso {
         this.duracao = duracao;
     }
 
+    public List<Turma> getTurmas() {
+        return turmas;
+    }
+
+    public void setTurmas(List<Turma> turmas) {
+        this.turmas = turmas;
+    }
+
+    public List<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+
+    public void setDisciplinas(List<Disciplina> disciplinas) {
+        this.disciplinas = disciplinas;
+    }
+
+    public List<GradeHoraria> getGradeHorarias() {
+        return gradeHorarias;
+    }
+
+    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
+        this.gradeHorarias = gradeHorarias;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -106,45 +153,5 @@ public class Curso {
             return false;
         return true;
     }
-
-    /*
-     * as classes Turmas, Disciplina e GradeHoraria não foram criadas ou não estão
-     * na branch dev
-     * 
-     * @OneToMany(mappedBy = "curso")
-     * private List<Turma> turmas;
-     * 
-     * @OneToMany(mappedBy = "curso")
-     * private List<Disciplina> disciplinas;
-     * 
-     * @OneToMany(mappedBy = "curso")
-     * private List<GradeHoraria> gradeHorarias;
-     */
-
-    /*
-     * public List<Turma> getTurmas() {
-     * return turmas;
-     * }
-     * 
-     * public void setTurmas(List<Turma> turmas) {
-     * this.turmas = turmas;
-     * }
-     * 
-     * public List<Disciplina> getDisciplinas() {
-     * return disciplinas;
-     * }
-     * 
-     * public void setDisciplinas(List<Disciplina> disciplinas) {
-     * this.disciplinas = disciplinas;
-     * }
-     * 
-     * public List<GradeHoraria> getGradeHorarias() {
-     * return gradeHorarias;
-     * }
-     * 
-     * public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
-     * this.gradeHorarias = gradeHorarias;
-     * }
-     */
 
 }

@@ -1,5 +1,7 @@
 package com.fatec.horario.domain.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -46,11 +49,14 @@ public class Alocacao {
     @JoinColumn(name = "id_grade_horaria", nullable = false)
     private GradeHoraria gradeHoraria;
 
+    @OneToMany(mappedBy = "alocacao")
+    private List<HistoricoAlteracao> historicoAlteracoes;
+
     public Alocacao() {
     }
 
-    public Alocacao(Long id, Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana, Horario horario, GradeHoraria gradehoraria) {
-        this.id = id;
+    public Alocacao(Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana,
+            Horario horario, GradeHoraria gradehoraria) {
         this.turma = turma;
         this.disciplina = disciplina;
         this.sala = sala;
@@ -58,7 +64,26 @@ public class Alocacao {
         this.diaSemana = diaSemana;
         this.horario = horario;
         this.gradeHoraria = gradehoraria;
-       
+    }
+
+    public Alocacao(Long id, Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana,
+            Horario horario, GradeHoraria gradeHoraria) {
+        this.id = id;
+        this.turma = turma;
+        this.disciplina = disciplina;
+        this.sala = sala;
+        this.usuario = usuario;
+        this.diaSemana = diaSemana;
+        this.horario = horario;
+        this.gradeHoraria = gradeHoraria;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Turma getTurma() {
@@ -117,12 +142,12 @@ public class Alocacao {
         this.gradeHoraria = gradeHoraria;
     }
 
-    public Long getId() {
-        return id;
+    public List<HistoricoAlteracao> getHistoricoAlteracoes() {
+        return historicoAlteracoes;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setHistoricoAlteracoes(List<HistoricoAlteracao> historicoAlteracoes) {
+        this.historicoAlteracoes = historicoAlteracoes;
     }
 
     @Override
@@ -149,4 +174,5 @@ public class Alocacao {
             return false;
         return true;
     }
+
 }

@@ -3,10 +3,10 @@ package com.fatec.horario.web.controller;
 import com.fatec.horario.domain.services.ProfessorDisciplinaService;
 import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaRequest;
 import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaResponse;
-import com.fatec.horario.infrastructure.mappers.ProfessorDisciplinaMapper;
 
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,22 +16,18 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/professores-disciplinas")
+@CrossOrigin
 public class ProfessorDisciplinaController {
 
-    private final ProfessorDisciplinaService service;
-
-    public ProfessorDisciplinaController(ProfessorDisciplinaService service) {
-        this.service = service;
-    }
+    @Autowired
+    private ProfessorDisciplinaService service;
 
     // CREATE
     @PostMapping
-        public ResponseEntity<ProfessorDisciplinaResponse> criar(
+    public ResponseEntity<ProfessorDisciplinaResponse> criar(
             @RequestBody @Valid ProfessorDisciplinaRequest request) {
 
-        ProfessorDisciplinaResponse response = ProfessorDisciplinaMapper.toResponse(
-            service.criar(request)
-        );
+        ProfessorDisciplinaResponse response = service.criar(request);
 
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
@@ -45,9 +41,7 @@ public class ProfessorDisciplinaController {
     // READ BY ID
     @GetMapping("/{id}")
     public ResponseEntity<ProfessorDisciplinaResponse> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(ProfessorDisciplinaMapper.toResponse(
-                service.buscarPorId(id)
-        ));
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     // LIST + FILTROS + PAGINAÇÃO
@@ -57,10 +51,7 @@ public class ProfessorDisciplinaController {
             @RequestParam(required = false) Long disciplina,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(
-                service.listar(usuario, disciplina, page, size)
-                        .map(ProfessorDisciplinaMapper::toResponse)
-        );
+        return ResponseEntity.ok(service.listar(usuario, disciplina, page, size));
     }
 
     // UPDATE
@@ -69,9 +60,7 @@ public class ProfessorDisciplinaController {
             @PathVariable Long id,
             @RequestBody @Valid ProfessorDisciplinaRequest request) {
 
-        return ResponseEntity.ok(ProfessorDisciplinaMapper.toResponse(
-                service.atualizar(id, request)
-        ));
+        return ResponseEntity.ok(service.atualizar(id, request));
     }
 
     // DELETE

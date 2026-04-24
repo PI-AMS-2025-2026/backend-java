@@ -1,11 +1,14 @@
 package com.fatec.horario.domain.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
@@ -18,37 +21,43 @@ public class Disciplina {
     @Column(name = "id_disciplina")
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
     @Column(name = "carga_horaria")
     private Integer cargaHoraria;
 
-    @Column(name = "tipo_disciplina")
+    @Column(name = "tipo_disciplina", nullable = false)
     private String tipoDisciplina;
 
     private Integer periodo;
-    
+
     private String modalidade;
 
-    @Column(name = "cod_disciplina")
+    @Column(name = "cod_disciplina", unique = true)
     private String codDisciplina;
 
     private String cor;
 
     @ManyToOne
-    @JoinColumn(name = "id_curso")
+    @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_sala")
+    @JoinColumn(name = "id_tipo_sala", nullable = false)
     private TipoSala tipoSala;
+
+    @OneToMany(mappedBy = "disciplina")
+    private List<ProfessorDisciplina> professorDisciplinas;
+
+    @OneToMany(mappedBy = "disciplina")
+    private List<Alocacao> alocacoes;
 
     public Disciplina() {
     }
 
-    public Disciplina(Long id, String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo,
-                     String modalidade, String codDisciplina, String cor, Curso curso, TipoSala tipoSala) {
-        this.id = id;
+    public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo, String modalidade,
+            String codDisciplina, String cor, Curso curso, TipoSala tipoSala) {
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.tipoDisciplina = tipoDisciplina;
@@ -140,6 +149,22 @@ public class Disciplina {
         this.tipoSala = tipoSala;
     }
 
+    public List<ProfessorDisciplina> getProfessorDisciplinas() {
+        return professorDisciplinas;
+    }
+
+    public void setProfessorDisciplinas(List<ProfessorDisciplina> professorDisciplinas) {
+        this.professorDisciplinas = professorDisciplinas;
+    }
+
+    public List<Alocacao> getAlocacoes() {
+        return alocacoes;
+    }
+
+    public void setAlocacoes(List<Alocacao> alocacoes) {
+        this.alocacoes = alocacoes;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -164,4 +189,5 @@ public class Disciplina {
             return false;
         return true;
     }
+
 }

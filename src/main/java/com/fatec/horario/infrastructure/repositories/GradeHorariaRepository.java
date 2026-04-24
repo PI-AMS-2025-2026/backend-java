@@ -1,5 +1,7 @@
 package com.fatec.horario.infrastructure.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +27,9 @@ public interface GradeHorariaRepository extends JpaRepository<GradeHoraria, Long
             @Param("status") Status status,
             Pageable pageable
     );
+
+    Optional<GradeHoraria> findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(
+            Long cursoId,
+            Long periodoLetivoId);
 
 }

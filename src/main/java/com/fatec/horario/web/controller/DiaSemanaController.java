@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dias-semana")
+@CrossOrigin
 public class DiaSemanaController {
 
     @Autowired

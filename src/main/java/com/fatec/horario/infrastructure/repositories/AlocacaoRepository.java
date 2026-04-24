@@ -1,14 +1,14 @@
 package com.fatec.horario.infrastructure.repositories;
 
-import com.fatec.horario.domain.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import com.fatec.horario.domain.entities.Alocacao;
+
+
 public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
         /**
@@ -26,6 +26,30 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
          * aquele exato momento.
          */
         boolean existsByUsuarioIdAndDiaSemanaIdAndHorarioId(Long usuarioId, Long diaId, Long horarioId);
+
+        /**
+         * REGRA DE DUPLICIDADE: "A alocação já existe com os mesmos vínculos?"
+         * Verifica se já existe alocação com os mesmos ids de turma, disciplina, sala,
+         * dia da semana e horário.
+         */
+        boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
+                        Long turmaId,
+                        Long disciplinaId,
+                        Long salaId,
+                        Long diaSemanaId,
+                        Long horarioId);
+
+        /**
+         * REGRA DE DUPLICIDADE (ATUALIZAÇÃO):
+         * mesma verificação de duplicidade, desconsiderando a própria alocação em edição.
+         */
+        boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
+                        Long turmaId,
+                        Long disciplinaId,
+                        Long salaId,
+                        Long diaSemanaId,
+                        Long horarioId,
+                        Long alocacaoId);
 
         /**
          * REGRA DE DISPONIBILIDADE: "O professor pode trabalhar agora?"
@@ -57,4 +81,17 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         @Param("horarioId") Long horarioId,
                         @Param("gradeId") Long gradeId,
                         Pageable pageable);
+    @Query("""
+        SELECT COUNT(a) > 0
+        FROM Alocacao a
+        WHERE a.turma.id = :idTurma
+        AND a.diaSemana.id = :idDiaSemana
+        AND a.horario.id = :idHorario
+    """)
+    boolean existsConflitoTurmaHorario(
+            @Param("idTurma") Long idTurma,
+            @Param("idDiaSemana") Long idDiaSemana,
+            @Param("idHorario") Long idHorario
+    );
+
 }

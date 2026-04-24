@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/horarios")
+@CrossOrigin
 public class HorarioController {
 
     @Autowired
@@ -34,7 +36,7 @@ public class HorarioController {
     public ResponseEntity<Page<HorarioResponse>> listar(
             @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
             @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
-            @RequestParam(required = false) int duracao,
+            @RequestParam(required = false) Integer duracao,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(service.listar(horaInicio, horaFim, duracao, page, size));

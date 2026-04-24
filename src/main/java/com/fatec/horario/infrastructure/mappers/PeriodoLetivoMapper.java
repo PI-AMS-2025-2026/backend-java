@@ -13,7 +13,6 @@ public class PeriodoLetivoMapper {
         periodoLetivo.setDataInicio(request.dataInicio());
         periodoLetivo.setDataFim(request.dataFim());
         periodoLetivo.setStatus(request.status());
-
         return periodoLetivo;
 
     }
