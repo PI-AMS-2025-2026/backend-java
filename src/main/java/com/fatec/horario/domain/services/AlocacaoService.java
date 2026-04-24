@@ -17,6 +17,7 @@ import com.fatec.horario.domain.entities.Turma;
 import com.fatec.horario.domain.entities.Usuario;
 import com.fatec.horario.domain.services.usecase.write.AlteracaoAlocacaoUseCase;
 import com.fatec.horario.domain.services.usecase.write.DuplicidadeAlocacaoUseCase;
+import com.fatec.horario.domain.services.usecase.write.ValidacaoGradeHorariaUseCase;
 import com.fatec.horario.dto.alocacao.AlocacaoRequest;
 import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
@@ -55,10 +56,14 @@ public class AlocacaoService {
     private AlteracaoAlocacaoUseCase alteracaoAlocacaoUseCase;
     @Autowired
     private DuplicidadeAlocacaoUseCase duplicidadeAlocacaoUseCase;
+    @Autowired
+    private ValidacaoGradeHorariaUseCase validacaoGradeHorariaUseCase;
 
     @Transactional
     public AlocacaoResponse criar(AlocacaoRequest request) {
         Alocacao entity = montarAlocacao(request);
+
+        validacaoGradeHorariaUseCase.validarGradeHorariaAtivaEUltimaVersao(entity.getGradeHoraria());
 
         duplicidadeAlocacaoUseCase.validarNaoExisteDuplicidadeParaCriacao(entity);
 
@@ -86,6 +91,7 @@ public class AlocacaoService {
         DiaSemana novoDiaSemana = buscarDiaSemanaPorId(request.diaSemana().id());
         Horario novoHorario = buscarHorarioPorId(request.horario().id());
         GradeHoraria novaGradeHoraria = buscarGradeHorariaPorId(request.gradeHoraria().id());
+        validacaoGradeHorariaUseCase.validarGradeHorariaAtivaEUltimaVersao(novaGradeHoraria);
 
         Alocacao alocacaoAtualizada = new Alocacao(
             id,
