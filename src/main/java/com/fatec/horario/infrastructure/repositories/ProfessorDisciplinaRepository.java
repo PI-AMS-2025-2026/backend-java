@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDisciplina, Long> {
 
-    boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(Long usuarioId, Long disciplinaId);
+    boolean existsByUsuarioIdUsuarioAndDisciplinaId(Long usuarioId, Long disciplinaId);
 
     Page<ProfessorDisciplina> findByUsuarioId(Long usuarioId, Pageable pageable);
 
