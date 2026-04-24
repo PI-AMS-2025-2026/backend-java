@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase;
+package com.fatec.horario.domain.services.usecase.write;
 
 import com.fatec.horario.domain.entities.GradeHoraria;
 import com.fatec.horario.domain.services.usecase.read.ValidarProfessorDisciplinaService;
