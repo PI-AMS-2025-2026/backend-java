@@ -1,13 +1,13 @@
 package com.fatec.horario.infrastructure.repositories;
 
-import com.fatec.horario.domain.entities.Alocacao;
-
-import org.hibernate.query.Page;
-import org.springdoc.core.converters.models.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+
+import com.fatec.horario.domain.entities.Alocacao;
+
 
 public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
@@ -93,10 +93,5 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("idDiaSemana") Long idDiaSemana,
             @Param("idHorario") Long idHorario
     );
-
-    boolean existsBySalaIdAndDiaSemanaIdAndHorarioId(Long salaId, Long diaId, Long horarioId);
-
-    boolean existsByUsuarioIdAndDiaSemanaIdAndHorarioId(Long usuarioId, Long diaId, Long horarioId);
-
 
 }
