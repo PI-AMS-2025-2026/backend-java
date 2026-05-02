@@ -49,8 +49,7 @@ public class Curso {
     public Curso() {
     }
 
-    public Curso(Long id, String nome, String periodicidade, Status status, Integer duracao) {
-        this.id = id;
+    public Curso(String nome, String periodicidade, Status status, Integer duracao) {
         this.nome = nome;
         this.periodicidade = periodicidade;
         this.status = status;

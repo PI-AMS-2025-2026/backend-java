@@ -11,11 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDisciplina, Long> {
 
-    boolean existsByUsuarioIdAndDisciplinaId(Long usuarioId, Long disciplinaId);
-
-    Page<ProfessorDisciplina> findByUsuarioId(Long usuarioId, Pageable pageable);
-
-    Page<ProfessorDisciplina> findByDisciplinaId(Long disciplinaId, Pageable pageable);
 
     @Query("""
         SELECT pd
@@ -28,4 +23,10 @@ public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDi
         @Param("disciplinaId") Long disciplinaId,
         Pageable pageable
     );
+
+    boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(
+        @Param("idProfessor") Long idProfessor,
+        @Param("idDisciplina") Long idDisciplina
+    );
+
 }

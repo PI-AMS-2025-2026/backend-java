@@ -57,7 +57,7 @@ public class Disciplina {
     }
 
     public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo, String modalidade,
-            String codDisciplina, String cor, Curso curso, TipoSala tipoSala) {
+            String codDisciplina, String cor) {
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.tipoDisciplina = tipoDisciplina;
@@ -65,8 +65,6 @@ public class Disciplina {
         this.modalidade = modalidade;
         this.codDisciplina = codDisciplina;
         this.cor = cor;
-        this.curso = curso;
-        this.tipoSala = tipoSala;
     }
 
     public Long getId() {

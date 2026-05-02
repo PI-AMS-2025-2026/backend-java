@@ -33,11 +33,8 @@ public class RecursoSala {
     public RecursoSala() {
     }
 
-    public RecursoSala(Long id, Integer quantidade, Sala sala, Recurso recurso) {
-        this.id = id;
+    public RecursoSala(Integer quantidade) {
         this.quantidade = quantidade;
-        this.sala = sala;
-        this.recurso = recurso;
     }
 
     public Long getId() {

@@ -37,11 +37,9 @@ public class Sala {
     public Sala() {
     }
 
-    public Sala(Long id, String codigo, Integer capacidade, TipoSala tipoSala) {
-        this.id = id;
+    public Sala(String codigo, Integer capacidade) {
         this.codigo = codigo;
         this.capacidade = capacidade;
-        this.tipoSala = tipoSala;
     }
 
     public Long getId() {

@@ -49,7 +49,7 @@ public class DisciplinaService {
     }
 
     @Transactional(readOnly = true)
-    public DisciplinaResponse buscarPorId(long id) {
+    public DisciplinaResponse buscarPorId(Long id) {
 
         Disciplina entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
@@ -77,7 +77,7 @@ public class DisciplinaService {
     }
 
     @Transactional
-    public DisciplinaResponse atualizar(long id, DisciplinaRequest request) {
+    public DisciplinaResponse atualizar(Long id, DisciplinaRequest request) {
 
         Disciplina entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
@@ -102,7 +102,7 @@ public class DisciplinaService {
     }
 
     @Transactional
-    public void deletar(long id) {
+    public void deletar(Long id) {
 
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Disciplina não encontrada com ID: " + id);

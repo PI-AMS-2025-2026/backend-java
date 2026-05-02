@@ -48,13 +48,9 @@ public class GradeHoraria {
     public GradeHoraria() {
     }
 
-    public GradeHoraria(Integer versao, LocalDateTime dataCriacao, Status status, Curso curso,
-            PeriodoLetivo periodoLetivo) {
+    public GradeHoraria(Integer versao, Status status) {
         this.versao = versao;
-        this.dataCriacao = dataCriacao;
         this.status = status;
-        this.curso = curso;
-        this.periodoLetivo = periodoLetivo;
     }
 
     public Long getId() {

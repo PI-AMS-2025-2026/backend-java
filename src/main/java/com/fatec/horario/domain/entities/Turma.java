@@ -42,13 +42,11 @@ public class Turma {
     public Turma() {
     }
 
-    public Turma(Long id, String codigo, Integer periodo, Integer ano, Integer numeroAlunos, Curso curso) {
-        this.id = id;
+    public Turma(String codigo, Integer periodo, Integer ano, Integer numeroAlunos) {
         this.codigo = codigo;
         this.periodo = periodo;
         this.ano = ano;
         this.numeroAlunos = numeroAlunos;
-        this.curso = curso;
     }
 
     public Long getId() {

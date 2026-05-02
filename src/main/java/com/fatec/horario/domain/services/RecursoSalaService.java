@@ -49,7 +49,10 @@ public class RecursoSalaService {
         Recurso recurso = recursoRepository.findById(request.recurso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
-        RecursoSala entity = new RecursoSala(null, request.quantidade(), sala, recurso);
+        RecursoSala entity = new RecursoSala();
+        entity.setQuantidade(request.quantidade());
+        entity.setSala(sala);
+        entity.setRecurso(recurso);
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
