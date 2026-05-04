@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
@@ -29,6 +30,7 @@ import com.fatec.horario.infrastructure.repositories.HistoricoAlteracaoRepositor
  * <li>Executa apenas após aceitação da operação principal</li>
  * </ul>
  */
+@Service
 public class RegistrarHistoricoAlocacaoUseCase {
 
     @Autowired

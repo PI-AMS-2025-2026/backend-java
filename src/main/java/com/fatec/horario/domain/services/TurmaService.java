@@ -7,6 +7,7 @@ import com.fatec.horario.dto.turma.TurmaResponse;
 import com.fatec.horario.infrastructure.mappers.TurmaMapper;
 import com.fatec.horario.infrastructure.repositories.CursoRepository;
 import com.fatec.horario.infrastructure.repositories.TurmaRepository;
+import com.fatec.horario.domain.services.usecase.write.ValidarTurmaSemVinculosUseCase;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,9 @@ public class TurmaService {
 
     @Autowired
     private CursoRepository cursoRepository;
+
+    @Autowired
+    private ValidarTurmaSemVinculosUseCase validarTurmaSemVinculos;
 
     @Transactional
     public TurmaResponse criar(TurmaRequest request) {
@@ -76,6 +80,7 @@ public class TurmaService {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Turma não encontrada com ID: " + id);
         }
+        validarTurmaSemVinculos.validar(id);
         repository.deleteById(id);
     }
 }

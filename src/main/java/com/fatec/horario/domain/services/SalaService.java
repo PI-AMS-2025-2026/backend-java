@@ -13,6 +13,7 @@ import com.fatec.horario.dto.sala.SalaResponse;
 import com.fatec.horario.infrastructure.mappers.SalaMapper;
 import com.fatec.horario.infrastructure.repositories.SalaRepository;
 import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;
+import com.fatec.horario.domain.services.usecase.write.ValidarSalaSemVinculosUseCase;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -24,6 +25,9 @@ public class SalaService {
 
     @Autowired
     private TipoSalaRepository tipoSalaRepository;
+
+    @Autowired
+    private ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
 
     @Transactional
     public SalaResponse criar(SalaRequest request) {
@@ -74,6 +78,7 @@ public class SalaService {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Sala não encontrada com ID: " + id);
         }
+        validarSalaSemVinculos.validar(id);
         repository.deleteById(id);
     }
 }

@@ -29,7 +29,7 @@ class ValidarVinculoProfessorDisciplinaUseCaseTest {
     void naoDeveLancarExcecaoQuandoProfessorPodeLecionarDisciplina() {
         Alocacao alocacao = criarAlocacao(10L, 20L);
 
-        when(repository.existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(10L, 20L)).thenReturn(true);
+        when(repository.existsByUsuarioIdAndDisciplinaId(10L, 20L)).thenReturn(true);
 
         assertDoesNotThrow(() -> useCase.executar(alocacao));
     }
@@ -38,7 +38,7 @@ class ValidarVinculoProfessorDisciplinaUseCaseTest {
     void deveLancarExcecaoQuandoProfessorNaoPodeLecionarDisciplina() {
         Alocacao alocacao = criarAlocacao(10L, 20L);
 
-        when(repository.existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(10L, 20L)).thenReturn(false);
+        when(repository.existsByUsuarioIdAndDisciplinaId(10L, 20L)).thenReturn(false);
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
     }

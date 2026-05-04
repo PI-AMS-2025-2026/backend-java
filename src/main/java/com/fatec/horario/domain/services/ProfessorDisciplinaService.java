@@ -27,7 +27,7 @@ public class ProfessorDisciplinaService {
     @Transactional
     public ProfessorDisciplinaResponse criar(ProfessorDisciplinaRequest request) {
 
-        if (repository.existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(
+        if (repository.existsByUsuarioIdAndDisciplinaId(
             request.usuario().id(), request.disciplina().id())) {
             throw new BusinessException("Relação já existe");
         }

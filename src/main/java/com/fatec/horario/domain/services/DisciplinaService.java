@@ -15,6 +15,7 @@ import com.fatec.horario.infrastructure.mappers.DisciplinaMapper;
 import com.fatec.horario.infrastructure.repositories.CursoRepository;
 import com.fatec.horario.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;
+import com.fatec.horario.domain.services.usecase.write.ValidarDisciplinaSemVinculosUseCase;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -29,6 +30,9 @@ public class DisciplinaService {
 
     @Autowired
     private TipoSalaRepository tipoSalaRepository;
+
+        @Autowired
+        private ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
     @Transactional
     public DisciplinaResponse criar(DisciplinaRequest request) {
@@ -108,6 +112,8 @@ public class DisciplinaService {
             throw new EntityNotFoundException("Disciplina não encontrada com ID: " + id);
         }
 
-        repository.deleteById(id);
+                validarDisciplinaSemVinculos.validar(id);
+
+                repository.deleteById(id);
     }
 }

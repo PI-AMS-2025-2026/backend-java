@@ -84,4 +84,13 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("idHorario") Long idHorario
     );
 
+    /* existence checks used by delete validations */
+    boolean existsByDisciplinaId(Long disciplinaId);
+
+    boolean existsBySalaId(Long salaId);
+
+    boolean existsByTurmaId(Long turmaId);
+
+    boolean existsByUsuarioId(Long usuarioId);
+
 }

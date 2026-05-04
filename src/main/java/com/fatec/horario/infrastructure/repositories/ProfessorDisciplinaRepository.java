@@ -15,8 +15,8 @@ public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDi
     @Query("""
         SELECT pd
         FROM ProfessorDisciplina pd
-        WHERE (:usuarioId IS NULL OR pd.usuario.idUsuario = :usuarioId)
-          AND (:disciplinaId IS NULL OR pd.disciplina.idDisciplina = :disciplinaId)
+        WHERE (:usuarioId IS NULL OR pd.usuario.id = :usuarioId)
+          AND (:disciplinaId IS NULL OR pd.disciplina.id = :disciplinaId)
     """)
     Page<ProfessorDisciplina> buscarPorFiltros(
         @Param("usuarioId") Long usuarioId,
@@ -24,9 +24,13 @@ public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDi
         Pageable pageable
     );
 
-    boolean existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(
+    boolean existsByUsuarioIdAndDisciplinaId(
         @Param("idProfessor") Long idProfessor,
         @Param("idDisciplina") Long idDisciplina
     );
+
+    boolean existsByDisciplinaId(Long disciplinaId);
+
+    boolean existsByUsuarioId(Long usuarioId);
 
 }

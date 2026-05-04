@@ -1,6 +1,8 @@
 package com.fatec.horario.domain.services.usecase.read;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.infrastructure.repositories.ProfessorDisciplinaRepository;
@@ -15,6 +17,7 @@ import com.fatec.horario.web.exception.BusinessException;
  * <li>professor pode ministrar aquela disciplina</li>
  * </ul>
  */
+@Service
 public class ValidarVinculoProfessorDisciplinaUseCase {
 
     @Autowired
@@ -30,7 +33,7 @@ public class ValidarVinculoProfessorDisciplinaUseCase {
 
     private void professorPodeLecionarOuLancarExcecao(Long idProfessor, Long idDisciplina) {
 
-        if (!repository.existsByUsuarioIdUsuarioAndDisciplinaIdDisciplina(idProfessor, idDisciplina)) {
+        if (!repository.existsByUsuarioIdAndDisciplinaId(idProfessor, idDisciplina)) {
             throw new BusinessException(
                     "O professor selecionado não está apto a lecionar esta disciplina");
         }
