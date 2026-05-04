@@ -5,6 +5,8 @@ import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaRequest;
 import com.fatec.horario.dto.professorDisciplina.ProfessorDisciplinaResponse;
 import com.fatec.horario.infrastructure.mappers.ProfessorDisciplinaMapper;
 import com.fatec.horario.infrastructure.repositories.*;
+import com.fatec.horario.web.exception.BusinessException;
+
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class ProfessorDisciplinaService {
 
         if (repository.existsByUsuarioIdAndDisciplinaId(
             request.usuario().id(), request.disciplina().id())) {
-            throw new RuntimeException("Relação já existe");
+            throw new BusinessException("Relação já existe");
         }
 
         Usuario usuario = usuarioRepository.findById(request.usuario().id())

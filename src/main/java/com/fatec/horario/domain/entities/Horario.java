@@ -38,8 +38,7 @@ public class Horario {
     public Horario() {
     }
 
-    public Horario(Long id, LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
-        this.id = id;
+    public Horario(LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
         this.duracao = duracao;

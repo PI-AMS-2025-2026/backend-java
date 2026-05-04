@@ -56,19 +56,7 @@ public class Alocacao {
     }
 
     public Alocacao(Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana,
-            Horario horario, GradeHoraria gradehoraria) {
-        this.turma = turma;
-        this.disciplina = disciplina;
-        this.sala = sala;
-        this.usuario = usuario;
-        this.diaSemana = diaSemana;
-        this.horario = horario;
-        this.gradeHoraria = gradehoraria;
-    }
-
-    public Alocacao(Long id, Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana,
             Horario horario, GradeHoraria gradeHoraria) {
-        this.id = id;
         this.turma = turma;
         this.disciplina = disciplina;
         this.sala = sala;
@@ -174,5 +162,13 @@ public class Alocacao {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Alocacao [id=" + id + ", turma=" + turma + ", disciplina=" + disciplina + ", sala=" + sala
+                + ", usuario=" + usuario + ", diaSemana=" + diaSemana + ", horario=" + horario + ", gradeHoraria="
+                + gradeHoraria + "]";
+    }
+    
 
 }

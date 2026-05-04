@@ -52,7 +52,7 @@ public class GradeHorariaService {
     }
 
     @Transactional(readOnly = true)
-    public GradeHorariaResponse buscarPorId(long id) {
+    public GradeHorariaResponse buscarPorId(Long id) {
         GradeHoraria entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
         return GradeHorariaMapper.toResponse(entity);
@@ -78,7 +78,7 @@ public class GradeHorariaService {
     }
 
     @Transactional
-    public GradeHorariaResponse atualizar(long id, GradeHorariaRequest request) {
+    public GradeHorariaResponse atualizar(Long id, GradeHorariaRequest request) {
         GradeHoraria entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
 
@@ -97,7 +97,7 @@ public class GradeHorariaService {
     }
 
     @Transactional
-    public void inativar(long id) {
+    public void inativar(Long id) {
         GradeHoraria entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
 

@@ -29,7 +29,8 @@ public record AlocacaoRequest(
     
     //Campos de Histórico de Alteração (opcionais para criação,obrigatorios para registrar mudanças)
     String justificativaAlteracao,
-
+    
+    @NotNull(message = "Usuário responsável pela alteração é obrigatório")
     LongDTO usuarioAlteracao
 ) {
 }

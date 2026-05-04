@@ -1,0 +1,30 @@
+package com.fatec.horario.domain.services.usecase.write;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.horario.infrastructure.repositories.ProfessorDisciplinaRepository;
+import com.fatec.horario.web.exception.BusinessException;
+
+@Service
+public class ValidarDisciplinaSemVinculosUseCase {
+
+    @Autowired
+    private AlocacaoRepository alocacaoRepository;
+
+    @Autowired
+    private ProfessorDisciplinaRepository professorDisciplinaRepository;
+
+    @Transactional(readOnly = true)
+    public void validar(Long idDisciplina) {
+        if (alocacaoRepository.existsByDisciplinaId(idDisciplina)) {
+            throw new BusinessException("Não é possível excluir disciplina vinculada a alocações.");
+        }
+
+        if (professorDisciplinaRepository.existsByDisciplinaId(idDisciplina)) {
+            throw new BusinessException("Não é possível excluir disciplina vinculada a professores.");
+        }
+    }
+}

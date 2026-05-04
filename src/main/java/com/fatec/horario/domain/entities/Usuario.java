@@ -56,16 +56,12 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String senha, String cidade, Status status,
-            LocalDateTime created_at, LocalDateTime updated_at, TipoUsuario tipo_usuario) {
+    public Usuario(String nome, String email, String senha, String cidade, Status status) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.cidade = cidade;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.tipo_usuario = tipo_usuario;
     }
 
     public Long getId() {
@@ -138,6 +134,14 @@ public class Usuario {
 
     public void setTipo_usuario(TipoUsuario tipo_usuario) {
         this.tipo_usuario = tipo_usuario;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     @Override

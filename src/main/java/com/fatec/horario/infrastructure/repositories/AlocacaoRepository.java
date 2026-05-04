@@ -51,17 +51,7 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         Long horarioId,
                         Long alocacaoId);
 
-        /**
-         * REGRA DE DISPONIBILIDADE: "O professor pode trabalhar agora?"
-         * A regra verifica se existe um registro prévio que autorize a alocação do usuário para o par DiaSemana/Horário informado.
-         * retorna true se o contador for > 0 (possui permissão), false caso contrário.
-         */
-        @Query("SELECT COUNT(d) > 0 FROM DisponibilidadeProfessor d WHERE d.usuario.id = :usuarioId AND d.diaSemana.id = :diaId AND d.horario.id = :horarioId")
-        boolean verificarDisponibilidadeProfessor(
-                        @Param("usuarioId") Long usuarioId,
-                        @Param("diaId") Long diaId,
-                        @Param("horarioId") Long horarioId);
-
+   
         /* busca personalizada: */
 
         @Query("SELECT a FROM Alocacao a WHERE " +
@@ -93,5 +83,14 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("idDiaSemana") Long idDiaSemana,
             @Param("idHorario") Long idHorario
     );
+
+    /* existence checks used by delete validations */
+    boolean existsByDisciplinaId(Long disciplinaId);
+
+    boolean existsBySalaId(Long salaId);
+
+    boolean existsByTurmaId(Long turmaId);
+
+    boolean existsByUsuarioId(Long usuarioId);
 
 }

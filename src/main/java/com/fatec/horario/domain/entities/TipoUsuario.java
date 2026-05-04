@@ -28,13 +28,8 @@ public class TipoUsuario {
     public TipoUsuario() {
     }
 
-    public TipoUsuario(String nome, List<Usuario> usuarios) {
+    public TipoUsuario(String nome) {
         this.nome = nome;
-        this.usuarios = usuarios;
-    }
-
-    public TipoUsuario(long id) {
-        this.id = id;
     }
 
     public Long getId() {

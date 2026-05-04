@@ -28,5 +28,7 @@ public record UsuarioRequest(
         Status status,
 
         @NotNull(message = "Tipo de usuário é obrigatório")
-        LongDTO tipoUsuario
+        LongDTO tipoUsuario,
+
+        LongDTO curso
 ) {}
