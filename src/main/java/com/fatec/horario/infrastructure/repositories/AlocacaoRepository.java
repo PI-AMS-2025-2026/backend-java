@@ -1,5 +1,7 @@
 package com.fatec.horario.infrastructure.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -92,5 +94,30 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
     boolean existsByTurmaId(Long turmaId);
 
     boolean existsByUsuarioId(Long usuarioId);
+
+        /*metodo para a implementação da validação das 12h e carga horaria maxima: */
+
+    @Query("""
+                SELECT a
+                FROM Alocacao a
+                WHERE a.usuario.id = :professorId
+                AND a.diaSemana.id = :diaSemanaId
+            """)
+    List<Alocacao> findByProfessorAndDiaSemana(
+            Long professorId,
+            Long diaSemanaId);
+
+    @Query("""
+                SELECT a
+                FROM Alocacao a
+                WHERE a.usuario.id = :professorId
+                AND a.diaSemana.id = :diaSemanaId
+                ORDER BY a.horario.horaFim DESC
+            """)
+    List<Alocacao> findUltimaAulaDoDia(
+            Long professorId,
+            Long diaSemanaId);
+
+
 
 }

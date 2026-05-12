@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.horario.domain.services.usecase.write.CriarAlocacaoUseCase;
+import com.fatec.horario.domain.services.usecase.write.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.dto.alocacao.AlocacaoRequest;
 import com.fatec.horario.dto.alocacao.AlocacaoResponse;
 import com.fatec.horario.infrastructure.mappers.AlocacaoMapper;
@@ -24,19 +25,48 @@ public class AlocacaoService {
 
     @Autowired
     private CriarAlocacaoUseCase criarAlocacaoUseCase;
+
     @Autowired
     private AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
+    @Autowired
+    private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+
     public AlocacaoResponse criar(AlocacaoRequest request) {
+
         Alocacao entity = AlocacaoMapper.toEntity(request);
-        return AlocacaoMapper.toResponse(criarAlocacaoUseCase.executar(entity, request.usuarioAlteracao().id()));
+
+        // adicionei algumas mudanças para que chame as regras de horario dos
+        // professores na alocação
+        validarCargaHorariaUseCase.validar(
+                entity.getUsuario().getId(),
+                entity.getDiaSemana().getId());
+
+        return AlocacaoMapper.toResponse(
+                criarAlocacaoUseCase.executar(
+                        entity,
+                        request.usuarioAlteracao().id()));
     }
 
     public AlocacaoResponse atualizar(Long id, AlocacaoRequest request) {
+
         Alocacao entity = AlocacaoMapper.toEntity(request);
+
+        // adicionei algumas mudanças para que chame as regras de horario dos
+        // professores na alocação
+
+        validarCargaHorariaUseCase.validar(
+                entity.getUsuario().getId(),
+                entity.getDiaSemana().getId());
+
         String justificativaAlteracao = request.justificativaAlteracao();
+
         return AlocacaoMapper.toResponse(
-                atualizarAlocacaoUseCase.executar(id, entity, request.usuarioAlteracao().id(), justificativaAlteracao));
+                atualizarAlocacaoUseCase.executar(
+                        id,
+                        entity,
+                        request.usuarioAlteracao().id(),
+                        justificativaAlteracao));
     }
 
     @Transactional(readOnly = true)
@@ -46,8 +76,10 @@ public class AlocacaoService {
             int size) {
 
         var pageRequest = PageRequest.of(page, size);
+
         var pageAlocacao = repository.buscarPorFiltros(
-                turmaId, disciplinaId, salaId, usuarioId, diaSemanaId, horarioId, gradeId, pageRequest);
+                turmaId, disciplinaId, salaId, usuarioId,
+                diaSemanaId, horarioId, gradeId, pageRequest);
 
         return pageAlocacao.map(AlocacaoMapper::toResponse);
     }
@@ -56,15 +88,16 @@ public class AlocacaoService {
     public AlocacaoResponse buscarPorId(Long id) {
         return repository.findById(id)
                 .map(AlocacaoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Alocação não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Alocação não encontrada com ID: " + id));
     }
 
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Alocação não encontrada com ID: " + id);
+            throw new EntityNotFoundException(
+                    "Alocação não encontrada com ID: " + id);
         }
         repository.deleteById(id);
     }
-
 }
