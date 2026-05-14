@@ -1,6 +1,7 @@
 package com.fatec.horario.domain.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,6 +62,11 @@ public class UsuarioService {
         usuario.setUpdated_at(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(usuario));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> listar() {
+        return repository.findAll();
     }
 
     @Transactional(readOnly = true)
