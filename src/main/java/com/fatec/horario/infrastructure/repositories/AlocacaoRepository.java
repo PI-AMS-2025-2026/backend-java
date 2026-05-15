@@ -1,5 +1,7 @@
 package com.fatec.horario.infrastructure.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fatec.horario.domain.entities.Alocacao;
-
 
 public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
@@ -41,7 +42,8 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
         /**
          * REGRA DE DUPLICIDADE (ATUALIZAÇÃO):
-         * mesma verificação de duplicidade, desconsiderando a própria alocação em edição.
+         * mesma verificação de duplicidade, desconsiderando a própria alocação em
+         * edição.
          */
         boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
                         Long turmaId,
@@ -51,7 +53,6 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         Long horarioId,
                         Long alocacaoId);
 
-   
         /* busca personalizada: */
 
         @Query("SELECT a FROM Alocacao a WHERE " +
@@ -71,26 +72,49 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         @Param("horarioId") Long horarioId,
                         @Param("gradeId") Long gradeId,
                         Pageable pageable);
-    @Query("""
-        SELECT COUNT(a) > 0
-        FROM Alocacao a
-        WHERE a.turma.id = :idTurma
-        AND a.diaSemana.id = :idDiaSemana
-        AND a.horario.id = :idHorario
-    """)
-    boolean existsConflitoTurmaHorario(
-            @Param("idTurma") Long idTurma,
-            @Param("idDiaSemana") Long idDiaSemana,
-            @Param("idHorario") Long idHorario
-    );
 
-    /* existence checks used by delete validations */
-    boolean existsByDisciplinaId(Long disciplinaId);
+        @Query("""
+                            SELECT COUNT(a) > 0
+                            FROM Alocacao a
+                            WHERE a.turma.id = :idTurma
+                            AND a.diaSemana.id = :idDiaSemana
+                            AND a.horario.id = :idHorario
+                        """)
+        boolean existsConflitoTurmaHorario(
+                        @Param("idTurma") Long idTurma,
+                        @Param("idDiaSemana") Long idDiaSemana,
+                        @Param("idHorario") Long idHorario);
 
-    boolean existsBySalaId(Long salaId);
+        /* existence checks used by delete validations */
+        boolean existsByDisciplinaId(Long disciplinaId);
 
-    boolean existsByTurmaId(Long turmaId);
+        boolean existsBySalaId(Long salaId);
 
-    boolean existsByUsuarioId(Long usuarioId);
+        boolean existsByTurmaId(Long turmaId);
+
+        boolean existsByUsuarioId(Long usuarioId);
+
+        /* metodo para a implementação da validação das 12h e carga horaria maxima: */
+
+        @Query("""
+                            SELECT a
+                            FROM Alocacao a
+                            WHERE a.usuario.id = :professorId
+                            AND a.diaSemana.id = :diaSemanaId
+                        """)
+        List<Alocacao> findByProfessorAndDiaSemana(
+                        Long professorId,
+                        Long diaSemanaId);
+
+        @Query("""
+                            SELECT a
+                            FROM Alocacao a
+                            WHERE a.usuario.id = :professorId
+                            AND a.diaSemana.id = :diaSemanaId
+                            ORDER BY a.horario.horaFim DESC
+                        """)
+        List<Alocacao> findUltimaAulaDoDia(
+                        Long professorId,
+                        Long diaSemanaId);
 
 }
