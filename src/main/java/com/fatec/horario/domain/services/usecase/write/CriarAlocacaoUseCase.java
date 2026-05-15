@@ -37,6 +37,9 @@ public class CriarAlocacaoUseCase {
     private ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
     @Autowired
+    private ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
+
+    @Autowired
     private ValidarGradeHorariaUseCase validarGradeHoraria;
 
     @Autowired
@@ -57,12 +60,20 @@ public class CriarAlocacaoUseCase {
     @Autowired
     private AlocacaoRepository alocacaoRepository;
 
+    
+
     @Transactional
     public Alocacao executar(Alocacao entity, long usuarioAlteracao) {
 
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
         var usuarioAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(usuarioAlteracao);
+
+        // valida a compatibilidade da disciplina com a sala alocada
+         validarDisciplinaTipoSala.validarCompatibilidadeDisciplinaSala(
+                entity.getDisciplina(), 
+                entity.getSala()
+        );
 
         // Validar grade horaria
         validarGradeHoraria.executar(entity);
@@ -83,6 +94,8 @@ public class CriarAlocacaoUseCase {
 
         // registrar histórico de criação
         historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);
+
+       
 
         return alocacaoSalva;
     }
