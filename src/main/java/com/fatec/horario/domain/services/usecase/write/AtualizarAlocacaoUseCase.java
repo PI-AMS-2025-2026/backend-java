@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
+import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
@@ -52,7 +54,13 @@ public class AtualizarAlocacaoUseCase {
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
     @Autowired
+    private ValidarCapacidadeSalaUseCase validarCapacidadeSala;
+
+    @Autowired
     private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
+
+    @Autowired
+    private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
     @Autowired
     private AlocacaoRepository alocacaoRepository;
@@ -65,6 +73,10 @@ public class AtualizarAlocacaoUseCase {
         var usuarioAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(usuarioAlteracao);
         // validarRefObrigatorias.validarJustificativaAlteracao(justificativaAlteracao);
 
+        // Validar se o professor já atingiu a carga horária máxima diária para o dia da
+        // semana da alocação
+        validarCargaHorariaUseCase.validar(entity.getUsuario().getId(), entity.getDiaSemana().getId());
+
         // Validar grade horaria
         validarGradeHoraria.executar(entity);
 
@@ -75,6 +87,9 @@ public class AtualizarAlocacaoUseCase {
         validarDisponibilidadeProfessor.executar(entity);
         // validar conflito da turma
         validarConflitoTurmaHorario.executar(entity);
+
+        // validar capacidade da sala
+        validarCapacidadeSala.executar(entity);
 
         // validar duplicidade
         validarDuplicidade.executarAtualizacao(entity);
