@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
+import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
@@ -53,6 +54,9 @@ public class AtualizarAlocacaoUseCase {
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
     @Autowired
+    private ValidarCapacidadeSalaUseCase validarCapacidadeSala;
+
+    @Autowired
     private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
 
     @Autowired
@@ -83,6 +87,9 @@ public class AtualizarAlocacaoUseCase {
         validarDisponibilidadeProfessor.executar(entity);
         // validar conflito da turma
         validarConflitoTurmaHorario.executar(entity);
+
+        // validar capacidade da sala
+        validarCapacidadeSala.executar(entity);
 
         // validar duplicidade
         validarDuplicidade.executarAtualizacao(entity);
