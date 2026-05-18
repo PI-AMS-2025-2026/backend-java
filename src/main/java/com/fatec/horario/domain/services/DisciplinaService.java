@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.horario.domain.entities.Curso;
 import com.fatec.horario.domain.entities.Disciplina;
 import com.fatec.horario.domain.entities.TipoSala;
+import com.fatec.horario.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
 import com.fatec.horario.dto.disciplina.DisciplinaRequest;
 import com.fatec.horario.dto.disciplina.DisciplinaResponse;
 import com.fatec.horario.infrastructure.mappers.DisciplinaMapper;
 import com.fatec.horario.infrastructure.repositories.CursoRepository;
 import com.fatec.horario.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.horario.infrastructure.repositories.TipoSalaRepository;
-import com.fatec.horario.domain.services.usecase.write.ValidarDisciplinaSemVinculosUseCase;
 
 import jakarta.persistence.EntityNotFoundException;
 
