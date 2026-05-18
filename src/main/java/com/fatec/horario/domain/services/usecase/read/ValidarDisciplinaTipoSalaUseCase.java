@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.write;
+package com.fatec.horario.domain.services.usecase.read;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -54,9 +54,6 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         Long alocacaoId);
 
         /* busca personalizada: */
-
-        /* busca personalizada: */
-
         @Query("SELECT a FROM Alocacao a WHERE " +
                         "(:turmaId IS NULL OR a.turma.id = :turmaId) AND " +
                         "(:disciplinaId IS NULL OR a.disciplina.id = :disciplinaId) AND " +

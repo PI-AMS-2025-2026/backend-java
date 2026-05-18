@@ -8,6 +8,7 @@ import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarGradeHorariaUseCase;
@@ -63,9 +64,7 @@ public class CriarAlocacaoUseCase {
     private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
 
     @Autowired
-    private AlocacaoRepository alocacaoRepository;
-
-    
+    private AlocacaoRepository alocacaoRepository;    
 
     @Autowired
     private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
@@ -108,9 +107,7 @@ public class CriarAlocacaoUseCase {
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
         // registrar histórico de criação
-        historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);
-
-       
+        historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);       
 
         return alocacaoSalva;
     }
