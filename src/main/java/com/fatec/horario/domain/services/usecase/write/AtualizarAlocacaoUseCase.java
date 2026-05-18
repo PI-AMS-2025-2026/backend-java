@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
@@ -59,6 +60,9 @@ public class AtualizarAlocacaoUseCase {
     private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
 
     @Autowired
+    private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+
+    @Autowired
     private AlocacaoRepository alocacaoRepository;
 
     @Transactional
@@ -68,6 +72,10 @@ public class AtualizarAlocacaoUseCase {
         validarRefObrigatorias.validar(entity);
         var usuarioAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(usuarioAlteracao);
         // validarRefObrigatorias.validarJustificativaAlteracao(justificativaAlteracao);
+
+        // Validar se o professor já atingiu a carga horária máxima diária para o dia da
+        // semana da alocação
+        validarCargaHorariaUseCase.validar(entity.getUsuario().getId(), entity.getDiaSemana().getId());
 
         // Validar grade horaria
         validarGradeHoraria.executar(entity);
