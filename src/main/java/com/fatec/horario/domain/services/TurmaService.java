@@ -2,12 +2,13 @@ package com.fatec.horario.domain.services;
 
 import com.fatec.horario.domain.entities.Curso;
 import com.fatec.horario.domain.entities.Turma;
+import com.fatec.horario.domain.services.usecase.read.ValidarTurmaSemVinculosUseCase;
 import com.fatec.horario.dto.turma.TurmaRequest;
 import com.fatec.horario.dto.turma.TurmaResponse;
 import com.fatec.horario.infrastructure.mappers.TurmaMapper;
 import com.fatec.horario.infrastructure.repositories.CursoRepository;
 import com.fatec.horario.infrastructure.repositories.TurmaRepository;
-import com.fatec.horario.domain.services.usecase.write.ValidarTurmaSemVinculosUseCase;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

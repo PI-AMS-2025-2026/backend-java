@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
+import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarGradeHorariaUseCase;
@@ -38,6 +40,9 @@ public class CriarAlocacaoUseCase {
     private ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
     @Autowired
+    private ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
+
+    @Autowired
     private ValidarGradeHorariaUseCase validarGradeHoraria;
 
     @Autowired
@@ -53,10 +58,13 @@ public class CriarAlocacaoUseCase {
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
     @Autowired
+    private ValidarCapacidadeSalaUseCase validarCapacidadeSala;
+
+    @Autowired
     private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
 
     @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private AlocacaoRepository alocacaoRepository;    
 
     @Autowired
     private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
@@ -67,6 +75,12 @@ public class CriarAlocacaoUseCase {
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
         var usuarioAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(usuarioAlteracao);
+
+        // valida a compatibilidade da disciplina com a sala alocada
+         validarDisciplinaTipoSala.validarCompatibilidadeDisciplinaSala(
+                entity.getDisciplina(), 
+                entity.getSala()
+        );
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
@@ -83,6 +97,9 @@ public class CriarAlocacaoUseCase {
         // validar conflito da turma
         validarConflitoTurmaHorario.executar(entity);
 
+        // validar capacidade da sala
+        validarCapacidadeSala.executar(entity);
+
         // validar duplicidade
         validarDuplicidade.executarCriacao(entity);
 
@@ -90,7 +107,7 @@ public class CriarAlocacaoUseCase {
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
         // registrar histórico de criação
-        historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);
+        historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);       
 
         return alocacaoSalva;
     }

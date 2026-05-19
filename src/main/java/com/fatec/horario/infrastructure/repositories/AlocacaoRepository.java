@@ -52,26 +52,25 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             Long diaSemanaId,
             Long horarioId,
             Long alocacaoId);
-
-    /* busca personalizada: */
-
-    @Query("SELECT a FROM Alocacao a WHERE " +
-            "(:turmaId IS NULL OR a.turma.id = :turmaId) AND " +
-            "(:disciplinaId IS NULL OR a.disciplina.id = :disciplinaId) AND " +
-            "(:salaId IS NULL OR a.sala.id = :salaId) AND " +
-            "(:usuarioId IS NULL OR a.usuario.id = :usuarioId) AND " +
-            "(:diaSemanaId IS NULL OR a.diaSemana.id = :diaSemanaId) AND " +
-            "(:horarioId IS NULL OR a.horario.id = :horarioId) AND " +
-            "(:gradeId IS NULL OR a.gradeHoraria.id = :gradeId)")
-    Page<Alocacao> buscarPorFiltros(
-            @Param("turmaId") Long turmaId,
-            @Param("disciplinaId") Long disciplinaId,
-            @Param("salaId") Long salaId,
-            @Param("usuarioId") Long usuarioId,
-            @Param("diaSemanaId") Long diaSemanaId,
-            @Param("horarioId") Long horarioId,
-            @Param("gradeId") Long gradeId,
-            Pageable pageable);
+            
+        /* busca personalizada: */
+        @Query("SELECT a FROM Alocacao a WHERE " +
+                        "(:turmaId IS NULL OR a.turma.id = :turmaId) AND " +
+                        "(:disciplinaId IS NULL OR a.disciplina.id = :disciplinaId) AND " +
+                        "(:salaId IS NULL OR a.sala.id = :salaId) AND " +
+                        "(:usuarioId IS NULL OR a.usuario.id = :usuarioId) AND " +
+                        "(:diaSemanaId IS NULL OR a.diaSemana.id = :diaSemanaId) AND " +
+                        "(:horarioId IS NULL OR a.horario.id = :horarioId) AND " +
+                        "(:gradeId IS NULL OR a.gradeHoraria.id = :gradeId)")
+        Page<Alocacao> buscarPorFiltros(
+                        @Param("turmaId") Long turmaId,
+                        @Param("disciplinaId") Long disciplinaId,
+                        @Param("salaId") Long salaId,
+                        @Param("usuarioId") Long usuarioId,
+                        @Param("diaSemanaId") Long diaSemanaId,
+                        @Param("horarioId") Long horarioId,
+                        @Param("gradeId") Long gradeId,
+                        Pageable pageable);
 
     @Query("""
                 SELECT COUNT(a) > 0
