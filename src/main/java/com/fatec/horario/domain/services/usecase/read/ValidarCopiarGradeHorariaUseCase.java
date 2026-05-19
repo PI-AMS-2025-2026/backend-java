@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.write;
+package com.fatec.horario.domain.services.usecase.read;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,12 +30,14 @@ public class ValidarCopiarGradeHorariaUseCase {
             //ve se existe dados obrigatorios
             if (antiga.getDisciplina() == null
                     || antiga.getUsuario() == null
-                    || antiga.getSala() == null) {
+                    || antiga.getSala() == null
+                    || antiga.getDiaSemana() == null
+                    || antiga.getHorario() == null) {
 
                 throw new BusinessException(
                         "Dados de alocação de origem corrompidos ou incompletos.");
             }
-
+            /*TODO: Chamar verificarDisponibilidadeProfessor(...) dentro do loop pode gerar padrão N+1 (uma consulta por alocação). Considere validar em lote (ex.: buscar disponibilidades para todos os (professor,dia,horário) da lista e validar em memória) para reduzir round-trips ao banco.*/
             // valida disponibilidade do professor via id
             boolean disponivel =
                     disponibilidadeProfessorRepository.verificarDisponibilidadeProfessor(

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.entities.GradeHoraria;
 import com.fatec.horario.domain.entities.Status;
+import com.fatec.horario.domain.services.usecase.read.ValidarCopiarGradeHorariaUseCase;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.horario.infrastructure.repositories.GradeHorariaRepository;
 import com.fatec.horario.web.exception.BusinessException;
@@ -45,7 +46,7 @@ public class CopiarGradeHorariaUseCase {
         GradeHoraria novaGrade = new GradeHoraria();
         novaGrade.setVersao(
                 dadosNovaGrade.getVersao() != null
-                        ? dadosNovaGrade.getVersao()
+                        ? dadosNovaGrade.getVersao() + 1
                         : 1);
 
         novaGrade.setDataCriacao(LocalDateTime.now());
