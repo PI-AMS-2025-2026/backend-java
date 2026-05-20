@@ -1,0 +1,52 @@
+package com.fatec.horario.domain.services.usecase.read;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fatec.horario.domain.entities.Alocacao;
+import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.horario.infrastructure.repositories.DisciplinaRepository;
+
+@Service
+public class ValidarCargaHorariaDisciplinaUseCase {
+
+    @Autowired
+    private AlocacaoRepository alocacaoRepository;
+
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
+
+    public void executarCriacao(Alocacao entity) {
+        var disciplina = disciplinaRepository.findById(entity.getDisciplina().getId())
+                .orElseThrow(() -> new BusinessException("Disciplina não encontrada."));
+
+        // Busca o somatório filtrando por Disciplina E por Grade Horária
+        int cargaHorariaAtual = alocacaoRepository.somarDuracaoPorDisciplinaEGrade(
+                disciplina.getId(), 
+                entity.getGradeHoraria().getId()
+        );
+        int novaDuracao = entity.getHorario().getDuracao();
+
+        if (cargaHorariaAtual + novaDuracao > disciplina.getCargaHoraria()) {
+            throw new BusinessException("A carga horária total da disciplina já foi preenchida na grade horária.");
+        }
+    }
+
+    public void executarAtualizacao(Alocacao entity) {
+        var disciplina = disciplinaRepository.findById(entity.getDisciplina().getId())
+                .orElseThrow(() -> new BusinessException("Disciplina não encontrada."));
+
+        // Busca o somatório filtrando por Disciplina E por Grade Horária, ignorando o ID atual
+        int cargaHorariaAtual = alocacaoRepository.somarDuracaoPorDisciplinaEGradeEIdNot(
+                disciplina.getId(), 
+                entity.getGradeHoraria().getId(), 
+                entity.getId()
+        );
+        int novaDuracao = entity.getHorario().getDuracao();
+
+        if (cargaHorariaAtual + novaDuracao > disciplina.getCargaHoraria()) {
+            throw new BusinessException("A carga horária total da disciplina já foi preenchida na grade horária.");
+        }
+    }
+}

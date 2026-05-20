@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaDisciplinaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
@@ -49,6 +50,9 @@ public class AtualizarAlocacaoUseCase {
     private ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
 
     @Autowired
+    private ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
+
+    @Autowired
     private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
 
     @Autowired
@@ -82,6 +86,9 @@ public class AtualizarAlocacaoUseCase {
                 entity.getDisciplina(), 
                 entity.getSala()
         );
+
+        // Validar limite máximo da carga horária total da disciplina 
+        validarCargaHorariaDisciplina.executarAtualizacao(entity);
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
