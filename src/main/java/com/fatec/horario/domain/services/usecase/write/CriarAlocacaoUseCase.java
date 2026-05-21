@@ -15,6 +15,7 @@ import com.fatec.horario.domain.services.usecase.read.ValidarGradeHorariaUseCase
 import com.fatec.horario.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.horario.domain.services.usecase.read.ValidarCoerenciaUseCase;
 
 /**
  * UseCase responsável por orquestrar o processo completo de criação de
@@ -69,6 +70,9 @@ public class CriarAlocacaoUseCase {
     @Autowired
     private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
+    @Autowired
+    private ValidarCoerenciaUseCase validarCoerenciaCurso;
+
     @Transactional
     public Alocacao executar(Alocacao entity, long usuarioAlteracao) {
 
@@ -108,6 +112,9 @@ public class CriarAlocacaoUseCase {
 
         // registrar histórico de criação
         historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);       
+
+        // validar coerência entre curso da grade, turma e disciplina
+        validarCoerenciaCurso.validar(entity);
 
         return alocacaoSalva;
     }

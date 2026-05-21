@@ -1,0 +1,41 @@
+package com.fatec.horario.domain.services.usecase.read;
+
+import org.springframework.stereotype.Service;
+
+import com.fatec.horario.domain.entities.Alocacao;
+
+@Service
+public class ValidarCoerenciaUseCase {
+
+    public void validar(Alocacao entity) {
+
+        Long cursoGradeId =
+                entity.getGradeHoraria()
+                      .getCurso()
+                      .getId();
+
+        Long cursoTurmaId =
+                entity.getTurma()
+                      .getCurso()
+                      .getId();
+
+        Long cursoDisciplinaId =
+                entity.getDisciplina()
+                      .getCurso()
+                      .getId();
+
+        // validar turma x grade
+        if (!cursoTurmaId.equals(cursoGradeId)) {
+
+            throw new RuntimeException(
+                    "A turma selecionada não pertence ao curso desta grade");
+        }
+
+        // validar disciplina x turma
+        if (!cursoDisciplinaId.equals(cursoTurmaId)) {
+
+            throw new RuntimeException(
+                    "A disciplina não pertence ao curso da turma");
+        }
+    }
+}
