@@ -118,4 +118,28 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
     List<Alocacao> findByGradeHorariaId(
             Long gradeHorariaId);
+
+            // Para validar a carga horária total da disciplina na grade horária, precisamos somar a duração de todas as alocações daquela disciplina e grade horária:
+
+           @Query("""
+               SELECT COALESCE(SUM(a.horario.duracao), 0) 
+               FROM Alocacao a 
+               WHERE a.disciplina.id = :disciplinaId
+               AND a.gradeHoraria.id = :gradeHorariaId
+               """)
+        int somarDuracaoPorDisciplinaEGrade(
+                @Param("disciplinaId") Long disciplinaId, 
+                @Param("gradeHorariaId") Long gradeHorariaId);
+
+        @Query("""
+               SELECT COALESCE(SUM(a.horario.duracao), 0) 
+               FROM Alocacao a 
+               WHERE a.disciplina.id = :disciplinaId 
+               AND a.gradeHoraria.id = :gradeHorariaId
+               AND a.id <> :alocacaoId
+               """)
+        int somarDuracaoPorDisciplinaEGradeEIdNot(
+                @Param("disciplinaId") Long disciplinaId, 
+                @Param("gradeHorariaId") Long gradeHorariaId,
+                @Param("alocacaoId") Long alocacaoId);
 }
