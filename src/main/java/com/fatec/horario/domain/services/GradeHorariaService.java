@@ -12,6 +12,7 @@ import com.fatec.horario.domain.entities.Curso;
 import com.fatec.horario.domain.entities.GradeHoraria;
 import com.fatec.horario.domain.entities.PeriodoLetivo;
 import com.fatec.horario.domain.entities.Status;
+import com.fatec.horario.domain.services.usecase.read.ValidarPeriodoLetivoAtivoUseCase;
 import com.fatec.horario.domain.services.usecase.write.ValidarGradeHorariaValidaUseCase;
 import com.fatec.horario.dto.gradeHoraria.GradeHorariaRequest;
 import com.fatec.horario.dto.gradeHoraria.GradeHorariaResponse;
@@ -37,6 +38,9 @@ public class GradeHorariaService {
         @Autowired
         private ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
 
+        @Autowired
+        private ValidarPeriodoLetivoAtivoUseCase validarPeriodoLetivoAtivoUseCase;
+
         @Transactional
         public GradeHorariaResponse criar(GradeHorariaRequest request) {
                 GradeHoraria entity = GradeHorariaMapper.toEntity(request);
@@ -54,6 +58,8 @@ public class GradeHorariaService {
                 entity.setDataCriacao(LocalDateTime.now());
                 entity.setStatus(request.status());
                 validarGradeHorariaValidaUseCase.validarGradeAtivaDuplicada(entity);
+                validarPeriodoLetivoAtivoUseCase.executar(entity);
+
                 return GradeHorariaMapper.toResponse(repository.save(entity));
         }
 
@@ -103,6 +109,7 @@ public class GradeHorariaService {
                 entity.setCurso(curso);
                 entity.setPeriodoLetivo(periodo);
                 validarGradeHorariaValidaUseCase.validarGradeAtivaDuplicada(entity);
+                validarPeriodoLetivoAtivoUseCase.executar(entity);
                 return GradeHorariaMapper.toResponse(repository.save(entity));
         }
 
