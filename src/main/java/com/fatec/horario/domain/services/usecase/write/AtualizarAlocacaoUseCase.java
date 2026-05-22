@@ -88,7 +88,7 @@ public class AtualizarAlocacaoUseCase {
         );
 
         // Validar limite máximo da carga horária total da disciplina 
-        validarCargaHorariaDisciplina.executarAtualizacao(entity);
+        validarCargaHorariaDisciplina.executar(entity);
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
