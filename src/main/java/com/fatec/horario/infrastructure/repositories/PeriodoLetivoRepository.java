@@ -41,4 +41,14 @@ public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Lo
             @Param("dataInicio") java.time.LocalDate dataInicio,
             @Param("dataFim") java.time.LocalDate dataFim,
             Pageable pageable);
+
+
+    @Query("""
+            SELECT COUNT(p) > 0
+            FROM PeriodoLetivo p
+            WHERE p.id = :periodoLetivoId
+              AND p.status = com.fatec.horario.domain.entities.Status.ATIVO
+            """)
+    boolean existsPeriodoLetivoAtivo(@Param("periodoLetivoId") Long periodoLetivoId);
 }
+
