@@ -31,6 +31,8 @@ import com.fatec.horario.domain.services.usecase.read.ValidarVinculoProfessorDis
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.horario.web.exception.BusinessException;
 
+import com.fatec.horario.domain.services.usecase.read.ValidarConflitoSalaHorarioUseCase;
+
 @ExtendWith(MockitoExtension.class)
 class CriarAlocacaoUseCaseTest {
 
@@ -51,6 +53,9 @@ class CriarAlocacaoUseCaseTest {
 
     @Mock
     private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+
+    @Mock
+    private ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
 
     @Mock
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
@@ -76,6 +81,7 @@ class CriarAlocacaoUseCaseTest {
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
         doNothing().when(validarConflitoTurmaHorario).executar(entity);
+        doNothing().when(validarConflitoSalaHorario).executar(entity);
         doNothing().when(validarDuplicidade).executarCriacao(entity);
         when(alocacaoRepository.save(entity)).thenReturn(alocacaoSalva);
 
@@ -97,6 +103,7 @@ class CriarAlocacaoUseCaseTest {
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
         doNothing().when(validarConflitoTurmaHorario).executar(entity);
+        doNothing().when(validarConflitoSalaHorario).executar(entity);
         doThrow(new BusinessException("duplicidade")).when(validarDuplicidade).executarCriacao(entity);
 
         assertThrows(BusinessException.class, () -> useCase.executar(entity, 99L));
