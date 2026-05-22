@@ -30,6 +30,21 @@ public interface GradeHorariaRepository extends JpaRepository<GradeHoraria, Long
 
     Optional<GradeHoraria> findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(
             Long cursoId,
-            Long periodoLetivoId);
+            Long periodoLetivoId
+    );
 
+    // Verifica se já existe grade ativa para o curso e período letivo
+    boolean existsByCursoIdAndPeriodoLetivoIdAndStatus(
+            Long cursoId,
+            Long periodoLetivoId,
+            Status status
+    );
+
+    // Verifica se já existe outra grade ativa para o curso e período letivo
+    boolean existsByCursoIdAndPeriodoLetivoIdAndStatusAndIdNot(
+            Long cursoId,
+            Long periodoLetivoId,
+            Status status,
+            Long id
+    );
 }

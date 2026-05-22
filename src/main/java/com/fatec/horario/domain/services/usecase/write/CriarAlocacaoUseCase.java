@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.horario.domain.entities.Alocacao;
 import com.fatec.horario.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaDisciplinaUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
@@ -16,6 +17,7 @@ import com.fatec.horario.domain.services.usecase.read.ValidarReferenciasObrigato
 import com.fatec.horario.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.horario.domain.services.usecase.read.ValidarConflitoSalaHorarioUseCase;
+import com.fatec.horario.domain.services.usecase.read.ValidarCoerenciaUseCase;
 
 /**
  * UseCase responsável por orquestrar o processo completo de criação de
@@ -42,6 +44,9 @@ public class CriarAlocacaoUseCase {
 
     @Autowired
     private ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
+
+    @Autowired
+    private ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
 
     @Autowired
     private ValidarGradeHorariaUseCase validarGradeHoraria;
@@ -73,6 +78,9 @@ public class CriarAlocacaoUseCase {
     @Autowired
     private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
+    @Autowired
+    private ValidarCoerenciaUseCase validarCoerenciaCurso;
+
     @Transactional
     public Alocacao executar(Alocacao entity, long usuarioAlteracao) {
 
@@ -85,6 +93,9 @@ public class CriarAlocacaoUseCase {
                 entity.getDisciplina(), 
                 entity.getSala()
         );
+
+        // Validar limite máximo da carga horária total da disciplina
+        validarCargaHorariaDisciplina.executar(entity);
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
@@ -115,6 +126,9 @@ public class CriarAlocacaoUseCase {
 
         // registrar histórico de criação
         historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);       
+
+        // validar coerência entre curso da grade, turma e disciplina
+        validarCoerenciaCurso.validar(entity);
 
         return alocacaoSalva;
     }
