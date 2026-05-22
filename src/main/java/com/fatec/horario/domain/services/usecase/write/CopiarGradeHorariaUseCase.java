@@ -28,11 +28,16 @@ public class CopiarGradeHorariaUseCase {
     @Autowired
     private ValidarCopiarGradeHorariaUseCase validarCopiaGradeHorariaUseCase;
 
+    // NOVA VALIDAÇÃO
+    @Autowired
+    private ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
+
     @Transactional
     public GradeHoraria executar(Long idGradeOrigem, GradeHoraria dadosNovaGrade) {
 
         // busca alocações uma vez só
-        List<Alocacao> alocacoesAnteriores = alocacaoRepository.findByGradeHorariaId(idGradeOrigem);
+        List<Alocacao> alocacoesAnteriores =
+                alocacaoRepository.findByGradeHorariaId(idGradeOrigem);
 
         // valida antes da regra principal
         validarCopiaGradeHorariaUseCase
@@ -40,20 +45,30 @@ public class CopiarGradeHorariaUseCase {
 
         // busca grade origem
         GradeHoraria gradeAnterior = gradeHorariaRepository.findById(idGradeOrigem)
-                .orElseThrow(() -> new BusinessException("Grade horária de origem não encontrada."));
+                .orElseThrow(() ->
+                        new BusinessException("Grade horária de origem não encontrada."));
 
         // cria nova grade
         GradeHoraria novaGrade = new GradeHoraria();
+
         novaGrade.setVersao(
                 dadosNovaGrade.getVersao() != null
                         ? dadosNovaGrade.getVersao() + 1
                         : 1);
 
         novaGrade.setDataCriacao(LocalDateTime.now());
+
         novaGrade.setStatus(Status.ATIVO);
+
         novaGrade.setCurso(gradeAnterior.getCurso());
+
         novaGrade.setPeriodoLetivo(dadosNovaGrade.getPeriodoLetivo());
 
+        // NOVA VALIDAÇÃO DA ISSUE #56
+        validarGradeHorariaValidaUseCase
+                .validarGradeAtivaDuplicada(novaGrade);
+
+        // salva nova grade
         novaGrade = gradeHorariaRepository.save(novaGrade);
 
         // cria novas alocações
