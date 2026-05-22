@@ -3,6 +3,7 @@ package com.fatec.horario.domain.services.usecase.read;
 import org.springframework.stereotype.Service;
 
 import com.fatec.horario.domain.entities.Alocacao;
+import com.fatec.horario.web.exception.BusinessException;
 
 @Service
 public class ValidarCoerenciaUseCase {
@@ -27,14 +28,14 @@ public class ValidarCoerenciaUseCase {
         // validar turma x grade
         if (!cursoTurmaId.equals(cursoGradeId)) {
 
-            throw new RuntimeException(
+            throw new BusinessException(
                     "A turma selecionada não pertence ao curso desta grade");
         }
 
         // validar disciplina x turma
         if (!cursoDisciplinaId.equals(cursoTurmaId)) {
 
-            throw new RuntimeException(
+            throw new BusinessException(
                     "A disciplina não pertence ao curso da turma");
         }
     }
