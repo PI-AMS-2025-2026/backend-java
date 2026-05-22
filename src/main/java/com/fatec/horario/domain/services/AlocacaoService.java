@@ -28,6 +28,8 @@ public class AlocacaoService {
         @Autowired
         private AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
+
+
         public AlocacaoResponse criar(AlocacaoRequest request) {
 
                 Alocacao entity = AlocacaoMapper.toEntity(request);

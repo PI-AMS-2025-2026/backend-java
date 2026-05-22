@@ -15,6 +15,7 @@ import com.fatec.horario.domain.services.usecase.read.ValidarGradeHorariaUseCase
 import com.fatec.horario.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.horario.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.horario.domain.services.usecase.read.ValidarConflitoSalaHorarioUseCase;
 
 /**
  * UseCase responsável por orquestrar o processo completo de criação de
@@ -53,6 +54,9 @@ public class CriarAlocacaoUseCase {
 
     @Autowired
     private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+
+    @Autowired
+    private ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
 
     @Autowired
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
@@ -96,6 +100,9 @@ public class CriarAlocacaoUseCase {
         validarDisponibilidadeProfessor.executar(entity);
         // validar conflito da turma
         validarConflitoTurmaHorario.executar(entity);
+
+        // validar conflito da sala
+        validarConflitoSalaHorario.executar(entity);
 
         // validar capacidade da sala
         validarCapacidadeSala.executar(entity);
