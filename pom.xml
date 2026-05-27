@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.fatec</groupId>
-	<artifactId>horario</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>horario</name>
-	<description>PI project</description>
+	<artifactId>gini</artifactId>
+	<version>0.0.1</version>
+	<name>gini</name>
+	<description>Backend do Projeto Integrador desenvolvido para automatizar a criação, validação e gerenciamento de grades horárias acadêmicas da Fatec Itu.</description>
 	<url/>
 	<licenses>
 		<license/>
