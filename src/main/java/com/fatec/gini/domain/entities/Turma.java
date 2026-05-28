@@ -1,14 +1,7 @@
 package com.fatec.gini.domain.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -32,6 +25,14 @@ public class Turma {
     @Column(name = "numero_alunos", nullable = false)
     private Integer numeroAlunos;
 
+    // Data de criação do registro
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    // Data da última atualização
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
@@ -53,80 +54,90 @@ public class Turma {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getCodigo() {
         return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
     }
 
     public Integer getPeriodo() {
         return periodo;
     }
 
-    public void setPeriodo(Integer periodo) {
-        this.periodo = periodo;
-    }
-
     public Integer getAno() {
         return ano;
-    }
-
-    public void setAno(Integer ano) {
-        this.ano = ano;
     }
 
     public Integer getNumeroAlunos() {
         return numeroAlunos;
     }
 
-    public void setNumeroAlunos(Integer numeroAlunos) {
-        this.numeroAlunos = numeroAlunos;
-    }
-
     public Curso getCurso() {
         return curso;
-    }
-
-    public void setCurso(Curso curso) {
-        this.curso = curso;
     }
 
     public List<Alocacao> getAlocacoes() {
         return alocacoes;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setPeriodo(Integer periodo) {
+        this.periodo = periodo;
+    }
+
+    public void setAno(Integer ano) {
+        this.ano = ano;
+    }
+
+    public void setNumeroAlunos(Integer numeroAlunos) {
+        this.numeroAlunos = numeroAlunos;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+
     public void setAlocacoes(List<Alocacao> alocacoes) {
         this.alocacoes = alocacoes;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return id == null ? 0 : id.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
+
         if (this == obj)
             return true;
-        if (obj == null)
+
+        if (obj == null || getClass() != obj.getClass())
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+
         Turma other = (Turma) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+
+        return id != null && id.equals(other.id);
     }
 }

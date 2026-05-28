@@ -10,7 +10,10 @@ public record GradeHorariaResponse(
     Long id,
     Integer versao,
     LocalDateTime dataCriacao,
-    Status status, 
+    Status status,
     CursoResponse curso,
-    PeriodoLetivoResponse periodoLetivo
+    PeriodoLetivoResponse periodoLetivo,
+
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {}
