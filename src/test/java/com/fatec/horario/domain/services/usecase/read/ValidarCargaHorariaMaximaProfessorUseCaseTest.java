@@ -17,10 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
-import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
+import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

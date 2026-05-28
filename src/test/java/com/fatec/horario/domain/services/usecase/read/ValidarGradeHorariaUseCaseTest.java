@@ -12,13 +12,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.Curso;
-import com.fatec.horario.domain.entities.GradeHoraria;
-import com.fatec.horario.domain.entities.PeriodoLetivo;
-import com.fatec.horario.domain.entities.Status;
-import com.fatec.horario.infrastructure.repositories.GradeHorariaRepository;
-import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.Curso;
+import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.PeriodoLetivo;
+import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
+import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
 class ValidarGradeHorariaUseCaseTest {

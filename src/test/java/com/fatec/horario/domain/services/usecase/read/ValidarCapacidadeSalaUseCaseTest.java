@@ -7,10 +7,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.Sala;
-import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.Sala;
+import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
+import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
 class ValidarCapacidadeSalaUseCaseTest {

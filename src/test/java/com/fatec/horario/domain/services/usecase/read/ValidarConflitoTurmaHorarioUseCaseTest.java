@@ -11,12 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
-import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
 class ValidarConflitoTurmaHorarioUseCaseTest {

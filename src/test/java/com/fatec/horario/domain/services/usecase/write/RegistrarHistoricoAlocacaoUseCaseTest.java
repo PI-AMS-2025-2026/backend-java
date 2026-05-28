@@ -12,16 +12,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.domain.entities.Disciplina;
-import com.fatec.horario.domain.entities.GradeHoraria;
-import com.fatec.horario.domain.entities.HistoricoAlteracao;
-import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.domain.entities.Sala;
-import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.domain.entities.Usuario;
-import com.fatec.horario.infrastructure.repositories.HistoricoAlteracaoRepository;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Disciplina;
+import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.HistoricoAlteracao;
+import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.Sala;
+import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.services.usecase.write.RegistrarHistoricoAlocacaoUseCase;
+import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
 
 @ExtendWith(MockitoExtension.class)
 class RegistrarHistoricoAlocacaoUseCaseTest {
@@ -85,9 +86,9 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         horario.setId(idHorario);
 
         GradeHoraria gradeHoraria = new GradeHoraria();
-        gradeHoraria.setCurso(new com.fatec.horario.domain.entities.Curso());
+        gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
         gradeHoraria.getCurso().setId(70L);
-        gradeHoraria.setPeriodoLetivo(new com.fatec.horario.domain.entities.PeriodoLetivo());
+        gradeHoraria.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
         gradeHoraria.getPeriodoLetivo().setId(80L);
         java.lang.reflect.Field idField;
         try {

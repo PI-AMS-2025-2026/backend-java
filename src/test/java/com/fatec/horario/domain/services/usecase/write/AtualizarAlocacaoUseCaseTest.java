@@ -14,22 +14,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.DiaSemana;
-import com.fatec.horario.domain.entities.Disciplina;
-import com.fatec.horario.domain.entities.GradeHoraria;
-import com.fatec.horario.domain.entities.Horario;
-import com.fatec.horario.domain.entities.Sala;
-import com.fatec.horario.domain.entities.Turma;
-import com.fatec.horario.domain.entities.Usuario;
-import com.fatec.horario.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
-import com.fatec.horario.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
-import com.fatec.horario.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
-import com.fatec.horario.domain.services.usecase.read.ValidarGradeHorariaUseCase;
-import com.fatec.horario.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
-import com.fatec.horario.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
-import com.fatec.horario.infrastructure.repositories.AlocacaoRepository;
-import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Disciplina;
+import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.Sala;
+import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
+import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
+import com.fatec.gini.domain.services.usecase.write.RegistrarHistoricoAlocacaoUseCase;
+import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
 class AtualizarAlocacaoUseCaseTest {
@@ -128,9 +130,9 @@ class AtualizarAlocacaoUseCaseTest {
         horario.setId(6L);
 
         GradeHoraria gradeHoraria = new GradeHoraria();
-        gradeHoraria.setCurso(new com.fatec.horario.domain.entities.Curso());
+        gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
         gradeHoraria.getCurso().setId(7L);
-        gradeHoraria.setPeriodoLetivo(new com.fatec.horario.domain.entities.PeriodoLetivo());
+        gradeHoraria.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
         gradeHoraria.getPeriodoLetivo().setId(8L);
 
         Alocacao alocacao = new Alocacao();

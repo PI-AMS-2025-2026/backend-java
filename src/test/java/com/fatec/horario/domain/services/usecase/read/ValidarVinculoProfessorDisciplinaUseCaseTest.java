@@ -10,11 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fatec.horario.domain.entities.Alocacao;
-import com.fatec.horario.domain.entities.Disciplina;
-import com.fatec.horario.domain.entities.Usuario;
-import com.fatec.horario.infrastructure.repositories.ProfessorDisciplinaRepository;
-import com.fatec.horario.web.exception.BusinessException;
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.Disciplina;
+import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
+import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
 class ValidarVinculoProfessorDisciplinaUseCaseTest {
