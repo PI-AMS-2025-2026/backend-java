@@ -1,5 +1,7 @@
 package com.fatec.gini.dto.alocacao;
 
+import java.time.LocalDateTime;
+
 import com.fatec.gini.dto.diaSemana.DiaSemanaResponse;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
@@ -16,5 +18,7 @@ public record AlocacaoResponse(
         UsuarioResponse usuario,
         DiaSemanaResponse diaSemana,
         HorarioResponse horario,
-        GradeHorariaResponse gradeHoraria) {
+        GradeHorariaResponse gradeHoraria,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

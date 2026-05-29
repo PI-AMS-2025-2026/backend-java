@@ -1,6 +1,7 @@
 package com.fatec.gini.dto.periodoLetivo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fatec.gini.domain.entities.Status;
 
@@ -10,5 +11,7 @@ public record PeriodoLetivoResponse(
         Integer periodo,
         LocalDate dataInicio,
         LocalDate dataFim,
-        Status status) {
+        Status status,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

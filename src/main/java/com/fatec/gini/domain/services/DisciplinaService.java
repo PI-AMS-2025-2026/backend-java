@@ -31,8 +31,8 @@ public class DisciplinaService {
     @Autowired
     private TipoSalaRepository tipoSalaRepository;
 
-        @Autowired
-        private ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
+    @Autowired
+    private ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
     @Transactional
     public DisciplinaResponse criar(DisciplinaRequest request) {
@@ -40,23 +40,27 @@ public class DisciplinaService {
         Disciplina entity = DisciplinaMapper.toEntity(request);
 
         Curso curso = cursoRepository.findById(request.curso().id())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Curso não encontrado com ID: " + request.curso().id()));
 
         TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSala().id())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
-
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
 
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
 
-        return DisciplinaMapper.toResponse(repository.save(entity));
+        Disciplina disciplinaCriada = repository.save(entity);
+
+        return DisciplinaMapper.toResponse(disciplinaCriada);
     }
 
     @Transactional(readOnly = true)
     public DisciplinaResponse buscarPorId(Long id) {
 
         Disciplina entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Disciplina não encontrada com ID: " + id));
 
         return DisciplinaMapper.toResponse(entity);
     }
@@ -84,13 +88,16 @@ public class DisciplinaService {
     public DisciplinaResponse atualizar(Long id, DisciplinaRequest request) {
 
         Disciplina entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Disciplina não encontrada com ID: " + id));
 
         Curso curso = cursoRepository.findById(request.curso().id())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Curso não encontrado com ID: " + request.curso().id()));
 
         TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSala().id())
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
 
         entity.setNome(request.nome());
         entity.setCargaHoraria(request.cargaHoraria());
@@ -102,18 +109,21 @@ public class DisciplinaService {
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
 
-        return DisciplinaMapper.toResponse(repository.save(entity));
+        Disciplina disciplinaAtualizada = repository.save(entity);
+
+        return DisciplinaMapper.toResponse(disciplinaAtualizada);
     }
 
     @Transactional
     public void deletar(Long id) {
 
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Disciplina não encontrada com ID: " + id);
+            throw new EntityNotFoundException(
+                    "Disciplina não encontrada com ID: " + id);
         }
 
-                validarDisciplinaSemVinculos.validar(id);
+        validarDisciplinaSemVinculos.validar(id);
 
-                repository.deleteById(id);
+        repository.deleteById(id);
     }
 }
