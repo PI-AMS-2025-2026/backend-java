@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "api.security.token.secret",
+  "type": "java.lang.String",
+  "description": "Chave unica para gerar JWT"
+}]}

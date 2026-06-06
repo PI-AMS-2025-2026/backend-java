@@ -67,7 +67,7 @@ public class Usuario implements UserDetails {
     private TipoUsuario tipoUsuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_curso", nullable = false)
+    @JoinColumn(name = "id_curso", nullable = true)
     private Curso curso;
 
     public Usuario(String nome, String email, String senha, Status status, TipoUsuario tipoUsuario) {

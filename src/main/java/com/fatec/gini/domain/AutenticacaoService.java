@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 
 @Service
-public class AuthorizationService implements UserDetailsService {
+public class AutenticacaoService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository repository;

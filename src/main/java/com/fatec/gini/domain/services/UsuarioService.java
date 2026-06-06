@@ -30,9 +30,6 @@ public class UsuarioService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder encoder;
-
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
@@ -44,8 +41,9 @@ public class UsuarioService {
                         "Curso não encontrado com ID: " + request.curso().id()));
             usuario.setCurso(curso);
         }
+        String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
 
-        usuario.setSenha(encoder.encode(request.senha()));
+        usuario.setSenha(encrypSenha);
         usuario.setCreatedAt(LocalDateTime.now());
         usuario.setUpdatedAt(LocalDateTime.now());
 
@@ -114,5 +112,10 @@ public class UsuarioService {
         usuario.setUpdatedAt(LocalDateTime.now());
 
         repository.save(usuario);
+    }
+
+    @Transactional
+    public boolean jaUsuarioExisteEmail(String email){
+       return this.repository.findByEmail(email) != null;
     }
 }

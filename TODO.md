@@ -1,4 +1,4 @@
-- Configurar spring security
+
 - criar tests e verificar todas as validações
 - corrigir issues
 - validar rotas e configurar postman
@@ -10,3 +10,6 @@
 - trocar @autowired por constructor injection
 - Ajeitar readme
 - Criar sistema de log
+
+
+- implementar o Refresh Token
