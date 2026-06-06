@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoUsuario;
 import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
@@ -56,10 +55,8 @@ public class UsuarioService {
     public Page<UsuarioResponse> listar(
             String nome,
             String email,
-            String cidade,
             Status status,
             Long tipoUsuarioId,
-            String tipoUsuarioNome,
             int page,
             int size
 
@@ -68,10 +65,9 @@ public class UsuarioService {
         var pageUsuario = repository.buscarPorFiltros(
             nome,
             email,
-            cidade,
             status,
             tipoUsuarioId,
-            tipoUsuarioNome,
+            
             pageRequest);
 
         return pageUsuario.map(UsuarioMapper::toResponse);

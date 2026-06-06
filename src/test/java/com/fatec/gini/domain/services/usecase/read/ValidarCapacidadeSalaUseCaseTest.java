@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.read;
+package com.fatec.gini.domain.services.usecase.read;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
-import com.fatec.gini.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)

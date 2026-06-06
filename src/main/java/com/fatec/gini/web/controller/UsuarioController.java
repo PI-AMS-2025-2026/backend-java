@@ -36,7 +36,7 @@ public class UsuarioController {
     public ResponseEntity<Page<UsuarioResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) String cidade,
+            
             @RequestParam(required = false) Status status,
             @RequestParam(name = "tipo_usuario",required = false) Long tipoUsuario,
             @RequestParam(name = "tipo_usuario_nome", required = false) String tipoUsuarioNome,
@@ -45,11 +45,9 @@ public class UsuarioController {
 
         return ResponseEntity.ok(service.listar(
                 nome,
-                email,
-                cidade,
+                email,                
                 status,
-                tipoUsuario,
-                tipoUsuarioNome,
+                tipoUsuario,                
                 page,
                 size));
     }

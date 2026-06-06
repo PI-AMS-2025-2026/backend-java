@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.read;
+package com.fatec.gini.domain.services.usecase.read;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,7 +17,6 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.GradeHoraria;
 import com.fatec.gini.domain.entities.PeriodoLetivo;
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
 import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 

@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.read;
+package com.fatec.gini.domain.services.usecase.read;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.user.Usuario;
-import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
