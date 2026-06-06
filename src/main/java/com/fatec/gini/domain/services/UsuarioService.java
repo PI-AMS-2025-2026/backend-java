@@ -12,12 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.entities.TipoUsuario;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
 import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
-import com.fatec.gini.infrastructure.repositories.TipoUsuarioRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -27,9 +26,6 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository repository;
-
-    @Autowired
-    private TipoUsuarioRepository tipoRepository;
 
     @Autowired
     private CursoRepository cursoRepository;
@@ -42,13 +38,6 @@ public class UsuarioService {
 
         Usuario usuario = UsuarioMapper.toEntity(request);
 
-        if (request.tipoUsuario() != null) {
-            TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de usuário não encontrado com ID: " + request.tipoUsuario().id()));
-            usuario.setTipo_usuario(tipo);
-        }
-
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
@@ -57,8 +46,8 @@ public class UsuarioService {
         }
 
         usuario.setSenha(encoder.encode(request.senha()));
-        usuario.setCreated_at(LocalDateTime.now());
-        usuario.setUpdated_at(LocalDateTime.now());
+        usuario.setCreatedAt(LocalDateTime.now());
+        usuario.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(usuario));
     }
@@ -103,15 +92,9 @@ public class UsuarioService {
 
         usuario.setNome(request.nome());
         usuario.setEmail(request.email());
-        usuario.setCidade(request.cidade());
         usuario.setStatus(request.status());
-
-        if (request.tipoUsuario() != null) {
-            TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de usuário não encontrado com ID: " + request.tipoUsuario().id()));
-            usuario.setTipo_usuario(tipo);
-        }
+        usuario.setTipoUsuario(request.tipoUsuario());
+        
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
@@ -120,7 +103,7 @@ public class UsuarioService {
             usuario.setCurso(curso);
         }
 
-        usuario.setUpdated_at(LocalDateTime.now());
+        usuario.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(usuario));
     }
@@ -131,7 +114,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
         usuario.setStatus(Status.INATIVO);
-        usuario.setUpdated_at(LocalDateTime.now());
+        usuario.setUpdatedAt(LocalDateTime.now());
 
         repository.save(usuario);
     }

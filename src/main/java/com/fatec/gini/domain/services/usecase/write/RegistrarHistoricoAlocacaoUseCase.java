@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.HistoricoAlteracao;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
 
 /**

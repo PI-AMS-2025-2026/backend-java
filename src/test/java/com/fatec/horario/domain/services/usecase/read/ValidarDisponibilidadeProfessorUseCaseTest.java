@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Horario;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;

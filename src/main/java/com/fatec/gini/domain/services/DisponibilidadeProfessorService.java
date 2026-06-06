@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 import com.fatec.gini.domain.entities.Horario;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
 import com.fatec.gini.infrastructure.mappers.DisponibilidadeProfessorMapper;

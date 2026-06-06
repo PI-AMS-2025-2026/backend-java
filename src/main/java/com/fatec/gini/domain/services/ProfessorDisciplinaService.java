@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.*;
+import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaRequest;
 import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaResponse;
 import com.fatec.gini.infrastructure.mappers.ProfessorDisciplinaMapper;

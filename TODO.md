@@ -6,3 +6,7 @@
 - configurar postgres com docker e flyway
 - refatorar código para melhor explicação no swagger
 - criar site para documentação e tutorial do projeto
+- corrigir todos os TODOS
+- trocar @autowired por constructor injection
+- Ajeitar readme
+- Criar sistema de log

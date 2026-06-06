@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.user.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {

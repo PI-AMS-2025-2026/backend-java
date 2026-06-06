@@ -21,7 +21,7 @@ import com.fatec.gini.domain.entities.GradeHoraria;
 import com.fatec.gini.domain.entities.Horario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
