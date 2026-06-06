@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.entities.user.TipoUsuario;
 import com.fatec.gini.domain.services.UsuarioService;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
@@ -38,7 +39,7 @@ public class UsuarioController {
             @RequestParam(required = false) String email,
             
             @RequestParam(required = false) Status status,
-            @RequestParam(name = "tipo_usuario",required = false) Long tipoUsuario,
+            @RequestParam(name = "tipo_usuario",required = false) TipoUsuario tipoUsuario,
             @RequestParam(name = "tipo_usuario_nome", required = false) String tipoUsuarioNome,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

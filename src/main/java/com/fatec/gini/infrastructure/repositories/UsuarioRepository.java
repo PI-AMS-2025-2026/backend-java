@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.entities.user.TipoUsuario;
 import com.fatec.gini.domain.entities.user.Usuario;
 
 
@@ -23,8 +24,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      * - email: busca parcial, ignorando maiúsculas/minúsculas.
      * - cidade: busca parcial, ignorando maiúsculas/minúsculas.
      * - status: comparação exata, respeitando maiúsculas/minúsculas.
-     * - tipoUsuarioId: comparação exata.
-     * - tipoUsuarioNome: busca parcial por nome do tipo de usuário, ignorando maiúsculas/minúsculas.
+    * - tipoUsuario: comparação exata do enum.
      *
      * Quando um parâmetro é null, o filtro correspondente é ignorado.
      */
@@ -34,13 +34,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
         WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
           AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
           AND (:status IS NULL OR u.status = :status)
-          AND (:tipoUsuario IS NULL OR u.tipo_usuario.id = :tipoUsuario)
+                    AND (:tipoUsuario IS NULL OR u.tipoUsuario = :tipoUsuario)
         """)
     Page<Usuario> buscarPorFiltros(
         @Param("nome") String nome,
         @Param("email") String email,
         @Param("status") Status status,
-        @Param("tipoUsuario") Long tipoUsuario,
+                @Param("tipoUsuario") TipoUsuario tipoUsuario,
         Pageable pageable);
 
 

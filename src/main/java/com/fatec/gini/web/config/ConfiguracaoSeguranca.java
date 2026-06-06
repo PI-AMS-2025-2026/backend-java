@@ -1,6 +1,7 @@
 package com.fatec.gini.web.config;
 
 import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -46,6 +47,10 @@ public class ConfiguracaoSeguranca {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> 
+                    auth.requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+                )
                 .build()
 
         ;

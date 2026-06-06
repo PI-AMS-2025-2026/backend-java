@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.entities.user.TipoUsuario;
 import com.fatec.gini.domain.entities.user.Usuario;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
@@ -56,7 +57,7 @@ public class UsuarioService {
             String nome,
             String email,
             Status status,
-            Long tipoUsuarioId,
+            TipoUsuario tipoUsuario,
             int page,
             int size
 
@@ -66,7 +67,7 @@ public class UsuarioService {
             nome,
             email,
             status,
-            tipoUsuarioId,
+            tipoUsuario,
             
             pageRequest);
 
