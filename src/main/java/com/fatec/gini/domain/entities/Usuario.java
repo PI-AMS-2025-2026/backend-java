@@ -1,4 +1,4 @@
-package com.fatec.gini.domain.entities.user;
+package com.fatec.gini.domain.entities;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -8,9 +8,6 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fatec.gini.domain.entities.Curso;
-import com.fatec.gini.domain.entities.Status;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

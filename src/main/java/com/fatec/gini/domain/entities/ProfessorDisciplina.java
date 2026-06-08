@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.entities;
 
-import com.fatec.gini.domain.entities.user.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

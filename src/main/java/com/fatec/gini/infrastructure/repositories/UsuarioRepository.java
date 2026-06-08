@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.user.TipoUsuario;
-import com.fatec.gini.domain.entities.user.Usuario;
+import com.fatec.gini.domain.entities.TipoUsuario;
+import com.fatec.gini.domain.entities.Usuario;
 
 
 @Repository

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fatec.gini.domain.entities.user.Usuario;
+import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.domain.services.UsuarioService;
 import com.fatec.gini.dto.login.LoginRequest;
@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@Profile("!test")
+@Profile("prod")
 public class AutenticacaoController {
 
     @Autowired

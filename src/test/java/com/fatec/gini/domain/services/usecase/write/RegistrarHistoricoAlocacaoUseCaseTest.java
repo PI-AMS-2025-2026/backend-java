@@ -20,7 +20,7 @@ import com.fatec.gini.domain.entities.HistoricoAlteracao;
 import com.fatec.gini.domain.entities.Horario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
-import com.fatec.gini.domain.entities.user.Usuario;
+import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
 
 @ExtendWith(MockitoExtension.class)

@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@Profile("!test")
+@Profile("prod")
 public class ConfiguracaoSeguranca {
 
     @Autowired

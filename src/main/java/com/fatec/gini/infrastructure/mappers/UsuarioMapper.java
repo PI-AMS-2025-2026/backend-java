@@ -1,6 +1,6 @@
 package com.fatec.gini.infrastructure.mappers;
 
-import com.fatec.gini.domain.entities.user.Usuario;
+import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
 

@@ -19,12 +19,15 @@ import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 /**
  * Camada de Controle: Responsável por expor os endpoints da API e
  * tratar as requisições HTTP (entrada e saída de dados).
  */
+@Tag(name = "Alocações")
 @RestController
 @RequestMapping("/alocacoes")
 @CrossOrigin
@@ -46,6 +49,7 @@ public class AlocacaoController {
      * Realiza a listagem com suporte a filtros opcionais e paginação.
      */
     @GetMapping
+    @Operation(summary = "Listagem de alocações")
     public ResponseEntity<Page<AlocacaoResponse>> listar(
             @RequestParam(required = false) Long turma,
             @RequestParam(required = false) Long disciplina,

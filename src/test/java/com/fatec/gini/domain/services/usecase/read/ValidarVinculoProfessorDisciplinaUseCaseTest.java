@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.user.Usuario;
+import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
