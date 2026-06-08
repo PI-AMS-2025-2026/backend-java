@@ -38,7 +38,7 @@ public class ResourceExceptionHandler {
             MethodArgumentNotValidException exception,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        HttpStatus status = HttpStatus.UNPROCESSABLE_CONTENT;
 
         ValidationError error = new ValidationError();
         error.setTimeStamp(Instant.now());

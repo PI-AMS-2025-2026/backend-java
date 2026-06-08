@@ -208,3 +208,7 @@ Projeto em desenvolvimento.
 
 Projeto Integrador — Fatec Itu
 Análise e Desenvolvimento de Sistemas AMS 2025-2026
+
+
+## Dependencias:
+Lombok (Developer Tools)Spring Web (Web)Spring Boot DevTools (Developer Tools)SpringDoc OpenAPI (Web)Thymeleaf (Template Engines)Apache Freemarker (Template Engines)Spring Security (Security)Spring Data JPA (SQL)Flyway Migration (SQL)H2 Database (SQL)PostgreSQL Driver (SQL)Validation (I/O)

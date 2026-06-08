@@ -5,10 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.entities.TipoUsuario;
 import com.fatec.gini.domain.entities.Usuario;
+
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
@@ -21,29 +24,26 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      * - email: busca parcial, ignorando maiúsculas/minúsculas.
      * - cidade: busca parcial, ignorando maiúsculas/minúsculas.
      * - status: comparação exata, respeitando maiúsculas/minúsculas.
-     * - tipoUsuarioId: comparação exata.
-     * - tipoUsuarioNome: busca parcial por nome do tipo de usuário, ignorando maiúsculas/minúsculas.
+    * - tipoUsuario: comparação exata do enum.
      *
      * Quando um parâmetro é null, o filtro correspondente é ignorado.
      */
     @Query("""
         SELECT u
         FROM Usuario u
-        LEFT JOIN u.tipo_usuario t
         WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
           AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
-          AND (:cidade IS NULL OR LOWER(u.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
           AND (:status IS NULL OR u.status = :status)
-          AND (:tipoUsuarioId IS NULL OR u.tipo_usuario.id = :tipoUsuarioId)
-          AND (:tipoUsuarioNome IS NULL OR LOWER(t.nome) LIKE LOWER(CONCAT('%', :tipoUsuarioNome, '%')))
+                    AND (:tipoUsuario IS NULL OR u.tipoUsuario = :tipoUsuario)
         """)
     Page<Usuario> buscarPorFiltros(
         @Param("nome") String nome,
         @Param("email") String email,
-        @Param("cidade") String cidade,
         @Param("status") Status status,
-        @Param("tipoUsuarioId") Long tipoUsuarioId,
-        @Param("tipoUsuarioNome") String tipoUsuarioNome,
+                @Param("tipoUsuario") TipoUsuario tipoUsuario,
         Pageable pageable);
+
+
+    UserDetails findByEmail(String email);
 
 }

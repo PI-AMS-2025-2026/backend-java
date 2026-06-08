@@ -17,7 +17,6 @@ import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
 import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
-import com.fatec.gini.infrastructure.repositories.TipoUsuarioRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -29,25 +28,12 @@ public class UsuarioService {
     private UsuarioRepository repository;
 
     @Autowired
-    private TipoUsuarioRepository tipoRepository;
-
-    @Autowired
     private CursoRepository cursoRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder encoder;
 
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
         Usuario usuario = UsuarioMapper.toEntity(request);
-
-        if (request.tipoUsuario() != null) {
-            TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de usuário não encontrado com ID: " + request.tipoUsuario().id()));
-            usuario.setTipo_usuario(tipo);
-        }
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
@@ -55,10 +41,11 @@ public class UsuarioService {
                         "Curso não encontrado com ID: " + request.curso().id()));
             usuario.setCurso(curso);
         }
+        String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
 
-        usuario.setSenha(encoder.encode(request.senha()));
-        usuario.setCreated_at(LocalDateTime.now());
-        usuario.setUpdated_at(LocalDateTime.now());
+        usuario.setSenha(encrypSenha);
+        usuario.setCreatedAt(LocalDateTime.now());
+        usuario.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(usuario));
     }
@@ -67,10 +54,8 @@ public class UsuarioService {
     public Page<UsuarioResponse> listar(
             String nome,
             String email,
-            String cidade,
             Status status,
-            Long tipoUsuarioId,
-            String tipoUsuarioNome,
+            TipoUsuario tipoUsuario,
             int page,
             int size
 
@@ -79,10 +64,9 @@ public class UsuarioService {
         var pageUsuario = repository.buscarPorFiltros(
             nome,
             email,
-            cidade,
             status,
-            tipoUsuarioId,
-            tipoUsuarioNome,
+            tipoUsuario,
+            
             pageRequest);
 
         return pageUsuario.map(UsuarioMapper::toResponse);
@@ -103,15 +87,9 @@ public class UsuarioService {
 
         usuario.setNome(request.nome());
         usuario.setEmail(request.email());
-        usuario.setCidade(request.cidade());
         usuario.setStatus(request.status());
-
-        if (request.tipoUsuario() != null) {
-            TipoUsuario tipo = tipoRepository.findById(request.tipoUsuario().id())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de usuário não encontrado com ID: " + request.tipoUsuario().id()));
-            usuario.setTipo_usuario(tipo);
-        }
+        usuario.setTipoUsuario(request.tipoUsuario());
+        
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
@@ -120,7 +98,7 @@ public class UsuarioService {
             usuario.setCurso(curso);
         }
 
-        usuario.setUpdated_at(LocalDateTime.now());
+        usuario.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(usuario));
     }
@@ -131,8 +109,13 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
         usuario.setStatus(Status.INATIVO);
-        usuario.setUpdated_at(LocalDateTime.now());
+        usuario.setUpdatedAt(LocalDateTime.now());
 
         repository.save(usuario);
+    }
+
+    @Transactional
+    public boolean jaUsuarioExisteEmail(String email){
+       return this.repository.findByEmail(email) != null;
     }
 }

@@ -1,6 +1,13 @@
 package com.fatec.gini.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,13 +19,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+/**
+ * Entidade usuario, que sera usada para login no sistema,
+ */
 @Entity
-@Table(name = "usuario", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
-public class Usuario {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "usuario")
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,114 +49,30 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
-    @Column(nullable = false)
-    private String cidade;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    private LocalDateTime updated_at;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_usuario")
+    private TipoUsuario tipoUsuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_usuario", nullable = false)
-    private TipoUsuario tipo_usuario;
-
-    @ManyToOne
-    @JoinColumn(name = "id_curso", nullable = false)
+    @JoinColumn(name = "id_curso", nullable = true)
     private Curso curso;
 
-    public Usuario() {
-    }
-
-    public Usuario(String nome, String email, String senha, String cidade, Status status) {
+    public Usuario(String nome, String email, String senha, Status status, TipoUsuario tipoUsuario) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
-        this.cidade = cidade;
         this.status = status;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public TipoUsuario getTipo_usuario() {
-        return tipo_usuario;
-    }
-
-    public void setTipo_usuario(TipoUsuario tipo_usuario) {
-        this.tipo_usuario = tipo_usuario;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public void setCurso(Curso curso) {
-        this.curso = curso;
+        this.tipoUsuario = tipoUsuario;
     }
 
     @Override
@@ -168,5 +99,41 @@ public class Usuario {
             return false;
         return true;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.tipoUsuario == TipoUsuario.ADMINISTRADOR)
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_COORDENADOR"));
+
+        else
+            return List.of(new SimpleGrantedAuthority("ROLE_COORDENADOR"));
+    }
+
+    /**
+     * Retorna a senha desse usuário
+     */
+    @Override
+    public @Nullable String getPassword() {
+        return senha;
+    }
+
+    /**
+     * Retorna o email desse usuário que é o username
+     */
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    /**
+     * Garante que usuario esta ativo para login
+     */
+    @Override
+    public boolean isEnabled() {
+        return status.equals(Status.ATIVO);
+    }
+
+
 
 }

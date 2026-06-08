@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.infrastructure.repositories.PeriodoLetivoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
@@ -26,7 +27,7 @@ public class ValidarPeriodoLetivoAtivoUseCase {
     }
 
     private void periodoLetivoAtivo(GradeHoraria gradeHoraria) {
-        if (!periodoLetivoRepository.existsPeriodoLetivoAtivo(gradeHoraria.getPeriodoLetivo().getId())) {
+        if (!periodoLetivoRepository.existsByIdAndStatus(gradeHoraria.getPeriodoLetivo().getId(),Status.ATIVO)) {
             throw new BusinessException("Não é permitido criar ou alterar grade horária para um período letivo inativo.");
         }
     }

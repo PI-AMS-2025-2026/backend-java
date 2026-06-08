@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.read;
+package com.fatec.gini.domain.services.usecase.read;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +22,6 @@ import com.fatec.gini.domain.entities.Horario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
-import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;

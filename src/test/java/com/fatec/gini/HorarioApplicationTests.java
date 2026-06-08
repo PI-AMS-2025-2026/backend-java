@@ -1,10 +1,10 @@
-package com.fatec.horario;
+package com.fatec.gini;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HorarioApplicationTests {
+class GiniApplicationTests {
 
 	@Test
 	void contextLoads() {

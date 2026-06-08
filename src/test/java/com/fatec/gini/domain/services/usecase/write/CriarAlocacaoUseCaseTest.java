@@ -1,4 +1,4 @@
-package com.fatec.horario.domain.services.usecase.write;
+package com.fatec.gini.domain.services.usecase.write;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,22 +22,21 @@ import com.fatec.gini.domain.entities.Horario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
-import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
-import com.fatec.gini.domain.services.usecase.write.RegistrarHistoricoAlocacaoUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
-class AtualizarAlocacaoUseCaseTest {
+class CriarAlocacaoUseCaseTest {
 
     @InjectMocks
-    private AtualizarAlocacaoUseCase useCase;
+    private CriarAlocacaoUseCase useCase;
 
     @Mock
     private ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
@@ -55,6 +54,9 @@ class AtualizarAlocacaoUseCaseTest {
     private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
 
     @Mock
+    private ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
+
+    @Mock
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
     @Mock
@@ -64,10 +66,8 @@ class AtualizarAlocacaoUseCaseTest {
     private AlocacaoRepository alocacaoRepository;
 
     @Test
-    void deveAtualizarAlocacaoComSucesso() {
+    void deveCriarAlocacaoComSucesso() {
         Alocacao entity = criarAlocacaoBase();
-        entity.setId(10L);
-
         Usuario usuarioAlteracao = new Usuario();
         usuarioAlteracao.setId(99L);
 
@@ -80,20 +80,19 @@ class AtualizarAlocacaoUseCaseTest {
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
         doNothing().when(validarConflitoTurmaHorario).executar(entity);
-        doNothing().when(validarDuplicidade).executarAtualizacao(entity);
+        doNothing().when(validarConflitoSalaHorario).executar(entity);
+        doNothing().when(validarDuplicidade).executarCriacao(entity);
         when(alocacaoRepository.save(entity)).thenReturn(alocacaoSalva);
 
-        Alocacao resultado = useCase.executar(10L, entity, 99L, "Ajuste necessario");
+        Alocacao resultado = useCase.executar(entity, 99L);
 
         assertSame(alocacaoSalva, resultado);
-        verify(historicoAlocacaoUseCase).registrarAtualizacao(alocacaoSalva, entity, usuarioAlteracao, "Ajuste necessario");
+        verify(historicoAlocacaoUseCase).registrarCriacao(alocacaoSalva, usuarioAlteracao);
     }
 
     @Test
-    void deveLancarExcecaoQuandoSemDisponibilidadeProfessor() {
+    void deveLancarExcecaoQuandoDuplicidadeNaCriacao() {
         Alocacao entity = criarAlocacaoBase();
-        entity.setId(10L);
-
         Usuario usuarioAlteracao = new Usuario();
         usuarioAlteracao.setId(99L);
 
@@ -101,13 +100,15 @@ class AtualizarAlocacaoUseCaseTest {
         when(validarRefObrigatorias.buscarUsuarioAlteracaoPorId(99L)).thenReturn(usuarioAlteracao);
         doNothing().when(validarGradeHoraria).executar(entity);
         doNothing().when(validarVincProfDisciplina).executar(entity);
-        doThrow(new BusinessException("sem disponibilidade")).when(validarDisponibilidadeProfessor).executar(entity);
+        doNothing().when(validarDisponibilidadeProfessor).executar(entity);
+        doNothing().when(validarConflitoTurmaHorario).executar(entity);
+        doNothing().when(validarConflitoSalaHorario).executar(entity);
+        doThrow(new BusinessException("duplicidade")).when(validarDuplicidade).executarCriacao(entity);
 
-        assertThrows(BusinessException.class,
-                () -> useCase.executar(10L, entity, 99L, "Ajuste necessario"));
+        assertThrows(BusinessException.class, () -> useCase.executar(entity, 99L));
 
         verify(alocacaoRepository, never()).save(entity);
-        verify(historicoAlocacaoUseCase, never()).registrarAtualizacao(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyString());
+        verify(historicoAlocacaoUseCase, never()).registrarCriacao(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
     }
 
     private Alocacao criarAlocacaoBase() {

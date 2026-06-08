@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-public class HorarioApplication {
+public class GiniApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HorarioApplication.class, args);
+		SpringApplication.run(GiniApplication.class, args);
 	}
 
 }
