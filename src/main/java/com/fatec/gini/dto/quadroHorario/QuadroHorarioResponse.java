@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.dto.curso.CursoResponse;
-import com.fatec.gini.dto.periodoLetivo.PeriodoLetivoResponse;
+import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 
 public record QuadroHorarioResponse(
     Long id,
@@ -12,5 +12,5 @@ public record QuadroHorarioResponse(
     LocalDateTime dataCriacao,
     Status status, 
     CursoResponse curso,
-    PeriodoLetivoResponse periodoLetivo
+    PeriodoAtividadeQuadroResponse periodoLetivo
 ) {}

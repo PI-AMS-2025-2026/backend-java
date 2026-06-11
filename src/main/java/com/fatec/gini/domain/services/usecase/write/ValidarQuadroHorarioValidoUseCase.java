@@ -17,7 +17,7 @@ public class ValidarQuadroHorarioValidoUseCase {
 
     /**
      * Valida se já existe outra grade horária ativa
-     * para o mesmo curso e período letivo.
+     * para o mesmo curso e período atividade quadro.
      */
     public void validarQuadroAtivoDuplicado(QuadroHorario quadroHorario) {
 
@@ -33,9 +33,9 @@ public class ValidarQuadroHorarioValidoUseCase {
 
             existeConflito =
                     quadroHorarioRepository
-                            .existsByCursoIdAndPeriodoLetivoIdAndStatus(
+                            .existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(
                                     quadroHorario.getCurso().getId(),
-                                    quadroHorario.getPeriodoLetivo().getId(),
+                                    quadroHorario.getPeriodoAtividadeQuadro().getId(),
                                     Status.ATIVO
                             );
 
@@ -44,9 +44,9 @@ public class ValidarQuadroHorarioValidoUseCase {
             // Atualização
             existeConflito =
                     quadroHorarioRepository
-                            .existsByCursoIdAndPeriodoLetivoIdAndStatusAndIdNot(
+                            .existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(
                                     quadroHorario.getCurso().getId(),
-                                    quadroHorario.getPeriodoLetivo().getId(),
+                                    quadroHorario.getPeriodoAtividadeQuadro().getId(),
                                     Status.ATIVO,
                                     quadroHorario.getId()
                             );
@@ -55,7 +55,7 @@ public class ValidarQuadroHorarioValidoUseCase {
         if (existeConflito) {
 
             throw new BusinessException(
-                    "Já existe um quadro horário ativa para este curso no período letivo selecionado."
+                    "Já existe um quadro horário ativa para este curso no período atividade quadro selecionado."
             );
         }
     }

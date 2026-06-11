@@ -58,7 +58,7 @@ public class Alocacao {
     private QuadroHorario quadroHorario;
 
     @OneToMany(mappedBy = "alocacao")
-    private List<HistoricoAlteracao> historicoAlteracoes;
+    private List<HistoricoVersaoAlocacao> historicoAlteracoes;
 
     public Alocacao(Turma turma, Disciplina disciplina, Sala sala, Professor professor, DiaSemana diaSemana,
             BlocoHorario blocoHorario, QuadroHorario quadroHorario) {

@@ -42,9 +42,9 @@ public class ValidarQuadroHorarioUseCase {
 
     private void quadroHorarioUltimaVersao(QuadroHorario quadroHorario) {
         QuadroHorario ultimaquadroHorario = quadroHorarioRepository
-                .findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(
+                .findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
                         quadroHorario.getCurso().getId(),
-                        quadroHorario.getPeriodoLetivo().getId())
+                        quadroHorario.getPeriodoAtividadeQuadro().getId())
                 .orElseThrow(
                         () -> new BusinessException("Não foi possível validar a última versão da quadro horário."));
 

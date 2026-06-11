@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tipo_ecurso")
+@Table(name = "tipo_recurso")
 public class TipoRecurso {
 
     @Id

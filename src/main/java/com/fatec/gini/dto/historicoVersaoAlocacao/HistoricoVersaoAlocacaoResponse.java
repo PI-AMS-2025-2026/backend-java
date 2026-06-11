@@ -1,11 +1,11 @@
-package com.fatec.gini.dto.historicoAlteracao;
+package com.fatec.gini.dto.historicoVersaoAlocacao;
 
 import java.time.LocalDate;
 
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
 
-public record HistoricoAlteracaoResponse(
+public record HistoricoVersaoAlocacaoResponse(
         Long id,
         LocalDate dataAlteracao,
         String justificativa,

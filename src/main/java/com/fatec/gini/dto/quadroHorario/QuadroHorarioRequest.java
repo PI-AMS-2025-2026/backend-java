@@ -15,6 +15,6 @@ public record QuadroHorarioRequest(
     @NotNull(message = "Curso é obrigatório")
     LongDTO curso,
     
-    @NotNull(message = "Período Letivo é obrigatório")
-    LongDTO periodoLetivo
+    @NotNull(message = "Período Atividade Quadro é obrigatório")
+    LongDTO PeriodoAtividadeQuadro
 ) {}

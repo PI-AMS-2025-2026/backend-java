@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.QuadroHorario;
-import com.fatec.gini.domain.entities.PeriodoLetivo;
+import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -35,7 +35,7 @@ class ValidarQuadroHorarioUseCaseTest {
         Alocacao alocacao = new Alocacao();
         alocacao.setQuadroHorario(quadro);
 
-        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(1L, 2L))
+        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(1L, 2L))
                 .thenReturn(Optional.of(criarQuadroHorario(10L, 1L, 2L, Status.ATIVO)));
 
         assertDoesNotThrow(() -> useCase.executar(alocacao));
@@ -56,7 +56,7 @@ class ValidarQuadroHorarioUseCaseTest {
         Alocacao alocacao = new Alocacao();
         alocacao.setQuadroHorario(quadroAtual);
 
-        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(1L, 2L))
+        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(1L, 2L))
                 .thenReturn(Optional.of(criarQuadroHorario(11L, 1L, 2L, Status.ATIVO)));
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
@@ -68,7 +68,7 @@ class ValidarQuadroHorarioUseCaseTest {
         Alocacao alocacao = new Alocacao();
         alocacao.setQuadroHorario(quadroAtual);
 
-        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(1L, 2L))
+        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(1L, 2L))
                 .thenReturn(Optional.empty());
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
@@ -78,11 +78,11 @@ class ValidarQuadroHorarioUseCaseTest {
         QuadroHorario quadroHorario = new QuadroHorario();
         Curso curso = new Curso();
         curso.setId(cursoId);
-        PeriodoLetivo periodoLetivo = new PeriodoLetivo();
-        periodoLetivo.setId(periodoId);
+        PeriodoAtividadeQuadro periodoAtividadeQuadro = new PeriodoAtividadeQuadro();
+        periodoAtividadeQuadro.setId(periodoId);
 
         quadroHorario.setCurso(curso);
-        quadroHorario.setPeriodoLetivo(periodoLetivo);
+        quadroHorario.setPeriodoAtividadeQuadro(periodoAtividadeQuadro);
         quadroHorario.setStatus(status);
 
         try {

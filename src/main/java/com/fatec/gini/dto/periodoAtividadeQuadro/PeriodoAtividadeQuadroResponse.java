@@ -1,11 +1,11 @@
-package com.fatec.gini.dto.periodoLetivo;
+package com.fatec.gini.dto.periodoAtividadeQuadro;
 
 import java.time.LocalDate;
 
 import com.fatec.gini.domain.entities.Status;
 
-public record PeriodoLetivoResponse(
-        Long idPeriodoLetivo,
+public record PeriodoAtividadeQuadroResponse(
+        Long idPeriodoAtividadeQuadro,
         Integer ano,
         Integer periodo,
         LocalDate dataInicio,

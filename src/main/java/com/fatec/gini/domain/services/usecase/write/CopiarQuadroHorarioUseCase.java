@@ -60,7 +60,7 @@ public class CopiarQuadroHorarioUseCase {
 
         novoQuadro.setCurso(gradeAnterior.getCurso());
 
-        novoQuadro.setPeriodoLetivo(dadosNovaGrade.getPeriodoLetivo());
+        novoQuadro.setPeriodoAtividadeQuadro(dadosNovaGrade.getPeriodoAtividadeQuadro());
 
         // NOVA VALIDAÇÃO DA ISSUE #56
         validarGradeHorariaValidaUseCase

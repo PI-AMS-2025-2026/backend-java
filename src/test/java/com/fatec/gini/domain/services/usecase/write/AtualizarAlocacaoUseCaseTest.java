@@ -131,8 +131,8 @@ class AtualizarAlocacaoUseCaseTest {
         QuadroHorario quadroHorario = new QuadroHorario();
         quadroHorario.setCurso(new com.fatec.gini.domain.entities.Curso());
         quadroHorario.getCurso().setId(7L);
-        quadroHorario.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
-        quadroHorario.getPeriodoLetivo().setId(8L);
+        quadroHorario.setPeriodoAtividadeQuadro(new com.fatec.gini.domain.entities.PeriodoAtividadeQuadro());
+        quadroHorario.getPeriodoAtividadeQuadro().setId(8L);
 
         Alocacao alocacao = new Alocacao();
         alocacao.setTurma(turma);

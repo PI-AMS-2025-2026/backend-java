@@ -1,6 +1,8 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -81,5 +83,11 @@ public class UsuarioController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.inativar(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("tipos")
+    public List<String> listar() {
+        return Arrays.stream(TipoUsuario.values())
+                .map(Enum::name)
+                .toList();
     }
 }

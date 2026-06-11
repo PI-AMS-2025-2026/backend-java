@@ -1,4 +1,4 @@
-package com.fatec.gini.dto.periodoLetivo;
+package com.fatec.gini.dto.periodoAtividadeQuadro;
 
 import java.time.LocalDate;
 
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record PeriodoLetivoRequest(
+public record PeriodoAtividadeQuadroRequest(
 
         @NotNull(message = "O ano é obrigatório") @Positive(message = "O ano deve ser um número inteiro maior que zero") Integer ano,
 

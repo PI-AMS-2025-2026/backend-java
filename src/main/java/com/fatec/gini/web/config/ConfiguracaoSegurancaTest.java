@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@Profile({"test", "dev"})
+@Profile({ "test", "dev" })
 public class ConfiguracaoSegurancaTest {
     /**
      * Configurações de CORS para permitir requisições do frontend.
@@ -44,9 +44,9 @@ public class ConfiguracaoSegurancaTest {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth ->
-                    auth.anyRequest().permitAll())
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
 
-}
+}   

@@ -33,13 +33,13 @@ public class QuadroHorarioController {
     @GetMapping
     public ResponseEntity<Page<QuadroHorarioResponse>> listar(
             @RequestParam(name = "curso", required = false) Long idCurso,
-            @RequestParam(name = "periodo_letivo", required = false) Long idPeriodoLetivo,
+            @RequestParam(name = "periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(idCurso, idPeriodoLetivo, status, page, size));
+                service.listar(idCurso, idPeriodoAtividadeQuadro, status, page, size));
     }
 
     @GetMapping("/{id}")

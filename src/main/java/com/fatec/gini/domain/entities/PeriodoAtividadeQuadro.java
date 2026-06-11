@@ -23,12 +23,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "periodo_letivo")
-public class PeriodoLetivo {
+@Table(name = "periodo_atividade_quadro")
+public class PeriodoAtividadeQuadro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_periodo_letivo")
+    @Column(name = "id_periodo_atividade_quadro")
     private Long id;
 
     private Integer ano;
@@ -44,11 +44,11 @@ public class PeriodoLetivo {
     @Column(nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "periodoLetivo")
+    @OneToMany(mappedBy = "periodoAtividadeQuadro")
     private List<QuadroHorario> quadroHorarios;
 
 
-    public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
+    public PeriodoAtividadeQuadro(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
         this.ano = ano;
         this.periodo = periodo;
         this.dataInicio = dataInicio;
@@ -72,7 +72,7 @@ public class PeriodoLetivo {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PeriodoLetivo other = (PeriodoLetivo) obj;
+        PeriodoAtividadeQuadro other = (PeriodoAtividadeQuadro) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

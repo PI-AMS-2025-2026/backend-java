@@ -1,16 +1,16 @@
 package com.fatec.gini.infrastructure.mappers;
 
-import com.fatec.gini.domain.entities.HistoricoAlteracao;
-import com.fatec.gini.dto.historicoAlteracao.HistoricoAlteracaoRequest;
-import com.fatec.gini.dto.historicoAlteracao.HistoricoAlteracaoResponse;
+import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
+import com.fatec.gini.dto.historicoVersaoAlocacao.HistoricoVersaoAlocacaoRequest;
+import com.fatec.gini.dto.historicoVersaoAlocacao.HistoricoVersaoAlocacaoResponse;
 
-public class HistoricoAlteracaoMapper {
+public class HistoricoVersaoAlocacaoMapper {
     
-    public static HistoricoAlteracao toEntity(HistoricoAlteracaoRequest request) {
+    public static HistoricoVersaoAlocacao toEntity(HistoricoVersaoAlocacaoRequest request) {
         if (request == null) {
             return null;
         }
-        return new HistoricoAlteracao(
+        return new HistoricoVersaoAlocacao(
                 request.dataAlteracao(),
                 request.justificativa(),
                 request.campoAlterado(),
@@ -18,8 +18,8 @@ public class HistoricoAlteracaoMapper {
                 request.valorNovo());
     }
     
-    public static HistoricoAlteracaoResponse toResponse(HistoricoAlteracao entity) {
-        return new HistoricoAlteracaoResponse(
+    public static HistoricoVersaoAlocacaoResponse toResponse(HistoricoVersaoAlocacao entity) {
+        return new HistoricoVersaoAlocacaoResponse(
                 entity.getId(),
                 entity.getDataAlteracao(),
                 entity.getJustificativa(),

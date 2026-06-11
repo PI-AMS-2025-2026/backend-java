@@ -48,8 +48,8 @@ public class QuadroHorario {
     private Curso curso;
 
     @ManyToOne
-    @JoinColumn(name = "id_periodo_letivo", nullable = false)
-    private PeriodoLetivo periodoLetivo;
+    @JoinColumn(name = "id_periodo_atividade_quadro", nullable = false)
+    private PeriodoAtividadeQuadro periodoAtividadeQuadro;
 
     @OneToMany(mappedBy = "quadroHorario")
     private List<Alocacao> alocacoes;

@@ -17,32 +17,32 @@ public interface QuadroHorarioRepository extends JpaRepository<QuadroHorario, Lo
     @Query("""
             SELECT g FROM QuadroHorario g
             WHERE (:idCurso IS NULL OR g.curso.id = :idCurso)
-            AND (:idPeriodoLetivo IS NULL OR g.periodoLetivo.id = :idPeriodoLetivo)
+            AND (:idPeriodoAtividadeQuadro IS NULL OR g.periodoAtividadeQuadro.id = :idPeriodoAtividadeQuadro)
             AND (:status IS NULL OR g.status = :status)
             """)
     Page<QuadroHorario> buscarComFiltros(
             @Param("idCurso") Long idCurso,
-            @Param("idPeriodoLetivo") Long idPeriodoLetivo,
+            @Param("idPeriodoAtividadeQuadro") Long idPeriodoAtividadeQuadro,
             @Param("status") Status status,
             Pageable pageable
     );
 
-    Optional<QuadroHorario> findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(
+    Optional<QuadroHorario> findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
             Long cursoId,
-            Long periodoLetivoId
+            Long periodoAtividadeQuadroId
     );
 
-    // Verifica se já existe quadro horário ativo para o curso e período letivo
-    boolean existsByCursoIdAndPeriodoLetivoIdAndStatus(
+    // Verifica se já existe quadro horário ativo para o curso e período atividade quadro
+    boolean existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(
             Long cursoId,
-            Long periodoLetivoId,
+            Long periodoAtividadeQuadroId,
             Status status
     );
 
-    // Verifica se já existe outro quadro horário ativo para o curso e período letivo
-    boolean existsByCursoIdAndPeriodoLetivoIdAndStatusAndIdNot(
+    // Verifica se já existe outro quadro horário ativo para o curso e período atividade quadro
+    boolean existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(
             Long cursoId,
-            Long periodoLetivoId,
+            Long periodoAtividadeQuadroId,
             Status status,
             Long id
     );

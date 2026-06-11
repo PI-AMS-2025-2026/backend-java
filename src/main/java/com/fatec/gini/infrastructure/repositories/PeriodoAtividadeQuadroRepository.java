@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.fatec.gini.domain.entities.PeriodoLetivo;
+import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.Status;
 
 
-public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Long> {
+public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoAtividadeQuadro, Long> {
 
         /**
          * Retorna períodos letivos aplicando filtros opcionais.
@@ -26,14 +26,14 @@ public interface PeriodoLetivoRepository extends JpaRepository<PeriodoLetivo, Lo
          */
         @Query("""
                         SELECT p
-                        FROM PeriodoLetivo p
+                        FROM PeriodoAtividadeQuadro p
                         WHERE (:ano IS NULL OR p.ano = :ano)
                           AND (:periodo IS NULL OR p.periodo = :periodo)
                                                                     AND (:status IS NULL OR p.status = :status)
                           AND (:dataInicio IS NULL OR p.dataInicio = :dataInicio)
                           AND (:dataFim IS NULL OR p.dataFim = :dataFim)
                         """)
-        Page<PeriodoLetivo> buscarPorFiltros(
+        Page<PeriodoAtividadeQuadro> buscarPorFiltros(
                         @Param("ano") Integer ano,
                         @Param("periodo") Integer periodo,
                         @Param("status") Status status,

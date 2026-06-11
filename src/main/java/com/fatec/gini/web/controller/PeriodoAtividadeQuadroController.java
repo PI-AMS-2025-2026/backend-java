@@ -1,6 +1,8 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +18,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.services.PeriodoLetivoService;
-import com.fatec.gini.dto.periodoLetivo.PeriodoLetivoRequest;
-import com.fatec.gini.dto.periodoLetivo.PeriodoLetivoResponse;
+import com.fatec.gini.domain.entities.TipoPeridoAtividadeQuadro;
+import com.fatec.gini.domain.services.PeriodoAtividadeQuadroService;
+import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
+import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/periodos-letivos")
+@RequestMapping("/periodo_atividade_quadro")
 @RequiredArgsConstructor
-public class PeriodoLetivoController {
+public class PeriodoAtividadeQuadroController {
 
-    private final PeriodoLetivoService service;
+    private final PeriodoAtividadeQuadroService service;
 
     @GetMapping
-    public ResponseEntity<Page<PeriodoLetivoResponse>> listar(
+    public ResponseEntity<Page<PeriodoAtividadeQuadroResponse>> listar(
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer periodo,
             @RequestParam(required = false) Status status,
@@ -44,28 +47,28 @@ public class PeriodoLetivoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PeriodoLetivoResponse> buscar(@PathVariable Long id) {
+    public ResponseEntity<PeriodoAtividadeQuadroResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<PeriodoLetivoResponse> criar(@Valid @RequestBody PeriodoLetivoRequest request) {
+    public ResponseEntity<PeriodoAtividadeQuadroResponse> criar(@Valid @RequestBody PeriodoAtividadeQuadroRequest request) {
 
-        PeriodoLetivoResponse response = service.criar(request);
+        PeriodoAtividadeQuadroResponse response = service.criar(request);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(response.idPeriodoLetivo())
+                .buildAndExpand(response.idPeriodoAtividadeQuadro())
                 .toUri();
 
         return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PeriodoLetivoResponse> atualizar(
+    public ResponseEntity<PeriodoAtividadeQuadroResponse> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody PeriodoLetivoRequest request) {
+            @Valid @RequestBody PeriodoAtividadeQuadroRequest request) {
 
         return ResponseEntity.ok(service.atualizar(id, request));
     }
@@ -76,4 +79,10 @@ public class PeriodoLetivoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("tipos")
+    public List<String> listar() {
+        return Arrays.stream(TipoPeridoAtividadeQuadro.values())
+                .map(Enum::name)
+                .toList();
+    }
 }

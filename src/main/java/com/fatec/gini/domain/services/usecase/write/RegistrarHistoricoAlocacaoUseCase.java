@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
-import com.fatec.gini.domain.entities.HistoricoAlteracao;
+import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
 import com.fatec.gini.domain.entities.Usuario;
-import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RegistrarHistoricoAlocacaoUseCase {
 
-    private final  HistoricoAlteracaoRepository historicoAlteracaoRepository;
+    private final  HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
 
     /*
      * O usuraioAlteracao é o usuário que realizou a operação (criação ou
@@ -105,7 +105,7 @@ public class RegistrarHistoricoAlocacaoUseCase {
             return;
         }
 
-        HistoricoAlteracao historicoAlteracao = new HistoricoAlteracao();
+        HistoricoVersaoAlocacao historicoAlteracao = new HistoricoVersaoAlocacao();
         historicoAlteracao.setDataAlteracao(LocalDate.now());
         historicoAlteracao.setJustificativa(justificativa);
         historicoAlteracao.setCampoAlterado(campoAlterado);

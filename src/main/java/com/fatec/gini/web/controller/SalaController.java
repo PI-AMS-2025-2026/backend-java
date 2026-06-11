@@ -71,4 +71,5 @@ public class SalaController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    
 }

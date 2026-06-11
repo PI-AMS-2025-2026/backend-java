@@ -21,11 +21,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "historico_alteracao")
-public class HistoricoAlteracao {
+@Table(name = "historico_versao_alocacao")
+public class HistoricoVersaoAlocacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_historico_alteracao")
+    @Column(name = "id_historico_versao_alocacaoo")
     private Long id;
 
     @Column(name = "data_alteracao", nullable = false)
@@ -51,7 +51,7 @@ public class HistoricoAlteracao {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public HistoricoAlteracao(LocalDate dataAlteracao, String justificativa, String campoAlterado, String valorAntigo,
+    public HistoricoVersaoAlocacao(LocalDate dataAlteracao, String justificativa, String campoAlterado, String valorAntigo,
             String valorNovo) {
         this.dataAlteracao = dataAlteracao;
         this.justificativa = justificativa;
@@ -76,7 +76,7 @@ public class HistoricoAlteracao {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        HistoricoAlteracao other = (HistoricoAlteracao) obj;
+        HistoricoVersaoAlocacao other = (HistoricoVersaoAlocacao) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fatec.gini.domain.services.HistoricoAlteracaoService;
-import com.fatec.gini.dto.historicoAlteracao.HistoricoAlteracaoResponse;
+import com.fatec.gini.domain.services.HistoricoVersaoAlocacaoService;
+import com.fatec.gini.dto.historicoVersaoAlocacao.HistoricoVersaoAlocacaoResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HistoricoAlteracaoController {
 
-	private final HistoricoAlteracaoService service;
+	private final HistoricoVersaoAlocacaoService service;
 
 	@GetMapping
-	public ResponseEntity<Page<HistoricoAlteracaoResponse>> listar(
+	public ResponseEntity<Page<HistoricoVersaoAlocacaoResponse>> listar(
 			@RequestParam(required = false, name = "alocacao") Long idAlocacao,
 			@RequestParam(required = false, name = "usuario") Long idUsuario,
 			@RequestParam(defaultValue = "0") int page,
@@ -31,7 +31,7 @@ public class HistoricoAlteracaoController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<HistoricoAlteracaoResponse> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<HistoricoVersaoAlocacaoResponse> buscarPorId(@PathVariable Long id) {
 
 		return ResponseEntity.ok(service.buscarPorId(id));
 	}
