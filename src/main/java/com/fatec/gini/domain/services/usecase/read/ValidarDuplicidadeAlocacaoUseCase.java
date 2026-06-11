@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  * <li>usuário/professor</li>
  * <li>diaSemana</li>
  * <li>horário</li>
- * <li>gradeHoraria</li>
+ * <li>quadroHorario</li>
  * </ul>
  * 
  * <p>

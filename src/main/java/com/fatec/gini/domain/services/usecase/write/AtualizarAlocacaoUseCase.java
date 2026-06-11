@@ -12,7 +12,7 @@ import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHora
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
@@ -42,7 +42,7 @@ public class AtualizarAlocacaoUseCase {
      */
     private final  ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
-    private final  ValidarGradeHorariaUseCase validarGradeHoraria;
+    private final  ValidarQuadroHorarioUseCase validarQuadroHorario;
 
     private final  ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
 
@@ -87,8 +87,8 @@ public class AtualizarAlocacaoUseCase {
         // semana da alocação
         validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana().getId());
 
-        // Validar grade horaria
-        validarGradeHoraria.executar(entity);
+        // Validar quadro horário
+        validarQuadroHorario.executar(entity);
 
         // Validar vinculo professor disciplina
         validarVincProfDisciplina.executar(entity);
@@ -111,7 +111,7 @@ public class AtualizarAlocacaoUseCase {
         historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, entity, professorAlteracaoEntity,
                 justificativaAlteracao);
 
-        // validar coerência entre curso da grade, turma e disciplina
+        // validar coerência entre curso da quadro horário, turma e disciplina
         validarCoerenciaCurso.validar(entity);
 
         return alocacaoSalva;

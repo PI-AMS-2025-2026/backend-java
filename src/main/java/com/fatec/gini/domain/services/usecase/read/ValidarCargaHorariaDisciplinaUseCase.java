@@ -21,15 +21,15 @@ public class ValidarCargaHorariaDisciplinaUseCase {
         var disciplina = disciplinaRepository.findById(entity.getDisciplina().getId())
                 .orElseThrow(() -> new BusinessException("Disciplina não encontrada."));
 
-        // Busca o somatório filtrando por Disciplina E por Grade Horária
-        int cargaHorariaAtual = alocacaoRepository.somarDuracaoPorDisciplinaEGrade(
+        // Busca o somatório filtrando por Disciplina E por Quadro Horário
+        int cargaHorariaAtual = alocacaoRepository.somarDuracaoPorDisciplinaEQuadro(
                 disciplina.getId(), 
-                entity.getGradeHoraria().getId()
+                entity.getQuadroHorario().getId()
         );
         int novaDuracao = entity.getBlocoHorario().getDuracao();
 
         if (cargaHorariaAtual + novaDuracao > disciplina.getCargaHoraria()) {
-            throw new BusinessException("A carga horária total da disciplina já foi preenchida na grade horária.");
+            throw new BusinessException("A carga horária total da disciplina já foi preenchida no quadro horário.");
         }
     }
 }

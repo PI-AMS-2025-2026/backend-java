@@ -8,66 +8,66 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
-import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.services.usecase.read.ValidarCopiarGradeHorariaUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarCopiarQuadroHorarioUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
-import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CopiarGradeHorariaUseCase {
+public class CopiarQuadroHorarioUseCase {
 
-    private final  GradeHorariaRepository gradeHorariaRepository;
+    private final  QuadroHorarioRepository gradeHorariaRepository;
 
     private final  AlocacaoRepository alocacaoRepository;
 
-    private final  ValidarCopiarGradeHorariaUseCase validarCopiaGradeHorariaUseCase;
+    private final  ValidarCopiarQuadroHorarioUseCase validarCopiaGradeHorariaUseCase;
 
     // NOVA VALIDAÇÃO
-    private final  ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
+    private final  ValidarQuadroHorarioValidoUseCase validarGradeHorariaValidaUseCase;
 
     @Transactional
-    public GradeHoraria executar(Long idGradeOrigem, GradeHoraria dadosNovaGrade) {
+    public QuadroHorario executar(Long idGradeOrigem, QuadroHorario dadosNovaGrade) {
 
         // busca alocações uma vez só
         List<Alocacao> alocacoesAnteriores =
-                alocacaoRepository.findByGradeHorariaId(idGradeOrigem);
+                alocacaoRepository.findByQuadroHorarioId(idGradeOrigem);
 
         // valida antes da regra principal
         validarCopiaGradeHorariaUseCase
                 .validarRegrasParaCopiaDeGrade(alocacoesAnteriores);
 
         // busca grade origem
-        GradeHoraria gradeAnterior = gradeHorariaRepository.findById(idGradeOrigem)
+        QuadroHorario gradeAnterior = gradeHorariaRepository.findById(idGradeOrigem)
                 .orElseThrow(() ->
-                        new BusinessException("Grade horária de origem não encontrada."));
+                        new BusinessException("Quadro horário de origem não encontrada."));
 
         // cria nova grade
-        GradeHoraria novaGrade = new GradeHoraria();
+        QuadroHorario novoQuadro = new QuadroHorario();
 
-        novaGrade.setVersao(
+        novoQuadro.setVersao(
                 dadosNovaGrade.getVersao() != null
                         ? dadosNovaGrade.getVersao() + 1
                         : 1);
 
-        novaGrade.setDataCriacao(LocalDateTime.now());
+        novoQuadro.setDataCriacao(LocalDateTime.now());
 
-        novaGrade.setStatus(Status.ATIVO);
+        novoQuadro.setStatus(Status.ATIVO);
 
-        novaGrade.setCurso(gradeAnterior.getCurso());
+        novoQuadro.setCurso(gradeAnterior.getCurso());
 
-        novaGrade.setPeriodoLetivo(dadosNovaGrade.getPeriodoLetivo());
+        novoQuadro.setPeriodoLetivo(dadosNovaGrade.getPeriodoLetivo());
 
         // NOVA VALIDAÇÃO DA ISSUE #56
         validarGradeHorariaValidaUseCase
-                .validarGradeAtivaDuplicada(novaGrade);
+                .validarQuadroAtivoDuplicado(novoQuadro);
 
         // salva nova grade
-        novaGrade = gradeHorariaRepository.save(novaGrade);
+        novoQuadro = gradeHorariaRepository.save(novoQuadro);
 
         // cria novas alocações
         List<Alocacao> novasAlocacoes = new ArrayList<>();
@@ -76,7 +76,7 @@ public class CopiarGradeHorariaUseCase {
 
             Alocacao nova = new Alocacao();
 
-            nova.setGradeHoraria(novaGrade);
+            nova.setQuadroHorario(novoQuadro);
             nova.setTurma(antiga.getTurma());
             nova.setDiaSemana(antiga.getDiaSemana());
             nova.setBlocoHorario(antiga.getBlocoHorario());
@@ -89,6 +89,6 @@ public class CopiarGradeHorariaUseCase {
 
         alocacaoRepository.saveAll(novasAlocacoes);
 
-        return novaGrade;
+        return novoQuadro;
     }
 }

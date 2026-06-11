@@ -3,8 +3,8 @@ package com.fatec.gini.dto.alocacao;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
 import com.fatec.gini.dto.diaSemana.DiaSemanaResponse;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
 import com.fatec.gini.dto.professor.ProfessorResponse;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 import com.fatec.gini.dto.sala.SalaResponse;
 import com.fatec.gini.dto.turma.TurmaResponse;
 
@@ -16,5 +16,5 @@ public record AlocacaoResponse(
         ProfessorResponse professor,
         DiaSemanaResponse diaSemana,
         BlocoHorarioResponse blocoHorario,
-        GradeHorariaResponse gradeHoraria) {
+        QuadroHorarioResponse quadroHorario) {
 }

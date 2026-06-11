@@ -8,38 +8,38 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Status;
 
 
-public interface GradeHorariaRepository extends JpaRepository<GradeHoraria, Long> {
+public interface QuadroHorarioRepository extends JpaRepository<QuadroHorario, Long> {
 
     @Query("""
-            SELECT g FROM GradeHoraria g
+            SELECT g FROM QuadroHorario g
             WHERE (:idCurso IS NULL OR g.curso.id = :idCurso)
             AND (:idPeriodoLetivo IS NULL OR g.periodoLetivo.id = :idPeriodoLetivo)
             AND (:status IS NULL OR g.status = :status)
             """)
-    Page<GradeHoraria> buscarComFiltros(
+    Page<QuadroHorario> buscarComFiltros(
             @Param("idCurso") Long idCurso,
             @Param("idPeriodoLetivo") Long idPeriodoLetivo,
             @Param("status") Status status,
             Pageable pageable
     );
 
-    Optional<GradeHoraria> findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(
+    Optional<QuadroHorario> findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(
             Long cursoId,
             Long periodoLetivoId
     );
 
-    // Verifica se já existe grade ativa para o curso e período letivo
+    // Verifica se já existe quadro horário ativo para o curso e período letivo
     boolean existsByCursoIdAndPeriodoLetivoIdAndStatus(
             Long cursoId,
             Long periodoLetivoId,
             Status status
     );
 
-    // Verifica se já existe outra grade ativa para o curso e período letivo
+    // Verifica se já existe outro quadro horário ativo para o curso e período letivo
     boolean existsByCursoIdAndPeriodoLetivoIdAndStatusAndIdNot(
             Long cursoId,
             Long periodoLetivoId,

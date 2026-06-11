@@ -61,7 +61,7 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         "(:professorId IS NULL OR a.professor.id = :professorId) AND " +
                         "(:diaSemanaId IS NULL OR a.diaSemana.id = :diaSemanaId) AND " +
                         "(:blocoHorarioId IS NULL OR a.blocoHorario.id = :blocoHorarioId) AND " +
-                        "(:gradeId IS NULL OR a.gradeHoraria.id = :gradeId)")
+                        "(:quadroHorarioId IS NULL OR a.quadroHorario.id = :quadroHorarioId)")
         Page<Alocacao> buscarPorFiltros(
                         @Param("turmaId") Long turmaId,
                         @Param("disciplinaId") Long disciplinaId,
@@ -69,7 +69,7 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         @Param("professorId") Long professorId,
                         @Param("diaSemanaId") Long diaSemanaId,
                         @Param("blocoHorarioId") Long blocoHorarioId,
-                        @Param("gradeId") Long gradeId,
+                        @Param("quadroHorarioId") Long quadroHorarioId,
                         Pageable pageable);
 
         @Query("""
@@ -116,31 +116,31 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                         Long professorId,
                         Long diaSemanaId);
 
-        List<Alocacao> findByGradeHorariaId(
-                        Long gradeHorariaId);
+        List<Alocacao> findByQuadroHorarioId(
+                        Long quadroHorarioId);
 
-        // Para validar a carga horária total da disciplina na grade horária, precisamos
-        // somar a duração de todas as alocações daquela disciplina e grade horária:
+        // Para validar a carga horária total da disciplina no quadro horário, precisamos
+        // somar a duração de todas as alocações daquela disciplina e quadro horário:
 
         @Query("""
                         SELECT COALESCE(SUM(a.blocoHorario.duracao), 0)
                         FROM Alocacao a
                         WHERE a.disciplina.id = :disciplinaId
-                        AND a.gradeHoraria.id = :gradeHorariaId
+                        AND a.quadroHorario.id = :quadroHorarioId
                         """)
-        int somarDuracaoPorDisciplinaEGrade(
+        int somarDuracaoPorDisciplinaEQuadro(
                         @Param("disciplinaId") Long disciplinaId,
-                        @Param("gradeHorariaId") Long gradeHorariaId);
+                        @Param("quadroHorarioId") Long quadroHorarioId);
 
         @Query("""
                         SELECT COALESCE(SUM(a.blocoHorario.duracao), 0)
                         FROM Alocacao a
                         WHERE a.disciplina.id = :disciplinaId
-                        AND a.gradeHoraria.id = :gradeHorariaId
+                        AND a.quadroHorario.id = :quadroHorarioId
                         AND a.id <> :alocacaoId
                         """)
-        int somarDuracaoPorDisciplinaEGradeEIdNot(
+        int somarDuracaoPorDisciplinaEQuadroHorarioEIdNot(
                         @Param("disciplinaId") Long disciplinaId,
-                        @Param("gradeHorariaId") Long gradeHorariaId,
+                        @Param("quadroHorarioId") Long quadroHorarioId,
                         @Param("alocacaoId") Long alocacaoId);
 }

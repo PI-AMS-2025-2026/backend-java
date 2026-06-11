@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.Sala;
@@ -25,7 +25,7 @@ import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
-import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
@@ -60,7 +60,7 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
     private BlocoHorarioRepository blocoHorarioRepository;
 
     @Mock
-    private GradeHorariaRepository gradeHorariaRepository;
+    private QuadroHorarioRepository quadroHorarioRepository;
 
     @Mock
     private ProfessorRepository professorRepository;
@@ -79,8 +79,8 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         diaSemanaEntrada.setId(5L);
         BlocoHorario blocoHorarioEntrada = new BlocoHorario();
         blocoHorarioEntrada.setId(6L);
-        GradeHoraria gradeEntrada = new GradeHoraria();
-        setIdPrivadoGradeHoraria(gradeEntrada, 7L);
+        QuadroHorario quadroEntrada = new QuadroHorario();
+        setIdPrivadoQuadroHoraria(quadroEntrada, 7L);
 
         Alocacao entity = new Alocacao();
         entity.setTurma(turmaEntrada);
@@ -89,7 +89,7 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         entity.setProfessor(professorEntrada);
         entity.setDiaSemana(diaSemanaEntrada);
         entity.setBlocoHorario(blocoHorarioEntrada);
-        entity.setGradeHoraria(gradeEntrada);
+        entity.setQuadroHorario(quadroEntrada);
 
         Turma turmaBanco = new Turma();
         turmaBanco.setId(1L);
@@ -103,8 +103,8 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         diaSemanaBanco.setId(5L);
         BlocoHorario blocoHorarioBanco = new BlocoHorario();
         blocoHorarioBanco.setId(6L);
-        GradeHoraria gradeBanco = new GradeHoraria();
-        setIdPrivadoGradeHoraria(gradeBanco, 7L);
+        QuadroHorario quadroBanco = new QuadroHorario();
+        setIdPrivadoQuadroHoraria(quadroBanco, 7L);
 
         when(turmaRepository.findById(1L)).thenReturn(Optional.of(turmaBanco));
         when(disciplinaRepository.findById(2L)).thenReturn(Optional.of(disciplinaBanco));
@@ -112,7 +112,7 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         when(usuarioRepository.findById(4L)).thenReturn(Optional.of(professorBanco));
         when(diaSemanaRepository.findById(5L)).thenReturn(Optional.of(diaSemanaBanco));
         when(blocoHorarioRepository.findById(6L)).thenReturn(Optional.of(blocoHorarioBanco));
-        when(gradeHorariaRepository.findById(7L)).thenReturn(Optional.of(gradeBanco));
+        when(quadroHorarioRepository.findById(7L)).thenReturn(Optional.of(quadroBanco));
 
         Alocacao resultado = useCase.validar(entity);
 
@@ -123,13 +123,13 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         assertSame(professorBanco, resultado.getProfessor());
         assertSame(diaSemanaBanco, resultado.getDiaSemana());
         assertSame(blocoHorarioBanco, resultado.getBlocoHorario());
-        assertSame(gradeBanco, resultado.getGradeHoraria());
+        assertSame(quadroBanco, resultado.getQuadroHorario());
     }
 
     @Test
-    void deveLancarExcecaoQuandoGradeHorariaNula() {
-        ParameterException exception = assertThrows(ParameterException.class, () -> useCase.buscarGradeHorariaPorId(null));
-        assertEquals("Grade horaria e obrigatoria.", removerAcentos(exception.getMessage()));
+    void deveLancarExcecaoQuandoQuadroHorarioNula() {
+        ParameterException exception = assertThrows(ParameterException.class, () -> useCase.buscarQuadroHorarioPorId(null));
+        assertEquals("Quadro horário e obrigatoria.", removerAcentos(exception.getMessage()));
     }
 
     @Test
@@ -149,11 +149,11 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         assertDoesNotThrow(() -> useCase.validarJustificativaAlteracao("Atualizacao necessaria"));
     }
 
-    private void setIdPrivadoGradeHoraria(GradeHoraria gradeHoraria, Long id) {
+    private void setIdPrivadoQuadroHoraria(QuadroHorario quadroHorario, Long id) {
         try {
-            java.lang.reflect.Field idField = GradeHoraria.class.getDeclaredField("id");
+            java.lang.reflect.Field idField = QuadroHorario.class.getDeclaredField("id");
             idField.setAccessible(true);
-            idField.set(gradeHoraria, id);
+            idField.set(quadroHorario, id);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

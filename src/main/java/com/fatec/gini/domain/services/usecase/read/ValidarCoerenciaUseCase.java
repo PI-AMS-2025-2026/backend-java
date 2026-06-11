@@ -13,8 +13,8 @@ public class ValidarCoerenciaUseCase {
 
     public void validar(Alocacao entity) {
 
-        Long cursoGradeId =
-                entity.getGradeHoraria()
+        Long cursoQuadroId =
+                entity.getQuadroHorario()
                       .getCurso()
                       .getId();
 
@@ -28,11 +28,11 @@ public class ValidarCoerenciaUseCase {
                       .getCurso()
                       .getId();
 
-        // validar turma x grade
-        if (!cursoTurmaId.equals(cursoGradeId)) {
+        // validar turma x quadro
+        if (!cursoTurmaId.equals(cursoQuadroId)) {
 
             throw new BusinessException(
-                    "A turma selecionada não pertence ao curso desta grade");
+                    "A turma selecionada não pertence ao curso deste quadro");
         }
 
         // validar disciplina x turma

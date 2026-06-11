@@ -57,12 +57,12 @@ public class AlocacaoController {
             @RequestParam(required = false) Long usuario,
             @RequestParam(required = false, name = "dia_semana") Long diaSemana,
             @RequestParam(required = false) Long horario,
-            @RequestParam(required = false) Long grade,
+            @RequestParam(required = false,name = "quadro_horario") Long quadroHorario,
           @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         // Encaminha os IDs para a camada de serviço
-        return ResponseEntity.ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, grade, page, size));
+        return ResponseEntity.ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, quadroHorario, page, size));
     }
 
     /**

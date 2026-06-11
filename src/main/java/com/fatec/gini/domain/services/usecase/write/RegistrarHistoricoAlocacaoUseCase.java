@@ -87,9 +87,9 @@ public class RegistrarHistoricoAlocacaoUseCase {
                 alocacaoAntiga.getBlocoHorario().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
-        // Grade Horaria
-        registrar("gradeHoraria", alocacaoSalva.getGradeHoraria().getId().toString(),
-                alocacaoAntiga.getGradeHoraria().getId().toString(),
+        // Quadro horário
+        registrar("quadroHorario", alocacaoSalva.getQuadroHorario().getId().toString(),
+                alocacaoAntiga.getQuadroHorario().getId().toString(),
                 alocacaoSalva, usuarioAlteracao, justificativa);
     }
 

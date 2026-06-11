@@ -5,22 +5,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
-import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
-import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
-import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
-import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
  * <li>Professor - verifica se existe</li>
  * <li>Dia da semana - verifica se é válido</li>
  * <li>Horário - verifica se existe</li>
- * <li>Grade - verifica se existe</li>
+ * <li>Quadro horário - verifica se existe</li>
  * </ul>
  *
  * <p>
@@ -57,7 +57,7 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     private final UsuarioRepository usuarioRepository;
     private final DiaSemanaRepository diaSemanaRepository;
     private final BlocoHorarioRepository blocoHorarioRepository;
-    private final GradeHorariaRepository gradeHorariaRepository;
+    private final QuadroHorarioRepository quadroHorarioRepository;
 
     @Transactional(readOnly = true)
     public Turma buscarTurmaPorId(Long id) {
@@ -102,12 +102,12 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     }
 
     @Transactional(readOnly = true)
-    public GradeHoraria buscarGradeHorariaPorId(Long id) {
+    public QuadroHorario buscarQuadroHorarioPorId(Long id) {
         if (id == null) {
-            throw new ParameterException("Grade horária é obrigatória.");
+            throw new ParameterException("Quadro horário é obrigatório.");
         }
-        return gradeHorariaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
+        return quadroHorarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado com ID: " + id));
     }
 
     /**
@@ -138,7 +138,7 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
         Professor professor = buscarProfessorPorId(entity.getProfessor().getId());
         DiaSemana diaSemana = buscarDiaSemanaPorId(entity.getDiaSemana().getId());
         BlocoHorario blocoHorario = buscarBlocoHorarioPorId(entity.getBlocoHorario().getId());
-        GradeHoraria gradeHoraria = buscarGradeHorariaPorId(entity.getGradeHoraria().getId());
+        QuadroHorario quadroHorario = buscarQuadroHorarioPorId(entity.getQuadroHorario().getId());
 
         entity.setTurma(turma);
         entity.setDisciplina(disciplina);
@@ -146,7 +146,7 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
         entity.setProfessor(professor);
         entity.setDiaSemana(diaSemana);
         entity.setBlocoHorario(blocoHorario);
-        entity.setGradeHoraria(gradeHoraria);
+        entity.setQuadroHorario(quadroHorario);
 
         return entity;
     }

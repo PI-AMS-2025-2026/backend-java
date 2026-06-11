@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.HistoricoAlteracao;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.Professor;
@@ -65,7 +65,7 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
     }
 
     private Alocacao criarAlocacao(Long idAlocacao, Long idTurma, Long idDisciplina, Long idSala, Long idProfessor,
-            Long idDiaSemana, Long idBlocoHorario, Long idGradeHoraria) {
+            Long idDiaSemana, Long idBlocoHorario, Long idQuadroHorario) {
 
         Turma turma = new Turma();
         turma.setId(idTurma);
@@ -85,16 +85,16 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         BlocoHorario blocoHorario = new BlocoHorario();
         blocoHorario.setId(idBlocoHorario);
 
-        GradeHoraria gradeHoraria = new GradeHoraria();
-        gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
-        gradeHoraria.getCurso().setId(70L);
-        gradeHoraria.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
-        gradeHoraria.getPeriodoLetivo().setId(80L);
+        QuadroHorario quadroHorario = new QuadroHorario();
+        quadroHorario.setCurso(new com.fatec.gini.domain.entities.Curso());
+        quadroHorario.getCurso().setId(70L);
+        quadroHorario.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
+        quadroHorario.getPeriodoLetivo().setId(80L);
         java.lang.reflect.Field idField;
         try {
-            idField = GradeHoraria.class.getDeclaredField("id");
+            idField = QuadroHorario.class.getDeclaredField("id");
             idField.setAccessible(true);
-            idField.set(gradeHoraria, idGradeHoraria);
+            idField.set(quadroHorario, idQuadroHorario);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -107,7 +107,7 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         alocacao.setProfessor(professor);
         alocacao.setDiaSemana(diaSemana);
         alocacao.setBlocoHorario(blocoHorario);
-        alocacao.setGradeHoraria(gradeHoraria);
+        alocacao.setQuadroHorario(quadroHorario);
 
         return alocacao;
     }

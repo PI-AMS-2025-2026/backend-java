@@ -45,7 +45,7 @@ public class PeriodoLetivo {
     private Status status;
 
     @OneToMany(mappedBy = "periodoLetivo")
-    private List<GradeHoraria> gradeHorarias;
+    private List<QuadroHorario> quadroHorarios;
 
 
     public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {

@@ -16,22 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.services.GradeHorariaService;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaRequest;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
+import com.fatec.gini.domain.services.QuadroHorarioService;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/grades-horarias")
+@RequestMapping("/quadro-horarios")
 @RequiredArgsConstructor
-public class GradeHorariaController {
+public class QuadroHorarioController {
 
-    private final GradeHorariaService service;
+    private final QuadroHorarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<GradeHorariaResponse>> listar(
+    public ResponseEntity<Page<QuadroHorarioResponse>> listar(
             @RequestParam(name = "curso", required = false) Long idCurso,
             @RequestParam(name = "periodo_letivo", required = false) Long idPeriodoLetivo,
             @RequestParam(required = false) Status status,
@@ -43,15 +43,15 @@ public class GradeHorariaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GradeHorariaResponse> buscar(@PathVariable Long id) {
+    public ResponseEntity<QuadroHorarioResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<GradeHorariaResponse> criar(
-            @Valid @RequestBody GradeHorariaRequest request) {
+    public ResponseEntity<QuadroHorarioResponse> criar(
+            @Valid @RequestBody QuadroHorarioRequest request) {
 
-        GradeHorariaResponse response = service.criar(request);
+        QuadroHorarioResponse response = service.criar(request);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -63,9 +63,9 @@ public class GradeHorariaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GradeHorariaResponse> atualizar(
+    public ResponseEntity<QuadroHorarioResponse> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody GradeHorariaRequest request) {
+            @Valid @RequestBody QuadroHorarioRequest request) {
 
         return ResponseEntity.ok(service.atualizar(id, request));
     }

@@ -1,14 +1,14 @@
 package com.fatec.gini.infrastructure.mappers;
 
-import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaRequest;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
+import com.fatec.gini.domain.entities.QuadroHorario;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 
-public class GradeHorariaMapper {
+public class QuadroHorarioMapper {
 
-    public static GradeHoraria toEntity(GradeHorariaRequest request) {
+    public static QuadroHorario toEntity(QuadroHorarioRequest request) {
 
-        GradeHoraria entity = new GradeHoraria();
+        QuadroHorario entity = new QuadroHorario();
 
         entity.setVersao(request.versao());
         entity.setStatus(request.status());
@@ -16,9 +16,9 @@ public class GradeHorariaMapper {
         return entity;
     }
 
-    public static GradeHorariaResponse toResponse(GradeHoraria entity) {
+    public static QuadroHorarioResponse toResponse(QuadroHorario entity) {
 
-        return new GradeHorariaResponse(
+        return new QuadroHorarioResponse(
                 entity.getId(),
                 entity.getVersao(),
                 entity.getDataCriacao(),

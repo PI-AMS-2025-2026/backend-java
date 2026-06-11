@@ -53,14 +53,14 @@ public class AlocacaoService {
         @Transactional(readOnly = true)
         public Page<AlocacaoResponse> listar(
                         Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
-                        Long diaSemanaId, Long horarioId, Long gradeId, int page,
+                        Long diaSemanaId, Long horarioId, Long quadroHorarioId, int page,
                         int size) {
 
                 var pageRequest = PageRequest.of(page, size);
 
                 var pageAlocacao = repository.buscarPorFiltros(
                                 turmaId, disciplinaId, salaId, usuarioId,
-                                diaSemanaId, horarioId, gradeId, pageRequest);
+                                diaSemanaId, horarioId, quadroHorarioId, pageRequest);
 
                 return pageAlocacao.map(AlocacaoMapper::toResponse);
         }

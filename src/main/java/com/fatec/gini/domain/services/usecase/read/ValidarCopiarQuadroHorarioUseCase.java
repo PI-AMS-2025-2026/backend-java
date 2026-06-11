@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ValidarCopiarGradeHorariaUseCase {
+public class ValidarCopiarQuadroHorarioUseCase {
 
     private final  DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
 
@@ -22,7 +22,7 @@ public class ValidarCopiarGradeHorariaUseCase {
 
         if (alocacoes.isEmpty()) {
             throw new BusinessException(
-                    "Não é possível copiar uma grade horária que não possui alocações.");
+                    "Não é possível copiar um quadro horário que não possui alocações.");
         }
 
         // percorre todas as alocações da grade antiga

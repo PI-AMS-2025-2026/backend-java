@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
-import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.PeriodoLetivo;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoLetivoAtivoUseCase;
-import com.fatec.gini.domain.services.usecase.write.ValidarGradeHorariaValidaUseCase;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaRequest;
-import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
-import com.fatec.gini.infrastructure.mappers.GradeHorariaMapper;
+import com.fatec.gini.domain.services.usecase.write.ValidarQuadroHorarioValidoUseCase;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
+import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
+import com.fatec.gini.infrastructure.mappers.QuadroHorarioMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
-import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.PeriodoLetivoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -25,21 +25,21 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class GradeHorariaService {
+public class QuadroHorarioService {
 
- private final GradeHorariaRepository repository;
+ private final QuadroHorarioRepository repository;
 
  private final CursoRepository cursoRepository;
 
  private final PeriodoLetivoRepository periodoRepository;
 
- private final ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
+ private final ValidarQuadroHorarioValidoUseCase validarQuadroHorarioValidoUseCase;
 
  private final ValidarPeriodoLetivoAtivoUseCase validarPeriodoLetivoAtivoUseCase;
 
         @Transactional
-        public GradeHorariaResponse criar(GradeHorariaRequest request) {
-                GradeHoraria entity = GradeHorariaMapper.toEntity(request);
+        public QuadroHorarioResponse criar(QuadroHorarioRequest request) {
+                QuadroHorario entity = QuadroHorarioMapper.toEntity(request);
 
                 Curso curso = cursoRepository.findById(request.curso().id())
                                 .orElseThrow(() -> new EntityNotFoundException(
@@ -53,22 +53,22 @@ public class GradeHorariaService {
                 entity.setPeriodoLetivo(periodo);
                 entity.setDataCriacao(LocalDateTime.now());
                 entity.setStatus(request.status());
-                validarGradeHorariaValidaUseCase.validarGradeAtivaDuplicada(entity);
+                validarQuadroHorarioValidoUseCase.validarQuadroAtivoDuplicado(entity);
                 validarPeriodoLetivoAtivoUseCase.executar(entity);
 
-                return GradeHorariaMapper.toResponse(repository.save(entity));
+                return QuadroHorarioMapper.toResponse(repository.save(entity));
         }
 
         @Transactional(readOnly = true)
-        public GradeHorariaResponse buscarPorId(Long id) {
-                GradeHoraria entity = repository.findById(id)
+        public QuadroHorarioResponse buscarPorId(Long id) {
+                QuadroHorario entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Grade horária não encontrada com ID: " + id));
-                return GradeHorariaMapper.toResponse(entity);
+                                                "Quadro horário não encontrada com ID: " + id));
+                return QuadroHorarioMapper.toResponse(entity);
         }
 
         @Transactional(readOnly = true)
-        public Page<GradeHorariaResponse> listar(
+        public Page<QuadroHorarioResponse> listar(
                         Long idCurso,
                         Long idPeriodoLetivo,
                         Status status,
@@ -77,20 +77,20 @@ public class GradeHorariaService {
 
                 var pageRequest = PageRequest.of(page, size);
 
-                var pageGrade = repository.buscarComFiltros(
+                var pageQuadro = repository.buscarComFiltros(
                                 idCurso,
                                 idPeriodoLetivo,
                                 status,
                                 pageRequest);
 
-                return pageGrade.map(GradeHorariaMapper::toResponse);
+                return pageQuadro.map(QuadroHorarioMapper::toResponse);
         }
 
         @Transactional
-        public GradeHorariaResponse atualizar(Long id, GradeHorariaRequest request) {
-                GradeHoraria entity = repository.findById(id)
+        public QuadroHorarioResponse atualizar(Long id, QuadroHorarioRequest request) {
+                QuadroHorario entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Grade horária não encontrada com ID: " + id));
+                                                "Quadro horário não encontrada com ID: " + id));
 
                 Curso curso = cursoRepository.findById(request.curso().id())
                                 .orElseThrow(() -> new EntityNotFoundException(
@@ -104,16 +104,16 @@ public class GradeHorariaService {
                 entity.setStatus(request.status());
                 entity.setCurso(curso);
                 entity.setPeriodoLetivo(periodo);
-                validarGradeHorariaValidaUseCase.validarGradeAtivaDuplicada(entity);
+                validarQuadroHorarioValidoUseCase.validarQuadroAtivoDuplicado(entity);
                 validarPeriodoLetivoAtivoUseCase.executar(entity);
-                return GradeHorariaMapper.toResponse(repository.save(entity));
+                return QuadroHorarioMapper.toResponse(repository.save(entity));
         }
 
         @Transactional
         public void inativar(Long id) {
-                GradeHoraria entity = repository.findById(id)
+                QuadroHorario entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Grade horária não encontrada com ID: " + id));
+                                                "Quadro horário não encontrada com ID: " + id));
 
                 entity.setStatus(Status.INATIVO);
                 repository.save(entity);

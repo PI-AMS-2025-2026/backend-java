@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.GradeHoraria;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.Sala;
@@ -27,7 +27,7 @@ import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaBlocoHorar
 import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
@@ -43,7 +43,7 @@ class CriarAlocacaoUseCaseTest {
     private ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
     @Mock
-    private ValidarGradeHorariaUseCase validarGradeHoraria;
+    private ValidarQuadroHorarioUseCase validarQuadroHorario;
 
     @Mock
     private ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
@@ -77,7 +77,7 @@ class CriarAlocacaoUseCaseTest {
 
         when(validarRefObrigatorias.validar(entity)).thenReturn(entity);
         when(validarRefObrigatorias.buscarUsuarioAlteracaoPorId(99L)).thenReturn(usuarioAlteracao);
-        doNothing().when(validarGradeHoraria).executar(entity);
+        doNothing().when(validarQuadroHorario).executar(entity);
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
         doNothing().when(validarConflitoTurmaBlocoHorario).executar(entity);
@@ -99,7 +99,7 @@ class CriarAlocacaoUseCaseTest {
 
         when(validarRefObrigatorias.validar(entity)).thenReturn(entity);
         when(validarRefObrigatorias.buscarUsuarioAlteracaoPorId(99L)).thenReturn(usuarioAlteracao);
-        doNothing().when(validarGradeHoraria).executar(entity);
+        doNothing().when(validarQuadroHorario).executar(entity);
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
         doNothing().when(validarConflitoTurmaBlocoHorario).executar(entity);
@@ -131,11 +131,11 @@ class CriarAlocacaoUseCaseTest {
         BlocoHorario blocoHorario = new BlocoHorario();
         blocoHorario.setId(6L);
 
-        GradeHoraria gradeHoraria = new GradeHoraria();
-        gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
-        gradeHoraria.getCurso().setId(7L);
-        gradeHoraria.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
-        gradeHoraria.getPeriodoLetivo().setId(8L);
+        QuadroHorario quadroHorario = new QuadroHorario();
+        quadroHorario.setCurso(new com.fatec.gini.domain.entities.Curso());
+        quadroHorario.getCurso().setId(7L);
+        quadroHorario.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
+        quadroHorario.getPeriodoLetivo().setId(8L);
 
         Alocacao alocacao = new Alocacao();
         alocacao.setTurma(turma);
@@ -144,7 +144,7 @@ class CriarAlocacaoUseCaseTest {
         alocacao.setProfessor(professor);
         alocacao.setDiaSemana(diaSemana);
         alocacao.setBlocoHorario(blocoHorario);
-        alocacao.setGradeHoraria(gradeHoraria);
+        alocacao.setQuadroHorario(quadroHorario);
 
         return alocacao;
     }

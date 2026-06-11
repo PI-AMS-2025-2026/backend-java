@@ -54,21 +54,21 @@ public class Alocacao {
     private BlocoHorario blocoHorario;
 
     @ManyToOne
-    @JoinColumn(name = "id_grade_horaria", nullable = false)
-    private GradeHoraria gradeHoraria;
+    @JoinColumn(name = "id_quadro_horario", nullable = false)
+    private QuadroHorario quadroHorario;
 
     @OneToMany(mappedBy = "alocacao")
     private List<HistoricoAlteracao> historicoAlteracoes;
 
     public Alocacao(Turma turma, Disciplina disciplina, Sala sala, Professor professor, DiaSemana diaSemana,
-            BlocoHorario blocoHorario, GradeHoraria gradeHoraria) {
+            BlocoHorario blocoHorario, QuadroHorario quadroHorario) {
         this.turma = turma;
         this.disciplina = disciplina;
         this.sala = sala;
         this.professor = professor;
         this.diaSemana = diaSemana;
         this.blocoHorario = blocoHorario;
-        this.gradeHoraria = gradeHoraria;
+        this.quadroHorario = quadroHorario;
     }
 
     @Override
@@ -99,8 +99,8 @@ public class Alocacao {
     @Override
     public String toString() {
         return "Alocacao [id=" + id + ", turma=" + turma + ", disciplina=" + disciplina + ", sala=" + sala
-                + ", professor=" + professor + ", diaSemana=" + diaSemana + ", blocoHorario=" + blocoHorario + ", gradeHoraria="
-                + gradeHoraria + "]";
+                + ", professor=" + professor + ", diaSemana=" + diaSemana + ", blocoHorario=" + blocoHorario + ", quadroHorario="
+                + quadroHorario + "]";
     }
     
 }

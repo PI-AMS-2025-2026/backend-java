@@ -24,6 +24,6 @@ public class AlocacaoMapper {
                 entity.getProfessor() != null ? ProfessorMapper.toResponse(entity.getProfessor()) : null,
                 entity.getDiaSemana() != null ? DiaSemanaMapper.toResponse(entity.getDiaSemana()) : null,
                 entity.getBlocoHorario() != null ? BlocoHorarioMapper.toResponse(entity.getBlocoHorario()) : null,
-                entity.getGradeHoraria() != null ? GradeHorariaMapper.toResponse(entity.getGradeHoraria()) : null);
+                entity.getQuadroHorario() != null ? QuadroHorarioMapper.toResponse(entity.getQuadroHorario()) : null);
     }
 }

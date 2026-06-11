@@ -50,7 +50,7 @@ public class Curso {
     private List<Disciplina> disciplinas;
 
     @OneToMany(mappedBy = "curso")
-    private List<GradeHoraria> gradeHorarias;
+    private List<QuadroHorario> quadroHorarios;
 
     @OneToMany(mappedBy = "curso")
     private List<Usuario> usuarios;

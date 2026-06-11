@@ -1,11 +1,11 @@
-package com.fatec.gini.dto.gradeHoraria;
+package com.fatec.gini.dto.quadroHorario;
 
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.dto.id.LongDTO;
 
 import jakarta.validation.constraints.NotNull;
 
-public record GradeHorariaRequest(
+public record QuadroHorarioRequest(
     @NotNull(message = "Versão é obrigatória")
     Integer versao,
     

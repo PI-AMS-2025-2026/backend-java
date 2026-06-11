@@ -25,12 +25,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "grade_horaria")
-public class GradeHoraria {
+@Table(name = "quadro_horario")
+public class QuadroHorario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_grade_horaria")
+    @Column(name = "id_quadro_horario")
     private Long id;
 
     @Column(nullable = false)
@@ -51,10 +51,10 @@ public class GradeHoraria {
     @JoinColumn(name = "id_periodo_letivo", nullable = false)
     private PeriodoLetivo periodoLetivo;
 
-    @OneToMany(mappedBy = "gradeHoraria")
+    @OneToMany(mappedBy = "quadroHorario")
     private List<Alocacao> alocacoes;
 
-    public GradeHoraria(Integer versao, Status status) {
+    public QuadroHorario(Integer versao, Status status) {
         this.versao = versao;
         this.status = status;
     }
@@ -75,9 +75,7 @@ public class GradeHoraria {
             return false;
         if (getClass() != obj.getClass())
             return false;
-
-        // Ajustado de PeriodoLetivo para GradeHoraria
-        GradeHoraria other = (GradeHoraria) obj;
+        QuadroHorario other = (QuadroHorario) obj;
 
         if (id == null) {
             if (other.id != null)
