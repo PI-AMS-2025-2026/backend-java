@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -11,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,6 +26,7 @@ public class PeriodoLetivo {
     private Long id;
 
     private Integer ano;
+
     private Integer periodo;
 
     @Column(name = "data_inicio")
@@ -38,15 +42,33 @@ public class PeriodoLetivo {
     @OneToMany(mappedBy = "periodoLetivo")
     private List<GradeHoraria> gradeHorarias;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
     public PeriodoLetivo() {
     }
 
-    public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
+    public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio,
+            LocalDate dataFim, Status status) {
         this.ano = ano;
         this.periodo = periodo;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
         this.status = status;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -105,6 +127,22 @@ public class PeriodoLetivo {
         this.gradeHorarias = gradeHorarias;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -115,19 +153,24 @@ public class PeriodoLetivo {
 
     @Override
     public boolean equals(Object obj) {
+
         if (this == obj)
             return true;
+
         if (obj == null)
             return false;
+
         if (getClass() != obj.getClass())
             return false;
+
         PeriodoLetivo other = (PeriodoLetivo) obj;
+
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
+
         return true;
     }
-
 }
