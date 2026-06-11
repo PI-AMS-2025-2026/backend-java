@@ -13,7 +13,7 @@ import com.fatec.gini.domain.entities.Status;
 public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoAtividadeQuadro, Long> {
 
         /**
-         * Retorna períodos letivos aplicando filtros opcionais.
+         * Retorna períodos atividade quadro aplicando filtros opcionais.
          *
          * Regras dos filtros:
          * - ano: comparação exata.
