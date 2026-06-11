@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -22,7 +22,7 @@ import com.fatec.gini.web.exception.BusinessException;
 class ValidarConflitoTurmaHorarioUseCaseTest {
 
     @InjectMocks
-    private ValidarConflitoTurmaHorarioUseCase useCase;
+    private ValidarConflitoTurmaBlocoHorarioUseCase useCase;
 
     @Mock
     private AlocacaoRepository repository;
@@ -54,13 +54,13 @@ class ValidarConflitoTurmaHorarioUseCaseTest {
         DiaSemana diaSemana = new DiaSemana();
         diaSemana.setId(diaSemanaId);
 
-        Horario horario = new Horario();
+        BlocoHorario horario = new BlocoHorario();
         horario.setId(horarioId);
 
         Alocacao alocacao = new Alocacao();
         alocacao.setTurma(turma);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
+        alocacao.setBlocoHorario(horario);
         return alocacao;
     }
 }

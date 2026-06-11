@@ -79,9 +79,9 @@ public class CopiarGradeHorariaUseCase {
             nova.setGradeHoraria(novaGrade);
             nova.setTurma(antiga.getTurma());
             nova.setDiaSemana(antiga.getDiaSemana());
-            nova.setHorario(antiga.getHorario());
+            nova.setBlocoHorario(antiga.getBlocoHorario());
             nova.setDisciplina(antiga.getDisciplina());
-            nova.setUsuario(antiga.getUsuario());
+            nova.setProfessor(antiga.getProfessor());
             nova.setSala(antiga.getSala());
 
             novasAlocacoes.add(nova);

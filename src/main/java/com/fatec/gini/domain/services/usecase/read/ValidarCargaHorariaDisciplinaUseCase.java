@@ -26,7 +26,7 @@ public class ValidarCargaHorariaDisciplinaUseCase {
                 disciplina.getId(), 
                 entity.getGradeHoraria().getId()
         );
-        int novaDuracao = entity.getHorario().getDuracao();
+        int novaDuracao = entity.getBlocoHorario().getDuracao();
 
         if (cargaHorariaAtual + novaDuracao > disciplina.getCargaHoraria()) {
             throw new BusinessException("A carga horária total da disciplina já foi preenchida na grade horária.");

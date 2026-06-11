@@ -30,10 +30,10 @@ public class ValidarCopiarGradeHorariaUseCase {
 
             //ve se existe dados obrigatorios
             if (antiga.getDisciplina() == null
-                    || antiga.getUsuario() == null
+                    || antiga.getProfessor() == null
                     || antiga.getSala() == null
                     || antiga.getDiaSemana() == null
-                    || antiga.getHorario() == null) {
+                    || antiga.getBlocoHorario() == null) {
 
                 throw new BusinessException(
                         "Dados de alocação de origem corrompidos ou incompletos.");
@@ -42,9 +42,9 @@ public class ValidarCopiarGradeHorariaUseCase {
             // valida disponibilidade do professor via id
             boolean disponivel =
                     disponibilidadeProfessorRepository.verificarDisponibilidadeProfessor(
-                            antiga.getUsuario().getId(),
+                            antiga.getProfessor().getId(),
                             antiga.getDiaSemana().getId(),
-                            antiga.getHorario().getId());
+                            antiga.getBlocoHorario().getId());
 
             if (!disponivel) {
                 throw new BusinessException(

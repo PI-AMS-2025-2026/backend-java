@@ -1,11 +1,11 @@
-package com.fatec.gini.dto.horarios;
+package com.fatec.gini.dto.blocoHorario;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalTime;
 
-public record HorarioRequest(
+public record BlocoHorarioRequest(
         @NotNull(message = "Hora de início é obrigatória")
         LocalTime horaInicio,
 

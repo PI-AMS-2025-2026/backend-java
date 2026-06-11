@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
@@ -29,7 +29,7 @@ class ValidarVinculoProfessorDisciplinaUseCaseTest {
     void naoDeveLancarExcecaoQuandoProfessorPodeLecionarDisciplina() {
         Alocacao alocacao = criarAlocacao(10L, 20L);
 
-        when(repository.existsByUsuarioIdAndDisciplinaId(10L, 20L)).thenReturn(true);
+        when(repository.existsByProfessorIdAndDisciplinaId(10L, 20L)).thenReturn(true);
 
         assertDoesNotThrow(() -> useCase.executar(alocacao));
     }
@@ -38,20 +38,20 @@ class ValidarVinculoProfessorDisciplinaUseCaseTest {
     void deveLancarExcecaoQuandoProfessorNaoPodeLecionarDisciplina() {
         Alocacao alocacao = criarAlocacao(10L, 20L);
 
-        when(repository.existsByUsuarioIdAndDisciplinaId(10L, 20L)).thenReturn(false);
+        when(repository.existsByProfessorIdAndDisciplinaId(10L, 20L)).thenReturn(false);
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
     }
 
     private Alocacao criarAlocacao(Long professorId, Long disciplinaId) {
-        Usuario usuario = new Usuario();
-        usuario.setId(professorId);
+        Professor professor = new Professor();
+        professor.setId(professorId);
 
         Disciplina disciplina = new Disciplina();
         disciplina.setId(disciplinaId);
 
         Alocacao alocacao = new Alocacao();
-        alocacao.setUsuario(usuario);
+        alocacao.setProfessor(professor);
         alocacao.setDisciplina(disciplina);
         return alocacao;
     }

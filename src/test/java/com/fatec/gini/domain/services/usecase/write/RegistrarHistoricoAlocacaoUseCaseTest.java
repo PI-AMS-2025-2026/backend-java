@@ -17,7 +17,8 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.GradeHoraria;
 import com.fatec.gini.domain.entities.HistoricoAlteracao;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
@@ -63,8 +64,8 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         verify(historicoAlteracaoRepository, times(2)).save(org.mockito.ArgumentMatchers.any(HistoricoAlteracao.class));
     }
 
-    private Alocacao criarAlocacao(Long idAlocacao, Long idTurma, Long idDisciplina, Long idSala, Long idUsuario,
-            Long idDiaSemana, Long idHorario, Long idGradeHoraria) {
+    private Alocacao criarAlocacao(Long idAlocacao, Long idTurma, Long idDisciplina, Long idSala, Long idProfessor,
+            Long idDiaSemana, Long idBlocoHorario, Long idGradeHoraria) {
 
         Turma turma = new Turma();
         turma.setId(idTurma);
@@ -75,14 +76,14 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         Sala sala = new Sala();
         sala.setId(idSala);
 
-        Usuario usuario = new Usuario();
-        usuario.setId(idUsuario);
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
 
         DiaSemana diaSemana = new DiaSemana();
         diaSemana.setId(idDiaSemana);
 
-        Horario horario = new Horario();
-        horario.setId(idHorario);
+        BlocoHorario blocoHorario = new BlocoHorario();
+        blocoHorario.setId(idBlocoHorario);
 
         GradeHoraria gradeHoraria = new GradeHoraria();
         gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
@@ -103,9 +104,9 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         alocacao.setTurma(turma);
         alocacao.setDisciplina(disciplina);
         alocacao.setSala(sala);
-        alocacao.setUsuario(usuario);
+        alocacao.setProfessor(professor);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
+        alocacao.setBlocoHorario(blocoHorario);
         alocacao.setGradeHoraria(gradeHoraria);
 
         return alocacao;

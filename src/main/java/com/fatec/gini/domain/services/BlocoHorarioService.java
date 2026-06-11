@@ -8,52 +8,52 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fatec.gini.domain.entities.Horario;
-import com.fatec.gini.dto.horarios.HorarioRequest;
-import com.fatec.gini.dto.horarios.HorarioResponse;
-import com.fatec.gini.infrastructure.mappers.HorarioMapper;
-import com.fatec.gini.infrastructure.repositories.HorarioRepository;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.dto.blocoHorario.BlocoHorarioRequest;
+import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
+import com.fatec.gini.infrastructure.mappers.BlocoHorarioMapper;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class HorarioService {
+public class BlocoHorarioService {
 
-    private final  HorarioRepository repository;
+    private final  BlocoHorarioRepository repository;
 
     @Transactional
-    public HorarioResponse criar(HorarioRequest request) {
-        validarHorario(request);
+    public BlocoHorarioResponse criar(BlocoHorarioRequest request) {
+        validarBlocoHorario(request);
 
-        Horario entity = HorarioMapper.toEntity(request);
+        BlocoHorario entity = BlocoHorarioMapper.toEntity(request);
 
         entity = repository.save(entity);
-        return HorarioMapper.toResponse(entity);
+        return BlocoHorarioMapper.toResponse(entity);
     }
 
     @Transactional(readOnly = true)
-    public HorarioResponse buscarPorId(Long id) {
-        Horario entity = repository.findById(id)
+    public BlocoHorarioResponse buscarPorId(Long id) {
+        BlocoHorario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
-        return HorarioMapper.toResponse(entity);
+        return BlocoHorarioMapper.toResponse(entity);
     }
 
     @Transactional(readOnly = true)
-    public Page<HorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page, int size) {
+    public Page<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Horario> pageHorario = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
+        Page<BlocoHorario> pageBlocoHorario = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
 
-        return pageHorario.map(HorarioMapper::toResponse);
+        return pageBlocoHorario.map(BlocoHorarioMapper::toResponse);
     }
 
     @Transactional
-    public HorarioResponse atualizar(Long id, HorarioRequest request) {
-        validarHorario(request);
+    public BlocoHorarioResponse atualizar(Long id, BlocoHorarioRequest request) {
+        validarBlocoHorario(request);
 
-        Horario entity = repository.findById(id)
+        BlocoHorario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
 
         entity.setHoraInicio(request.horaInicio());
@@ -61,7 +61,7 @@ public class HorarioService {
         entity.setDuracao(request.duracao());
 
         entity = repository.save(entity);
-        return HorarioMapper.toResponse(entity);
+        return BlocoHorarioMapper.toResponse(entity);
     }
 
     @Transactional
@@ -73,7 +73,7 @@ public class HorarioService {
     }
 
     // TODO: colocar a validação do local correto
-    private void validarHorario(HorarioRequest request) {
+    private void validarBlocoHorario(BlocoHorarioRequest request) {
         if (request.horaFim().isBefore(request.horaInicio())) {
             throw new IllegalArgumentException("Hora de fim deve ser posterior à hora de início");
         }

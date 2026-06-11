@@ -11,14 +11,22 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "horario")
-public class Horario {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "bloco_horario")
+public class BlocoHorario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_horario")
+    @Column(name = "id_bloco_horario")
     private Long id;
 
     @Column(name = "hora_inicio", nullable = false)
@@ -30,67 +38,16 @@ public class Horario {
     @Column(nullable = false)
     private Integer duracao;
 
-    @OneToMany(mappedBy = "horario")
+    @OneToMany(mappedBy = "blocoHorario")
     private List<DisponibilidadeProfessor> disponibilidades;
 
-    @OneToMany(mappedBy = "horario")
+    @OneToMany(mappedBy = "blocoHorario")
     private List<Alocacao> alocacoes;
 
-    public Horario() {
-    }
-
-    public Horario(LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
+    public BlocoHorario(LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
         this.duracao = duracao;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
-
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-    public LocalTime getHoraFim() {
-        return horaFim;
-    }
-
-    public void setHoraFim(LocalTime horaFim) {
-        this.horaFim = horaFim;
-    }
-
-    public Integer getDuracao() {
-        return duracao;
-    }
-
-    public void setDuracao(Integer duracao) {
-        this.duracao = duracao;
-    }
-
-    public List<DisponibilidadeProfessor> getDisponibilidades() {
-        return disponibilidades;
-    }
-
-    public void setDisponibilidades(List<DisponibilidadeProfessor> disponibilidades) {
-        this.disponibilidades = disponibilidades;
-    }
-
-    public List<Alocacao> getAlocacoes() {
-        return alocacoes;
-    }
-
-    public void setAlocacoes(List<Alocacao> alocacoes) {
-        this.alocacoes = alocacoes;
     }
 
     @Override
@@ -109,7 +66,7 @@ public class Horario {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Horario other = (Horario) obj;
+        BlocoHorario other = (BlocoHorario) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

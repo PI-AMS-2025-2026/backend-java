@@ -1,4 +1,4 @@
-package com.fatec.gini.domain;
+package com.fatec.gini.domain.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

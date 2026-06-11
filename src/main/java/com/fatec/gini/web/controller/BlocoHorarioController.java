@@ -17,22 +17,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.services.HorarioService;
-import com.fatec.gini.dto.horarios.HorarioRequest;
-import com.fatec.gini.dto.horarios.HorarioResponse;
+import com.fatec.gini.domain.services.BlocoHorarioService;
+import com.fatec.gini.dto.blocoHorario.BlocoHorarioRequest;
+import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/horarios")
+@RequestMapping("/bloco_horarios")
 @RequiredArgsConstructor
-public class HorarioController {
+public class BlocoHorarioController {
 
-    private final HorarioService service;
+    private final BlocoHorarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<HorarioResponse>> listar(
+    public ResponseEntity<Page<BlocoHorarioResponse>> listar(
             @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
             @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
             @RequestParam(required = false) Integer duracao,
@@ -42,13 +42,13 @@ public class HorarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HorarioResponse> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<BlocoHorarioResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<HorarioResponse> criar(@Valid @RequestBody HorarioRequest request) {
-        HorarioResponse response = service.criar(request);
+    public ResponseEntity<BlocoHorarioResponse> criar(@Valid @RequestBody BlocoHorarioRequest request) {
+        BlocoHorarioResponse response = service.criar(request);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -59,8 +59,8 @@ public class HorarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HorarioResponse> atualizar(@PathVariable Long id,
-            @Valid @RequestBody HorarioRequest request) {
+    public ResponseEntity<BlocoHorarioResponse> atualizar(@PathVariable Long id,
+            @Valid @RequestBody BlocoHorarioRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 

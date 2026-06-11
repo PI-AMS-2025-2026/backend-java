@@ -18,14 +18,16 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
-import com.fatec.gini.infrastructure.repositories.HorarioRepository;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
@@ -55,10 +57,13 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
     private DiaSemanaRepository diaSemanaRepository;
 
     @Mock
-    private HorarioRepository horarioRepository;
+    private BlocoHorarioRepository blocoHorarioRepository;
 
     @Mock
     private GradeHorariaRepository gradeHorariaRepository;
+
+    @Mock
+    private ProfessorRepository professorRepository;
 
     @Test
     void deveValidarReferenciasObrigatoriasComSucesso() {
@@ -68,12 +73,12 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         disciplinaEntrada.setId(2L);
         Sala salaEntrada = new Sala();
         salaEntrada.setId(3L);
-        Usuario usuarioEntrada = new Usuario();
-        usuarioEntrada.setId(4L);
+        Professor professorEntrada = new Professor();
+        professorEntrada.setId(4L);
         DiaSemana diaSemanaEntrada = new DiaSemana();
         diaSemanaEntrada.setId(5L);
-        Horario horarioEntrada = new Horario();
-        horarioEntrada.setId(6L);
+        BlocoHorario blocoHorarioEntrada = new BlocoHorario();
+        blocoHorarioEntrada.setId(6L);
         GradeHoraria gradeEntrada = new GradeHoraria();
         setIdPrivadoGradeHoraria(gradeEntrada, 7L);
 
@@ -81,9 +86,9 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         entity.setTurma(turmaEntrada);
         entity.setDisciplina(disciplinaEntrada);
         entity.setSala(salaEntrada);
-        entity.setUsuario(usuarioEntrada);
+        entity.setProfessor(professorEntrada);
         entity.setDiaSemana(diaSemanaEntrada);
-        entity.setHorario(horarioEntrada);
+        entity.setBlocoHorario(blocoHorarioEntrada);
         entity.setGradeHoraria(gradeEntrada);
 
         Turma turmaBanco = new Turma();
@@ -92,21 +97,21 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         disciplinaBanco.setId(2L);
         Sala salaBanco = new Sala();
         salaBanco.setId(3L);
-        Usuario usuarioBanco = new Usuario();
-        usuarioBanco.setId(4L);
+        Usuario professorBanco = new Usuario();
+        professorBanco.setId(4L);
         DiaSemana diaSemanaBanco = new DiaSemana();
         diaSemanaBanco.setId(5L);
-        Horario horarioBanco = new Horario();
-        horarioBanco.setId(6L);
+        BlocoHorario blocoHorarioBanco = new BlocoHorario();
+        blocoHorarioBanco.setId(6L);
         GradeHoraria gradeBanco = new GradeHoraria();
         setIdPrivadoGradeHoraria(gradeBanco, 7L);
 
         when(turmaRepository.findById(1L)).thenReturn(Optional.of(turmaBanco));
         when(disciplinaRepository.findById(2L)).thenReturn(Optional.of(disciplinaBanco));
         when(salaRepository.findById(3L)).thenReturn(Optional.of(salaBanco));
-        when(usuarioRepository.findById(4L)).thenReturn(Optional.of(usuarioBanco));
+        when(usuarioRepository.findById(4L)).thenReturn(Optional.of(professorBanco));
         when(diaSemanaRepository.findById(5L)).thenReturn(Optional.of(diaSemanaBanco));
-        when(horarioRepository.findById(6L)).thenReturn(Optional.of(horarioBanco));
+        when(blocoHorarioRepository.findById(6L)).thenReturn(Optional.of(blocoHorarioBanco));
         when(gradeHorariaRepository.findById(7L)).thenReturn(Optional.of(gradeBanco));
 
         Alocacao resultado = useCase.validar(entity);
@@ -115,9 +120,9 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
         assertSame(turmaBanco, resultado.getTurma());
         assertSame(disciplinaBanco, resultado.getDisciplina());
         assertSame(salaBanco, resultado.getSala());
-        assertSame(usuarioBanco, resultado.getUsuario());
+        assertSame(professorBanco, resultado.getProfessor());
         assertSame(diaSemanaBanco, resultado.getDiaSemana());
-        assertSame(horarioBanco, resultado.getHorario());
+        assertSame(blocoHorarioBanco, resultado.getBlocoHorario());
         assertSame(gradeBanco, resultado.getGradeHoraria());
     }
 
@@ -129,9 +134,9 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
 
     @Test
     void deveLancarExcecaoQuandoUsuarioNaoEncontrado() {
-        when(usuarioRepository.findById(999L)).thenReturn(Optional.empty());
+        when(professorRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> useCase.buscarUsuarioPorId(999L));
+        assertThrows(EntityNotFoundException.class, () -> useCase.buscarProfessorPorId(999L));
     }
 
     @Test

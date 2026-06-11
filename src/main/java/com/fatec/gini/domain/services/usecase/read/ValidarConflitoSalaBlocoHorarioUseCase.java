@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ValidarConflitoSalaHorarioUseCase {
+public class ValidarConflitoSalaBlocoHorarioUseCase {
 
     // Repository responsável pelas consultas de alocação
     private final  AlocacaoRepository repository;
@@ -25,10 +25,10 @@ public class ValidarConflitoSalaHorarioUseCase {
 
         // Verifica no banco se a sala já está ocupada
         boolean salaOcupada =
-                repository.existsBySalaIdAndDiaSemanaIdAndHorarioId(
+                repository.existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(
                         entity.getSala().getId(),
                         entity.getDiaSemana().getId(),
-                        entity.getHorario().getId()
+                        entity.getBlocoHorario().getId()
                 );
 
         // Lança exceção caso exista conflito de alocação

@@ -8,7 +8,7 @@ import com.fatec.gini.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaDisciplinaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCoerenciaUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
@@ -50,7 +50,7 @@ public class AtualizarAlocacaoUseCase {
 
     private final  ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
 
-    private final  ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+    private final  ValidarConflitoTurmaBlocoHorarioUseCase validarConflitoTurmaHorario;
 
     private final  ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
@@ -67,11 +67,11 @@ public class AtualizarAlocacaoUseCase {
     private final  AlocacaoRepository alocacaoRepository;
 
     @Transactional
-    public Alocacao executar(Long id, Alocacao entity, long usuarioAlteracao, String justificativaAlteracao) {
+    public Alocacao executar(Long id, Alocacao entity, long professorAlteracao, String justificativaAlteracao) {
 
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
-        var usuarioAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(usuarioAlteracao);
+        var professorAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(professorAlteracao);
         // validarRefObrigatorias.validarJustificativaAlteracao(justificativaAlteracao);
 
         // valida a compatibilidade da disciplina com a sala alocada
@@ -85,7 +85,7 @@ public class AtualizarAlocacaoUseCase {
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getUsuario().getId(), entity.getDiaSemana().getId());
+        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana().getId());
 
         // Validar grade horaria
         validarGradeHoraria.executar(entity);
@@ -108,7 +108,7 @@ public class AtualizarAlocacaoUseCase {
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
         // registrar histórico de atualização
-        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, entity, usuarioAlteracaoEntity,
+        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, entity, professorAlteracaoEntity,
                 justificativaAlteracao);
 
         // validar coerência entre curso da grade, turma e disciplina

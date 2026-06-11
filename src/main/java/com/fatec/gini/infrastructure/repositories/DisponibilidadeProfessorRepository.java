@@ -11,19 +11,19 @@ import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
-       boolean existsByProfessorIdAndDiaSemanaIdAndHorarioId(Long professorId, Long diaId, Long horarioId);
+       boolean existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(Long professorId, Long diaId, Long blocoHorarioId);
 
        @Query("""
                             SELECT d
                             FROM DisponibilidadeProfessor d
                             WHERE (:professorId IS NULL OR d.professor.id = :professorId)
                             AND (:diaId IS NULL OR d.diaSemana.id = :diaId)
-                            AND (:horarioId IS NULL OR d.horario.id = :horarioId)
+                            AND (:blocoHorarioId IS NULL OR d.blocoHorario.id = :blocoHorarioId)
                      """)
        Page<DisponibilidadeProfessor> buscarComFiltros(
                      @Param("professorId") Long professorId,
                      @Param("diaId") Long diaId,
-                     @Param("horarioId") Long horarioId,
+                     @Param("blocoHorarioId") Long blocoHorarioId,
                      Pageable pageable);
 
        /**
@@ -37,11 +37,11 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
                             FROM DisponibilidadeProfessor d
                             WHERE d.professor.id = :professorId
                             AND d.diaSemana.id = :diaId
-                            AND d.horario.id = :horarioId
+                            AND d.blocoHorario.id = :blocoHorarioId
                      """)
        boolean verificarDisponibilidadeProfessor(
                      @Param("professorId") Long professorId,
                      @Param("diaId") Long diaId,
-                     @Param("horarioId") Long horarioId);
+                     @Param("blocoHorarioId") Long blocoHorarioId);
 
 }

@@ -25,7 +25,7 @@ public class ValidarVinculoProfessorDisciplinaUseCase {
     private final  ProfessorDisciplinaRepository repository;
 
     public void executar(Alocacao entity) {
-        Long idProfessor = entity.getUsuario().getId();
+        Long idProfessor = entity.getProfessor().getId();
         Long idDisciplina = entity.getDisciplina().getId();
 
         professorPodeLecionarOuLancarExcecao(idProfessor, idDisciplina);
@@ -34,7 +34,7 @@ public class ValidarVinculoProfessorDisciplinaUseCase {
 
     private void professorPodeLecionarOuLancarExcecao(Long idProfessor, Long idDisciplina) {
 
-        if (!repository.existsByUsuarioIdAndDisciplinaId(idProfessor, idDisciplina)) {
+        if (!repository.existsByProfessorIdAndDisciplinaId(idProfessor, idDisciplina)) {
             throw new BusinessException(
                     "O professor selecionado não está apto a lecionar esta disciplina");
         }

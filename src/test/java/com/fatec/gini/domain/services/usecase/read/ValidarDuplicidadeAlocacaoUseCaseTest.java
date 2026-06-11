@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
@@ -32,7 +32,7 @@ class ValidarDuplicidadeAlocacaoUseCaseTest {
     void naoDeveLancarExcecaoNaCriacaoQuandoNaoHaDuplicidade() {
         Alocacao alocacao = criarAlocacao(1L, 2L, 3L, 4L, 5L, null);
 
-        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
+        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
                 1L, 2L, 3L, 4L, 5L)).thenReturn(false);
 
         assertDoesNotThrow(() -> useCase.executarCriacao(alocacao));
@@ -42,7 +42,7 @@ class ValidarDuplicidadeAlocacaoUseCaseTest {
     void deveLancarExcecaoNaCriacaoQuandoHaDuplicidade() {
         Alocacao alocacao = criarAlocacao(1L, 2L, 3L, 4L, 5L, null);
 
-        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
+        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
                 1L, 2L, 3L, 4L, 5L)).thenReturn(true);
 
         assertThrows(BusinessException.class, () -> useCase.executarCriacao(alocacao));
@@ -52,7 +52,7 @@ class ValidarDuplicidadeAlocacaoUseCaseTest {
     void naoDeveLancarExcecaoNaAtualizacaoQuandoNaoHaDuplicidade() {
         Alocacao alocacao = criarAlocacao(1L, 2L, 3L, 4L, 5L, 99L);
 
-        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
+        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
                 1L, 2L, 3L, 4L, 5L, 99L)).thenReturn(false);
 
         assertDoesNotThrow(() -> useCase.executarAtualizacao(alocacao));
@@ -62,7 +62,7 @@ class ValidarDuplicidadeAlocacaoUseCaseTest {
     void deveLancarExcecaoNaAtualizacaoQuandoHaDuplicidade() {
         Alocacao alocacao = criarAlocacao(1L, 2L, 3L, 4L, 5L, 99L);
 
-        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
+        when(alocacaoRepository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
                 1L, 2L, 3L, 4L, 5L, 99L)).thenReturn(true);
 
         assertThrows(BusinessException.class, () -> useCase.executarAtualizacao(alocacao));
@@ -82,7 +82,7 @@ class ValidarDuplicidadeAlocacaoUseCaseTest {
         DiaSemana diaSemana = new DiaSemana();
         diaSemana.setId(diaSemanaId);
 
-        Horario horario = new Horario();
+        BlocoHorario horario = new BlocoHorario();
         horario.setId(horarioId);
 
         Alocacao alocacao = new Alocacao();
@@ -91,7 +91,7 @@ class ValidarDuplicidadeAlocacaoUseCaseTest {
         alocacao.setDisciplina(disciplina);
         alocacao.setSala(sala);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
+        alocacao.setBlocoHorario(horario);
         return alocacao;
     }
 }

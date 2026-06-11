@@ -19,14 +19,14 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ValidarConflitoTurmaHorarioUseCase {
+public class ValidarConflitoTurmaBlocoHorarioUseCase {
     private final  AlocacaoRepository repository;
 
     public void executar(Alocacao entity) {
         boolean conflito = repository.existsConflitoTurmaHorario(
                 entity.getTurma().getId(),
                 entity.getDiaSemana().getId(),
-                entity.getHorario().getId());
+                entity.getBlocoHorario().getId());
 
         if (conflito) {
             throw new BusinessException("A turma já possui uma alocação neste dia/horário");

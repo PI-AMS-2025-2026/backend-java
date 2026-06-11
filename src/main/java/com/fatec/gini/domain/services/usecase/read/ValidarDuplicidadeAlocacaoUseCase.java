@@ -45,12 +45,12 @@ public class ValidarDuplicidadeAlocacaoUseCase {
 
     public void executarCriacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
                         entity.getDiaSemana().getId(),
-                        entity.getHorario().getId());
+                        entity.getBlocoHorario().getId());
 
         if (existeDuplicidade) {
             throw new BusinessException("Já existe uma alocação cadastrada com os mesmos dados informados.");
@@ -60,12 +60,12 @@ public class ValidarDuplicidadeAlocacaoUseCase {
 
     public void executarAtualizacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
                         entity.getDiaSemana().getId(),
-                        entity.getHorario().getId(),
+                        entity.getBlocoHorario().getId(),
                         entity.getId());
 
         if (existeDuplicidade) {

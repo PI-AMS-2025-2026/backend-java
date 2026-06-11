@@ -18,12 +18,13 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
-import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaHorarioUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaBlocoHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
@@ -51,10 +52,10 @@ class CriarAlocacaoUseCaseTest {
     private ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
 
     @Mock
-    private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+    private ValidarConflitoTurmaBlocoHorarioUseCase validarConflitoTurmaBlocoHorario;
 
     @Mock
-    private ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
+    private ValidarConflitoSalaBlocoHorarioUseCase validarConflitoSalaBlocoHorario;
 
     @Mock
     private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
@@ -79,8 +80,8 @@ class CriarAlocacaoUseCaseTest {
         doNothing().when(validarGradeHoraria).executar(entity);
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
-        doNothing().when(validarConflitoTurmaHorario).executar(entity);
-        doNothing().when(validarConflitoSalaHorario).executar(entity);
+        doNothing().when(validarConflitoTurmaBlocoHorario).executar(entity);
+        doNothing().when(validarConflitoSalaBlocoHorario).executar(entity);
         doNothing().when(validarDuplicidade).executarCriacao(entity);
         when(alocacaoRepository.save(entity)).thenReturn(alocacaoSalva);
 
@@ -101,8 +102,8 @@ class CriarAlocacaoUseCaseTest {
         doNothing().when(validarGradeHoraria).executar(entity);
         doNothing().when(validarVincProfDisciplina).executar(entity);
         doNothing().when(validarDisponibilidadeProfessor).executar(entity);
-        doNothing().when(validarConflitoTurmaHorario).executar(entity);
-        doNothing().when(validarConflitoSalaHorario).executar(entity);
+        doNothing().when(validarConflitoTurmaBlocoHorario).executar(entity);
+        doNothing().when(validarConflitoSalaBlocoHorario).executar(entity);
         doThrow(new BusinessException("duplicidade")).when(validarDuplicidade).executarCriacao(entity);
 
         assertThrows(BusinessException.class, () -> useCase.executar(entity, 99L));
@@ -121,14 +122,14 @@ class CriarAlocacaoUseCaseTest {
         Sala sala = new Sala();
         sala.setId(3L);
 
-        Usuario usuario = new Usuario();
-        usuario.setId(4L);
+        Professor professor = new Professor();
+        professor.setId(4L);
 
         DiaSemana diaSemana = new DiaSemana();
         diaSemana.setId(5L);
 
-        Horario horario = new Horario();
-        horario.setId(6L);
+        BlocoHorario blocoHorario = new BlocoHorario();
+        blocoHorario.setId(6L);
 
         GradeHoraria gradeHoraria = new GradeHoraria();
         gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
@@ -140,9 +141,9 @@ class CriarAlocacaoUseCaseTest {
         alocacao.setTurma(turma);
         alocacao.setDisciplina(disciplina);
         alocacao.setSala(sala);
-        alocacao.setUsuario(usuario);
+        alocacao.setProfessor(professor);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
+        alocacao.setBlocoHorario(blocoHorario);
         alocacao.setGradeHoraria(gradeHoraria);
 
         return alocacao;

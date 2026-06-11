@@ -28,8 +28,8 @@ public class ValidarDisponibilidadeProfessorUseCase {
 
     public void executar(Alocacao entity) {
         var diaSemana = entity.getDiaSemana().getId();
-        var horario = entity.getHorario().getId();
-        var professorId = entity.getUsuario().getId();
+        var horario = entity.getBlocoHorario().getId();
+        var professorId = entity.getProfessor().getId();
 
         temDisponibilidadeDiaHorario(professorId, diaSemana, horario);
         temSobreposicaoAtividades(professorId, diaSemana, horario);
@@ -46,7 +46,7 @@ public class ValidarDisponibilidadeProfessorUseCase {
 
     private void temSobreposicaoAtividades(Long professorId, Long diaId, Long horarioId) {
         boolean temSobreposicao = alocacaoRepository
-                .existsByUsuarioIdAndDiaSemanaIdAndHorarioId(
+                .existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(
                         professorId, diaId, horarioId);
 
         if (temSobreposicao) {

@@ -11,6 +11,6 @@ public record DisponibilidadeProfessorRequest(
     @NotNull(message = "Dia da semana é obrigatório")
     LongDTO diaSemana,
 
-    @NotNull(message = "Horário é obrigatório")
-    LongDTO horario
+    @NotNull(message = "Bloco Horário é obrigatório")
+    LongDTO blocoHorario
 ){}

@@ -15,6 +15,6 @@ public class DisponibilidadeProfessorMapper {
                 disponibilidade.getId(),
                 disponibilidade.getProfessor() != null ? ProfessorMapper.toResponse(disponibilidade.getProfessor()) : null,
                 disponibilidade.getDiaSemana() != null ? DiaSemanaMapper.toResponse(disponibilidade.getDiaSemana()) : null,
-                disponibilidade.getHorario() != null ? HorarioMapper.toResponse(disponibilidade.getHorario()) : null);
+                disponibilidade.getBlocoHorario() != null ? BlocoHorarioMapper.toResponse(disponibilidade.getBlocoHorario()) : null);
     }
 }

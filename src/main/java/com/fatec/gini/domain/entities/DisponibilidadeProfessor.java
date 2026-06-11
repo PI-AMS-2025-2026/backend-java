@@ -36,14 +36,14 @@ public class DisponibilidadeProfessor {
     private DiaSemana diaSemana;
 
     @ManyToOne
-    @JoinColumn(name = "id_horario", nullable = false)
-    private Horario horario;
+    @JoinColumn(name = "id_bloco_horario", nullable = false)
+    private BlocoHorario blocoHorario;
 
   
-    public DisponibilidadeProfessor(Professor professor, DiaSemana diaSemana, Horario horario) {
+    public DisponibilidadeProfessor(Professor professor, DiaSemana diaSemana, BlocoHorario blocoHorario) {
         this.professor = professor;
         this.diaSemana = diaSemana;
-        this.horario = horario;
+        this.blocoHorario = blocoHorario;
     }
 
 

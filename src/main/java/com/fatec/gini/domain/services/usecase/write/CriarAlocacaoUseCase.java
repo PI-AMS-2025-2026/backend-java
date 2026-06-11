@@ -8,8 +8,8 @@ import com.fatec.gini.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaDisciplinaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCoerenciaUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaHorarioUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaBlocoHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
@@ -53,9 +53,9 @@ public class CriarAlocacaoUseCase {
 
     private final  ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
 
-    private final  ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+    private final  ValidarConflitoTurmaBlocoHorarioUseCase validarConflitoTurmaHorario;
 
-    private final  ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
+    private final  ValidarConflitoSalaBlocoHorarioUseCase validarConflitoSalaHorario;
 
     private final  ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
@@ -88,7 +88,7 @@ public class CriarAlocacaoUseCase {
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getUsuario().getId(), entity.getDiaSemana().getId());
+        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana().getId());
 
         // Validar grade horaria
         validarGradeHoraria.executar(entity);
