@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -25,12 +24,6 @@ public class Recurso {
     private String nome;
 
     private String tipo;
-
-    @Column(name = "created_at")
-    private LocalDateTime created_at;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updated_at;
 
     @OneToMany(mappedBy = "recurso")
     private List<RecursoSala> recursoSalas;
@@ -65,22 +58,6 @@ public class Recurso {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
     }
 
     public List<RecursoSala> getRecursoSalas() {

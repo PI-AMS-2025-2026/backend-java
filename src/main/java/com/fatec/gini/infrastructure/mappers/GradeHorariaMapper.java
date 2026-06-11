@@ -5,6 +5,7 @@ import com.fatec.gini.dto.gradeHoraria.GradeHorariaRequest;
 import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
 
 public class GradeHorariaMapper {
+
     public static GradeHoraria toEntity(GradeHorariaRequest request) {
 
         GradeHoraria entity = new GradeHoraria();
@@ -22,10 +23,8 @@ public class GradeHorariaMapper {
                 entity.getVersao(),
                 entity.getDataCriacao(),
                 entity.getStatus(),
-                entity.getCurso() != null? CursoMapper.toResponse(entity.getCurso()): null,
-                entity.getPeriodoLetivo() != null? PeriodoLetivoMapper.toResponse(entity.getPeriodoLetivo()): null,
-                entity.getCreatedAt(),
-                entity.getUpdatedAt()
+                entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
+                entity.getPeriodoLetivo() != null ? PeriodoLetivoMapper.toResponse(entity.getPeriodoLetivo()) : null
         );
     }
 }

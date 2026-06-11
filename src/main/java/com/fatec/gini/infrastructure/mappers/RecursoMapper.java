@@ -17,8 +17,6 @@ public class RecursoMapper {
         return new RecursoResponse(
                 entity.getId(),
                 entity.getNome(),
-                entity.getTipo(),
-                entity.getCreated_at(),
-                entity.getUpdated_at());
+                entity.getTipo());
     }
 }

@@ -1,4 +1,3 @@
-```java id="z7t9pw"
 package com.fatec.gini.infrastructure.mappers;
 
 import com.fatec.gini.domain.entities.Disciplina;
@@ -8,10 +7,6 @@ import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 public class DisciplinaMapper {
 
     public static Disciplina toEntity(DisciplinaRequest request) {
-
-        if (request == null) {
-            return null;
-        }
 
         Disciplina disciplina = new Disciplina();
 
@@ -28,10 +23,6 @@ public class DisciplinaMapper {
 
     public static DisciplinaResponse toResponse(Disciplina disciplina) {
 
-        if (disciplina == null) {
-            return null;
-        }
-
         return new DisciplinaResponse(
                 disciplina.getId(),
                 disciplina.getNome(),
@@ -41,14 +32,8 @@ public class DisciplinaMapper {
                 disciplina.getModalidade(),
                 disciplina.getCodDisciplina(),
                 disciplina.getCor(),
-                disciplina.getCurso() != null
-                        ? CursoMapper.toResponse(disciplina.getCurso())
-                        : null,
-                disciplina.getTipoSala() != null
-                        ? TipoSalaMapper.toResponse(disciplina.getTipoSala())
-                        : null,
-                disciplina.getCreatedAt(),
-                disciplina.getUpdatedAt());
+                disciplina.getCurso() != null ? CursoMapper.toResponse(disciplina.getCurso()) : null,
+                disciplina.getTipoSala() != null ? TipoSalaMapper.toResponse(disciplina.getTipoSala()) : null
+        );
     }
 }
-```

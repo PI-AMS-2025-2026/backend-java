@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -11,8 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -55,12 +52,6 @@ public class Alocacao {
     @OneToMany(mappedBy = "alocacao")
     private List<HistoricoAlteracao> historicoAlteracoes;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
     public Alocacao() {
     }
 
@@ -73,17 +64,6 @@ public class Alocacao {
         this.diaSemana = diaSemana;
         this.horario = horario;
         this.gradeHoraria = gradeHoraria;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -158,22 +138,6 @@ public class Alocacao {
         this.historicoAlteracoes = historicoAlteracoes;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -202,8 +166,9 @@ public class Alocacao {
     @Override
     public String toString() {
         return "Alocacao [id=" + id + ", turma=" + turma + ", disciplina=" + disciplina + ", sala=" + sala
-                + ", usuario=" + usuario + ", diaSemana=" + diaSemana + ", horario=" + horario
-                + ", gradeHoraria=" + gradeHoraria + ", createdAt=" + createdAt
-                + ", updatedAt=" + updatedAt + "]";
+                + ", usuario=" + usuario + ", diaSemana=" + diaSemana + ", horario=" + horario + ", gradeHoraria="
+                + gradeHoraria + "]";
     }
+    
+
 }

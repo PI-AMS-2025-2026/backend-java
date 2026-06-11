@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -11,8 +10,7 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
@@ -56,17 +54,11 @@ public class Disciplina {
     @OneToMany(mappedBy = "disciplina")
     private List<Alocacao> alocacoes;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
     public Disciplina() {
     }
 
-    public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo,
-            String modalidade, String codDisciplina, String cor) {
+    public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo, String modalidade,
+            String codDisciplina, String cor) {
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.tipoDisciplina = tipoDisciplina;
@@ -74,17 +66,6 @@ public class Disciplina {
         this.modalidade = modalidade;
         this.codDisciplina = codDisciplina;
         this.cor = cor;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -183,22 +164,6 @@ public class Disciplina {
         this.alocacoes = alocacoes;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -223,4 +188,5 @@ public class Disciplina {
             return false;
         return true;
     }
+
 }

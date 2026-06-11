@@ -35,14 +35,6 @@ public class GradeHoraria {
     @Column(nullable = false)
     private Status status;
 
-    // Data de criação do registro
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    // Data da última atualização
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
@@ -70,55 +62,67 @@ public class GradeHoraria {
         return versao;
     }
 
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public PeriodoLetivo getPeriodoLetivo() {
-        return periodoLetivo;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void setVersao(Integer versao) {
         this.versao = versao;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
     }
 
     public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Curso getCurso() {
+        return curso;
     }
 
     public void setCurso(Curso curso) {
         this.curso = curso;
     }
 
+    public PeriodoLetivo getPeriodoLetivo() {
+        return periodoLetivo;
+    }
+
     public void setPeriodoLetivo(PeriodoLetivo periodoLetivo) {
         this.periodoLetivo = periodoLetivo;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+
+        // Ajustado de PeriodoLetivo para GradeHoraria
+        GradeHoraria other = (GradeHoraria) obj;
+
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 }

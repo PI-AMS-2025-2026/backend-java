@@ -23,21 +23,14 @@ public class PeriodoLetivoService {
 
     @Transactional
     public PeriodoLetivoResponse criar(PeriodoLetivoRequest request) {
-
         PeriodoLetivo entity = PeriodoLetivoMapper.toEntity(request);
-
-        PeriodoLetivo periodoCriado = repository.save(entity);
-
-        return PeriodoLetivoMapper.toResponse(periodoCriado);
+        return PeriodoLetivoMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
     public PeriodoLetivoResponse buscarPorId(long id) {
-
         PeriodoLetivo entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Período letivo não encontrado com ID: " + id));
-
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
         return PeriodoLetivoMapper.toResponse(entity);
     }
 
@@ -52,24 +45,14 @@ public class PeriodoLetivoService {
             int size) {
 
         var pageRequest = PageRequest.of(page, size);
-
-        var pagePeriodo = repository.buscarPorFiltros(
-                ano,
-                periodo,
-                status,
-                dataInicio,
-                dataFim,
-                pageRequest);
-
+        var pagePeriodo = repository.buscarPorFiltros(ano, periodo, status, dataInicio, dataFim, pageRequest);
         return pagePeriodo.map(PeriodoLetivoMapper::toResponse);
     }
 
     @Transactional
     public PeriodoLetivoResponse atualizar(long id, PeriodoLetivoRequest request) {
-
         PeriodoLetivo entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Período letivo não encontrado com ID: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
 
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
@@ -77,27 +60,24 @@ public class PeriodoLetivoService {
         entity.setDataFim(request.dataFim());
         entity.setStatus(request.status());
 
-        PeriodoLetivo periodoAtualizado = repository.save(entity);
-
-        return PeriodoLetivoMapper.toResponse(periodoAtualizado);
+        return PeriodoLetivoMapper.toResponse(repository.save(entity));
     }
 
     /**
      * Inativa um período letivo; em vez disso, ocorre a mudança de status.
      *
      * @param id identificador do período letivo
-     *
+     * 
      * @throws EntityNotFoundException caso período não encontrado
      */
     @Transactional
     public void inativar(long id) {
 
         var periodo = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Período letivo não encontrado com ID: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: " + id));
 
         periodo.setStatus(Status.INATIVO);
-
         repository.save(periodo);
     }
+
 }

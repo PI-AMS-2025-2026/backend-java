@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -36,14 +35,6 @@ public class Curso {
     @Column(nullable = false)
     private Integer duracao;
 
-    // Data de criação
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    // Data de atualização
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
     @OneToMany(mappedBy = "curso")
     private List<Turma> turmas;
 
@@ -70,87 +61,97 @@ public class Curso {
         return id;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getPeriodicidade() {
-        return periodicidade;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public Integer getDuracao() {
-        return duracao;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<Turma> getTurmas() {
-        return turmas;
-    }
-
-    public List<Disciplina> getDisciplinas() {
-        return disciplinas;
-    }
-
-    public List<GradeHoraria> getGradeHorarias() {
-        return gradeHorarias;
-    }
-
-    public List<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public void setNome(String nome) {
         this.nome = nome;
     }
 
+    public String getPeriodicidade() {
+        return periodicidade;
+    }
+
     public void setPeriodicidade(String periodicidade) {
         this.periodicidade = periodicidade;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    public Integer getDuracao() {
+        return duracao;
+    }
+
     public void setDuracao(Integer duracao) {
         this.duracao = duracao;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public List<Turma> getTurmas() {
+        return turmas;
     }
 
     public void setTurmas(List<Turma> turmas) {
         this.turmas = turmas;
     }
 
+    public List<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+
     public void setDisciplinas(List<Disciplina> disciplinas) {
         this.disciplinas = disciplinas;
+    }
+
+    public List<GradeHoraria> getGradeHorarias() {
+        return gradeHorarias;
     }
 
     public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
         this.gradeHorarias = gradeHorarias;
     }
 
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
     public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Curso other = (Curso) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
 }

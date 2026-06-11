@@ -30,11 +30,7 @@ public class SalaService {
     @Transactional
     public SalaResponse criar(SalaRequest request) {
         Sala entity = SalaMapper.toEntity(request);
-        LocalDateTime now = LocalDateTime.now();
-        entity.setCreated_at(now);
-        entity.setUpdated_at(now);
-
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
+            TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
             .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
         entity.setTipoSala(tipo);
 
@@ -71,7 +67,6 @@ public class SalaService {
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());
         entity.setTipoSala(tipo);
-        entity.setUpdated_at(LocalDateTime.now());
 
         return SalaMapper.toResponse(repository.save(entity));
     }

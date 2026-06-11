@@ -23,9 +23,6 @@ public class RecursoService {
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
         Recurso entity = RecursoMapper.toEntity(request);
-        LocalDateTime now = LocalDateTime.now();
-        entity.setCreated_at(now);
-        entity.setUpdated_at(now);
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
@@ -55,7 +52,6 @@ public class RecursoService {
 
         entity.setNome(request.nome());
         entity.setTipo(request.tipo());
-        entity.setUpdated_at(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }
