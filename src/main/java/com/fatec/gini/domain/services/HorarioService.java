@@ -1,8 +1,7 @@
 package com.fatec.gini.domain.services;
 
-import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +14,14 @@ import com.fatec.gini.dto.horarios.HorarioResponse;
 import com.fatec.gini.infrastructure.mappers.HorarioMapper;
 import com.fatec.gini.infrastructure.repositories.HorarioRepository;
 
-import java.time.LocalTime;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class HorarioService {
 
-    @Autowired
-    private HorarioRepository repository;
+    private final  HorarioRepository repository;
 
     @Transactional
     public HorarioResponse criar(HorarioRequest request) {

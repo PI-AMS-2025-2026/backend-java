@@ -3,7 +3,6 @@ package com.fatec.gini.domain.services.usecase.write;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +10,8 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.HistoricoAlteracao;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case responsável por registrar o histórico de alocações.
@@ -31,10 +32,10 @@ import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class RegistrarHistoricoAlocacaoUseCase {
 
-    @Autowired
-    private HistoricoAlteracaoRepository historicoAlteracaoRepository;
+    private final  HistoricoAlteracaoRepository historicoAlteracaoRepository;
 
     /*
      * O usuraioAlteracao é o usuário que realizou a operação (criação ou

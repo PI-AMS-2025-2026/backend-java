@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,13 @@ import com.fatec.gini.infrastructure.mappers.PeriodoLetivoMapper;
 import com.fatec.gini.infrastructure.repositories.PeriodoLetivoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PeriodoLetivoService {
 
-    @Autowired
-    private PeriodoLetivoRepository repository;
+    private final  PeriodoLetivoRepository repository;
 
     @Transactional
     public PeriodoLetivoResponse criar(PeriodoLetivoRequest request) {

@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,12 +12,13 @@ import com.fatec.gini.infrastructure.mappers.TipoSalaMapper;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class TipoSalaService {
 
-    @Autowired
-    private TipoSalaRepository repository;
+    private final  TipoSalaRepository repository;
 
     // Lista todos ou filtra por nome
     @Transactional(readOnly = true)

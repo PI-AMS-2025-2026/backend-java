@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services.usecase.write;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +18,8 @@ import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoria
 import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * UseCase responsável por orquestrar o processo completo de criação de
  * alocações.
@@ -35,51 +36,39 @@ import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class CriarAlocacaoUseCase {
     /**
      * Executa o registro de histórico de alocação.
      */
-    @Autowired
-    private ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
+    private final ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
-    @Autowired
-    private ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
+    private final  ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
 
-    @Autowired
-    private ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
+    private final  ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
 
-    @Autowired
-    private ValidarGradeHorariaUseCase validarGradeHoraria;
+    private final  ValidarGradeHorariaUseCase validarGradeHoraria;
 
-    @Autowired
-    private ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
+    private final  ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
 
-    @Autowired
-    private ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
+    private final  ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
 
-    @Autowired
-    private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+    private final  ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
 
-    @Autowired
-    private ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
+    private final  ValidarConflitoSalaHorarioUseCase validarConflitoSalaHorario;
 
-    @Autowired
-    private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
+    private final  ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
-    @Autowired
-    private ValidarCapacidadeSalaUseCase validarCapacidadeSala;
+    private final  ValidarCapacidadeSalaUseCase validarCapacidadeSala;
 
-    @Autowired
-    private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
+    private final  RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;    
+    private final  AlocacaoRepository alocacaoRepository;    
 
-    @Autowired
-    private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+    private final  ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
-    @Autowired
-    private ValidarCoerenciaUseCase validarCoerenciaCurso;
+    private final  ValidarCoerenciaUseCase validarCoerenciaCurso;
+
 
     @Transactional
     public Alocacao executar(Alocacao entity, long usuarioAlteracao) {

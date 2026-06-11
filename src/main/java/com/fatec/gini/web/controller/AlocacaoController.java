@@ -1,6 +1,5 @@
 package com.fatec.gini.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,7 @@ import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Camada de Controle: Responsável por expor os endpoints da API e
@@ -30,11 +30,11 @@ import jakarta.validation.Valid;
 @Tag(name = "Alocações")
 @RestController
 @RequestMapping("/alocacoes")
+@RequiredArgsConstructor
 @CrossOrigin
 public class AlocacaoController {
 
-    @Autowired
-    private AlocacaoService service;
+    private final AlocacaoService service;
 
     /**
      * Recebe um JSON (Request) e cria uma nova alocação.

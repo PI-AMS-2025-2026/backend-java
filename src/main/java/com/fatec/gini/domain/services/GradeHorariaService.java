@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,24 +21,21 @@ import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
 import com.fatec.gini.infrastructure.repositories.PeriodoLetivoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class GradeHorariaService {
 
-        @Autowired
-        private GradeHorariaRepository repository;
+ private final GradeHorariaRepository repository;
 
-        @Autowired
-        private CursoRepository cursoRepository;
+ private final CursoRepository cursoRepository;
 
-        @Autowired
-        private PeriodoLetivoRepository periodoRepository;
+ private final PeriodoLetivoRepository periodoRepository;
 
-        @Autowired
-        private ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
+ private final ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
 
-        @Autowired
-        private ValidarPeriodoLetivoAtivoUseCase validarPeriodoLetivoAtivoUseCase;
+ private final ValidarPeriodoLetivoAtivoUseCase validarPeriodoLetivoAtivoUseCase;
 
         @Transactional
         public GradeHorariaResponse criar(GradeHorariaRequest request) {

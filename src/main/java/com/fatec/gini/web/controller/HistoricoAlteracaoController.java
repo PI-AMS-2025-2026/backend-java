@@ -1,9 +1,7 @@
 package com.fatec.gini.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fatec.gini.domain.services.HistoricoAlteracaoService;
 import com.fatec.gini.dto.historicoAlteracao.HistoricoAlteracaoResponse;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/historicos-alteracoes")
-@CrossOrigin
+@RequiredArgsConstructor
 public class HistoricoAlteracaoController {
 
-	@Autowired
-	private HistoricoAlteracaoService service;
+	private final HistoricoAlteracaoService service;
 
 	@GetMapping
 	public ResponseEntity<Page<HistoricoAlteracaoResponse>> listar(

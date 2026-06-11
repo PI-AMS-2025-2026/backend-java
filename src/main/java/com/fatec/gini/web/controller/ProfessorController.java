@@ -1,10 +1,8 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
-import java.time.LocalTime;
 
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,38 +15,49 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.services.HorarioService;
-import com.fatec.gini.dto.horarios.HorarioRequest;
-import com.fatec.gini.dto.horarios.HorarioResponse;
+import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.services.ProfessorService;
+import com.fatec.gini.dto.professor.ProfessorRequest;
+import com.fatec.gini.dto.professor.ProfessorResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/horarios")
+@RequestMapping("/professores")
 @RequiredArgsConstructor
-public class HorarioController {
+public class ProfessorController {
 
-    private final HorarioService service;
+    private final ProfessorService service;
 
     @GetMapping
-    public ResponseEntity<Page<HorarioResponse>> listar(
-            @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
-            @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
-            @RequestParam(required = false) Integer duracao,
+    public ResponseEntity<Page<ProfessorResponse>> listar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String cidade,
+            @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.listar(horaInicio, horaFim, duracao, page, size));
+
+        return ResponseEntity.ok(service.listar(
+                nome,
+                email,
+                cidade,
+                status,
+                page,
+                size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HorarioResponse> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<ProfessorResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<HorarioResponse> criar(@Valid @RequestBody HorarioRequest request) {
-        HorarioResponse response = service.criar(request);
+    public ResponseEntity<ProfessorResponse> criar(@RequestBody @Valid ProfessorRequest dto) {
+
+        ProfessorResponse response = service.criar(dto);
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -59,14 +68,15 @@ public class HorarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HorarioResponse> atualizar(@PathVariable Long id,
-            @Valid @RequestBody HorarioRequest request) {
-        return ResponseEntity.ok(service.atualizar(id, request));
+    public ResponseEntity<ProfessorResponse> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid ProfessorRequest dto) {
+        return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
+        service.inativar(id);
         return ResponseEntity.noContent().build();
     }
 }

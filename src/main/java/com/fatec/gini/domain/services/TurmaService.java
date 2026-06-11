@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,17 +14,18 @@ import com.fatec.gini.infrastructure.mappers.TurmaMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class TurmaService {
 
-    @Autowired
-    private TurmaRepository repository;
+    private final TurmaRepository repository;
 
-    @Autowired
-    private CursoRepository cursoRepository;
+    private final CursoRepository cursoRepository;
 
-    @Autowired
-    private ValidarTurmaSemVinculosUseCase validarTurmaSemVinculos;
+    private final ValidarTurmaSemVinculosUseCase validarTurmaSemVinculos;
 
     @Transactional
     public TurmaResponse criar(TurmaRequest request) {

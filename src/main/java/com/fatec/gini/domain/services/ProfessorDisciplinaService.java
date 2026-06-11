@@ -1,28 +1,31 @@
 package com.fatec.gini.domain.services;
 
-import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fatec.gini.domain.entities.*;
+import com.fatec.gini.domain.entities.Disciplina;
+import com.fatec.gini.domain.entities.ProfessorDisciplina;
+import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaRequest;
 import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaResponse;
 import com.fatec.gini.infrastructure.mappers.ProfessorDisciplinaMapper;
-import com.fatec.gini.infrastructure.repositories.*;
+import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
+import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProfessorDisciplinaService {
 
-    @Autowired
-    private ProfessorDisciplinaRepository repository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private DisciplinaRepository disciplinaRepository;
+    private final  ProfessorDisciplinaRepository repository;
+    private final  UsuarioRepository usuarioRepository;
+    private final  DisciplinaRepository disciplinaRepository;
 
     @Transactional
     public ProfessorDisciplinaResponse criar(ProfessorDisciplinaRequest request) {

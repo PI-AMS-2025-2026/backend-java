@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,13 +9,13 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class ValidarCopiarGradeHorariaUseCase {
 
-    @Autowired
-    private DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
+    private final  DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
 
     @Transactional(readOnly = true)
     public void validarRegrasParaCopiaDeGrade(List<Alocacao> alocacoes) {

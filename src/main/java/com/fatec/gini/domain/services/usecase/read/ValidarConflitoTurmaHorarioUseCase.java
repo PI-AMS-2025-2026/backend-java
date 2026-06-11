@@ -1,11 +1,12 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
@@ -17,9 +18,9 @@ import com.fatec.gini.web.exception.BusinessException;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarConflitoTurmaHorarioUseCase {
-    @Autowired
-    private AlocacaoRepository repository;
+    private final  AlocacaoRepository repository;
 
     public void executar(Alocacao entity) {
         boolean conflito = repository.existsConflitoTurmaHorario(

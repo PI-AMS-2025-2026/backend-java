@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
@@ -8,6 +7,8 @@ import com.fatec.gini.domain.entities.GradeHoraria;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Responsável por garantir que a grade da alocação é válida.
@@ -21,10 +22,10 @@ import com.fatec.gini.web.exception.BusinessException;
  * 
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarGradeHorariaUseCase {
 
-    @Autowired
-    private GradeHorariaRepository gradeHorariaRepository;
+    private final  GradeHorariaRepository gradeHorariaRepository;
 
     public void executar(Alocacao entity) {
         var gradeHoraria = entity.getGradeHoraria();

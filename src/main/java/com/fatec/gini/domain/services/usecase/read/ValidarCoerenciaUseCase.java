@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarCoerenciaUseCase {
 
     public void validar(Alocacao entity) {

@@ -12,6 +12,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.fatec.gini.domain.entities.Usuario;
 
+
 @Service
 public class TokenService {
 

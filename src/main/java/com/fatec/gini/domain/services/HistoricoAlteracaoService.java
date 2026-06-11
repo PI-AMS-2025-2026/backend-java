@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,12 +11,13 @@ import com.fatec.gini.infrastructure.mappers.HistoricoAlteracaoMapper;
 import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class HistoricoAlteracaoService {
 
-	@Autowired
-	private HistoricoAlteracaoRepository repository;
+	private final HistoricoAlteracaoRepository repository;
 
 	@Transactional(readOnly = true)
 	public Page<HistoricoAlteracaoResponse> listar(Long idAlocacao, Long idUsuario, int page, int size) {

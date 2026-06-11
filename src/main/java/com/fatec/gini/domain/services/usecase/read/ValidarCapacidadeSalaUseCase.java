@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Valida a capacidade da sala em relação ao número de alunos da turma.
  * 
@@ -24,6 +26,7 @@ import com.fatec.gini.web.exception.BusinessException;
  * </p>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarCapacidadeSalaUseCase {
 
     /**

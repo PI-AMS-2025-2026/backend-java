@@ -1,12 +1,13 @@
 package com.fatec.gini.domain.services.usecase.read;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
@@ -18,10 +19,10 @@ import com.fatec.gini.web.exception.BusinessException;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarVinculoProfessorDisciplinaUseCase {
 
-    @Autowired
-    private ProfessorDisciplinaRepository repository;
+    private final  ProfessorDisciplinaRepository repository;
 
     public void executar(Alocacao entity) {
         Long idProfessor = entity.getUsuario().getId();

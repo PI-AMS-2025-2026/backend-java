@@ -1,11 +1,12 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Valida a duplicidade de alocações na criação de registros.
@@ -37,10 +38,10 @@ import com.fatec.gini.web.exception.BusinessException;
  * </p>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarDuplicidadeAlocacaoUseCase {
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
     public void executarCriacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository

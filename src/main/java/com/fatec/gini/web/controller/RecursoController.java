@@ -2,15 +2,14 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,16 +19,15 @@ import com.fatec.gini.domain.services.RecursoService;
 import com.fatec.gini.dto.recurso.RecursoRequest;
 import com.fatec.gini.dto.recurso.RecursoResponse;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/recursos")
-@CrossOrigin
+@RequiredArgsConstructor
 public class RecursoController {
 
-    @Autowired
-    private RecursoService service;
+    private final RecursoService service;
 
     @GetMapping
     public ResponseEntity<Page<RecursoResponse>> listar(

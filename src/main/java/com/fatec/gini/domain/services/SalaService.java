@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,18 +15,17 @@ import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class SalaService {
 
-    @Autowired
-    private SalaRepository repository;
+    private final  SalaRepository repository;
 
-    @Autowired
-    private TipoSalaRepository tipoSalaRepository;
+    private final  TipoSalaRepository tipoSalaRepository;
 
-    @Autowired
-    private ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
+    private final  ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
 
     @Transactional
     public SalaResponse criar(SalaRequest request) {

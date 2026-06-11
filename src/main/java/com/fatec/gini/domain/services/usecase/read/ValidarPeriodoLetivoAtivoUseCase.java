@@ -1,12 +1,13 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.GradeHoraria;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.infrastructure.repositories.PeriodoLetivoRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Responsável por garantir que o período letivo da grade horária está ativo.
@@ -17,10 +18,10 @@ import com.fatec.gini.web.exception.BusinessException;
  * <li>período letivo está ativo</li>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarPeriodoLetivoAtivoUseCase {
 
-    @Autowired
-    private PeriodoLetivoRepository periodoLetivoRepository;
+    private final  PeriodoLetivoRepository periodoLetivoRepository;
 
     public void executar(GradeHoraria gradeHoraria) {
         periodoLetivoAtivo(gradeHoraria);

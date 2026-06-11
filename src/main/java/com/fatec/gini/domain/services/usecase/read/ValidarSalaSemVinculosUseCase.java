@@ -1,17 +1,18 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarSalaSemVinculosUseCase {
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
     @Transactional(readOnly = true)
     public void validar(Long idSala) {

@@ -2,10 +2,17 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.entities.Status;
@@ -14,19 +21,19 @@ import com.fatec.gini.dto.gradeHoraria.GradeHorariaRequest;
 import com.fatec.gini.dto.gradeHoraria.GradeHorariaResponse;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/grades-horarias")
-@CrossOrigin
+@RequiredArgsConstructor
 public class GradeHorariaController {
 
-    @Autowired
-    private GradeHorariaService service;
+    private final GradeHorariaService service;
 
     @GetMapping
     public ResponseEntity<Page<GradeHorariaResponse>> listar(
-            @RequestParam(name = "curso", required = false) Long idCurso, 
-            @RequestParam(name = "periodo_letivo", required = false) Long idPeriodoLetivo, 
+            @RequestParam(name = "curso", required = false) Long idCurso,
+            @RequestParam(name = "periodo_letivo", required = false) Long idPeriodoLetivo,
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

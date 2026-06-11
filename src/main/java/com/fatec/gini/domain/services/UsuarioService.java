@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,15 +19,15 @@ import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repository;
+    private final UsuarioRepository repository;
 
-    @Autowired
-    private CursoRepository cursoRepository;
+    private final CursoRepository cursoRepository;
 
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {

@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -13,12 +12,13 @@ import com.fatec.gini.infrastructure.mappers.RecursoMapper;
 import com.fatec.gini.infrastructure.repositories.RecursoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RecursoService {
 
-    @Autowired
-    private RecursoRepository repository;
+    private final  RecursoRepository repository;
 
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {

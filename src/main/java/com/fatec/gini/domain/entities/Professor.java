@@ -1,51 +1,63 @@
 package com.fatec.gini.domain.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Id;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidade professor, que sera representar o professor dentro do sistema
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "disponibilidade_professor")
-public class DisponibilidadeProfessor {
+@Table(name = "professor")
+public class Professor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_disponibilidade_professor")
+    @Column(name = "id_pessoa")
     private Long id;
+
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column
+    private String cidade;
     
-    @ManyToOne
-    @JoinColumn(name = "id_professor", nullable = false)
-    private Professor professor;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
-    @ManyToOne
-    @JoinColumn(name = "id_dia_semana", nullable = false)
-    private DiaSemana diaSemana;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "id_horario", nullable = false)
-    private Horario horario;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-  
-    public DisponibilidadeProfessor(Professor professor, DiaSemana diaSemana, Horario horario) {
-        this.professor = professor;
-        this.diaSemana = diaSemana;
-        this.horario = horario;
+    public Professor(String nome, String email, String cidade, Status status) {
+        this.nome = nome;
+        this.email = email;
+        this.cidade = cidade;
+        this.status = status;
+        
     }
-
 
     @Override
     public int hashCode() {
@@ -63,7 +75,7 @@ public class DisponibilidadeProfessor {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        DisponibilidadeProfessor other = (DisponibilidadeProfessor) obj;
+        Professor other = (Professor) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

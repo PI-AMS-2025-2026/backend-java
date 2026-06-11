@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +13,13 @@ import com.fatec.gini.infrastructure.mappers.CursoMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CursoService {
 
-    @Autowired
-    private CursoRepository repository;
+    private final  CursoRepository repository;
 
     @Transactional
     public CursoResponse criar(CursoRequest dto) {

@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -23,6 +22,7 @@ import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Valida as referências obrigatórias de uma alocação.
@@ -45,22 +45,16 @@ import jakarta.persistence.EntityNotFoundException;
  * de regras de negócio específicas de alocação.
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
 
-    @Autowired
-    private TurmaRepository turmaRepository;
-    @Autowired
-    private DisciplinaRepository disciplinaRepository;
-    @Autowired
-    private SalaRepository salaRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private DiaSemanaRepository diaSemanaRepository;
-    @Autowired
-    private HorarioRepository horarioRepository;
-    @Autowired
-    private GradeHorariaRepository gradeHorariaRepository;
+    private final  TurmaRepository turmaRepository;
+    private final  DisciplinaRepository disciplinaRepository;
+    private final  SalaRepository salaRepository;
+    private final  UsuarioRepository usuarioRepository;
+    private final  DiaSemanaRepository diaSemanaRepository;
+    private final  HorarioRepository horarioRepository;
+    private final  GradeHorariaRepository gradeHorariaRepository;
 
     @Transactional(readOnly = true)
     public Turma buscarTurmaPorId(Long id) {

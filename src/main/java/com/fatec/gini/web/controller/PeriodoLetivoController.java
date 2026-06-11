@@ -2,10 +2,8 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +21,14 @@ import com.fatec.gini.dto.periodoLetivo.PeriodoLetivoRequest;
 import com.fatec.gini.dto.periodoLetivo.PeriodoLetivoResponse;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/periodos-letivos")
-@CrossOrigin
+@RequiredArgsConstructor
 public class PeriodoLetivoController {
 
-    @Autowired
-    private PeriodoLetivoService service;
+    private final PeriodoLetivoService service;
 
     @GetMapping
     public ResponseEntity<Page<PeriodoLetivoResponse>> listar(

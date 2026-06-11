@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +11,13 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarCargaHorariaMaximaProfessorUseCase {
 
-        @Autowired
-        private AlocacaoRepository alocacaoRepository;
+ private final AlocacaoRepository alocacaoRepository;
 
         //TODO: verificar o real valor para limite de horas diárias, e se tem alguma regra específica para aulas noturnas ou sábados
         private static final long LIMITE_HORAS_DIARIAS = 8; 

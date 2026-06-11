@@ -1,18 +1,19 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarConflitoSalaHorarioUseCase {
 
     // Repository responsável pelas consultas de alocação
-    @Autowired
-    private AlocacaoRepository repository;
+    private final  AlocacaoRepository repository;
 
     /**
      * Valida se já existe uma alocação para a mesma sala,

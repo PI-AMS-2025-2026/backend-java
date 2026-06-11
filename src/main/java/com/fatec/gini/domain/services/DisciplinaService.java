@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,21 +17,19 @@ import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class DisciplinaService {
 
-    @Autowired
-    private DisciplinaRepository repository;
+    private final  DisciplinaRepository repository;
 
-    @Autowired
-    private CursoRepository cursoRepository;
+    private final  CursoRepository cursoRepository;
 
-    @Autowired
-    private TipoSalaRepository tipoSalaRepository;
+    private final  TipoSalaRepository tipoSalaRepository;
 
-        @Autowired
-        private ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
+ private final ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
     @Transactional
     public DisciplinaResponse criar(DisciplinaRequest request) {

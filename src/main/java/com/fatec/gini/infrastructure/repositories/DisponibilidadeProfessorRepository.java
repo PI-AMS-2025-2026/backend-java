@@ -5,24 +5,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 
-@Repository
+
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
-       boolean existsByUsuarioIdAndDiaSemanaIdAndHorarioId(Long usuarioId, Long diaId, Long horarioId);
+       boolean existsByProfessorIdAndDiaSemanaIdAndHorarioId(Long professorId, Long diaId, Long horarioId);
 
        @Query("""
                             SELECT d
                             FROM DisponibilidadeProfessor d
-                            WHERE (:usuarioId IS NULL OR d.usuario.id = :usuarioId)
+                            WHERE (:professorId IS NULL OR d.professor.id = :professorId)
                             AND (:diaId IS NULL OR d.diaSemana.id = :diaId)
                             AND (:horarioId IS NULL OR d.horario.id = :horarioId)
                      """)
        Page<DisponibilidadeProfessor> buscarComFiltros(
-                     @Param("usuarioId") Long usuarioId,
+                     @Param("professorId") Long professorId,
                      @Param("diaId") Long diaId,
                      @Param("horarioId") Long horarioId,
                      Pageable pageable);
@@ -36,12 +35,12 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
        @Query("""
                             SELECT COUNT(d) > 0
                             FROM DisponibilidadeProfessor d
-                            WHERE d.usuario.id = :usuarioId
+                            WHERE d.professor.id = :professorId
                             AND d.diaSemana.id = :diaId
                             AND d.horario.id = :horarioId
                      """)
        boolean verificarDisponibilidadeProfessor(
-                     @Param("usuarioId") Long usuarioId,
+                     @Param("professorId") Long professorId,
                      @Param("diaId") Long diaId,
                      @Param("horarioId") Long horarioId);
 

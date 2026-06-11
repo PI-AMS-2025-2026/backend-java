@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services.usecase.write;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.GradeHoraria;
@@ -8,11 +7,13 @@ import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarGradeHorariaValidaUseCase {
 
-    @Autowired
-    private GradeHorariaRepository gradeHorariaRepository;
+    private final  GradeHorariaRepository gradeHorariaRepository;
 
     /**
      * Valida se já existe outra grade horária ativa

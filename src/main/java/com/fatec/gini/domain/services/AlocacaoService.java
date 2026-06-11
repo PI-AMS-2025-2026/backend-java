@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,20 +14,17 @@ import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AlocacaoService {
 
-        @Autowired
-        private AlocacaoRepository repository;
+        private final AlocacaoRepository repository;
 
-        @Autowired
-        private CriarAlocacaoUseCase criarAlocacaoUseCase;
+        private final CriarAlocacaoUseCase criarAlocacaoUseCase;
 
-        @Autowired
-        private AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
-
-
+        private final AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
         public AlocacaoResponse criar(AlocacaoRequest request) {
 

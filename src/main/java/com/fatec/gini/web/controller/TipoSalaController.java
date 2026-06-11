@@ -3,9 +3,7 @@ package com.fatec.gini.web.controller;
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,14 +20,14 @@ import com.fatec.gini.dto.tipoSala.TipoSalaRequest;
 import com.fatec.gini.dto.tipoSala.TipoSalaResponse;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/tipos-sala")
-@CrossOrigin
+@RequiredArgsConstructor
 public class TipoSalaController {
 
-    @Autowired
-    private TipoSalaService service;
+    private final TipoSalaService service;
 
     @GetMapping
     public ResponseEntity<List<TipoSalaResponse>> listar(

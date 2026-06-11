@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,21 +15,20 @@ import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CopiarGradeHorariaUseCase {
 
-    @Autowired
-    private GradeHorariaRepository gradeHorariaRepository;
+    private final  GradeHorariaRepository gradeHorariaRepository;
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
-    @Autowired
-    private ValidarCopiarGradeHorariaUseCase validarCopiaGradeHorariaUseCase;
+    private final  ValidarCopiarGradeHorariaUseCase validarCopiaGradeHorariaUseCase;
 
     // NOVA VALIDAÇÃO
-    @Autowired
-    private ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
+    private final  ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
 
     @Transactional
     public GradeHoraria executar(Long idGradeOrigem, GradeHoraria dadosNovaGrade) {
