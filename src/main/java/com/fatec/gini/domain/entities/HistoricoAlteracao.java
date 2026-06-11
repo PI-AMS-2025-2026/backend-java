@@ -11,8 +11,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "historico_alteracao")
 public class HistoricoAlteracao {
     @Id
@@ -43,9 +51,6 @@ public class HistoricoAlteracao {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public HistoricoAlteracao() {
-    }
-
     public HistoricoAlteracao(LocalDate dataAlteracao, String justificativa, String campoAlterado, String valorAntigo,
             String valorNovo) {
         this.dataAlteracao = dataAlteracao;
@@ -53,70 +58,6 @@ public class HistoricoAlteracao {
         this.campoAlterado = campoAlterado;
         this.valorAntigo = valorAntigo;
         this.valorNovo = valorNovo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getDataAlteracao() {
-        return dataAlteracao;
-    }
-
-    public void setDataAlteracao(LocalDate dataAlteracao) {
-        this.dataAlteracao = dataAlteracao;
-    }
-
-    public String getJustificativa() {
-        return justificativa;
-    }
-
-    public void setJustificativa(String justificativa) {
-        this.justificativa = justificativa;
-    }
-
-    public String getCampoAlterado() {
-        return campoAlterado;
-    }
-
-    public void setCampoAlterado(String campoAlterado) {
-        this.campoAlterado = campoAlterado;
-    }
-
-    public String getValorAntigo() {
-        return valorAntigo;
-    }
-
-    public void setValorAntigo(String valorAntigo) {
-        this.valorAntigo = valorAntigo;
-    }
-
-    public String getValorNovo() {
-        return valorNovo;
-    }
-
-    public void setValorNovo(String valorNovo) {
-        this.valorNovo = valorNovo;
-    }
-
-    public Alocacao getAlocacao() {
-        return alocacao;
-    }
-
-    public void setAlocacao(Alocacao alocacao) {
-        this.alocacao = alocacao;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     @Override

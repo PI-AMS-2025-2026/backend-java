@@ -19,27 +19,22 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "dia_semana")
-public class DiaSemana {
+@Table(name = "tipo_ecurso")
+public class TipoRecurso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_dia_semana")
+    @Column(name = "id_recurso")
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(unique = true, nullable = false)
     private String nome;
 
-    @OneToMany(mappedBy = "diaSemana")
-    private List<Alocacao> alocacoes;
+    private String tipo;
 
-    @OneToMany(mappedBy = "diaSemana")
-    private List<DisponibilidadeProfessor> disponibilidades;
+    @OneToMany(mappedBy = "tipoRecurso")
+    private List<Recurso> recursoSalas;
 
-    public DiaSemana(String nome) {
-        this.nome = nome;
-    }
-    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -56,7 +51,7 @@ public class DiaSemana {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        DiaSemana other = (DiaSemana) obj;
+        TipoRecurso other = (TipoRecurso) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -65,4 +60,5 @@ public class DiaSemana {
         return true;
     }
 
+    
 }

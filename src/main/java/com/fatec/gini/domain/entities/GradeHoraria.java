@@ -15,8 +15,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "grade_horaria")
 public class GradeHoraria {
 
@@ -46,56 +54,9 @@ public class GradeHoraria {
     @OneToMany(mappedBy = "gradeHoraria")
     private List<Alocacao> alocacoes;
 
-    public GradeHoraria() {
-    }
-
     public GradeHoraria(Integer versao, Status status) {
         this.versao = versao;
         this.status = status;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Integer getVersao() {
-        return versao;
-    }
-
-    public void setVersao(Integer versao) {
-        this.versao = versao;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public void setCurso(Curso curso) {
-        this.curso = curso;
-    }
-
-    public PeriodoLetivo getPeriodoLetivo() {
-        return periodoLetivo;
-    }
-
-    public void setPeriodoLetivo(PeriodoLetivo periodoLetivo) {
-        this.periodoLetivo = periodoLetivo;
     }
 
     @Override

@@ -21,17 +21,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SalaService {
 
-    private final  SalaRepository repository;
+    private final SalaRepository repository;
 
-    private final  TipoSalaRepository tipoSalaRepository;
+    private final TipoSalaRepository tipoSalaRepository;
 
-    private final  ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
+    private final ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
 
     @Transactional
     public SalaResponse criar(SalaRequest request) {
         Sala entity = SalaMapper.toEntity(request);
-            TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
-            .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
         entity.setTipoSala(tipo);
 
         return SalaMapper.toResponse(repository.save(entity));
@@ -62,7 +63,8 @@ public class SalaService {
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com ID: " + id));
 
         TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
-            .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
 
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());

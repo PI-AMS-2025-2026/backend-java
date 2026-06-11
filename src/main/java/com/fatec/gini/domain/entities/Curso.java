@@ -12,8 +12,16 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "curso")
 public class Curso {
 
@@ -47,86 +55,11 @@ public class Curso {
     @OneToMany(mappedBy = "curso")
     private List<Usuario> usuarios;
 
-    public Curso() {
-    }
-
     public Curso(String nome, String periodicidade, Status status, Integer duracao) {
         this.nome = nome;
         this.periodicidade = periodicidade;
         this.status = status;
         this.duracao = duracao;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getPeriodicidade() {
-        return periodicidade;
-    }
-
-    public void setPeriodicidade(String periodicidade) {
-        this.periodicidade = periodicidade;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Integer getDuracao() {
-        return duracao;
-    }
-
-    public void setDuracao(Integer duracao) {
-        this.duracao = duracao;
-    }
-
-    public List<Turma> getTurmas() {
-        return turmas;
-    }
-
-    public void setTurmas(List<Turma> turmas) {
-        this.turmas = turmas;
-    }
-
-    public List<Disciplina> getDisciplinas() {
-        return disciplinas;
-    }
-
-    public void setDisciplinas(List<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
-    }
-
-    public List<GradeHoraria> getGradeHorarias() {
-        return gradeHorarias;
-    }
-
-    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
-        this.gradeHorarias = gradeHorarias;
-    }
-
-    public List<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
     }
 
     @Override

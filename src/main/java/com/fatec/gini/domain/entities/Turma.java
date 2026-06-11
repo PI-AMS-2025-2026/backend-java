@@ -1,18 +1,26 @@
 package com.fatec.gini.domain.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "turma")
 public class Turma {
 
@@ -40,72 +48,13 @@ public class Turma {
     @OneToMany(mappedBy = "turma")
     private List<Alocacao> alocacoes;
 
-    public Turma() {
-    }
-
     public Turma(String codigo, Integer periodo, Integer ano, Integer numeroAlunos) {
         this.codigo = codigo;
         this.periodo = periodo;
         this.ano = ano;
         this.numeroAlunos = numeroAlunos;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public Integer getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(Integer periodo) {
-        this.periodo = periodo;
-    }
-
-    public Integer getAno() {
-        return ano;
-    }
-
-    public void setAno(Integer ano) {
-        this.ano = ano;
-    }
-
-    public Integer getNumeroAlunos() {
-        return numeroAlunos;
-    }
-
-    public void setNumeroAlunos(Integer numeroAlunos) {
-        this.numeroAlunos = numeroAlunos;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public void setCurso(Curso curso) {
-        this.curso = curso;
-    }
-
-    public List<Alocacao> getAlocacoes() {
-        return alocacoes;
-    }
-
-    public void setAlocacoes(List<Alocacao> alocacoes) {
-        this.alocacoes = alocacoes;
-    }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -24,10 +24,10 @@ public interface RecursoRepository extends JpaRepository<Recurso, Long> {
             SELECT r
             FROM Recurso r
             WHERE (:nome IS NULL OR LOWER(r.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-              AND (:tipo IS NULL OR LOWER(r.tipo) LIKE LOWER(CONCAT('%', :tipo, '%')))
+              AND (:idTipoRecurso IS NULL OR r.tipoRecurso.id = :idTipoRecurso)
             """)
     Page<Recurso> buscarPorFiltros(
             @Param("nome") String nome,
-            @Param("tipo") String tipo,
+            @Param("idTipoRecurso") Long tipo,
             Pageable pageable);
 }

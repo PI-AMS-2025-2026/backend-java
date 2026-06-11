@@ -1,8 +1,8 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
+import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,51 +15,46 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.services.RecursoService;
-import com.fatec.gini.dto.recurso.RecursoRequest;
-import com.fatec.gini.dto.recurso.RecursoResponse;
+import com.fatec.gini.domain.services.TipoRecursoService;
+import com.fatec.gini.dto.tipoRecurso.TipoRecursoRequest;
+import com.fatec.gini.dto.tipoRecurso.TipoRecursoResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/recursos")
+@RequestMapping("/tipos-recurso")
 @RequiredArgsConstructor
-public class RecursoController {
+public class TipoRecursoController {
 
-    private final RecursoService service;
+    private final TipoRecursoService service;
 
     @GetMapping
-    public ResponseEntity<Page<RecursoResponse>> listar(
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false,name = "tipo_recurso") Long idTipoRecurso,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        return ResponseEntity.ok(service.listar(nome, idTipoRecurso, page, size));
+    public ResponseEntity<List<TipoRecursoResponse>> listar(
+            @RequestParam(required = false) String nome) {
+        return ResponseEntity.ok(service.listar(nome));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecursoResponse> buscar(@PathVariable Long id) {
+    public ResponseEntity<TipoRecursoResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<RecursoResponse> criar(@Valid @RequestBody RecursoRequest request) {
-        RecursoResponse response = service.criar(request);
+    public ResponseEntity<TipoRecursoResponse> criar(@Valid @RequestBody TipoRecursoRequest request) {
+        TipoRecursoResponse response = service.criar(request);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(response.id())
                 .toUri();
-
         return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecursoResponse> atualizar(
+    public ResponseEntity<TipoRecursoResponse> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody RecursoRequest request) {
+            @Valid @RequestBody TipoRecursoRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 

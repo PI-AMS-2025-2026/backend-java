@@ -13,8 +13,16 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "periodo_letivo")
 public class PeriodoLetivo {
 
@@ -39,8 +47,6 @@ public class PeriodoLetivo {
     @OneToMany(mappedBy = "periodoLetivo")
     private List<GradeHoraria> gradeHorarias;
 
-    public PeriodoLetivo() {
-    }
 
     public PeriodoLetivo(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
         this.ano = ano;
@@ -48,62 +54,6 @@ public class PeriodoLetivo {
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
         this.status = status;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getAno() {
-        return ano;
-    }
-
-    public void setAno(Integer ano) {
-        this.ano = ano;
-    }
-
-    public Integer getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(Integer periodo) {
-        this.periodo = periodo;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public List<GradeHoraria> getGradeHorarias() {
-        return gradeHorarias;
-    }
-
-    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
-        this.gradeHorarias = gradeHorarias;
     }
 
     @Override
