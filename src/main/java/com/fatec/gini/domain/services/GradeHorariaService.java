@@ -26,100 +26,158 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class GradeHorariaService {
 
-        @Autowired
-        private GradeHorariaRepository repository;
+    @Autowired
+    private GradeHorariaRepository repository;
 
-        @Autowired
-        private CursoRepository cursoRepository;
+    @Autowired
+    private CursoRepository cursoRepository;
 
-        @Autowired
-        private PeriodoLetivoRepository periodoRepository;
+    @Autowired
+    private PeriodoLetivoRepository periodoRepository;
 
-        @Autowired
-        private ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
+    @Autowired
+    private ValidarGradeHorariaValidaUseCase validarGradeHorariaValidaUseCase;
 
-        @Autowired
-        private ValidarPeriodoLetivoAtivoUseCase validarPeriodoLetivoAtivoUseCase;
+    @Autowired
+    private ValidarPeriodoLetivoAtivoUseCase validarPeriodoLetivoAtivoUseCase;
 
-        @Transactional
-        public GradeHorariaResponse criar(GradeHorariaRequest request) {
-                GradeHoraria entity = GradeHorariaMapper.toEntity(request);
+    @Transactional
+    public GradeHorariaResponse criar(GradeHorariaRequest request) {
 
-                Curso curso = cursoRepository.findById(request.curso().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Curso não encontrado com ID: " + request.curso().id()));
+        GradeHoraria entity = GradeHorariaMapper.toEntity(request);
 
-                PeriodoLetivo periodo = periodoRepository.findById(request.periodoLetivo().id())
-                                .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: "
-                                                + request.periodoLetivo().id()));
+        Curso curso = cursoRepository.findById(request.curso().id())
+                .orElseThrow(() ->
+                    new EntityNotFoundException(
+                        "Curso não encontrado com ID: "
+                        + request.curso().id()
+                    )
+                );
 
-                entity.setCurso(curso);
-                entity.setPeriodoLetivo(periodo);
-                entity.setDataCriacao(LocalDateTime.now());
-                entity.setStatus(request.status());
-                validarGradeHorariaValidaUseCase.validarGradeAtivaDuplicada(entity);
-                validarPeriodoLetivoAtivoUseCase.executar(entity);
+        PeriodoLetivo periodo = periodoRepository.findById(
+                request.periodoLetivo().id()
+        ).orElseThrow(() ->
+            new EntityNotFoundException(
+                "Período letivo não encontrado com ID: "
+                + request.periodoLetivo().id()
+            )
+        );
 
-                return GradeHorariaMapper.toResponse(repository.save(entity));
-        }
+        entity.setCurso(curso);
+        entity.setPeriodoLetivo(periodo);
 
-        @Transactional(readOnly = true)
-        public GradeHorariaResponse buscarPorId(Long id) {
-                GradeHoraria entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Grade horária não encontrada com ID: " + id));
-                return GradeHorariaMapper.toResponse(entity);
-        }
+        entity.setDataCriacao(LocalDateTime.now());
+        entity.setStatus(request.status());
+        LocalDateTime agora = LocalDateTime.now();
 
-        @Transactional(readOnly = true)
-        public Page<GradeHorariaResponse> listar(
-                        Long idCurso,
-                        Long idPeriodoLetivo,
-                        Status status,
-                        int page,
-                        int size) {
+        entity.setCreatedAt(agora);
+        entity.setUpdatedAt(agora);
 
-                var pageRequest = PageRequest.of(page, size);
+        validarGradeHorariaValidaUseCase
+                .validarGradeAtivaDuplicada(entity);
 
-                var pageGrade = repository.buscarComFiltros(
-                                idCurso,
-                                idPeriodoLetivo,
-                                status,
-                                pageRequest);
+        validarPeriodoLetivoAtivoUseCase.executar(entity);
 
-                return pageGrade.map(GradeHorariaMapper::toResponse);
-        }
+        return GradeHorariaMapper.toResponse(
+                repository.save(entity)
+        );
+    }
 
-        @Transactional
-        public GradeHorariaResponse atualizar(Long id, GradeHorariaRequest request) {
-                GradeHoraria entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Grade horária não encontrada com ID: " + id));
+    @Transactional(readOnly = true)
+    public GradeHorariaResponse buscarPorId(Long id) {
 
-                Curso curso = cursoRepository.findById(request.curso().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Curso não encontrado com ID: " + request.curso().id()));
+        GradeHoraria entity = repository.findById(id)
+                .orElseThrow(() ->
+                    new EntityNotFoundException(
+                        "Grade horária não encontrada com ID: "
+                        + id
+                    )
+                );
 
-                PeriodoLetivo periodo = periodoRepository.findById(request.periodoLetivo().id())
-                                .orElseThrow(() -> new EntityNotFoundException("Período letivo não encontrado com ID: "
-                                                + request.periodoLetivo().id()));
+        return GradeHorariaMapper.toResponse(entity);
+    }
 
-                entity.setVersao(request.versao());
-                entity.setStatus(request.status());
-                entity.setCurso(curso);
-                entity.setPeriodoLetivo(periodo);
-                validarGradeHorariaValidaUseCase.validarGradeAtivaDuplicada(entity);
-                validarPeriodoLetivoAtivoUseCase.executar(entity);
-                return GradeHorariaMapper.toResponse(repository.save(entity));
-        }
+    @Transactional(readOnly = true)
+    public Page<GradeHorariaResponse> listar(
+            Long idCurso,
+            Long idPeriodoLetivo,
+            Status status,
+            int page,
+            int size) {
 
-        @Transactional
-        public void inativar(Long id) {
-                GradeHoraria entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Grade horária não encontrada com ID: " + id));
+        var pageRequest = PageRequest.of(page, size);
 
-                entity.setStatus(Status.INATIVO);
-                repository.save(entity);
-        }
+        var pageGrade = repository.buscarComFiltros(
+                idCurso,
+                idPeriodoLetivo,
+                status,
+                pageRequest
+        );
+
+        return pageGrade.map(GradeHorariaMapper::toResponse);
+    }
+
+    @Transactional
+    public GradeHorariaResponse atualizar(
+            Long id,
+            GradeHorariaRequest request
+    ) {
+
+        GradeHoraria entity = repository.findById(id)
+                .orElseThrow(() ->
+                    new EntityNotFoundException(
+                        "Grade horária não encontrada com ID: "
+                        + id
+                    )
+                );
+
+        Curso curso = cursoRepository.findById(request.curso().id())
+                .orElseThrow(() ->
+                    new EntityNotFoundException(
+                        "Curso não encontrado com ID: "
+                        + request.curso().id()
+                    )
+                );
+
+        PeriodoLetivo periodo = periodoRepository.findById(
+                request.periodoLetivo().id()
+        ).orElseThrow(() ->
+            new EntityNotFoundException(
+                "Período letivo não encontrado com ID: "
+                + request.periodoLetivo().id()
+            )
+        );
+
+        entity.setVersao(request.versao());
+        entity.setStatus(request.status());
+        entity.setCurso(curso);
+        entity.setPeriodoLetivo(periodo);
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        validarGradeHorariaValidaUseCase
+                .validarGradeAtivaDuplicada(entity);
+
+        validarPeriodoLetivoAtivoUseCase.executar(entity);
+
+        return GradeHorariaMapper.toResponse(
+                repository.save(entity)
+        );
+    }
+
+    @Transactional
+    public void inativar(Long id) {
+
+        GradeHoraria entity = repository.findById(id)
+                .orElseThrow(() ->
+                    new EntityNotFoundException(
+                        "Grade horária não encontrada com ID: "
+                        + id
+                    )
+                );
+
+        entity.setStatus(Status.INATIVO);
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        repository.save(entity);
+    }
 }
