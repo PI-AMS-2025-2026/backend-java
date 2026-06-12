@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -57,6 +58,12 @@ public class Alocacao {
     @JoinColumn(name = "id_quadro_horario", nullable = false)
     private QuadroHorario quadroHorario;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @OneToMany(mappedBy = "alocacao")
     private List<HistoricoVersaoAlocacao> historicoAlteracoes;
 
@@ -99,8 +106,9 @@ public class Alocacao {
     @Override
     public String toString() {
         return "Alocacao [id=" + id + ", turma=" + turma + ", disciplina=" + disciplina + ", sala=" + sala
-                + ", professor=" + professor + ", diaSemana=" + diaSemana + ", blocoHorario=" + blocoHorario + ", quadroHorario="
+                + ", professor=" + professor + ", diaSemana=" + diaSemana + ", blocoHorario=" + blocoHorario
+                + ", quadroHorario="
                 + quadroHorario + "]";
     }
-    
+
 }

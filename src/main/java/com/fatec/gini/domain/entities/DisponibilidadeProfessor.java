@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +28,7 @@ public class DisponibilidadeProfessor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_disponibilidade_professor")
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)
     private Professor professor;
@@ -39,13 +41,17 @@ public class DisponibilidadeProfessor {
     @JoinColumn(name = "id_bloco_horario", nullable = false)
     private BlocoHorario blocoHorario;
 
-  
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public DisponibilidadeProfessor(Professor professor, DiaSemana diaSemana, BlocoHorario blocoHorario) {
         this.professor = professor;
         this.diaSemana = diaSemana;
         this.blocoHorario = blocoHorario;
     }
-
 
     @Override
     public int hashCode() {

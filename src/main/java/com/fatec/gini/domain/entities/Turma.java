@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -48,13 +49,19 @@ public class Turma {
     @OneToMany(mappedBy = "turma")
     private List<Alocacao> alocacoes;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public Turma(String codigo, Integer periodo, Integer ano, Integer numeroAlunos) {
         this.codigo = codigo;
         this.periodo = periodo;
         this.ano = ano;
         this.numeroAlunos = numeroAlunos;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

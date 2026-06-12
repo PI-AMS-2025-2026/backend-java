@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BlocoHorarioService {
 
-    private final  BlocoHorarioRepository repository;
+    private final BlocoHorarioRepository repository;
 
     @Transactional
     public BlocoHorarioResponse criar(BlocoHorarioRequest request) {
@@ -29,6 +30,8 @@ public class BlocoHorarioService {
 
         BlocoHorario entity = BlocoHorarioMapper.toEntity(request);
 
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         entity = repository.save(entity);
         return BlocoHorarioMapper.toResponse(entity);
     }
@@ -41,7 +44,8 @@ public class BlocoHorarioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page, int size) {
+    public Page<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page,
+            int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<BlocoHorario> pageBlocoHorario = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
@@ -60,6 +64,7 @@ public class BlocoHorarioService {
         entity.setHoraFim(request.horaFim());
         entity.setDuracao(request.duracao());
 
+        entity.setUpdatedAt(LocalDateTime.now());
         entity = repository.save(entity);
         return BlocoHorarioMapper.toResponse(entity);
     }

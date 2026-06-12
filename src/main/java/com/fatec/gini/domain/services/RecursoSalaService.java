@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecursoSalaService {
 
-    private final  RecursoSalaRepository repository;
+    private final RecursoSalaRepository repository;
 
-    private final  SalaRepository salaRepository;
+    private final SalaRepository salaRepository;
 
-    private final  RecursoRepository recursoRepository;
+    private final RecursoRepository recursoRepository;
 
     @Transactional
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
@@ -51,6 +53,8 @@ public class RecursoSalaService {
         entity.setQuantidade(request.quantidade());
         entity.setSala(sala);
         entity.setRecurso(recurso);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
@@ -86,7 +90,7 @@ public class RecursoSalaService {
         }
 
         entity.setQuantidade(request.quantidade());
-
+        entity.setUpdatedAt(LocalDateTime.now());
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
 

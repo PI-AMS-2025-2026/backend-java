@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TipoRecursoService {
 
-    private final  TipoRecursoRepository repository;
+    private final TipoRecursoRepository repository;
 
     // Lista todos ou filtra por nome
     @Transactional(readOnly = true)
@@ -35,6 +36,8 @@ public class TipoRecursoService {
     @Transactional
     public TipoRecursoResponse criar(TipoRecursoRequest request) {
         TipoRecurso entity = TipoRecursoMapper.toEntity(request);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return TipoRecursoMapper.toResponse(repository.save(entity));
     }
 
@@ -53,7 +56,7 @@ public class TipoRecursoService {
                 .orElseThrow(() -> new EntityNotFoundException("Tipo de recurso não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
-
+        entity.setUpdatedAt(LocalDateTime.now());
         return TipoRecursoMapper.toResponse(repository.save(entity));
     }
 

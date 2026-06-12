@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,18 +21,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PeriodoAtividadeQuadroService {
 
-    private final  PeriodoAtividadeQuadroRepository repository;
+    private final PeriodoAtividadeQuadroRepository repository;
 
     @Transactional
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
+
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
     public PeriodoAtividadeQuadroResponse buscarPorId(long id) {
         PeriodoAtividadeQuadro entity = repository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID: " + id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID: " + id));
         return PeriodoAtividadeQuadroMapper.toResponse(entity);
     }
 
@@ -52,19 +58,21 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public PeriodoAtividadeQuadroResponse atualizar(long id, PeriodoAtividadeQuadroRequest request) {
         PeriodoAtividadeQuadro entity = repository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));
 
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
         entity.setDataInicio(request.dataInicio());
         entity.setDataFim(request.dataFim());
         entity.setStatus(request.status());
-
+        entity.setUpdatedAt(LocalDateTime.now());
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
     }
 
     /**
-     * Inativa um período atividade quadro; em vez disso, ocorre a mudança de status.
+     * Inativa um período atividade quadro; em vez disso, ocorre a mudança de
+     * status.
      *
      * @param id identificador do período atividade quadro
      * 
@@ -73,11 +81,13 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public void inativar(long id) {
 
-        var periodo = repository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));
+        var entity = repository.findById(id)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));
 
-        periodo.setStatus(Status.INATIVO);
-        repository.save(periodo);
+        entity.setStatus(Status.INATIVO);
+        entity.setUpdatedAt(LocalDateTime.now());
+        repository.save(entity);
     }
 
 }

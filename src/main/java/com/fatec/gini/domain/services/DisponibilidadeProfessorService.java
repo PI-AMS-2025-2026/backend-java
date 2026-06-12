@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -53,14 +55,15 @@ public class DisponibilidadeProfessorService {
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
-                DisponibilidadeProfessor disponibilidade = DisponibilidadeProfessorMapper.toEntity(request);
-                disponibilidade.setProfessor(professor);
-                disponibilidade.setDiaSemana(dia);
-                disponibilidade.setBlocoHorario(blocoHorario);
+                DisponibilidadeProfessor entity = DisponibilidadeProfessorMapper.toEntity(request);
+                entity.setProfessor(professor);
+                entity.setDiaSemana(dia);
+                entity.setBlocoHorario(blocoHorario);
+                entity.setCreatedAt(LocalDateTime.now());
+                entity.setUpdatedAt(LocalDateTime.now());
+                repository.save(entity);
 
-                repository.save(disponibilidade);
-
-                return DisponibilidadeProfessorMapper.toResponse(disponibilidade);
+                return DisponibilidadeProfessorMapper.toResponse(entity);
         }
 
         @Transactional(readOnly = true)
@@ -93,7 +96,7 @@ public class DisponibilidadeProfessorService {
         @Transactional
         public DisponibilidadeProfessorResponse atualizar(Long id, DisponibilidadeProfessorRequest request) {
 
-                DisponibilidadeProfessor disponibilidade = repository.findById(id)
+                DisponibilidadeProfessor entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Disponibilidade não encontrada com ID: " + id));
 
@@ -109,13 +112,14 @@ public class DisponibilidadeProfessorService {
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
-                disponibilidade.setProfessor(professor);
-                disponibilidade.setDiaSemana(dia);
-                disponibilidade.setBlocoHorario(blocoHorario);
+                entity.setProfessor(professor);
+                entity.setDiaSemana(dia);
+                entity.setBlocoHorario(blocoHorario);
 
-                repository.save(disponibilidade);
+                entity.setUpdatedAt(LocalDateTime.now());
+                repository.save(entity);
 
-                return DisponibilidadeProfessorMapper.toResponse(disponibilidade);
+                return DisponibilidadeProfessorMapper.toResponse(entity);
         }
 
         @Transactional

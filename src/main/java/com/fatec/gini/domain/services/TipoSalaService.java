@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TipoSalaService {
 
-    private final  TipoSalaRepository repository;
+    private final TipoSalaRepository repository;
 
     // Lista todos ou filtra por nome
     @Transactional(readOnly = true)
@@ -35,6 +36,8 @@ public class TipoSalaService {
     @Transactional
     public TipoSalaResponse criar(TipoSalaRequest request) {
         TipoSala entity = TipoSalaMapper.toEntity(request);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 
@@ -54,6 +57,7 @@ public class TipoSalaService {
 
         entity.setNome(request.nome());
 
+        entity.setUpdatedAt(LocalDateTime.now());
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 

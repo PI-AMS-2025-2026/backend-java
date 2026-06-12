@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -54,6 +55,12 @@ public class Curso {
 
     @OneToMany(mappedBy = "curso")
     private List<Usuario> usuarios;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Curso(String nome, String periodicidade, Status status, Integer duracao) {
         this.nome = nome;

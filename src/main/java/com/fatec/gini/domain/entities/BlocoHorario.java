@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -43,6 +44,13 @@ public class BlocoHorario {
 
     @OneToMany(mappedBy = "blocoHorario")
     private List<Alocacao> alocacoes;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
 
     public BlocoHorario(LocalTime horaInicio, LocalTime horaFim, Integer duracao) {
         this.horaInicio = horaInicio;

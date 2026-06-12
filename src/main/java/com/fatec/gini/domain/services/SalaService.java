@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class SalaService {
                         "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
         entity.setTipoSala(tipo);
 
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return SalaMapper.toResponse(repository.save(entity));
     }
 
@@ -69,7 +73,7 @@ public class SalaService {
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());
         entity.setTipoSala(tipo);
-
+        entity.setUpdatedAt(LocalDateTime.now());
         return SalaMapper.toResponse(repository.save(entity));
     }
 

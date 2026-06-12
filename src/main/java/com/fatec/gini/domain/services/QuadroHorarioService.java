@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
-import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoAtividadeQuadroAtivoUseCase;
 import com.fatec.gini.domain.services.usecase.write.ValidarQuadroHorarioValidoUseCase;
@@ -17,8 +17,8 @@ import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 import com.fatec.gini.infrastructure.mappers.QuadroHorarioMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
-import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.PeriodoAtividadeQuadroRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +27,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuadroHorarioService {
 
- private final QuadroHorarioRepository repository;
+        private final QuadroHorarioRepository repository;
 
- private final CursoRepository cursoRepository;
+        private final CursoRepository cursoRepository;
 
- private final PeriodoAtividadeQuadroRepository periodoRepository;
+        private final PeriodoAtividadeQuadroRepository periodoRepository;
 
- private final ValidarQuadroHorarioValidoUseCase validarQuadroHorarioValidoUseCase;
+        private final ValidarQuadroHorarioValidoUseCase validarQuadroHorarioValidoUseCase;
 
- private final ValidarPeriodoAtividadeQuadroAtivoUseCase validarPeriodoAtividadeQuadroAtivoUseCase;
+        private final ValidarPeriodoAtividadeQuadroAtivoUseCase validarPeriodoAtividadeQuadroAtivoUseCase;
 
         @Transactional
         public QuadroHorarioResponse criar(QuadroHorarioRequest request) {
@@ -46,8 +46,9 @@ public class QuadroHorarioService {
                                                 "Curso não encontrado com ID: " + request.curso().id()));
 
                 PeriodoAtividadeQuadro periodo = periodoRepository.findById(request.PeriodoAtividadeQuadro().id())
-                                .orElseThrow(() -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  "
-                                                + request.PeriodoAtividadeQuadro().id()));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Período Atividade Quadro não encontrado com ID:  "
+                                                                + request.PeriodoAtividadeQuadro().id()));
 
                 entity.setCurso(curso);
                 entity.setPeriodoAtividadeQuadro(periodo);
@@ -55,6 +56,9 @@ public class QuadroHorarioService {
                 entity.setStatus(request.status());
                 validarQuadroHorarioValidoUseCase.validarQuadroAtivoDuplicado(entity);
                 validarPeriodoAtividadeQuadroAtivoUseCase.executar(entity);
+
+                entity.setCreatedAt(LocalDateTime.now());
+                entity.setUpdatedAt(LocalDateTime.now());
 
                 return QuadroHorarioMapper.toResponse(repository.save(entity));
         }
@@ -97,8 +101,9 @@ public class QuadroHorarioService {
                                                 "Curso não encontrado com ID: " + request.curso().id()));
 
                 PeriodoAtividadeQuadro periodo = periodoRepository.findById(request.PeriodoAtividadeQuadro().id())
-                                .orElseThrow(() -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  "
-                                                + request.PeriodoAtividadeQuadro().id()));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Período Atividade Quadro não encontrado com ID:  "
+                                                                + request.PeriodoAtividadeQuadro().id()));
 
                 entity.setVersao(request.versao());
                 entity.setStatus(request.status());
@@ -106,6 +111,9 @@ public class QuadroHorarioService {
                 entity.setPeriodoAtividadeQuadro(periodo);
                 validarQuadroHorarioValidoUseCase.validarQuadroAtivoDuplicado(entity);
                 validarPeriodoAtividadeQuadroAtivoUseCase.executar(entity);
+
+                entity.setUpdatedAt(LocalDateTime.now());
+
                 return QuadroHorarioMapper.toResponse(repository.save(entity));
         }
 
@@ -116,6 +124,7 @@ public class QuadroHorarioService {
                                                 "Quadro horário não encontrada com ID: " + id));
 
                 entity.setStatus(Status.INATIVO);
+                entity.setUpdatedAt(LocalDateTime.now());
                 repository.save(entity);
         }
 }

@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -44,11 +45,17 @@ public class PeriodoAtividadeQuadro {
     @Column(nullable = false)
     private Status status;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @OneToMany(mappedBy = "periodoAtividadeQuadro")
     private List<QuadroHorario> quadroHorarios;
 
-
-    public PeriodoAtividadeQuadro(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim, Status status) {
+    public PeriodoAtividadeQuadro(Integer ano, Integer periodo, LocalDate dataInicio, LocalDate dataFim,
+            Status status) {
         this.ano = ano;
         this.periodo = periodo;
         this.dataInicio = dataInicio;

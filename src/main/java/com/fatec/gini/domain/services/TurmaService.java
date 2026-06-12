@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,10 +32,13 @@ public class TurmaService {
     @Transactional
     public TurmaResponse criar(TurmaRequest request) {
         Turma entity = TurmaMapper.toEntity(request);
-        
+
         Curso curso = cursoRepository.findById(request.curso().id())
-            .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
         entity.setCurso(curso);
+
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return TurmaMapper.toResponse(repository.save(entity));
     }
@@ -47,12 +52,12 @@ public class TurmaService {
 
     @Transactional(readOnly = true)
     public Page<TurmaResponse> listar(
-        Long idCurso, 
-        Integer ano, 
-        Integer periodo, 
-        String codigo, 
-        int page, 
-        int size) {       
+            Long idCurso,
+            Integer ano,
+            Integer periodo,
+            String codigo,
+            int page,
+            int size) {
         var pageRequest = PageRequest.of(page, size);
         return repository.buscarPorFiltros(idCurso, ano, periodo, codigo, pageRequest)
                 .map(TurmaMapper::toResponse);
@@ -64,7 +69,7 @@ public class TurmaService {
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
 
         Curso curso = cursoRepository.findById(request.curso().id())
-            .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
         entity.setCodigo(request.codigo());
         entity.setAno(request.ano());
@@ -72,6 +77,7 @@ public class TurmaService {
         entity.setNumeroAlunos(request.numeroAlunos());
         entity.setCurso(curso);
 
+        entity.setUpdatedAt(LocalDateTime.now());
         return TurmaMapper.toResponse(repository.save(entity));
     }
 

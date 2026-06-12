@@ -43,6 +43,12 @@ public class QuadroHorario {
     @Column(nullable = false)
     private Status status;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;

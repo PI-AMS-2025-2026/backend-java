@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ public class AlocacaoService {
 
                 Alocacao entity = AlocacaoMapper.toEntity(request);
 
+                entity.setCreatedAt(LocalDateTime.now());
+                entity.setUpdatedAt(LocalDateTime.now());
                 return AlocacaoMapper.toResponse(
                                 criarAlocacaoUseCase.executar(
                                                 entity,
@@ -40,6 +44,7 @@ public class AlocacaoService {
 
                 Alocacao entity = AlocacaoMapper.toEntity(request);
 
+                entity.setUpdatedAt(LocalDateTime.now());
                 String justificativaAlteracao = request.justificativaAlteracao();
 
                 return AlocacaoMapper.toResponse(

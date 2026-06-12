@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -62,6 +63,12 @@ public class Disciplina {
     @OneToMany(mappedBy = "disciplina")
     private List<Alocacao> alocacoes;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo, String modalidade,
             String codDisciplina, String cor) {
         this.nome = nome;
@@ -72,7 +79,7 @@ public class Disciplina {
         this.codDisciplina = codDisciplina;
         this.cor = cor;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

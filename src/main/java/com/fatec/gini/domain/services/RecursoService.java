@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ public class RecursoService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Tipo de sala não encontrado com ID: " + request.tipoRecurso().id()));
         entity.setTipoRecurso(tipo);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
@@ -64,6 +68,7 @@ public class RecursoService {
                         "Tipo de recruso não encontrado com ID: " + request.tipoRecurso().id()));
 
         entity.setTipoRecurso(tipo);
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }
