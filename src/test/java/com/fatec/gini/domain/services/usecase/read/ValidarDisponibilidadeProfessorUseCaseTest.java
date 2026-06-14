@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
-import com.fatec.gini.domain.entities.Horario;
-import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -36,7 +36,7 @@ class ValidarDisponibilidadeProfessorUseCaseTest {
         Alocacao alocacao = criarAlocacao(10L, 20L, 30L);
 
         when(disponibilidadeProfessorRepository.verificarDisponibilidadeProfessor(10L, 20L, 30L)).thenReturn(true);
-        when(alocacaoRepository.existsByUsuarioIdAndDiaSemanaIdAndHorarioId(10L, 20L, 30L)).thenReturn(false);
+        when(alocacaoRepository.existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(10L, 20L, 30L)).thenReturn(false);
 
         assertDoesNotThrow(() -> useCase.executar(alocacao));
     }
@@ -56,26 +56,26 @@ class ValidarDisponibilidadeProfessorUseCaseTest {
         Alocacao alocacao = criarAlocacao(10L, 20L, 30L);
 
         when(disponibilidadeProfessorRepository.verificarDisponibilidadeProfessor(10L, 20L, 30L)).thenReturn(true);
-        when(alocacaoRepository.existsByUsuarioIdAndDiaSemanaIdAndHorarioId(10L, 20L, 30L)).thenReturn(true);
+        when(alocacaoRepository.existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(10L, 20L, 30L)).thenReturn(true);
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
-        verify(alocacaoRepository).existsByUsuarioIdAndDiaSemanaIdAndHorarioId(10L, 20L, 30L);
+        verify(alocacaoRepository).existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(10L, 20L, 30L);
     }
 
-    private Alocacao criarAlocacao(Long usuarioId, Long diaSemanaId, Long horarioId) {
-        Usuario usuario = new Usuario();
-        usuario.setId(usuarioId);
+    private Alocacao criarAlocacao(Long professorId, Long diaSemanaId, Long horarioId) {
+        Professor professor = new Professor();
+        professor.setId(professorId);
 
         DiaSemana diaSemana = new DiaSemana();
         diaSemana.setId(diaSemanaId);
 
-        Horario horario = new Horario();
+        BlocoHorario horario = new BlocoHorario();
         horario.setId(horarioId);
 
         Alocacao alocacao = new Alocacao();
-        alocacao.setUsuario(usuario);
+        alocacao.setProfessor(professor);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
+        alocacao.setBlocoHorario(horario);
         return alocacao;
     }
 }

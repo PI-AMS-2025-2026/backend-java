@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,25 +16,24 @@ import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AlocacaoService {
 
-        @Autowired
-        private AlocacaoRepository repository;
+        private final AlocacaoRepository repository;
 
-        @Autowired
-        private CriarAlocacaoUseCase criarAlocacaoUseCase;
+        private final CriarAlocacaoUseCase criarAlocacaoUseCase;
 
-        @Autowired
-        private AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
-
-
+        private final AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
         public AlocacaoResponse criar(AlocacaoRequest request) {
 
                 Alocacao entity = AlocacaoMapper.toEntity(request);
 
+                entity.setCreatedAt(LocalDateTime.now());
+                entity.setUpdatedAt(LocalDateTime.now());
                 return AlocacaoMapper.toResponse(
                                 criarAlocacaoUseCase.executar(
                                                 entity,
@@ -44,6 +44,7 @@ public class AlocacaoService {
 
                 Alocacao entity = AlocacaoMapper.toEntity(request);
 
+                entity.setUpdatedAt(LocalDateTime.now());
                 String justificativaAlteracao = request.justificativaAlteracao();
 
                 return AlocacaoMapper.toResponse(
@@ -57,14 +58,14 @@ public class AlocacaoService {
         @Transactional(readOnly = true)
         public Page<AlocacaoResponse> listar(
                         Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
-                        Long diaSemanaId, Long horarioId, Long gradeId, int page,
+                        Long diaSemanaId, Long horarioId, Long quadroHorarioId, int page,
                         int size) {
 
                 var pageRequest = PageRequest.of(page, size);
 
                 var pageAlocacao = repository.buscarPorFiltros(
                                 turmaId, disciplinaId, salaId, usuarioId,
-                                diaSemanaId, horarioId, gradeId, pageRequest);
+                                diaSemanaId, horarioId, quadroHorarioId, pageRequest);
 
                 return pageAlocacao.map(AlocacaoMapper::toResponse);
         }

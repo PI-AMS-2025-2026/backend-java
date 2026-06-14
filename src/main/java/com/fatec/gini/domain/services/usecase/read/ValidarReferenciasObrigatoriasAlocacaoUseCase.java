@@ -1,28 +1,30 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
-import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
-import com.fatec.gini.infrastructure.repositories.HorarioRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Valida as referências obrigatórias de uma alocação.
@@ -33,10 +35,10 @@ import jakarta.persistence.EntityNotFoundException;
  * <li>Turma - verifica se existe</li>
  * <li>Disciplina - verifica se existe</li>
  * <li>Sala - verifica se existe</li>
- * <li>Usuário - verifica se existe</li>
+ * <li>Professor - verifica se existe</li>
  * <li>Dia da semana - verifica se é válido</li>
  * <li>Horário - verifica se existe</li>
- * <li>Grade - verifica se existe</li>
+ * <li>Quadro horário - verifica se existe</li>
  * </ul>
  *
  * <p>
@@ -45,22 +47,17 @@ import jakarta.persistence.EntityNotFoundException;
  * de regras de negócio específicas de alocação.
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
 
-    @Autowired
-    private TurmaRepository turmaRepository;
-    @Autowired
-    private DisciplinaRepository disciplinaRepository;
-    @Autowired
-    private SalaRepository salaRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private DiaSemanaRepository diaSemanaRepository;
-    @Autowired
-    private HorarioRepository horarioRepository;
-    @Autowired
-    private GradeHorariaRepository gradeHorariaRepository;
+    private final TurmaRepository turmaRepository;
+    private final DisciplinaRepository disciplinaRepository;
+    private final SalaRepository salaRepository;
+    private final ProfessorRepository professorRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final DiaSemanaRepository diaSemanaRepository;
+    private final BlocoHorarioRepository blocoHorarioRepository;
+    private final QuadroHorarioRepository quadroHorarioRepository;
 
     @Transactional(readOnly = true)
     public Turma buscarTurmaPorId(Long id) {
@@ -81,9 +78,9 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     }
 
     @Transactional(readOnly = true)
-    public Usuario buscarUsuarioPorId(Long id) {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+    public Professor buscarProfessorPorId(Long id) {
+        return professorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -99,18 +96,18 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     }
 
     @Transactional(readOnly = true)
-    public Horario buscarHorarioPorId(Long id) {
-        return horarioRepository.findById(id)
+    public BlocoHorario buscarBlocoHorarioPorId(Long id) {
+        return blocoHorarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
-    public GradeHoraria buscarGradeHorariaPorId(Long id) {
+    public QuadroHorario buscarQuadroHorarioPorId(Long id) {
         if (id == null) {
-            throw new ParameterException("Grade horária é obrigatória.");
+            throw new ParameterException("Quadro horário é obrigatório.");
         }
-        return gradeHorariaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Grade horária não encontrada com ID: " + id));
+        return quadroHorarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado com ID: " + id));
     }
 
     /**
@@ -138,18 +135,18 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
         Turma turma = buscarTurmaPorId(entity.getTurma().getId());
         Disciplina disciplina = buscarDisciplinaPorId(entity.getDisciplina().getId());
         Sala sala = buscarSalaPorId(entity.getSala().getId());
-        Usuario usuario = buscarUsuarioPorId(entity.getUsuario().getId());
+        Professor professor = buscarProfessorPorId(entity.getProfessor().getId());
         DiaSemana diaSemana = buscarDiaSemanaPorId(entity.getDiaSemana().getId());
-        Horario horario = buscarHorarioPorId(entity.getHorario().getId());
-        GradeHoraria gradeHoraria = buscarGradeHorariaPorId(entity.getGradeHoraria().getId());
+        BlocoHorario blocoHorario = buscarBlocoHorarioPorId(entity.getBlocoHorario().getId());
+        QuadroHorario quadroHorario = buscarQuadroHorarioPorId(entity.getQuadroHorario().getId());
 
         entity.setTurma(turma);
         entity.setDisciplina(disciplina);
         entity.setSala(sala);
-        entity.setUsuario(usuario);
+        entity.setProfessor(professor);
         entity.setDiaSemana(diaSemana);
-        entity.setHorario(horario);
-        entity.setGradeHoraria(gradeHoraria);
+        entity.setBlocoHorario(blocoHorario);
+        entity.setQuadroHorario(quadroHorario);
 
         return entity;
     }

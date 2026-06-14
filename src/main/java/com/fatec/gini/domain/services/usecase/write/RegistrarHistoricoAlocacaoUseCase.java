@@ -3,14 +3,15 @@ package com.fatec.gini.domain.services.usecase.write;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
-import com.fatec.gini.domain.entities.HistoricoAlteracao;
+import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
 import com.fatec.gini.domain.entities.Usuario;
-import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case responsável por registrar o histórico de alocações.
@@ -31,10 +32,10 @@ import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class RegistrarHistoricoAlocacaoUseCase {
 
-    @Autowired
-    private HistoricoAlteracaoRepository historicoAlteracaoRepository;
+    private final  HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
 
     /*
      * O usuraioAlteracao é o usuário que realizou a operação (criação ou
@@ -69,9 +70,9 @@ public class RegistrarHistoricoAlocacaoUseCase {
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
-        // Usuário (professor da alocação)
-        registrar("usuario", alocacaoSalva.getUsuario().getId().toString(),
-                alocacaoAntiga.getUsuario().getId().toString(),
+        // Professor
+        registrar("professor", alocacaoSalva.getProfessor().getId().toString(),
+                alocacaoAntiga.getProfessor().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
@@ -82,13 +83,13 @@ public class RegistrarHistoricoAlocacaoUseCase {
                 usuarioAlteracao, justificativa);
 
         // Horário
-        registrar("horario", alocacaoSalva.getHorario().getId().toString(),
-                alocacaoAntiga.getHorario().getId().toString(),
+        registrar("blocoHorario", alocacaoSalva.getBlocoHorario().getId().toString(),
+                alocacaoAntiga.getBlocoHorario().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
-        // Grade Horaria
-        registrar("gradeHoraria", alocacaoSalva.getGradeHoraria().getId().toString(),
-                alocacaoAntiga.getGradeHoraria().getId().toString(),
+        // Quadro horário
+        registrar("quadroHorario", alocacaoSalva.getQuadroHorario().getId().toString(),
+                alocacaoAntiga.getQuadroHorario().getId().toString(),
                 alocacaoSalva, usuarioAlteracao, justificativa);
     }
 
@@ -104,7 +105,7 @@ public class RegistrarHistoricoAlocacaoUseCase {
             return;
         }
 
-        HistoricoAlteracao historicoAlteracao = new HistoricoAlteracao();
+        HistoricoVersaoAlocacao historicoAlteracao = new HistoricoVersaoAlocacao();
         historicoAlteracao.setDataAlteracao(LocalDate.now());
         historicoAlteracao.setJustificativa(justificativa);
         historicoAlteracao.setCampoAlterado(campoAlterado);

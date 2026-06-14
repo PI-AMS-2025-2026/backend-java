@@ -1,15 +1,26 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "disponibilidade_professor")
 public class DisponibilidadeProfessor {
 
@@ -19,56 +30,27 @@ public class DisponibilidadeProfessor {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "id_professor", nullable = false)
+    private Professor professor;
 
     @ManyToOne
     @JoinColumn(name = "id_dia_semana", nullable = false)
     private DiaSemana diaSemana;
 
     @ManyToOne
-    @JoinColumn(name = "id_horario", nullable = false)
-    private Horario horario;
+    @JoinColumn(name = "id_bloco_horario", nullable = false)
+    private BlocoHorario blocoHorario;
 
-    public DisponibilidadeProfessor() {
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public DisponibilidadeProfessor(Usuario usuario, DiaSemana diaSemana, Horario horario) {
-        this.usuario = usuario;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public DisponibilidadeProfessor(Professor professor, DiaSemana diaSemana, BlocoHorario blocoHorario) {
+        this.professor = professor;
         this.diaSemana = diaSemana;
-        this.horario = horario;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public DiaSemana getDiaSemana() {
-        return diaSemana;
-    }
-
-    public void setDiaSemana(DiaSemana diaSemana) {
-        this.diaSemana = diaSemana;
-    }
-
-    public Horario getHorario() {
-        return horario;
-    }
-
-    public void setHorario(Horario horario) {
-        this.horario = horario;
+        this.blocoHorario = blocoHorario;
     }
 
     @Override

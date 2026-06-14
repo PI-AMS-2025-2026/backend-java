@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import com.fatec.gini.domain.entities.Alocacao;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
@@ -388,9 +388,9 @@ class ValidarCargaHorariaMaximaProfessorUseCaseTest {
     }
 
     private Alocacao criarAlocacao(LocalTime horaInicio, LocalTime horaFim) {
-        Horario horarioTeste = new Horario(horaInicio, horaFim, 60);
+        BlocoHorario blocoHorarioTeste = new BlocoHorario(horaInicio, horaFim, 60);
         Alocacao alocacaoTeste = new Alocacao();
-        alocacaoTeste.setHorario(horarioTeste);
+        alocacaoTeste.setBlocoHorario(blocoHorarioTeste);
         return alocacaoTeste;
     }
 }

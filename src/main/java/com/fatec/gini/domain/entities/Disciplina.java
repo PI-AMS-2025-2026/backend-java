@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -7,12 +8,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "disciplina")
 public class Disciplina {
 
@@ -53,8 +63,11 @@ public class Disciplina {
     @OneToMany(mappedBy = "disciplina")
     private List<Alocacao> alocacoes;
 
-    public Disciplina() {
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Disciplina(String nome, Integer cargaHoraria, String tipoDisciplina, Integer periodo, String modalidade,
             String codDisciplina, String cor) {
@@ -65,102 +78,6 @@ public class Disciplina {
         this.modalidade = modalidade;
         this.codDisciplina = codDisciplina;
         this.cor = cor;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Integer getCargaHoraria() {
-        return cargaHoraria;
-    }
-
-    public void setCargaHoraria(Integer cargaHoraria) {
-        this.cargaHoraria = cargaHoraria;
-    }
-
-    public String getTipoDisciplina() {
-        return tipoDisciplina;
-    }
-
-    public void setTipoDisciplina(String tipoDisciplina) {
-        this.tipoDisciplina = tipoDisciplina;
-    }
-
-    public Integer getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(Integer periodo) {
-        this.periodo = periodo;
-    }
-
-    public String getModalidade() {
-        return modalidade;
-    }
-
-    public void setModalidade(String modalidade) {
-        this.modalidade = modalidade;
-    }
-
-    public String getCodDisciplina() {
-        return codDisciplina;
-    }
-
-    public void setCodDisciplina(String codDisciplina) {
-        this.codDisciplina = codDisciplina;
-    }
-
-    public String getCor() {
-        return cor;
-    }
-
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public void setCurso(Curso curso) {
-        this.curso = curso;
-    }
-
-    public TipoSala getTipoSala() {
-        return tipoSala;
-    }
-
-    public void setTipoSala(TipoSala tipoSala) {
-        this.tipoSala = tipoSala;
-    }
-
-    public List<ProfessorDisciplina> getProfessorDisciplinas() {
-        return professorDisciplinas;
-    }
-
-    public void setProfessorDisciplinas(List<ProfessorDisciplina> professorDisciplinas) {
-        this.professorDisciplinas = professorDisciplinas;
-    }
-
-    public List<Alocacao> getAlocacoes() {
-        return alocacoes;
-    }
-
-    public void setAlocacoes(List<Alocacao> alocacoes) {
-        this.alocacoes = alocacoes;
     }
 
     @Override

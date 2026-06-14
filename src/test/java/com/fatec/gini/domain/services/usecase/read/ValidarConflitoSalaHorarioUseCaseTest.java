@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
-import com.fatec.gini.domain.entities.Horario;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -23,7 +23,7 @@ class ValidarConflitoSalaHorarioUseCaseTest {
 
     // Injeta automaticamente os mocks dentro do use case testado
     @InjectMocks
-    private ValidarConflitoSalaHorarioUseCase useCase;
+    private ValidarConflitoSalaBlocoHorarioUseCase useCase;
 
     // Simula o comportamento do repository
     @Mock
@@ -36,14 +36,14 @@ class ValidarConflitoSalaHorarioUseCaseTest {
         Alocacao alocacao = criarAlocacao(1L, 2L, 3L);
 
         // Simula que NÃO existe conflito de sala no banco
-        when(repository.existsBySalaIdAndDiaSemanaIdAndHorarioId(
+        when(repository.existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(
                 1L, 2L, 3L)).thenReturn(false);
 
         // Verifica se nenhuma exceção será lançada
         assertDoesNotThrow(() -> useCase.executar(alocacao));
 
         // Verifica se o repository foi chamado corretamente
-        verify(repository).existsBySalaIdAndDiaSemanaIdAndHorarioId(
+        verify(repository).existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(
                 1L, 2L, 3L);
     }
 
@@ -54,7 +54,7 @@ class ValidarConflitoSalaHorarioUseCaseTest {
         Alocacao alocacao = criarAlocacao(1L, 2L, 3L);
 
         // Simula que JÁ existe uma sala ocupada neste horário
-        when(repository.existsBySalaIdAndDiaSemanaIdAndHorarioId(
+        when(repository.existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(
                 1L, 2L, 3L)).thenReturn(true);
 
         // Verifica se a exceção de negócio será lançada
@@ -63,7 +63,7 @@ class ValidarConflitoSalaHorarioUseCaseTest {
                 () -> useCase.executar(alocacao));
 
         // Verifica se o repository foi chamado corretamente
-        verify(repository).existsBySalaIdAndDiaSemanaIdAndHorarioId(
+        verify(repository).existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(
                 1L, 2L, 3L);
     }
 
@@ -84,14 +84,14 @@ class ValidarConflitoSalaHorarioUseCaseTest {
         diaSemana.setId(diaSemanaId);
 
         // Cria horário
-        Horario horario = new Horario();
+        BlocoHorario horario = new BlocoHorario();
         horario.setId(horarioId);
 
         // Monta alocação
         Alocacao alocacao = new Alocacao();
         alocacao.setSala(sala);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
+        alocacao.setBlocoHorario(horario);
 
         return alocacao;
     }

@@ -1,26 +1,32 @@
 package com.fatec.gini.web.controller;
 
-import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.DiaSemanaService;
 import com.fatec.gini.dto.diaSemana.DiaSemanaRequest;
 import com.fatec.gini.dto.diaSemana.DiaSemanaResponse;
 
-import java.net.URI;
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/dias-semana")
-@CrossOrigin
+@RequiredArgsConstructor
 public class DiaSemanaController {
 
-    @Autowired
-    private DiaSemanaService service;
+    private final DiaSemanaService service;
 
     @GetMapping
     public ResponseEntity<List<DiaSemanaResponse>> listar() {

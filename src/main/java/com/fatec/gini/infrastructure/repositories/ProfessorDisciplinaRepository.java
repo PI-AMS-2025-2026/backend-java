@@ -5,33 +5,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import com.fatec.gini.domain.entities.ProfessorDisciplina;
 
-@Repository
+
 public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDisciplina, Long> {
 
 
     @Query("""
         SELECT pd
         FROM ProfessorDisciplina pd
-        WHERE (:usuarioId IS NULL OR pd.usuario.id = :usuarioId)
+        WHERE (:professorId IS NULL OR pd.professor.id = :professorId)
           AND (:disciplinaId IS NULL OR pd.disciplina.id = :disciplinaId)
     """)
     Page<ProfessorDisciplina> buscarPorFiltros(
-        @Param("usuarioId") Long usuarioId,
+        @Param("professorId") Long professorId,
         @Param("disciplinaId") Long disciplinaId,
         Pageable pageable
     );
 
-    boolean existsByUsuarioIdAndDisciplinaId(
+    boolean existsByProfessorIdAndDisciplinaId(
         @Param("idProfessor") Long idProfessor,
         @Param("idDisciplina") Long idDisciplina
     );
 
     boolean existsByDisciplinaId(Long disciplinaId);
 
-    boolean existsByUsuarioId(Long usuarioId);
+    boolean existsByProfessorId(Long professorId);
 
 }

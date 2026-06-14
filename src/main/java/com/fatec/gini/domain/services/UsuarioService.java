@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,34 +19,34 @@ import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repository;
+    private final UsuarioRepository repository;
 
-    @Autowired
-    private CursoRepository cursoRepository;
+    private final CursoRepository cursoRepository;
 
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
-        Usuario usuario = UsuarioMapper.toEntity(request);
+        Usuario entity = UsuarioMapper.toEntity(request);
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
                         "Curso não encontrado com ID: " + request.curso().id()));
-            usuario.setCurso(curso);
+            entity.setCurso(curso);
         }
         String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
 
-        usuario.setSenha(encrypSenha);
-        usuario.setCreatedAt(LocalDateTime.now());
-        usuario.setUpdatedAt(LocalDateTime.now());
+        entity.setSenha(encrypSenha);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
-        return UsuarioMapper.toResponse(repository.save(usuario));
+        return UsuarioMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
@@ -82,36 +81,36 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
 
-        Usuario usuario = repository.findById(id)
+        Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
-        usuario.setNome(request.nome());
-        usuario.setEmail(request.email());
-        usuario.setStatus(request.status());
-        usuario.setTipoUsuario(request.tipoUsuario());
+        entity.setNome(request.nome());
+        entity.setEmail(request.email());
+        entity.setStatus(request.status());
+        entity.setTipoUsuario(request.tipoUsuario());
         
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
                         "Curso não encontrado com ID: " + request.curso().id()));
-            usuario.setCurso(curso);
+            entity.setCurso(curso);
         }
 
-        usuario.setUpdatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
-        return UsuarioMapper.toResponse(repository.save(usuario));
+        return UsuarioMapper.toResponse(repository.save(entity));
     }
 
     @Transactional
     public void inativar(Long id) {
-        Usuario usuario = repository.findById(id)
+        Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
-        usuario.setStatus(Status.INATIVO);
-        usuario.setUpdatedAt(LocalDateTime.now());
+        entity.setStatus(Status.INATIVO);
+        entity.setUpdatedAt(LocalDateTime.now());
 
-        repository.save(usuario);
+        repository.save(entity);
     }
 
     @Transactional

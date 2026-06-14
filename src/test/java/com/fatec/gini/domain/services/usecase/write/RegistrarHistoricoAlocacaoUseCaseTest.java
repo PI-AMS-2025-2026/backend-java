@@ -15,13 +15,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Disciplina;
-import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.domain.entities.HistoricoAlteracao;
-import com.fatec.gini.domain.entities.Horario;
+import com.fatec.gini.domain.entities.QuadroHorario;
+import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
-import com.fatec.gini.infrastructure.repositories.HistoricoAlteracaoRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
 
 @ExtendWith(MockitoExtension.class)
 class RegistrarHistoricoAlocacaoUseCaseTest {
@@ -30,7 +31,7 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
     private RegistrarHistoricoAlocacaoUseCase useCase;
 
     @Mock
-    private HistoricoAlteracaoRepository historicoAlteracaoRepository;
+    private HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
 
     @Test
     void deveRegistrarCriacao() {
@@ -40,10 +41,10 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
 
         useCase.registrarCriacao(alocacao, usuario);
 
-        ArgumentCaptor<HistoricoAlteracao> captor = ArgumentCaptor.forClass(HistoricoAlteracao.class);
+        ArgumentCaptor<HistoricoVersaoAlocacao> captor = ArgumentCaptor.forClass(HistoricoVersaoAlocacao.class);
         verify(historicoAlteracaoRepository).save(captor.capture());
 
-        HistoricoAlteracao salvo = captor.getValue();
+        HistoricoVersaoAlocacao salvo = captor.getValue();
         assertEquals("Alocação_10", salvo.getCampoAlterado());
         assertEquals("Criação de alocação", salvo.getJustificativa());
         assertNotNull(salvo.getValorNovo());
@@ -60,11 +61,11 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
 
         useCase.registrarAtualizacao(alocacaoNova, alocacaoAntiga, usuario, "Ajuste");
 
-        verify(historicoAlteracaoRepository, times(2)).save(org.mockito.ArgumentMatchers.any(HistoricoAlteracao.class));
+        verify(historicoAlteracaoRepository, times(2)).save(org.mockito.ArgumentMatchers.any(HistoricoVersaoAlocacao.class));
     }
 
-    private Alocacao criarAlocacao(Long idAlocacao, Long idTurma, Long idDisciplina, Long idSala, Long idUsuario,
-            Long idDiaSemana, Long idHorario, Long idGradeHoraria) {
+    private Alocacao criarAlocacao(Long idAlocacao, Long idTurma, Long idDisciplina, Long idSala, Long idProfessor,
+            Long idDiaSemana, Long idBlocoHorario, Long idQuadroHorario) {
 
         Turma turma = new Turma();
         turma.setId(idTurma);
@@ -75,25 +76,25 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         Sala sala = new Sala();
         sala.setId(idSala);
 
-        Usuario usuario = new Usuario();
-        usuario.setId(idUsuario);
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
 
         DiaSemana diaSemana = new DiaSemana();
         diaSemana.setId(idDiaSemana);
 
-        Horario horario = new Horario();
-        horario.setId(idHorario);
+        BlocoHorario blocoHorario = new BlocoHorario();
+        blocoHorario.setId(idBlocoHorario);
 
-        GradeHoraria gradeHoraria = new GradeHoraria();
-        gradeHoraria.setCurso(new com.fatec.gini.domain.entities.Curso());
-        gradeHoraria.getCurso().setId(70L);
-        gradeHoraria.setPeriodoLetivo(new com.fatec.gini.domain.entities.PeriodoLetivo());
-        gradeHoraria.getPeriodoLetivo().setId(80L);
+        QuadroHorario quadroHorario = new QuadroHorario();
+        quadroHorario.setCurso(new com.fatec.gini.domain.entities.Curso());
+        quadroHorario.getCurso().setId(70L);
+        quadroHorario.setPeriodoAtividadeQuadro(new com.fatec.gini.domain.entities.PeriodoAtividadeQuadro());
+        quadroHorario.getPeriodoAtividadeQuadro().setId(80L);
         java.lang.reflect.Field idField;
         try {
-            idField = GradeHoraria.class.getDeclaredField("id");
+            idField = QuadroHorario.class.getDeclaredField("id");
             idField.setAccessible(true);
-            idField.set(gradeHoraria, idGradeHoraria);
+            idField.set(quadroHorario, idQuadroHorario);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -103,10 +104,10 @@ class RegistrarHistoricoAlocacaoUseCaseTest {
         alocacao.setTurma(turma);
         alocacao.setDisciplina(disciplina);
         alocacao.setSala(sala);
-        alocacao.setUsuario(usuario);
+        alocacao.setProfessor(professor);
         alocacao.setDiaSemana(diaSemana);
-        alocacao.setHorario(horario);
-        alocacao.setGradeHoraria(gradeHoraria);
+        alocacao.setBlocoHorario(blocoHorario);
+        alocacao.setQuadroHorario(quadroHorario);
 
         return alocacao;
     }

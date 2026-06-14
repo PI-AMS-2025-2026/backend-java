@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services.usecase.write;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,14 +8,16 @@ import com.fatec.gini.domain.services.usecase.read.ValidarCapacidadeSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaDisciplinaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCoerenciaUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
-import com.fatec.gini.domain.services.usecase.read.ValidarGradeHorariaUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarVinculoProfessorDisciplinaUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * UseCase responsável por orquestrar o processo completo de criação de
@@ -34,55 +35,43 @@ import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class AtualizarAlocacaoUseCase {
     /**
      * Executa o registro de histórico de alocação.
      */
-    @Autowired
-    private ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
+    private final  ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
-    @Autowired
-    private ValidarGradeHorariaUseCase validarGradeHoraria;
+    private final  ValidarQuadroHorarioUseCase validarQuadroHorario;
 
-    @Autowired
-    private ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
+    private final  ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
 
-    @Autowired
-    private ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
+    private final  ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
 
-    @Autowired
-    private ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
+    private final  ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
 
-    @Autowired
-    private ValidarConflitoTurmaHorarioUseCase validarConflitoTurmaHorario;
+    private final  ValidarConflitoTurmaBlocoHorarioUseCase validarConflitoTurmaHorario;
 
-    @Autowired
-    private ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
+    private final  ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
-    @Autowired
-    private ValidarCapacidadeSalaUseCase validarCapacidadeSala;
+    private final  ValidarCapacidadeSalaUseCase validarCapacidadeSala;
 
-    @Autowired
-    private RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
+    private final  RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
 
-    @Autowired
-    private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+    private final  ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
-    @Autowired
-    private ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
+    private final  ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
 
-    @Autowired
-    private ValidarCoerenciaUseCase validarCoerenciaCurso;
+    private final  ValidarCoerenciaUseCase validarCoerenciaCurso;
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
     @Transactional
-    public Alocacao executar(Long id, Alocacao entity, long usuarioAlteracao, String justificativaAlteracao) {
+    public Alocacao executar(Long id, Alocacao entity, long professorAlteracao, String justificativaAlteracao) {
 
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
-        var usuarioAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(usuarioAlteracao);
+        var professorAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(professorAlteracao);
         // validarRefObrigatorias.validarJustificativaAlteracao(justificativaAlteracao);
 
         // valida a compatibilidade da disciplina com a sala alocada
@@ -96,10 +85,10 @@ public class AtualizarAlocacaoUseCase {
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getUsuario().getId(), entity.getDiaSemana().getId());
+        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana().getId());
 
-        // Validar grade horaria
-        validarGradeHoraria.executar(entity);
+        // Validar quadro horário
+        validarQuadroHorario.executar(entity);
 
         // Validar vinculo professor disciplina
         validarVincProfDisciplina.executar(entity);
@@ -119,10 +108,10 @@ public class AtualizarAlocacaoUseCase {
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
         // registrar histórico de atualização
-        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, entity, usuarioAlteracaoEntity,
+        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, entity, professorAlteracaoEntity,
                 justificativaAlteracao);
 
-        // validar coerência entre curso da grade, turma e disciplina
+        // validar coerência entre curso da quadro horário, turma e disciplina
         validarCoerenciaCurso.validar(entity);
 
         return alocacaoSalva;

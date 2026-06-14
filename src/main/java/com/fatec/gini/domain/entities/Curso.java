@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -9,10 +10,19 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "curso")
 public class Curso {
 
@@ -41,91 +51,22 @@ public class Curso {
     private List<Disciplina> disciplinas;
 
     @OneToMany(mappedBy = "curso")
-    private List<GradeHoraria> gradeHorarias;
+    private List<QuadroHorario> quadroHorarios;
 
     @OneToMany(mappedBy = "curso")
     private List<Usuario> usuarios;
 
-    public Curso() {
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Curso(String nome, String periodicidade, Status status, Integer duracao) {
         this.nome = nome;
         this.periodicidade = periodicidade;
         this.status = status;
         this.duracao = duracao;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getPeriodicidade() {
-        return periodicidade;
-    }
-
-    public void setPeriodicidade(String periodicidade) {
-        this.periodicidade = periodicidade;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Integer getDuracao() {
-        return duracao;
-    }
-
-    public void setDuracao(Integer duracao) {
-        this.duracao = duracao;
-    }
-
-    public List<Turma> getTurmas() {
-        return turmas;
-    }
-
-    public void setTurmas(List<Turma> turmas) {
-        this.turmas = turmas;
-    }
-
-    public List<Disciplina> getDisciplinas() {
-        return disciplinas;
-    }
-
-    public void setDisciplinas(List<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
-    }
-
-    public List<GradeHoraria> getGradeHorarias() {
-        return gradeHorarias;
-    }
-
-    public void setGradeHorarias(List<GradeHoraria> gradeHorarias) {
-        this.gradeHorarias = gradeHorarias;
-    }
-
-    public List<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
     }
 
     @Override

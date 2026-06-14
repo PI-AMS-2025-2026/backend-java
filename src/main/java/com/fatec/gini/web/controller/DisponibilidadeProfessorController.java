@@ -1,12 +1,18 @@
 package com.fatec.gini.web.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.DisponibilidadeProfessorService;
@@ -14,14 +20,14 @@ import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorReque
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/disponibilidades-professores")
-@CrossOrigin
+@RequiredArgsConstructor
 public class DisponibilidadeProfessorController {
 
-    @Autowired
-    private DisponibilidadeProfessorService service;
+    private final DisponibilidadeProfessorService service;
 
     @PostMapping
     public ResponseEntity<DisponibilidadeProfessorResponse> criar(
@@ -38,13 +44,13 @@ public class DisponibilidadeProfessorController {
 
     @GetMapping
     public ResponseEntity<Page<DisponibilidadeProfessorResponse>> listar(
-            @RequestParam(required = false) Long usuario,
+            @RequestParam(required = false) Long professor,
             @RequestParam(required = false, name = "dia_semana") Long diaSemana,
-            @RequestParam(required = false) Long horario,
+            @RequestParam(required = false, name = "bloco_horario") Long blocoHorario,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(service.listar(usuario, diaSemana, horario, page,size));
+        return ResponseEntity.ok(service.listar(professor, diaSemana, blocoHorario, page,size));
     }
 
     @GetMapping("/{id}")

@@ -1,8 +1,8 @@
 package com.fatec.gini.domain.services;
 
-import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,14 +12,14 @@ import com.fatec.gini.dto.diaSemana.DiaSemanaResponse;
 import com.fatec.gini.infrastructure.mappers.DiaSemanaMapper;
 import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class DiaSemanaService {
 
-    @Autowired
-    private DiaSemanaRepository repository;
+    private final  DiaSemanaRepository repository;
 
     @Transactional
     public DiaSemanaResponse criar(DiaSemanaRequest request) {

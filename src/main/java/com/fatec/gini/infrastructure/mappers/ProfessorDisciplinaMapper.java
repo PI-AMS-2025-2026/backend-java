@@ -9,7 +9,7 @@ public class ProfessorDisciplinaMapper {
     public static ProfessorDisciplinaResponse toResponse(ProfessorDisciplina entity) {
         return new ProfessorDisciplinaResponse(
                 entity.getId(),
-                entity.getUsuario() != null ? UsuarioMapper.toResponse(entity.getUsuario()) : null,
+                entity.getProfessor() != null ? ProfessorMapper.toResponse(entity.getProfessor()) : null,
                 entity.getDisciplina() != null ? DisciplinaMapper.toResponse(entity.getDisciplina()) : null
         );
     }

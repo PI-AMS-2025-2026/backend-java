@@ -14,85 +14,85 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.Curso;
-import com.fatec.gini.domain.entities.GradeHoraria;
-import com.fatec.gini.domain.entities.PeriodoLetivo;
+import com.fatec.gini.domain.entities.QuadroHorario;
+import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.infrastructure.repositories.GradeHorariaRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
 @ExtendWith(MockitoExtension.class)
-class ValidarGradeHorariaUseCaseTest {
+class ValidarQuadroHorarioUseCaseTest {
 
     @InjectMocks
-    private ValidarGradeHorariaUseCase useCase;
+    private ValidarQuadroHorarioUseCase useCase;
 
     @Mock
-    private GradeHorariaRepository gradeHorariaRepository;
+    private QuadroHorarioRepository quadroHorarioRepository;
 
     @Test
-    void naoDeveLancarExcecaoQuandoGradeAtivaEUltimaVersao() {
-        GradeHoraria grade = criarGradeHoraria(10L, 1L, 2L, Status.ATIVO);
+    void naoDeveLancarExcecaoQuandoQuadroAtivaEUltimaVersao() {
+        QuadroHorario quadro = criarQuadroHorario(10L, 1L, 2L, Status.ATIVO);
         Alocacao alocacao = new Alocacao();
-        alocacao.setGradeHoraria(grade);
+        alocacao.setQuadroHorario(quadro);
 
-        when(gradeHorariaRepository.findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(1L, 2L))
-                .thenReturn(Optional.of(criarGradeHoraria(10L, 1L, 2L, Status.ATIVO)));
+        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(1L, 2L))
+                .thenReturn(Optional.of(criarQuadroHorario(10L, 1L, 2L, Status.ATIVO)));
 
         assertDoesNotThrow(() -> useCase.executar(alocacao));
     }
 
     @Test
-    void deveLancarExcecaoQuandoGradeInativa() {
-        GradeHoraria grade = criarGradeHoraria(10L, 1L, 2L, Status.INATIVO);
+    void deveLancarExcecaoQuandoQuadroInativa() {
+        QuadroHorario quadro = criarQuadroHorario(10L, 1L, 2L, Status.INATIVO);
         Alocacao alocacao = new Alocacao();
-        alocacao.setGradeHoraria(grade);
+        alocacao.setQuadroHorario(quadro);
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
     }
 
     @Test
     void deveLancarExcecaoQuandoNaoForUltimaVersao() {
-        GradeHoraria gradeAtual = criarGradeHoraria(10L, 1L, 2L, Status.ATIVO);
+        QuadroHorario quadroAtual = criarQuadroHorario(10L, 1L, 2L, Status.ATIVO);
         Alocacao alocacao = new Alocacao();
-        alocacao.setGradeHoraria(gradeAtual);
+        alocacao.setQuadroHorario(quadroAtual);
 
-        when(gradeHorariaRepository.findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(1L, 2L))
-                .thenReturn(Optional.of(criarGradeHoraria(11L, 1L, 2L, Status.ATIVO)));
+        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(1L, 2L))
+                .thenReturn(Optional.of(criarQuadroHorario(11L, 1L, 2L, Status.ATIVO)));
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
     }
 
     @Test
     void deveLancarExcecaoQuandoNaoEncontrarUltimaVersao() {
-        GradeHoraria gradeAtual = criarGradeHoraria(10L, 1L, 2L, Status.ATIVO);
+        QuadroHorario quadroAtual = criarQuadroHorario(10L, 1L, 2L, Status.ATIVO);
         Alocacao alocacao = new Alocacao();
-        alocacao.setGradeHoraria(gradeAtual);
+        alocacao.setQuadroHorario(quadroAtual);
 
-        when(gradeHorariaRepository.findTopByCursoIdAndPeriodoLetivoIdOrderByVersaoDesc(1L, 2L))
+        when(quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(1L, 2L))
                 .thenReturn(Optional.empty());
 
         assertThrows(BusinessException.class, () -> useCase.executar(alocacao));
     }
 
-    private GradeHoraria criarGradeHoraria(Long id, Long cursoId, Long periodoId, Status status) {
-        GradeHoraria gradeHoraria = new GradeHoraria();
+    private QuadroHorario criarQuadroHorario(Long id, Long cursoId, Long periodoId, Status status) {
+        QuadroHorario quadroHorario = new QuadroHorario();
         Curso curso = new Curso();
         curso.setId(cursoId);
-        PeriodoLetivo periodoLetivo = new PeriodoLetivo();
-        periodoLetivo.setId(periodoId);
+        PeriodoAtividadeQuadro periodoAtividadeQuadro = new PeriodoAtividadeQuadro();
+        periodoAtividadeQuadro.setId(periodoId);
 
-        gradeHoraria.setCurso(curso);
-        gradeHoraria.setPeriodoLetivo(periodoLetivo);
-        gradeHoraria.setStatus(status);
+        quadroHorario.setCurso(curso);
+        quadroHorario.setPeriodoAtividadeQuadro(periodoAtividadeQuadro);
+        quadroHorario.setStatus(status);
 
         try {
-            java.lang.reflect.Field idField = GradeHoraria.class.getDeclaredField("id");
+            java.lang.reflect.Field idField = QuadroHorario.class.getDeclaredField("id");
             idField.setAccessible(true);
-            idField.set(gradeHoraria, id);
+            idField.set(quadroHorario, id);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
-        return gradeHoraria;
+        return quadroHorario;
     }
 }

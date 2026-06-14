@@ -1,12 +1,13 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
@@ -18,18 +19,17 @@ import com.fatec.gini.web.exception.BusinessException;
  * </ul>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarDisponibilidadeProfessorUseCase {
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
-    @Autowired
-    private DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
+    private final  DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
 
     public void executar(Alocacao entity) {
         var diaSemana = entity.getDiaSemana().getId();
-        var horario = entity.getHorario().getId();
-        var professorId = entity.getUsuario().getId();
+        var horario = entity.getBlocoHorario().getId();
+        var professorId = entity.getProfessor().getId();
 
         temDisponibilidadeDiaHorario(professorId, diaSemana, horario);
         temSobreposicaoAtividades(professorId, diaSemana, horario);
@@ -46,7 +46,7 @@ public class ValidarDisponibilidadeProfessorUseCase {
 
     private void temSobreposicaoAtividades(Long professorId, Long diaId, Long horarioId) {
         boolean temSobreposicao = alocacaoRepository
-                .existsByUsuarioIdAndDiaSemanaIdAndHorarioId(
+                .existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(
                         professorId, diaId, horarioId);
 
         if (temSobreposicao) {

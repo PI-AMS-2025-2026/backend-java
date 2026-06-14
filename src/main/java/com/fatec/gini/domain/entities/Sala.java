@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -11,8 +12,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "sala")
 public class Sala {
 
@@ -27,6 +36,12 @@ public class Sala {
     @Column(nullable = false)
     private Integer capacidade;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "id_tipo_sala", nullable = false)
     private TipoSala tipoSala;
@@ -34,52 +49,9 @@ public class Sala {
     @OneToMany(mappedBy = "sala")
     private List<RecursoSala> recursoSalas;
 
-    public Sala() {
-    }
-
     public Sala(String codigo, Integer capacidade) {
         this.codigo = codigo;
         this.capacidade = capacidade;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public Integer getCapacidade() {
-        return capacidade;
-    }
-
-    public List<RecursoSala> getRecursoSalas() {
-        return recursoSalas;
-    }
-
-    public void setRecursoSalas(List<RecursoSala> recursoSalas) {
-        this.recursoSalas = recursoSalas;
-    }
-
-    public void setCapacidade(Integer capacidade) {
-        this.capacidade = capacidade;
-    }
-
-    public TipoSala getTipoSala() {
-        return tipoSala;
-    }
-
-    public void setTipoSala(TipoSala tipoSala) {
-        this.tipoSala = tipoSala;
     }
 
     @Override

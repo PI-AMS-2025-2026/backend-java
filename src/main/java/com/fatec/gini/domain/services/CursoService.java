@@ -1,8 +1,9 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,17 +15,22 @@ import com.fatec.gini.infrastructure.mappers.CursoMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CursoService {
 
-    @Autowired
-    private CursoRepository repository;
+    private final CursoRepository repository;
 
     @Transactional
     public CursoResponse criar(CursoRequest dto) {
-        Curso curso = CursoMapper.toEntity(dto);
-        return CursoMapper.toResponse(repository.save(curso));
+        Curso entity = CursoMapper.toEntity(dto);
+
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        return CursoMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
@@ -50,15 +56,17 @@ public class CursoService {
 
     @Transactional
     public CursoResponse atualizar(Long id, CursoRequest request) {
-        Curso curso = repository.findById(id)
+        Curso entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        curso.setNome(request.nome());
-        curso.setPeriodicidade(request.periodicidade());
-        curso.setStatus(request.status());
-        curso.setDuracao(request.duracao());
+        entity.setNome(request.nome());
+        entity.setPeriodicidade(request.periodicidade());
+        entity.setStatus(request.status());
+        entity.setDuracao(request.duracao());
 
-        return CursoMapper.toResponse(repository.save(curso));
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        return CursoMapper.toResponse(repository.save(entity));
     }
 
     /**
@@ -71,11 +79,12 @@ public class CursoService {
      */
     @Transactional
     public void inativar(Long id) {
-        Curso curso = repository.findById(id)
+        Curso entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        curso.setStatus(Status.INATIVO);
+        entity.setStatus(Status.INATIVO);
 
-        repository.save(curso);
+        entity.setUpdatedAt(LocalDateTime.now());
+        repository.save(entity);
     }
 }

@@ -1,11 +1,12 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Valida a duplicidade de alocações na criação de registros.
@@ -28,7 +29,7 @@ import com.fatec.gini.web.exception.BusinessException;
  * <li>usuário/professor</li>
  * <li>diaSemana</li>
  * <li>horário</li>
- * <li>gradeHoraria</li>
+ * <li>quadroHorario</li>
  * </ul>
  * 
  * <p>
@@ -37,19 +38,19 @@ import com.fatec.gini.web.exception.BusinessException;
  * </p>
  */
 @Service
+@RequiredArgsConstructor
 public class ValidarDuplicidadeAlocacaoUseCase {
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
     public void executarCriacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
                         entity.getDiaSemana().getId(),
-                        entity.getHorario().getId());
+                        entity.getBlocoHorario().getId());
 
         if (existeDuplicidade) {
             throw new BusinessException("Já existe uma alocação cadastrada com os mesmos dados informados.");
@@ -59,12 +60,12 @@ public class ValidarDuplicidadeAlocacaoUseCase {
 
     public void executarAtualizacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
                         entity.getDiaSemana().getId(),
-                        entity.getHorario().getId(),
+                        entity.getBlocoHorario().getId(),
                         entity.getId());
 
         if (existeDuplicidade) {

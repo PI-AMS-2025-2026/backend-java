@@ -1,11 +1,11 @@
 package com.fatec.gini.dto.professorDisciplina;
 
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
-import com.fatec.gini.dto.usuario.UsuarioResponse;
+import com.fatec.gini.dto.professor.ProfessorResponse;
 
 public record ProfessorDisciplinaResponse(
         Long id,
-        UsuarioResponse usuario,
+        ProfessorResponse professor,
         DisciplinaResponse disciplina
 ) {
 }

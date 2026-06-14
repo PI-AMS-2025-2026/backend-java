@@ -1,32 +1,40 @@
 package com.fatec.gini.web.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.net.URI;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.TurmaService;
 import com.fatec.gini.dto.turma.TurmaRequest;
 import com.fatec.gini.dto.turma.TurmaResponse;
 
-import java.net.URI;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/turmas")
-@CrossOrigin
+@RequiredArgsConstructor
 public class TurmaController {
 
-    @Autowired
-    private TurmaService service;
+    private final TurmaService service;
 
     @GetMapping
     public ResponseEntity<Page<TurmaResponse>> listar(
             @RequestParam(name = "curso", required = false) Long idCurso,
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer periodo,
-            @RequestParam(required = false) String codigo, 
+            @RequestParam(required = false) String codigo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 

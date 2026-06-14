@@ -12,134 +12,135 @@ import com.fatec.gini.domain.entities.Alocacao;
 
 public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
-    /**
-     * REGRA DE CONFLITO: "A sala já está ocupada?"
-     * Este método pergunta ao banco de dados: "Existe algum registro onde esta
-     * SALA,
-     * neste DIA e neste HORÁRIO já apareça?". Se sim, ele responde TRUE
-     * (verdadeiro).
-     */
-    boolean existsBySalaIdAndDiaSemanaIdAndHorarioId(Long salaId, Long diaId, Long horarioId);
+        /**
+         * REGRA DE CONFLITO: "A sala já está ocupada?"
+         * Este método pergunta ao banco de dados: "Existe algum registro onde esta
+         * SALA,
+         * neste DIA e neste HORÁRIO já apareça?". Se sim, ele responde TRUE
+         * (verdadeiro).
+         */
+        boolean existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(Long salaId, Long diaId, Long blocoHorarioId);
 
-    /**
-     * REGRA DE CONFLITO: "O professor já está dando aula?"
-     * Mesma lógica: pergunta se o PROFESSOR (usuário) já tem algo marcado para
-     * aquele exato momento.
-     */
-    boolean existsByUsuarioIdAndDiaSemanaIdAndHorarioId(Long usuarioId, Long diaId, Long horarioId);
+        /**
+         * REGRA DE CONFLITO: "O professor já está dando aula?"
+         * Mesma lógica: pergunta se o PROFESSOR (professor) já tem algo marcado para
+         * aquele exato momento.
+         */
+        boolean existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(Long professorId, Long diaId, Long blocoHorarioId);
 
-    /**
-     * REGRA DE DUPLICIDADE: "A alocação já existe com os mesmos vínculos?"
-     * Verifica se já existe alocação com os mesmos ids de turma, disciplina, sala,
-     * dia da semana e horário.
-     */
-    boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioId(
-            Long turmaId,
-            Long disciplinaId,
-            Long salaId,
-            Long diaSemanaId,
-            Long horarioId);
+        /**
+         * REGRA DE DUPLICIDADE: "A alocação já existe com os mesmos vínculos?"
+         * Verifica se já existe alocação com os mesmos ids de turma, disciplina, sala,
+         * dia da semana e horário.
+         */
+        boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
+                        Long turmaId,
+                        Long disciplinaId,
+                        Long salaId,
+                        Long diaSemanaId,
+                        Long blocoHorarioId);
 
-    /**
-     * REGRA DE DUPLICIDADE (ATUALIZAÇÃO):
-     * mesma verificação de duplicidade, desconsiderando a própria alocação em
-     * edição.
-     */
-    boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndHorarioIdAndIdNot(
-            Long turmaId,
-            Long disciplinaId,
-            Long salaId,
-            Long diaSemanaId,
-            Long horarioId,
-            Long alocacaoId);
-            
+        /**
+         * REGRA DE DUPLICIDADE (ATUALIZAÇÃO):
+         * mesma verificação de duplicidade, desconsiderando a própria alocação em
+         * edição.
+         */
+        boolean existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
+                        Long turmaId,
+                        Long disciplinaId,
+                        Long salaId,
+                        Long diaSemanaId,
+                        Long blocoHorarioId,
+                        Long alocacaoId);
+
         /* busca personalizada: */
         @Query("SELECT a FROM Alocacao a WHERE " +
                         "(:turmaId IS NULL OR a.turma.id = :turmaId) AND " +
                         "(:disciplinaId IS NULL OR a.disciplina.id = :disciplinaId) AND " +
                         "(:salaId IS NULL OR a.sala.id = :salaId) AND " +
-                        "(:usuarioId IS NULL OR a.usuario.id = :usuarioId) AND " +
+                        "(:professorId IS NULL OR a.professor.id = :professorId) AND " +
                         "(:diaSemanaId IS NULL OR a.diaSemana.id = :diaSemanaId) AND " +
-                        "(:horarioId IS NULL OR a.horario.id = :horarioId) AND " +
-                        "(:gradeId IS NULL OR a.gradeHoraria.id = :gradeId)")
+                        "(:blocoHorarioId IS NULL OR a.blocoHorario.id = :blocoHorarioId) AND " +
+                        "(:quadroHorarioId IS NULL OR a.quadroHorario.id = :quadroHorarioId)")
         Page<Alocacao> buscarPorFiltros(
                         @Param("turmaId") Long turmaId,
                         @Param("disciplinaId") Long disciplinaId,
                         @Param("salaId") Long salaId,
-                        @Param("usuarioId") Long usuarioId,
+                        @Param("professorId") Long professorId,
                         @Param("diaSemanaId") Long diaSemanaId,
-                        @Param("horarioId") Long horarioId,
-                        @Param("gradeId") Long gradeId,
+                        @Param("blocoHorarioId") Long blocoHorarioId,
+                        @Param("quadroHorarioId") Long quadroHorarioId,
                         Pageable pageable);
 
-    @Query("""
-                SELECT COUNT(a) > 0
-                FROM Alocacao a
-                WHERE a.turma.id = :idTurma
-                AND a.diaSemana.id = :idDiaSemana
-                AND a.horario.id = :idHorario
-            """)
-    boolean existsConflitoTurmaHorario(
-            @Param("idTurma") Long idTurma,
-            @Param("idDiaSemana") Long idDiaSemana,
-            @Param("idHorario") Long idHorario);
+        @Query("""
+                            SELECT COUNT(a) > 0
+                            FROM Alocacao a
+                            WHERE a.turma.id = :idTurma
+                            AND a.diaSemana.id = :idDiaSemana
+                            AND a.blocoHorario.id = :idBlocoHorario
+                        """)
+        boolean existsConflitoTurmaHorario(
+                        @Param("idTurma") Long idTurma,
+                        @Param("idDiaSemana") Long idDiaSemana,
+                        @Param("idBlocoHorario") Long idBlocoHorario);
 
-    /* existence checks used by delete validations */
-    boolean existsByDisciplinaId(Long disciplinaId);
+        /* existence checks used by delete validations */
+        boolean existsByDisciplinaId(Long disciplinaId);
 
-    boolean existsBySalaId(Long salaId);
+        boolean existsBySalaId(Long salaId);
 
-    boolean existsByTurmaId(Long turmaId);
+        boolean existsByTurmaId(Long turmaId);
 
-    boolean existsByUsuarioId(Long usuarioId);
+        boolean existsByProfessorId(Long professorId);
 
-    /* metodo para a implementação da validação das 12h e carga horaria maxima: */
-
-    @Query("""
-                SELECT a
-                FROM Alocacao a
-                WHERE a.usuario.id = :professorId
-                AND a.diaSemana.id = :diaSemanaId
-            """)
-    List<Alocacao> findByProfessorAndDiaSemana(
-            Long professorId,
-            Long diaSemanaId);
-
-    @Query("""
-                SELECT a
-                FROM Alocacao a
-                WHERE a.usuario.id = :professorId
-                AND a.diaSemana.id = :diaSemanaId
-                ORDER BY a.horario.horaFim DESC
-            """)
-    List<Alocacao> findUltimaAulaDoDia(
-            Long professorId,
-            Long diaSemanaId);
-
-    List<Alocacao> findByGradeHorariaId(
-            Long gradeHorariaId);
-
-            // Para validar a carga horária total da disciplina na grade horária, precisamos somar a duração de todas as alocações daquela disciplina e grade horária:
-
-           @Query("""
-               SELECT COALESCE(SUM(a.horario.duracao), 0) 
-               FROM Alocacao a 
-               WHERE a.disciplina.id = :disciplinaId
-               AND a.gradeHoraria.id = :gradeHorariaId
-               """)
-        int somarDuracaoPorDisciplinaEGrade(
-                @Param("disciplinaId") Long disciplinaId, 
-                @Param("gradeHorariaId") Long gradeHorariaId);
+        /* metodo para a implementação da validação das 12h e carga horaria maxima: */
 
         @Query("""
-               SELECT COALESCE(SUM(a.horario.duracao), 0) 
-               FROM Alocacao a 
-               WHERE a.disciplina.id = :disciplinaId 
-               AND a.gradeHoraria.id = :gradeHorariaId
-               AND a.id <> :alocacaoId
-               """)
-        int somarDuracaoPorDisciplinaEGradeEIdNot(
-                @Param("disciplinaId") Long disciplinaId, 
-                @Param("gradeHorariaId") Long gradeHorariaId,
-                @Param("alocacaoId") Long alocacaoId);
+                            SELECT a
+                            FROM Alocacao a
+                            WHERE a.professor.id = :professorId
+                            AND a.diaSemana.id = :diaSemanaId
+                        """)
+        List<Alocacao> findByProfessorAndDiaSemana(
+                        Long professorId,
+                        Long diaSemanaId);
+
+        @Query("""
+                            SELECT a
+                            FROM Alocacao a
+                            WHERE a.professor.id = :professorId
+                            AND a.diaSemana.id = :diaSemanaId
+                            ORDER BY a.blocoHorario.horaFim DESC
+                        """)
+        List<Alocacao> findUltimaAulaDoDia(
+                        Long professorId,
+                        Long diaSemanaId);
+
+        List<Alocacao> findByQuadroHorarioId(
+                        Long quadroHorarioId);
+
+        // Para validar a carga horária total da disciplina no quadro horário, precisamos
+        // somar a duração de todas as alocações daquela disciplina e quadro horário:
+
+        @Query("""
+                        SELECT COALESCE(SUM(a.blocoHorario.duracao), 0)
+                        FROM Alocacao a
+                        WHERE a.disciplina.id = :disciplinaId
+                        AND a.quadroHorario.id = :quadroHorarioId
+                        """)
+        int somarDuracaoPorDisciplinaEQuadro(
+                        @Param("disciplinaId") Long disciplinaId,
+                        @Param("quadroHorarioId") Long quadroHorarioId);
+
+        @Query("""
+                        SELECT COALESCE(SUM(a.blocoHorario.duracao), 0)
+                        FROM Alocacao a
+                        WHERE a.disciplina.id = :disciplinaId
+                        AND a.quadroHorario.id = :quadroHorarioId
+                        AND a.id <> :alocacaoId
+                        """)
+        int somarDuracaoPorDisciplinaEQuadroHorarioEIdNot(
+                        @Param("disciplinaId") Long disciplinaId,
+                        @Param("quadroHorarioId") Long quadroHorarioId,
+                        @Param("alocacaoId") Long alocacaoId);
 }
