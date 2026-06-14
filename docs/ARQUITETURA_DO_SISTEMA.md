@@ -173,13 +173,17 @@ com.fatec.gini/
 - **Usar @Query** apenas para queries complexas documentadas
 - **Lazy loading cuidadoso**: risco de N+1 queries
 
-### 4.5 Regras de Segurança
+### 4.5 Regras de Segurança (RBAC por Curso)
 
-- **Spring Security ativo** mas com permissões abertas (em configuração - TODO)
+- **Spring Security obrigatório** com autenticação local (sem SSO/LDAP na Fase 1)
 - **BCryptPasswordEncoder** para criptografia de senhas
-- **Perfis de usuário**: ADMIN, COORDENADOR, PROFESSOR, VISUALIZACAO
+- **Perfis de usuário na Fase 1**: 
+  - `ADMIN`: 100% acesso a todos os dados e operações
+  - `COORDENADOR`: Acesso limitado apenas ao seu CURSO
+- **Sem Professor como usuário na Fase 1** (Fase 2+)
 - **CSRF desabilitado** para APIs REST (curl, ajax)
-- **Basic Auth** como estratégia de autenticação (temporário)
+- **Filtro por Curso**: Toda query deve validar `grade.curso_id == usuario.curso_id`
+- **Auditoria**: ADMIN vê tudo, COORDENADOR vê apenas seu curso
 
 ---
 

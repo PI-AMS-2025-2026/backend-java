@@ -194,47 +194,76 @@ PRECONDIÇÃO: Existe alocação já salva
 
 ## 4. Atores do Sistema
 
-### 4.1 Usuários Principais
+### 4.1 Usuários Principais (MVP - Fase 1)
 
-#### 👤 Coordenador Acadêmico
-- **Descrição**: Responsável pela montagem e gestão da grade horária
+#### 👤 **ADMIN** (Administrador Acadêmico)
+- **Descrição**: Gerencia dados cadastrais, configurações e auditoria
 - **Responsabilidades**:
-  - Criar nova grade para semestre
+  - Cadastrar cursos, disciplinas, turmas, professores, salas
+  - Registrar vínculos professor-disciplina
+  - Configurar períodos letivos e horários padrão
+  - Atualizar disponibilidades de professores
+  - Criar/gerenciar usuários COORDENADOR
+  - Acessar auditoria completa do sistema
+- **Acesso**: ✅ **100% - todas as operações e dados**
+- **Frequência de uso**: Conforme necessidade (semanal)
+- **Filtros de Dados**: Nenhum (acesso global)
+
+#### 👤 **COORDENADOR** (Coordenador Acadêmico)
+- **Descrição**: Responsável pela montagem e gestão da grade horária do seu curso
+- **Responsabilidades**:
+  - Criar nova grade para semestre (do seu curso apenas)
   - Adicionar/editar/remover alocações
   - Resolver conflitos identificados pelo sistema
-  - Revisar e aprovar grades completas
   - Consultar histórico de mudanças
   - Copiar grades de períodos anteriores
+  - Exportar/imprimir grades (PDF/Excel)
+  - Validar alocações antes de salvar (endpoints GET)
+- **Acesso**: ✅ **Limitado ao seu curso** (RBAC por departamento)
 - **Frequência de uso**: Diária durante período de montagem (2-3 semanas)
-- **Privilégios**: Leitura/escrita em grades, consulta de dados acadêmicos
+- **Filtros de Dados**: Apenas cursos que gerencia
+- **Auditoria**: Visualiza histórico do próprio curso
 
-#### 👤 Administrador Acadêmico
-- **Descrição**: Gerencia dados cadastrais e configurações
-- **Responsabilidades**:
-  - Cadastrar cursos, disciplinas, turmas
-  - Registrar professores e seus vínculos
-  - Cadastrar salas e recursos
-  - Configurar períodos letivos
-  - Atualizar disponibilidades de professores
-- **Frequência de uso**: Conforme necessidade (semanal)
-- **Privilégios**: Leitura/escrita em todos os cadastros
-
-#### 👤 Consultor/Analista (Opcional)
-- **Descrição**: Visualiza grades e gera relatórios
-- **Responsabilidades**:
-  - Consultar grade horária vigente
-  - Gerar relatórios por professor/turma/sala
-  - Validar ocupação de salas
-- **Frequência de uso**: Sob demanda
-- **Privilégios**: Leitura-apenas
-
-#### 👤 Professor (Futuro)
+#### 👤 Professor (Futuro - Fase 2+)
 - **Descrição**: Visualiza sua própria alocação
 - **Responsabilidades**:
   - Consultar seus horários
   - Informar indisponibilidades (futura integração)
-- **Frequência de uso**: Conforme necessidade
-- **Privilégios**: Leitura do próprio horário
+- **Status Atual**: ❌ Não é usuário do sistema na Fase 1
+- **Acesso**: N/A
+- **Privilégios**: N/A
+
+---
+
+### 4.2 Matriz de Permissões (RBAC)
+
+| Operação | ADMIN | COORDENADOR |
+|----------|:-----:|:-----------:|
+| **Cadastros** | | |
+| - Ver cursos | ✅ | ✅ seu curso |
+| - Criar/editar cursos | ✅ | ❌ |
+| - Ver disciplinas | ✅ | ✅ seu curso |
+| - Criar/editar disciplinas | ✅ | ❌ |
+| - Ver turmas | ✅ | ✅ seu curso |
+| - Criar/editar turmas | ✅ | ❌ |
+| - Ver professores | ✅ | ✅ |
+| - Criar/editar professores | ✅ | ❌ |
+| - Ver salas | ✅ | ✅ |
+| - Criar/editar salas | ✅ | ❌ |
+| **Grades** | | |
+| - Criar grade | ✅ | ✅ seu curso |
+| - Copiar grade | ✅ | ✅ seu curso |
+| - Visualizar grade | ✅ | ✅ seu curso |
+| **Alocações** | | |
+| - Criar alocação | ✅ | ✅ seu curso |
+| - Editar alocação | ✅ | ✅ seu curso |
+| - Deletar alocação | ✅ | ✅ seu curso |
+| - Validar (GET) | ✅ | ✅ seu curso |
+| **Auditoria** | | |
+| - Ver auditoria completa | ✅ | ❌ |
+| - Ver histórico alocações | ✅ | ✅ seu curso |
+| **Exportação** | | |
+| - Exportar PDF/Excel | ✅ | ✅ seu curso |
 
 ---
 
