@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,34 +15,29 @@ import com.fatec.gini.infrastructure.mappers.CursoMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CursoService {
 
-    @Autowired
-    private CursoRepository repository;
+    private final CursoRepository repository;
 
     @Transactional
     public CursoResponse criar(CursoRequest dto) {
+        Curso entity = CursoMapper.toEntity(dto);
 
-        Curso curso = CursoMapper.toEntity(dto);
-        LocalDateTime agora = LocalDateTime.now();
-        curso.setCreatedAt(agora);
-        curso.setUpdatedAt(agora);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
-        return CursoMapper.toResponse(repository.save(curso));
+        return CursoMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
     public CursoResponse buscarPorId(Long id) {
-
         return repository.findById(id)
                 .map(CursoMapper::toResponse)
-                .orElseThrow(() ->
-                    new EntityNotFoundException(
-                        "Curso não encontrado com ID: " + id
-                    )
-                );
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -56,50 +50,41 @@ public class CursoService {
             int size) {
 
         var pageRequest = PageRequest.of(page, size);
-
-        var pageCurso = repository.buscarPorFiltros(
-                nome,
-                periodicidade,
-                status,
-                duracao,
-                pageRequest
-        );
-
+        var pageCurso = repository.buscarPorFiltros(nome, periodicidade, status, duracao, pageRequest);
         return pageCurso.map(CursoMapper::toResponse);
     }
 
     @Transactional
     public CursoResponse atualizar(Long id, CursoRequest request) {
+        Curso entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        Curso curso = repository.findById(id)
-                .orElseThrow(() ->
-                    new EntityNotFoundException(
-                        "Curso não encontrado com ID: " + id
-                    )
-                );
+        entity.setNome(request.nome());
+        entity.setPeriodicidade(request.periodicidade());
+        entity.setStatus(request.status());
+        entity.setDuracao(request.duracao());
 
-        curso.setNome(request.nome());
-        curso.setPeriodicidade(request.periodicidade());
-        curso.setStatus(request.status());
-        curso.setDuracao(request.duracao());
-        curso.setUpdatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
-        return CursoMapper.toResponse(repository.save(curso));
+        return CursoMapper.toResponse(repository.save(entity));
     }
 
+    /**
+     * Essa entidade nunca pode ser deletada; em vez disso, ocorre a mudança de
+     * status.
+     *
+     * @param id identificador do curso
+     * 
+     * @throws EntityNotFoundException caso curso não encontrado
+     */
     @Transactional
     public void inativar(Long id) {
+        Curso entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
-        Curso curso = repository.findById(id)
-                .orElseThrow(() ->
-                    new EntityNotFoundException(
-                        "Curso não encontrado com ID: " + id
-                    )
-                );
+        entity.setStatus(Status.INATIVO);
 
-        curso.setStatus(Status.INATIVO);
-        curso.setUpdatedAt(LocalDateTime.now());
-
-        repository.save(curso);
+        entity.setUpdatedAt(LocalDateTime.now());
+        repository.save(entity);
     }
 }

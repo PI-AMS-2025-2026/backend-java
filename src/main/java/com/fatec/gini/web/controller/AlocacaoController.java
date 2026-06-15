@@ -1,6 +1,5 @@
 package com.fatec.gini.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +18,23 @@ import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Camada de Controle: Responsável por expor os endpoints da API e
  * tratar as requisições HTTP (entrada e saída de dados).
  */
+@Tag(name = "Alocações")
 @RestController
 @RequestMapping("/alocacoes")
+@RequiredArgsConstructor
 @CrossOrigin
 public class AlocacaoController {
 
-    @Autowired
-    private AlocacaoService service;
+    private final AlocacaoService service;
 
     /**
      * Recebe um JSON (Request) e cria uma nova alocação.
@@ -46,6 +49,7 @@ public class AlocacaoController {
      * Realiza a listagem com suporte a filtros opcionais e paginação.
      */
     @GetMapping
+    @Operation(summary = "Listagem de alocações")
     public ResponseEntity<Page<AlocacaoResponse>> listar(
             @RequestParam(required = false) Long turma,
             @RequestParam(required = false) Long disciplina,
@@ -53,12 +57,12 @@ public class AlocacaoController {
             @RequestParam(required = false) Long usuario,
             @RequestParam(required = false, name = "dia_semana") Long diaSemana,
             @RequestParam(required = false) Long horario,
-            @RequestParam(required = false) Long grade,
+            @RequestParam(required = false,name = "quadro_horario") Long quadroHorario,
           @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         // Encaminha os IDs para a camada de serviço
-        return ResponseEntity.ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, grade, page, size));
+        return ResponseEntity.ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, quadroHorario, page, size));
     }
 
     /**

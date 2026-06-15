@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,30 +17,28 @@ import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class SalaService {
 
-    @Autowired
-    private SalaRepository repository;
+    private final SalaRepository repository;
 
-    @Autowired
-    private TipoSalaRepository tipoSalaRepository;
+    private final TipoSalaRepository tipoSalaRepository;
 
-    @Autowired
-    private ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
+    private final ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
 
     @Transactional
     public SalaResponse criar(SalaRequest request) {
         Sala entity = SalaMapper.toEntity(request);
-        LocalDateTime now = LocalDateTime.now();
-        entity.setCreated_at(now);
-        entity.setUpdated_at(now);
-
         TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
-            .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
         entity.setTipoSala(tipo);
 
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return SalaMapper.toResponse(repository.save(entity));
     }
 
@@ -70,13 +67,13 @@ public class SalaService {
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com ID: " + id));
 
         TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
-            .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
 
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());
         entity.setTipoSala(tipo);
-        entity.setUpdated_at(LocalDateTime.now());
-
+        entity.setUpdatedAt(LocalDateTime.now());
         return SalaMapper.toResponse(repository.save(entity));
     }
 

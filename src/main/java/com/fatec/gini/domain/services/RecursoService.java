@@ -2,32 +2,38 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Recurso;
+import com.fatec.gini.domain.entities.TipoRecurso;
 import com.fatec.gini.dto.recurso.RecursoRequest;
 import com.fatec.gini.dto.recurso.RecursoResponse;
 import com.fatec.gini.infrastructure.mappers.RecursoMapper;
 import com.fatec.gini.infrastructure.repositories.RecursoRepository;
+import com.fatec.gini.infrastructure.repositories.TipoRecursoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RecursoService {
 
-    @Autowired
-    private RecursoRepository repository;
+    private final RecursoRepository repository;
+    private final TipoRecursoRepository tipoRecursoRepository;
 
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
         Recurso entity = RecursoMapper.toEntity(request);
-        LocalDateTime now = LocalDateTime.now();
-        entity.setCreated_at(now);
-        entity.setUpdated_at(now);
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de sala não encontrado com ID: " + request.tipoRecurso().id()));
+        entity.setTipoRecurso(tipo);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
@@ -41,12 +47,12 @@ public class RecursoService {
     @Transactional(readOnly = true)
     public Page<RecursoResponse> listar(
             String nome,
-            String tipo,
+            Long idTipoRecurso,
             int page,
             int size) {
 
         var pageRequest = PageRequest.of(page, size);
-        var pageRecurso = repository.buscarPorFiltros(nome, tipo, pageRequest);
+        var pageRecurso = repository.buscarPorFiltros(nome, idTipoRecurso, pageRequest);
         return pageRecurso.map(RecursoMapper::toResponse);
     }
 
@@ -56,8 +62,13 @@ public class RecursoService {
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
-        entity.setTipo(request.tipo());
-        entity.setUpdated_at(LocalDateTime.now());
+
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Tipo de recruso não encontrado com ID: " + request.tipoRecurso().id()));
+
+        entity.setTipoRecurso(tipo);
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }

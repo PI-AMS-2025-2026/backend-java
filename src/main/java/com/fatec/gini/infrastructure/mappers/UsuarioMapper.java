@@ -10,12 +10,7 @@ public class UsuarioMapper {
         if (request == null) {
             return null;
         }
-        return new Usuario(
-                request.nome(),
-                request.email(),
-                request.senha(),
-                request.cidade(),
-                request.status());
+        return new Usuario(request.nome(), request.email(), request.senha(), request.status(),request.tipoUsuario()) ;
     }
 
     public static UsuarioResponse toResponse(Usuario usuario) {
@@ -24,11 +19,10 @@ public class UsuarioMapper {
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getTipo_usuario() != null ? TipoUsuarioMapper.toResponse(usuario.getTipo_usuario()) : null,
-                usuario.getCidade(),
+                usuario.getTipoUsuario(),
                 usuario.getStatus(),
                 usuario.getCurso() != null ? CursoMapper.toResponse(usuario.getCurso()) : null,
-                usuario.getCreated_at(),
-                usuario.getUpdated_at());
+                usuario.getCreatedAt(),
+                usuario.getUpdatedAt());
     }
 }

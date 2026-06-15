@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,91 +16,74 @@ import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AlocacaoService {
 
-    @Autowired
-    private AlocacaoRepository repository;
+        private final AlocacaoRepository repository;
 
-    @Autowired
-    private CriarAlocacaoUseCase criarAlocacaoUseCase;
+        private final CriarAlocacaoUseCase criarAlocacaoUseCase;
 
-    @Autowired
-    private AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
+        private final AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
-    @Transactional
-    public AlocacaoResponse criar(AlocacaoRequest request) {
+        public AlocacaoResponse criar(AlocacaoRequest request) {
 
-        Alocacao entity = AlocacaoMapper.toEntity(request);
+                Alocacao entity = AlocacaoMapper.toEntity(request);
 
-        Alocacao alocacaoCriada = criarAlocacaoUseCase.executar(
-                entity,
-                request.usuarioAlteracao().id());
-
-        return AlocacaoMapper.toResponse(alocacaoCriada);
-    }
-
-    @Transactional
-    public AlocacaoResponse atualizar(Long id, AlocacaoRequest request) {
-
-        Alocacao entity = AlocacaoMapper.toEntity(request);
-
-        String justificativaAlteracao = request.justificativaAlteracao();
-
-        Alocacao alocacaoAtualizada = atualizarAlocacaoUseCase.executar(
-                id,
-                entity,
-                request.usuarioAlteracao().id(),
-                justificativaAlteracao);
-
-        return AlocacaoMapper.toResponse(alocacaoAtualizada);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<AlocacaoResponse> listar(
-            Long turmaId,
-            Long disciplinaId,
-            Long salaId,
-            Long usuarioId,
-            Long diaSemanaId,
-            Long horarioId,
-            Long gradeId,
-            int page,
-            int size) {
-
-        var pageRequest = PageRequest.of(page, size);
-
-        var pageAlocacao = repository.buscarPorFiltros(
-                turmaId,
-                disciplinaId,
-                salaId,
-                usuarioId,
-                diaSemanaId,
-                horarioId,
-                gradeId,
-                pageRequest);
-
-        return pageAlocacao.map(AlocacaoMapper::toResponse);
-    }
-
-    @Transactional(readOnly = true)
-    public AlocacaoResponse buscarPorId(Long id) {
-
-        return repository.findById(id)
-                .map(AlocacaoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Alocação não encontrada com ID: " + id));
-    }
-
-    @Transactional
-    public void deletar(Long id) {
-
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException(
-                    "Alocação não encontrada com ID: " + id);
+                entity.setCreatedAt(LocalDateTime.now());
+                entity.setUpdatedAt(LocalDateTime.now());
+                return AlocacaoMapper.toResponse(
+                                criarAlocacaoUseCase.executar(
+                                                entity,
+                                                request.usuarioAlteracao().id()));
         }
 
-        repository.deleteById(id);
-    }
+        public AlocacaoResponse atualizar(Long id, AlocacaoRequest request) {
+
+                Alocacao entity = AlocacaoMapper.toEntity(request);
+
+                entity.setUpdatedAt(LocalDateTime.now());
+                String justificativaAlteracao = request.justificativaAlteracao();
+
+                return AlocacaoMapper.toResponse(
+                                atualizarAlocacaoUseCase.executar(
+                                                id,
+                                                entity,
+                                                request.usuarioAlteracao().id(),
+                                                justificativaAlteracao));
+        }
+
+        @Transactional(readOnly = true)
+        public Page<AlocacaoResponse> listar(
+                        Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
+                        Long diaSemanaId, Long horarioId, Long quadroHorarioId, int page,
+                        int size) {
+
+                var pageRequest = PageRequest.of(page, size);
+
+                var pageAlocacao = repository.buscarPorFiltros(
+                                turmaId, disciplinaId, salaId, usuarioId,
+                                diaSemanaId, horarioId, quadroHorarioId, pageRequest);
+
+                return pageAlocacao.map(AlocacaoMapper::toResponse);
+        }
+
+        @Transactional(readOnly = true)
+        public AlocacaoResponse buscarPorId(Long id) {
+                return repository.findById(id)
+                                .map(AlocacaoMapper::toResponse)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Alocação não encontrada com ID: " + id));
+        }
+
+        @Transactional
+        public void deletar(Long id) {
+                if (!repository.existsById(id)) {
+                        throw new EntityNotFoundException(
+                                        "Alocação não encontrada com ID: " + id);
+                }
+                repository.deleteById(id);
+        }
 }

@@ -1,0 +1,114 @@
+package com.fatec.gini.domain.services.usecase.write;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Disciplina;
+import com.fatec.gini.domain.entities.QuadroHorario;
+import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.entities.Sala;
+import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
+
+@ExtendWith(MockitoExtension.class)
+class RegistrarHistoricoAlocacaoUseCaseTest {
+
+    @InjectMocks
+    private RegistrarHistoricoAlocacaoUseCase useCase;
+
+    @Mock
+    private HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
+
+    @Test
+    void deveRegistrarCriacao() {
+        Alocacao alocacao = criarAlocacao(10L, 1L, 2L, 3L, 4L, 5L, 6L, 7L);
+        Usuario usuario = new Usuario();
+        usuario.setId(99L);
+
+        useCase.registrarCriacao(alocacao, usuario);
+
+        ArgumentCaptor<HistoricoVersaoAlocacao> captor = ArgumentCaptor.forClass(HistoricoVersaoAlocacao.class);
+        verify(historicoAlteracaoRepository).save(captor.capture());
+
+        HistoricoVersaoAlocacao salvo = captor.getValue();
+        assertEquals("Alocação_10", salvo.getCampoAlterado());
+        assertEquals("Criação de alocação", salvo.getJustificativa());
+        assertNotNull(salvo.getValorNovo());
+        assertEquals(usuario, salvo.getUsuario());
+        assertEquals(alocacao, salvo.getAlocacao());
+    }
+
+    @Test
+    void deveRegistrarSomenteCamposAlteradosNaAtualizacao() {
+        Alocacao alocacaoNova = criarAlocacao(10L, 1L, 20L, 3L, 4L, 5L, 6L, 7L);
+        Alocacao alocacaoAntiga = criarAlocacao(10L, 1L, 2L, 3L, 40L, 5L, 6L, 7L);
+        Usuario usuario = new Usuario();
+        usuario.setId(99L);
+
+        useCase.registrarAtualizacao(alocacaoNova, alocacaoAntiga, usuario, "Ajuste");
+
+        verify(historicoAlteracaoRepository, times(2)).save(org.mockito.ArgumentMatchers.any(HistoricoVersaoAlocacao.class));
+    }
+
+    private Alocacao criarAlocacao(Long idAlocacao, Long idTurma, Long idDisciplina, Long idSala, Long idProfessor,
+            Long idDiaSemana, Long idBlocoHorario, Long idQuadroHorario) {
+
+        Turma turma = new Turma();
+        turma.setId(idTurma);
+
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(idDisciplina);
+
+        Sala sala = new Sala();
+        sala.setId(idSala);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        DiaSemana diaSemana = new DiaSemana();
+        diaSemana.setId(idDiaSemana);
+
+        BlocoHorario blocoHorario = new BlocoHorario();
+        blocoHorario.setId(idBlocoHorario);
+
+        QuadroHorario quadroHorario = new QuadroHorario();
+        quadroHorario.setCurso(new com.fatec.gini.domain.entities.Curso());
+        quadroHorario.getCurso().setId(70L);
+        quadroHorario.setPeriodoAtividadeQuadro(new com.fatec.gini.domain.entities.PeriodoAtividadeQuadro());
+        quadroHorario.getPeriodoAtividadeQuadro().setId(80L);
+        java.lang.reflect.Field idField;
+        try {
+            idField = QuadroHorario.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(quadroHorario, idQuadroHorario);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        Alocacao alocacao = new Alocacao();
+        alocacao.setId(idAlocacao);
+        alocacao.setTurma(turma);
+        alocacao.setDisciplina(disciplina);
+        alocacao.setSala(sala);
+        alocacao.setProfessor(professor);
+        alocacao.setDiaSemana(diaSemana);
+        alocacao.setBlocoHorario(blocoHorario);
+        alocacao.setQuadroHorario(quadroHorario);
+
+        return alocacao;
+    }
+}

@@ -1,0 +1,33 @@
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: gini-postgres
+
+    environment:
+      POSTGRES_DB: gini
+      POSTGRES_USER: gini
+      POSTGRES_PASSWORD: gini
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+
+    container_name: gini-api
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+volumes:
+  postgres_data:

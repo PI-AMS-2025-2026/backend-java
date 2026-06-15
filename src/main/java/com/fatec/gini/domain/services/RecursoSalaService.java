@@ -1,8 +1,7 @@
 package com.fatec.gini.domain.services;
 
-import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,17 +17,18 @@ import com.fatec.gini.infrastructure.repositories.RecursoRepository;
 import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class RecursoSalaService {
 
-    @Autowired
-    private RecursoSalaRepository repository;
+    private final RecursoSalaRepository repository;
 
-    @Autowired
-    private SalaRepository salaRepository;
+    private final SalaRepository salaRepository;
 
-    @Autowired
-    private RecursoRepository recursoRepository;
+    private final RecursoRepository recursoRepository;
 
     @Transactional
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
@@ -53,6 +53,8 @@ public class RecursoSalaService {
         entity.setQuantidade(request.quantidade());
         entity.setSala(sala);
         entity.setRecurso(recurso);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
@@ -88,7 +90,7 @@ public class RecursoSalaService {
         }
 
         entity.setQuantidade(request.quantidade());
-
+        entity.setUpdatedAt(LocalDateTime.now());
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
 

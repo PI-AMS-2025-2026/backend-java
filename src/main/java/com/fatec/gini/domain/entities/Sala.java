@@ -12,8 +12,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "sala")
 public class Sala {
 
@@ -29,10 +37,10 @@ public class Sala {
     private Integer capacidade;
 
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_sala", nullable = false)
@@ -41,68 +49,9 @@ public class Sala {
     @OneToMany(mappedBy = "sala")
     private List<RecursoSala> recursoSalas;
 
-    public Sala() {
-    }
-
     public Sala(String codigo, Integer capacidade) {
         this.codigo = codigo;
         this.capacidade = capacidade;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public Integer getCapacidade() {
-        return capacidade;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public List<RecursoSala> getRecursoSalas() {
-        return recursoSalas;
-    }
-
-    public void setRecursoSalas(List<RecursoSala> recursoSalas) {
-        this.recursoSalas = recursoSalas;
-    }
-
-    public void setCapacidade(Integer capacidade) {
-        this.capacidade = capacidade;
-    }
-
-    public TipoSala getTipoSala() {
-        return tipoSala;
-    }
-
-    public void setTipoSala(TipoSala tipoSala) {
-        this.tipoSala = tipoSala;
     }
 
     @Override

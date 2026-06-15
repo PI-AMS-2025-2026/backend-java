@@ -2,10 +2,8 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,14 +20,14 @@ import com.fatec.gini.dto.sala.SalaRequest;
 import com.fatec.gini.dto.sala.SalaResponse;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/salas")
-@CrossOrigin
+@RequiredArgsConstructor
 public class SalaController {
 
-    @Autowired
-    private SalaService service;
+    private final SalaService service;
 
     @GetMapping
     public ResponseEntity<Page<SalaResponse>> listar(
@@ -73,4 +71,5 @@ public class SalaController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    
 }

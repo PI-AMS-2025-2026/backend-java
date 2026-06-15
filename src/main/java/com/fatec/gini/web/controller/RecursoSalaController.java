@@ -1,26 +1,33 @@
 package com.fatec.gini.web.controller;
 
+import java.net.URI;
 
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.RecursoSalaService;
 import com.fatec.gini.dto.recursoSala.RecursoSalaRequest;
 import com.fatec.gini.dto.recursoSala.RecursoSalaResponse;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/recurso-sala")
-@CrossOrigin
+@RequiredArgsConstructor
 public class RecursoSalaController {
 
-    @Autowired
-    private RecursoSalaService service;
+    private final RecursoSalaService service;
 
     @PostMapping
     public ResponseEntity<RecursoSalaResponse> criar(@Valid @RequestBody RecursoSalaRequest request) {

@@ -9,8 +9,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "dia_semana")
 public class DiaSemana {
 
@@ -28,45 +36,10 @@ public class DiaSemana {
     @OneToMany(mappedBy = "diaSemana")
     private List<DisponibilidadeProfessor> disponibilidades;
 
-    public DiaSemana() {
-    }
-
     public DiaSemana(String nome) {
         this.nome = nome;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public List<Alocacao> getAlocacoes() {
-        return alocacoes;
-    }
-
-    public void setAlocacoes(List<Alocacao> alocacoes) {
-        this.alocacoes = alocacoes;
-    }
-
-    public List<DisponibilidadeProfessor> getDisponibilidades() {
-        return disponibilidades;
-    }
-
-    public void setDisponibilidades(List<DisponibilidadeProfessor> disponibilidades) {
-        this.disponibilidades = disponibilidades;
-    }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -18,9 +18,7 @@ public class SalaMapper {
                 entity.getId(),
                 entity.getCodigo(),
                 entity.getCapacidade(),
-                entity.getTipoSala() != null ? TipoSalaMapper.toResponse(entity.getTipoSala()) : null,
-                entity.getCreated_at(),
-                entity.getUpdated_at()
+                entity.getTipoSala() != null ? TipoSalaMapper.toResponse(entity.getTipoSala()) : null
         );
     }
 }

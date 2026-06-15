@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +11,13 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarCargaHorariaMaximaProfessorUseCase {
 
-        @Autowired
-        private AlocacaoRepository alocacaoRepository;
+ private final AlocacaoRepository alocacaoRepository;
 
         //TODO: verificar o real valor para limite de horas diárias, e se tem alguma regra específica para aulas noturnas ou sábados
         private static final long LIMITE_HORAS_DIARIAS = 8; 
@@ -35,16 +36,16 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
                 long totalMinutos = alocacoes.stream()
                                 .mapToLong(a -> Duration.between(
-                                                a.getHorario().getHoraInicio(),
+                                                a.getBlocoHorario().getHoraInicio(),
                                                 // calcula a duração de cada aula
-                                                a.getHorario().getHoraFim()).toMinutes())
+                                                a.getBlocoHorario().getHoraFim()).toMinutes())
                                 .sum();
                 // soma todas as durações
 
                 long totalHoras = totalMinutos / 60;
 
                 if (totalHoras > LIMITE_HORAS_DIARIAS) {
-                        // se passar daquele horario definido la em cima retorna a mensagem abaixo
+                        // se passar daquele blocoHorario definido la em cima retorna a mensagem abaixo
                         throw new BusinessException(
                                         "A carga horária máxima diária do professor foi excedida.");
                 }
@@ -63,11 +64,11 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
                 }
 
                 Alocacao ultimaAulaDiaAnterior = aulasDiaAnterior.get(0);
-                LocalTime fimDiaAnterior = ultimaAulaDiaAnterior.getHorario().getHoraFim();
+                LocalTime fimDiaAnterior = ultimaAulaDiaAnterior.getBlocoHorario().getHoraFim();
 
                 // Obtém a primeira aula (mais cedo) do dia atual
                 LocalTime inicioDiaAtual = aulasDiaAtual.stream()
-                                .map(a -> a.getHorario().getHoraInicio())
+                                .map(a -> a.getBlocoHorario().getHoraInicio())
                                 .min(LocalTime::compareTo)
                                 .orElseThrow(() -> new BusinessException("Nenhuma aula encontrada para o dia."));
 

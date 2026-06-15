@@ -1,6 +1,7 @@
 package com.fatec.gini.dto.usuario;
 
 import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.entities.TipoUsuario;
 import com.fatec.gini.dto.id.LongDTO;
 
 import jakarta.validation.constraints.Email;
@@ -21,14 +22,11 @@ public record UsuarioRequest(
         @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
         String senha,
 
-        @NotBlank(message = "Cidade é obrigatória")
-        String cidade,
-
         @NotNull(message = "Status é obrigatório")
         Status status,
 
         @NotNull(message = "Tipo de usuário é obrigatório")
-        LongDTO tipoUsuario,
+        TipoUsuario tipoUsuario,
 
         LongDTO curso
 ) {}

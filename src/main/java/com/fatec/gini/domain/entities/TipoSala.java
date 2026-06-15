@@ -1,17 +1,25 @@
 package com.fatec.gini.domain.entities;
 
-import jakarta.persistence.GenerationType;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tipo_sala")
 public class TipoSala {
 
@@ -19,40 +27,21 @@ public class TipoSala {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipo_sala")
     private Long id;
+
+    @Column(unique = true,nullable = false)
     private String nome;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "tipoSala")
     private List<Sala> salas;
 
-    public TipoSala() {
-    }
-
     public TipoSala(String nome) {
         this.nome = nome;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public List<Sala> getSalas() {
-        return salas;
-    }
-
-    public void setSalas(List<Sala> salas) {
-        this.salas = salas;
     }
 
     @Override
@@ -79,7 +68,5 @@ public class TipoSala {
             return false;
         return true;
     }
-
-
 
 }

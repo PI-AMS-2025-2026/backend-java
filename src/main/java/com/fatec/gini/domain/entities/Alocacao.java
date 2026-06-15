@@ -11,11 +11,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "alocacao")
 public class Alocacao {
 
@@ -37,141 +43,39 @@ public class Alocacao {
     private Sala sala;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "id_professor", nullable = false)
+    private Professor professor;
 
     @ManyToOne
     @JoinColumn(name = "id_dia_semana", nullable = false)
     private DiaSemana diaSemana;
 
     @ManyToOne
-    @JoinColumn(name = "id_horario", nullable = false)
-    private Horario horario;
+    @JoinColumn(name = "id_bloco_horario", nullable = false)
+    private BlocoHorario blocoHorario;
 
     @ManyToOne
-    @JoinColumn(name = "id_grade_horaria", nullable = false)
-    private GradeHoraria gradeHoraria;
+    @JoinColumn(name = "id_quadro_horario", nullable = false)
+    private QuadroHorario quadroHorario;
 
-    @OneToMany(mappedBy = "alocacao")
-    private List<HistoricoAlteracao> historicoAlteracoes;
-
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Alocacao() {
-    }
+    @OneToMany(mappedBy = "alocacao")
+    private List<HistoricoVersaoAlocacao> historicoAlteracoes;
 
-    public Alocacao(Turma turma, Disciplina disciplina, Sala sala, Usuario usuario, DiaSemana diaSemana,
-            Horario horario, GradeHoraria gradeHoraria) {
+    public Alocacao(Turma turma, Disciplina disciplina, Sala sala, Professor professor, DiaSemana diaSemana,
+            BlocoHorario blocoHorario, QuadroHorario quadroHorario) {
         this.turma = turma;
         this.disciplina = disciplina;
         this.sala = sala;
-        this.usuario = usuario;
+        this.professor = professor;
         this.diaSemana = diaSemana;
-        this.horario = horario;
-        this.gradeHoraria = gradeHoraria;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Turma getTurma() {
-        return turma;
-    }
-
-    public void setTurma(Turma turma) {
-        this.turma = turma;
-    }
-
-    public Disciplina getDisciplina() {
-        return disciplina;
-    }
-
-    public void setDisciplina(Disciplina disciplina) {
-        this.disciplina = disciplina;
-    }
-
-    public Sala getSala() {
-        return sala;
-    }
-
-    public void setSala(Sala sala) {
-        this.sala = sala;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public DiaSemana getDiaSemana() {
-        return diaSemana;
-    }
-
-    public void setDiaSemana(DiaSemana diaSemana) {
-        this.diaSemana = diaSemana;
-    }
-
-    public Horario getHorario() {
-        return horario;
-    }
-
-    public void setHorario(Horario horario) {
-        this.horario = horario;
-    }
-
-    public GradeHoraria getGradeHoraria() {
-        return gradeHoraria;
-    }
-
-    public void setGradeHoraria(GradeHoraria gradeHoraria) {
-        this.gradeHoraria = gradeHoraria;
-    }
-
-    public List<HistoricoAlteracao> getHistoricoAlteracoes() {
-        return historicoAlteracoes;
-    }
-
-    public void setHistoricoAlteracoes(List<HistoricoAlteracao> historicoAlteracoes) {
-        this.historicoAlteracoes = historicoAlteracoes;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+        this.blocoHorario = blocoHorario;
+        this.quadroHorario = quadroHorario;
     }
 
     @Override
@@ -202,8 +106,9 @@ public class Alocacao {
     @Override
     public String toString() {
         return "Alocacao [id=" + id + ", turma=" + turma + ", disciplina=" + disciplina + ", sala=" + sala
-                + ", usuario=" + usuario + ", diaSemana=" + diaSemana + ", horario=" + horario
-                + ", gradeHoraria=" + gradeHoraria + ", createdAt=" + createdAt
-                + ", updatedAt=" + updatedAt + "]";
+                + ", professor=" + professor + ", diaSemana=" + diaSemana + ", blocoHorario=" + blocoHorario
+                + ", quadroHorario="
+                + quadroHorario + "]";
     }
+
 }

@@ -5,12 +5,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-//TODO: avaliar se entidade é nescessaria
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "professor_disciplina")
 public class ProfessorDisciplina {
 
@@ -20,45 +28,18 @@ public class ProfessorDisciplina {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_usuario", unique = true)
-    private Usuario usuario;
+    @JoinColumn(name = "id_professor")
+    private Professor professor;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_disciplina", unique = true)
-    private Disciplina disciplina;
+    @JoinColumn(name = "id_disciplina")
+    private Disciplina disciplina; 
 
-    public ProfessorDisciplina() {
-    }
-
-    public ProfessorDisciplina(Usuario usuario, Disciplina disciplina) {
-        this.usuario = usuario;
+    public ProfessorDisciplina(Professor professor, Disciplina disciplina) {
+        this.professor = professor;
         this.disciplina = disciplina;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Disciplina getDisciplina() {
-        return disciplina;
-    }
-
-    public void setDisciplina(Disciplina disciplina) {
-        this.disciplina = disciplina;
-    }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;

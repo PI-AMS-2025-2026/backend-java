@@ -1,8 +1,8 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,12 +13,13 @@ import com.fatec.gini.infrastructure.mappers.TipoSalaMapper;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class TipoSalaService {
 
-    @Autowired
-    private TipoSalaRepository repository;
+    private final TipoSalaRepository repository;
 
     // Lista todos ou filtra por nome
     @Transactional(readOnly = true)
@@ -35,6 +36,8 @@ public class TipoSalaService {
     @Transactional
     public TipoSalaResponse criar(TipoSalaRequest request) {
         TipoSala entity = TipoSalaMapper.toEntity(request);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 
@@ -54,6 +57,7 @@ public class TipoSalaService {
 
         entity.setNome(request.nome());
 
+        entity.setUpdatedAt(LocalDateTime.now());
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 

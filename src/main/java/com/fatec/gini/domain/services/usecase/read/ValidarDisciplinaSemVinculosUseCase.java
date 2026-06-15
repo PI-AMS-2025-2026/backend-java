@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services.usecase.read;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,14 +7,15 @@ import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidarDisciplinaSemVinculosUseCase {
 
-    @Autowired
-    private AlocacaoRepository alocacaoRepository;
+    private final  AlocacaoRepository alocacaoRepository;
 
-    @Autowired
-    private ProfessorDisciplinaRepository professorDisciplinaRepository;
+    private final  ProfessorDisciplinaRepository professorDisciplinaRepository;
 
     @Transactional(readOnly = true)
     public void validar(Long idDisciplina) {

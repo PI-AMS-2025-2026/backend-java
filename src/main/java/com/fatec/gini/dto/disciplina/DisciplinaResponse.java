@@ -1,7 +1,5 @@
 package com.fatec.gini.dto.disciplina;
 
-import java.time.LocalDateTime;
-
 import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.tipoSala.TipoSalaResponse;
 
@@ -15,8 +13,6 @@ public record DisciplinaResponse(
     String codDisciplina,
     String cor,
     CursoResponse curso,
-    TipoSalaResponse tipoSala,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    TipoSalaResponse tipoSala
 ) {
 }
