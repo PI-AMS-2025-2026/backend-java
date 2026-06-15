@@ -1,0 +1,22 @@
+# server.error.include-stacktrace=never - versão antiga
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/gini}
+    username: ${DB_USER:gini}
+    password: ${DB_PASSWORD:gini}
+  jpa:
+    defer-datasource-initialization: false
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      encoding: UTF-8
+  h2:
+    console:
+      enabled: false
+  flyway:
+    enabled: false
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:gini}
