@@ -1,7 +1,6 @@
 package com.fatec.gini.dto.blocoHorario;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 import java.time.LocalTime;
 
@@ -10,10 +9,7 @@ public record BlocoHorarioRequest(
         LocalTime horaInicio,
 
         @NotNull(message = "Hora de fim é obrigatória")
-        LocalTime horaFim,
+        LocalTime horaFim
 
-        @NotNull(message = "Duração é obrigatória")
-        @Positive(message = "Duração deve ser positiva")
-        Integer duracao
 ){
 } 
