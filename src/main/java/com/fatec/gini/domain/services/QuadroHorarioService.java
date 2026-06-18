@@ -12,6 +12,7 @@ import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoAtividadeQuadroAtivoUseCase;
+import com.fatec.gini.domain.services.usecase.write.CopiarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.write.ValidarQuadroHorarioValidoUseCase;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
@@ -36,6 +37,20 @@ public class QuadroHorarioService {
         private final ValidarQuadroHorarioValidoUseCase validarQuadroHorarioValidoUseCase;
 
         private final ValidarPeriodoAtividadeQuadroAtivoUseCase validarPeriodoAtividadeQuadroAtivoUseCase;
+
+        private final CopiarQuadroHorarioUseCase copiarQuadroHorarioUseCase;
+
+        @Transactional
+        public QuadroHorarioResponse copiar(Long id, QuadroHorarioRequest request) {
+                QuadroHorario entity = repository.findById(id)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Quadro horário não encontrada com ID: " + id));
+
+                QuadroHorario copia = copiarQuadroHorarioUseCase.executar(id, entity);
+                copiarQuadroHorarioUseCase.executar(id, entity);
+
+                return QuadroHorarioMapper.toResponse(copia);
+        }
 
         @Transactional
         public QuadroHorarioResponse criar(QuadroHorarioRequest request) {
@@ -127,4 +142,5 @@ public class QuadroHorarioService {
                 entity.setUpdatedAt(LocalDateTime.now());
                 repository.save(entity);
         }
+
 }
