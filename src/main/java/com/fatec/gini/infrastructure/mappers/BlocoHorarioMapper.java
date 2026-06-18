@@ -10,7 +10,6 @@ public class BlocoHorarioMapper {
         BlocoHorario entity = new BlocoHorario();
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());
-        entity.setDuracao(request.duracao());
         return entity;
     }
 

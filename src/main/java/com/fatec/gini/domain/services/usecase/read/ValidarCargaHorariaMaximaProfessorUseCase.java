@@ -19,7 +19,6 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
  private final AlocacaoRepository alocacaoRepository;
 
-        //TODO: verificar o real valor para limite de horas diárias, e se tem alguma regra específica para aulas noturnas ou sábados
         private static final long LIMITE_HORAS_DIARIAS = 8; 
 
         @Transactional(readOnly = true)

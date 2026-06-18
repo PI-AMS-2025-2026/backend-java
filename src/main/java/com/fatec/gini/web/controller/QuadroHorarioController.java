@@ -62,6 +62,21 @@ public class QuadroHorarioController {
         return ResponseEntity.created(location).body(response);
     }
 
+    @PostMapping("{id}/copiar")
+    public ResponseEntity<QuadroHorarioResponse> copiar(@PathVariable Long id,
+            @Valid @RequestBody QuadroHorarioRequest request) {
+
+        QuadroHorarioResponse response = service.copiar(id, request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<QuadroHorarioResponse> atualizar(
             @PathVariable Long id,

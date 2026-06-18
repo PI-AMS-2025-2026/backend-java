@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarDataPeriodoAtividadeQuadroUseCase;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 import com.fatec.gini.infrastructure.mappers.PeriodoAtividadeQuadroMapper;
@@ -22,11 +23,13 @@ import lombok.RequiredArgsConstructor;
 public class PeriodoAtividadeQuadroService {
 
     private final PeriodoAtividadeQuadroRepository repository;
+    private final ValidarDataPeriodoAtividadeQuadroUseCase atividadeQuadroUseCase;
 
     @Transactional
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
+        atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
+        
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
-
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
@@ -57,6 +60,8 @@ public class PeriodoAtividadeQuadroService {
 
     @Transactional
     public PeriodoAtividadeQuadroResponse atualizar(long id, PeriodoAtividadeQuadroRequest request) {
+        atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
+
         PeriodoAtividadeQuadro entity = repository.findById(id)
                 .orElseThrow(
                         () -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));

@@ -104,7 +104,7 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     @Transactional(readOnly = true)
     public QuadroHorario buscarQuadroHorarioPorId(Long id) {
         if (id == null) {
-            throw new ParameterException("Quadro horário é obrigatório.");
+            throw new ParameterException("Quadro horário e obrigatorio.");
         }
         return quadroHorarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado com ID: " + id));

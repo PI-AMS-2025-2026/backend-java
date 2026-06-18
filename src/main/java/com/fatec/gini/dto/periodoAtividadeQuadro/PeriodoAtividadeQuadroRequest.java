@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.fatec.gini.domain.entities.Status;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -19,12 +18,4 @@ public record PeriodoAtividadeQuadroRequest(
         @NotNull(message = "A data final é obrigatória") LocalDate dataFim,
 
         @NotNull(message = "O status é obrigatório") Status status) {
-    // TODO:retirar validação e colocar em service correto
-    @AssertTrue(message = "A data final deve ser maior que a data inicial")
-    public boolean isDataFimValida() {
-        if (dataInicio == null || dataFim == null) {
-            return true;
-        }
-        return dataFim.isAfter(dataInicio);
-    }
 }
