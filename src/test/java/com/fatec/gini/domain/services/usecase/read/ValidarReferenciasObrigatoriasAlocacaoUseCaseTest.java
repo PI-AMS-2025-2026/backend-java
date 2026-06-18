@@ -129,7 +129,7 @@ class ValidarReferenciasObrigatoriasAlocacaoUseCaseTest {
     @Test
     void deveLancarExcecaoQuandoQuadroHorarioNula() {
         ParameterException exception = assertThrows(ParameterException.class, () -> useCase.buscarQuadroHorarioPorId(null));
-        assertEquals("Quadro horário e obrigatoria.", removerAcentos(exception.getMessage()));
+        assertEquals("Quadro horário e obrigatorio.", removerAcentos(exception.getMessage()));
     }
 
     @Test

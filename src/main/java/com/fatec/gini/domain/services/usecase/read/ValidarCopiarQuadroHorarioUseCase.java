@@ -42,7 +42,20 @@ public class ValidarCopiarQuadroHorarioUseCase {
                     "Não é possível copiar um quadro horário que não possui alocações.");
         }
 
-        // 2. Otimização de Performance (Evita N+1 Queries):
+        // 2. Validação de Integridade: Garante que todos os relacionamentos obrigatórios de todas as alocações estão presentes
+        for (Alocacao antiga : alocacoes) {
+            if (antiga.getDisciplina() == null
+                    || antiga.getProfessor() == null
+                    || antiga.getSala() == null
+                    || antiga.getDiaSemana() == null
+                    || antiga.getBlocoHorario() == null) {
+
+                throw new BusinessException(
+                        "Dados de alocação de origem corrompidos ou incompletos.");
+            }
+        }
+
+        // 3. Otimização de Performance (Evita N+1 Queries):
         // Mapeia todos os IDs únicos dos professores envolvidos nas alocações a serem copiadas
         List<Long> professorIds = alocacoes.stream()
                 .map(a -> a.getProfessor().getId())
@@ -62,19 +75,8 @@ public class ValidarCopiarQuadroHorarioUseCase {
                         d.getBlocoHorario().getId()))
                 .collect(Collectors.toSet());
 
-        // 3. Iteração e validação individual de cada alocação da grade de origem
+        // 4. Iteração e validação de regras de negócios individuais de cada alocação
         for (Alocacao antiga : alocacoes) {
-
-            // Validação de Integridade: Garante que todos os relacionamentos obrigatórios da alocação estão presentes
-            if (antiga.getDisciplina() == null
-                    || antiga.getProfessor() == null
-                    || antiga.getSala() == null
-                    || antiga.getDiaSemana() == null
-                    || antiga.getBlocoHorario() == null) {
-
-                throw new BusinessException(
-                        "Dados de alocação de origem corrompidos ou incompletos.");
-            }
             
             // Validação de Disponibilidade do Professor:
             // Verifica se o professor possui disponibilidade cadastrada para o dia da semana e bloco de horário específicos
