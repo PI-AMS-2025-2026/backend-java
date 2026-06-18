@@ -2,6 +2,7 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,7 +26,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/bloco_horarios")
+@RequestMapping("/bloco-horarios")
 @RequiredArgsConstructor
 public class BlocoHorarioController {
 
@@ -56,6 +57,14 @@ public class BlocoHorarioController {
                 .toUri();
 
         return ResponseEntity.created(location).body(response);
+    }
+
+    @PostMapping("/lote")
+    public ResponseEntity<List<BlocoHorarioResponse>> criarLote(@Valid @RequestBody List<BlocoHorarioRequest> request) {
+
+        List<BlocoHorarioResponse> response = service.criarLote(request);
+   
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

@@ -1,5 +1,7 @@
 package com.fatec.gini.infrastructure.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
-
 
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
@@ -44,4 +45,5 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
                      @Param("diaId") Long diaId,
                      @Param("blocoHorarioId") Long blocoHorarioId);
 
+       List<DisponibilidadeProfessor> findByProfessorIdIn(List<Long> professorIds);
 }
