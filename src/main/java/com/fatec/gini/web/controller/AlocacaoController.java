@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
@@ -55,7 +56,7 @@ public class AlocacaoController {
             @RequestParam(required = false) Long disciplina,
             @RequestParam(required = false) Long sala,
             @RequestParam(required = false) Long usuario,
-            @RequestParam(required = false, name = "dia_semana") Long diaSemana,
+            @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
             @RequestParam(required = false) Long horario,
             @RequestParam(required = false,name = "quadro_horario") Long quadroHorario,
           @RequestParam(defaultValue = "0") int page,

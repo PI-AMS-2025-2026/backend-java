@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
@@ -58,14 +59,14 @@ public class AlocacaoService {
         @Transactional(readOnly = true)
         public Page<AlocacaoResponse> listar(
                         Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
-                        Long diaSemanaId, Long horarioId, Long quadroHorarioId, int page,
+                        DiaSemana diaSemana, Long horarioId, Long quadroHorarioId, int page,
                         int size) {
 
                 var pageRequest = PageRequest.of(page, size);
 
                 var pageAlocacao = repository.buscarPorFiltros(
                                 turmaId, disciplinaId, salaId, usuarioId,
-                                diaSemanaId, horarioId, quadroHorarioId, pageRequest);
+                                diaSemana, horarioId, quadroHorarioId, pageRequest);
 
                 return pageAlocacao.map(AlocacaoMapper::toResponse);
         }

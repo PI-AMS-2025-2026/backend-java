@@ -1,9 +1,6 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoPeridoAtividadeQuadro;
 import com.fatec.gini.domain.services.PeriodoAtividadeQuadroService;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
@@ -52,7 +48,8 @@ public class PeriodoAtividadeQuadroController {
     }
 
     @PostMapping
-    public ResponseEntity<PeriodoAtividadeQuadroResponse> criar(@Valid @RequestBody PeriodoAtividadeQuadroRequest request) {
+    public ResponseEntity<PeriodoAtividadeQuadroResponse> criar(
+            @Valid @RequestBody PeriodoAtividadeQuadroRequest request) {
 
         PeriodoAtividadeQuadroResponse response = service.criar(request);
 
@@ -79,10 +76,4 @@ public class PeriodoAtividadeQuadroController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("tipos")
-    public List<String> listar() {
-        return Arrays.stream(TipoPeridoAtividadeQuadro.values())
-                .map(Enum::name)
-                .toList();
-    }
 }

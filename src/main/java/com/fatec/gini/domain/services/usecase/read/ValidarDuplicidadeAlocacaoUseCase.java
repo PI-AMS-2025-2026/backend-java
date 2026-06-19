@@ -45,11 +45,11 @@ public class ValidarDuplicidadeAlocacaoUseCase {
 
     public void executarCriacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaAndBlocoHorarioId(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
-                        entity.getDiaSemana().getId(),
+                        entity.getDiaSemana(),
                         entity.getBlocoHorario().getId());
 
         if (existeDuplicidade) {
@@ -60,11 +60,11 @@ public class ValidarDuplicidadeAlocacaoUseCase {
 
     public void executarAtualizacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
-                        entity.getDiaSemana().getId(),
+                        entity.getDiaSemana(),
                         entity.getBlocoHorario().getId(),
                         entity.getId());
 

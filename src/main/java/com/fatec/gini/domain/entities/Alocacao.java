@@ -46,8 +46,6 @@ public class Alocacao {
     @JoinColumn(name = "id_professor", nullable = false)
     private Professor professor;
 
-    @ManyToOne
-    @JoinColumn(name = "id_dia_semana", nullable = false)
     private DiaSemana diaSemana;
 
     @ManyToOne

@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@Profile("prod")
+@Profile({ "prod" })
 @RequiredArgsConstructor
 public class ConfiguracaoSeguranca {
 
@@ -60,14 +60,46 @@ public class ConfiguracaoSeguranca {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build()
 
-        ;
+                        .requestMatchers(HttpMethod.POST, "/auth/login")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/auth/registrar")
+                        .permitAll()
+
+                        // Somente administrador
+                        .requestMatchers("/usuarios/**")
+                        .hasRole("ADMIN")
+
+                        // Admin e Coordenador
+                        .requestMatchers("/disciplinas/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/turmas/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/grades/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/alocacoes/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/professores/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/disponibilidades/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/cursos/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .anyRequest().authenticated())
+
+                .addFilterBefore(
+                        securityFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+
+                .build();
     }
 
     @Bean

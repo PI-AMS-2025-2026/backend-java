@@ -25,7 +25,7 @@ public class ValidarConflitoTurmaBlocoHorarioUseCase {
     public void executar(Alocacao entity) {
         boolean conflito = repository.existsConflitoTurmaHorario(
                 entity.getTurma().getId(),
-                entity.getDiaSemana().getId(),
+                entity.getDiaSemana(),
                 entity.getBlocoHorario().getId());
 
         if (conflito) {

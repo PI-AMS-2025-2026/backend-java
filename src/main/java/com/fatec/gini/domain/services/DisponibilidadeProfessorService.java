@@ -7,16 +7,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
-import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
 import com.fatec.gini.infrastructure.mappers.DisponibilidadeProfessorMapper;
-import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
-import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,7 +27,6 @@ public class DisponibilidadeProfessorService {
 
         private final DisponibilidadeProfessorRepository repository;
         private final ProfessorRepository professorRepository;
-        private final DiaSemanaRepository diaSemanaRepository;
         private final BlocoHorarioRepository blocoHorarioRepository;
 
         @Transactional
@@ -47,17 +45,12 @@ public class DisponibilidadeProfessorService {
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Professor não encontrado com ID: " + request.professor().id()));
 
-                DiaSemana dia = diaSemanaRepository.findById(request.diaSemana().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Dia da semana não encontrado com ID: " + request.diaSemana().id()));
-
                 BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
                 DisponibilidadeProfessor entity = DisponibilidadeProfessorMapper.toEntity(request);
                 entity.setProfessor(professor);
-                entity.setDiaSemana(dia);
                 entity.setBlocoHorario(blocoHorario);
                 entity.setCreatedAt(LocalDateTime.now());
                 entity.setUpdatedAt(LocalDateTime.now());
@@ -78,7 +71,7 @@ public class DisponibilidadeProfessorService {
         @Transactional(readOnly = true)
         public Page<DisponibilidadeProfessorResponse> listar(
                         Long professor,
-                        Long diaSemana,
+                        DiaSemana diaSemana,
                         Long blocoHorario,
                         int page, int size) {
 
@@ -104,16 +97,11 @@ public class DisponibilidadeProfessorService {
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Professor não encontrado com ID: " + request.professor().id()));
 
-                DiaSemana dia = diaSemanaRepository.findById(request.diaSemana().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Dia da semana não encontrado com ID: " + request.diaSemana().id()));
-
                 BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
                 entity.setProfessor(professor);
-                entity.setDiaSemana(dia);
                 entity.setBlocoHorario(blocoHorario);
 
                 entity.setUpdatedAt(LocalDateTime.now());

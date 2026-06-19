@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.DisponibilidadeProfessorService;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
@@ -45,7 +46,7 @@ public class DisponibilidadeProfessorController {
     @GetMapping
     public ResponseEntity<Page<DisponibilidadeProfessorResponse>> listar(
             @RequestParam(required = false) Long professor,
-            @RequestParam(required = false, name = "dia_semana") Long diaSemana,
+            @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
             @RequestParam(required = false, name = "bloco_horario") Long blocoHorario,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

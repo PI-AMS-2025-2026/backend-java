@@ -71,7 +71,7 @@ public class ValidarCopiarQuadroHorarioUseCase {
         Set<DisponibilidadeKey> disponibilidadesSet = disponibilidades.stream()
                 .map(d -> new DisponibilidadeKey(
                         d.getProfessor().getId(),
-                        d.getDiaSemana().getId(),
+                        d.getDiaSemana(),
                         d.getBlocoHorario().getId()))
                 .collect(Collectors.toSet());
 
@@ -83,7 +83,7 @@ public class ValidarCopiarQuadroHorarioUseCase {
             boolean disponivel = disponibilidadesSet.contains(
                     new DisponibilidadeKey(
                             antiga.getProfessor().getId(),
-                            antiga.getDiaSemana().getId(),
+                            antiga.getDiaSemana(),
                             antiga.getBlocoHorario().getId()));
 
             if (!disponivel) {

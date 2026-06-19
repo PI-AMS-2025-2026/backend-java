@@ -1,8 +1,10 @@
 package com.fatec.gini.dto.disponibilidadeProfessor;
 
+import com.fatec.gini.domain.entities.DiaSemana;
+
 public record DisponibilidadeKey(
         Long professorId,
-        Long diaSemanaId,
+        DiaSemana diaSemana,
         Long blocoHorarioId) {
 
 }
