@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.TurmaService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.turma.TurmaRequest;
 import com.fatec.gini.dto.turma.TurmaResponse;
 
@@ -30,7 +30,7 @@ public class TurmaController {
     private final TurmaService service;
 
     @GetMapping
-    public ResponseEntity<Page<TurmaResponse>> listar(
+    public ResponseEntity<PageResponse<TurmaResponse>> listar(
             @RequestParam(name = "curso", required = false) Long idCurso,
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer periodo,

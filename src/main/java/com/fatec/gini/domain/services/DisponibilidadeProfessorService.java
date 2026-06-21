@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +12,7 @@ import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.DisponibilidadeProfessorMapper;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
@@ -69,21 +69,27 @@ public class DisponibilidadeProfessorService {
         }
 
         @Transactional(readOnly = true)
-        public Page<DisponibilidadeProfessorResponse> listar(
+        public PageResponse<DisponibilidadeProfessorResponse> listar(
                         Long professor,
                         DiaSemana diaSemana,
                         Long blocoHorario,
-                        int page, int size) {
+                        int pageNum,
+                        int size) {
 
-                var pageRequest = PageRequest.of(page, size);
+                var pageRequest = PageRequest.of(pageNum, size);
 
-                var pageDisponibilidade = repository.buscarComFiltros(
+                var page = repository.buscarComFiltros(
                                 professor,
                                 diaSemana,
                                 blocoHorario,
                                 pageRequest);
 
-                return pageDisponibilidade.map(DisponibilidadeProfessorMapper::toResponse);
+                return new PageResponse<>(
+                                page.getContent().stream().map(DisponibilidadeProfessorMapper::toResponse).toList(),
+                                page.getNumber(),
+                                page.getSize(),
+                                page.getNumberOfElements(),
+                                page.getTotalPages());
         }
 
         @Transactional

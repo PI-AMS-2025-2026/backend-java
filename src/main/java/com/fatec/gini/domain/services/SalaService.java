@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.services.usecase.read.ValidarSalaSemVinculosUseCase;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sala.SalaRequest;
 import com.fatec.gini.dto.sala.SalaResponse;
 import com.fatec.gini.infrastructure.mappers.SalaMapper;
@@ -50,15 +50,21 @@ public class SalaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<SalaResponse> listar(
+    public PageResponse<SalaResponse> listar(
             Long idTipoSala,
             Integer capacidade,
-            int page,
+            int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(page, size);
-        var pageSala = repository.buscarPorFiltros(idTipoSala, capacidade, pageRequest);
-        return pageSala.map(SalaMapper::toResponse);
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(idTipoSala, capacidade, pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(SalaMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
     }
 
     @Transactional

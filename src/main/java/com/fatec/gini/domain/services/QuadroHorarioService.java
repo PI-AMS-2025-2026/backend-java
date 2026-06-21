@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +13,7 @@ import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoAtividadeQuadroAtivoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CopiarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.write.ValidarQuadroHorarioValidoUseCase;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 import com.fatec.gini.infrastructure.mappers.QuadroHorarioMapper;
@@ -87,22 +87,27 @@ public class QuadroHorarioService {
         }
 
         @Transactional(readOnly = true)
-        public Page<QuadroHorarioResponse> listar(
+        public PageResponse<QuadroHorarioResponse> listar(
                         Long idCurso,
                         Long idPeriodoAtividadeQuadro,
                         Status status,
-                        int page,
+                        int pageNum,
                         int size) {
 
-                var pageRequest = PageRequest.of(page, size);
+                var pageRequest = PageRequest.of(pageNum, size);
 
-                var pageQuadro = repository.buscarComFiltros(
+                var page = repository.buscarComFiltros(
                                 idCurso,
                                 idPeriodoAtividadeQuadro,
                                 status,
                                 pageRequest);
 
-                return pageQuadro.map(QuadroHorarioMapper::toResponse);
+                return new PageResponse<>(
+                                page.getContent().stream().map(QuadroHorarioMapper::toResponse).toList(),
+                                page.getNumber(),
+                                page.getSize(),
+                                page.getNumberOfElements(),
+                                page.getTotalPages());
         }
 
         @Transactional

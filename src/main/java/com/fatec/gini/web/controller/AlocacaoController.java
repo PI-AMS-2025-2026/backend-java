@@ -1,6 +1,5 @@
 package com.fatec.gini.web.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +17,7 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,7 +51,7 @@ public class AlocacaoController {
      */
     @GetMapping
     @Operation(summary = "Listagem de alocações")
-    public ResponseEntity<Page<AlocacaoResponse>> listar(
+    public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
             @RequestParam(required = false) Long turma,
             @RequestParam(required = false) Long disciplina,
             @RequestParam(required = false) Long sala,

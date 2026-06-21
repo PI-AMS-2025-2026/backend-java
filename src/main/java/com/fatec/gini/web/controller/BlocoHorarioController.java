@@ -4,7 +4,6 @@ import java.net.URI;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.fatec.gini.domain.services.BlocoHorarioService;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioRequest;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class BlocoHorarioController {
     private final BlocoHorarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<BlocoHorarioResponse>> listar(
+    public ResponseEntity<PageResponse<BlocoHorarioResponse>> listar(
             @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
             @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
             @RequestParam(required = false) Integer duracao,

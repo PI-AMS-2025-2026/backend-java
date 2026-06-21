@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.RecursoService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.recurso.RecursoRequest;
 import com.fatec.gini.dto.recurso.RecursoResponse;
 
@@ -30,7 +30,7 @@ public class RecursoController {
     private final RecursoService service;
 
     @GetMapping
-    public ResponseEntity<Page<RecursoResponse>> listar(
+    public ResponseEntity<PageResponse<RecursoResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false,name = "tipo_recurso") Long idTipoRecurso,
             @RequestParam(defaultValue = "0") int page,

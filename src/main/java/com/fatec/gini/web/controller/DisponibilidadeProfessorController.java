@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +18,7 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.DisponibilidadeProfessorService;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class DisponibilidadeProfessorController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DisponibilidadeProfessorResponse>> listar(
+    public ResponseEntity<PageResponse<DisponibilidadeProfessorResponse>> listar(
             @RequestParam(required = false) Long professor,
             @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
             @RequestParam(required = false, name = "bloco_horario") Long blocoHorario,

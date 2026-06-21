@@ -1,7 +1,7 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
-import org.springframework.data.domain.Page;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.services.PeriodoAtividadeQuadroService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 
@@ -30,7 +31,7 @@ public class PeriodoAtividadeQuadroController {
     private final PeriodoAtividadeQuadroService service;
 
     @GetMapping
-    public ResponseEntity<Page<PeriodoAtividadeQuadroResponse>> listar(
+    public ResponseEntity<PageResponse<PeriodoAtividadeQuadroResponse>> listar(
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer periodo,
             @RequestParam(required = false) Status status,

@@ -2,13 +2,13 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Recurso;
 import com.fatec.gini.domain.entities.TipoRecurso;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.recurso.RecursoRequest;
 import com.fatec.gini.dto.recurso.RecursoResponse;
 import com.fatec.gini.infrastructure.mappers.RecursoMapper;
@@ -45,15 +45,21 @@ public class RecursoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RecursoResponse> listar(
+    public PageResponse<RecursoResponse> listar(
             String nome,
             Long idTipoRecurso,
-            int page,
+            int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(page, size);
-        var pageRecurso = repository.buscarPorFiltros(nome, idTipoRecurso, pageRequest);
-        return pageRecurso.map(RecursoMapper::toResponse);
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(nome, idTipoRecurso, pageRequest);
+        
+        return new PageResponse<>(
+                page.getContent().stream().map(RecursoMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
     }
 
     @Transactional

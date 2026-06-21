@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Status;
 import com.fatec.gini.domain.entities.TipoUsuario;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
 import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
@@ -37,7 +37,7 @@ public class UsuarioService {
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
-                        "Curso não encontrado com ID: " + request.curso().id()));
+                            "Curso não encontrado com ID: " + request.curso().id()));
             entity.setCurso(curso);
         }
         String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
@@ -50,25 +50,29 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UsuarioResponse> listar(
+    public PageResponse<UsuarioResponse> listar(
             String nome,
             String email,
             Status status,
             TipoUsuario tipoUsuario,
-            int page,
+            int pageNum,
             int size
 
     ) {
-        var pageRequest = PageRequest.of(page, size);
-        var pageUsuario = repository.buscarPorFiltros(
-            nome,
-            email,
-            status,
-            tipoUsuario,
-            
-            pageRequest);
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(
+                nome,
+                email,
+                status,
+                tipoUsuario,
+                pageRequest);
 
-        return pageUsuario.map(UsuarioMapper::toResponse);
+        return new PageResponse<>(
+                page.getContent().stream().map(UsuarioMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
     }
 
     @Transactional(readOnly = true)
@@ -88,12 +92,11 @@ public class UsuarioService {
         entity.setEmail(request.email());
         entity.setStatus(request.status());
         entity.setTipoUsuario(request.tipoUsuario());
-        
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
-                        "Curso não encontrado com ID: " + request.curso().id()));
+                            "Curso não encontrado com ID: " + request.curso().id()));
             entity.setCurso(curso);
         }
 
@@ -114,7 +117,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public boolean jaUsuarioExisteEmail(String email){
-       return this.repository.findByEmail(email) != null;
+    public boolean jaUsuarioExisteEmail(String email) {
+        return this.repository.findByEmail(email) != null;
     }
 }
