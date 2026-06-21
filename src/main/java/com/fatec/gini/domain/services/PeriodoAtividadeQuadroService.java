@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarDataPeriodoAtividadeQuadroUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;

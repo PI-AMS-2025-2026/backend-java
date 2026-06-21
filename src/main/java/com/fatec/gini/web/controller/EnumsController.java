@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fatec.gini.domain.entities.DiaSemana;
-import com.fatec.gini.domain.entities.TipoPeridoAtividadeQuadro;
-import com.fatec.gini.domain.entities.TipoUsuario;
+import com.fatec.gini.domain.models.TipoPeridoAtividadeQuadro;
+import com.fatec.gini.domain.models.TipoUsuario;
 
 @RestController
 public class EnumsController {

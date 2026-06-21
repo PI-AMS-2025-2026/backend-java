@@ -1,4 +1,4 @@
-package com.fatec.gini.domain.entities;
+package com.fatec.gini.domain.models;
 
 public enum TipoUsuario {
     ADMINISTRADOR("admin"),

@@ -1,6 +1,6 @@
 package com.fatec.gini.dto.professor;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -5,7 +5,7 @@ import java.util.Locale;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.fatec.gini.domain.entities.TipoUsuario;
+import com.fatec.gini.domain.models.TipoUsuario;
 
 @Component
 public class TipoUsuarioConverter implements Converter<String, TipoUsuario> {

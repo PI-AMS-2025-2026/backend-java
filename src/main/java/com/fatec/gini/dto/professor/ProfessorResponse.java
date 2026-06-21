@@ -2,7 +2,7 @@ package com.fatec.gini.dto.professor;
 
 import java.time.LocalDateTime;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 
 public record ProfessorResponse(
         Long id,

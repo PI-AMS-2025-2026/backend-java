@@ -36,6 +36,7 @@ public class TurmaService {
         Curso curso = cursoRepository.findById(request.curso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
         entity.setCurso(curso);
+        entity.setCodigo(request.periodo() + "/" + request.ano());
 
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
@@ -77,7 +78,8 @@ public class TurmaService {
         Curso curso = cursoRepository.findById(request.curso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
 
-        entity.setCodigo(request.codigo());
+        entity.setCodigo(request.periodo() + "/" + request.ano());
+
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
         entity.setNumeroAlunos(request.numeroAlunos());

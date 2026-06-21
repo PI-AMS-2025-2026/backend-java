@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
-import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoUsuario;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;

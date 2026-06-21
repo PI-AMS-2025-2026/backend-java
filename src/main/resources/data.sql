@@ -31,3 +31,7 @@ INSERT INTO bloco_horario (duracao,hora_inicio,hora_fim) VALUES
 
 (50,'17:00:00','17:00:00'),
 (50,'17:50:00','18:40:00');
+
+INSERT INTO turma ( codigo,periodo,ano,numero_alunos,id_curso) VALUES
+('2/2026','2',2026,25,2),
+('1/2026','1',2026,40,1);

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.CursoService;
 import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;

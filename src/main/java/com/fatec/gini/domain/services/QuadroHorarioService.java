@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.QuadroHorario;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoAtividadeQuadroAtivoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CopiarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.write.ValidarQuadroHorarioValidoUseCase;

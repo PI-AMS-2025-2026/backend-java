@@ -8,7 +8,6 @@ public class TurmaMapper {
 
     public static Turma toEntity(TurmaRequest request) {
         Turma entity = new Turma();
-        entity.setCodigo(request.codigo());
         entity.setPeriodo(request.periodo());
         entity.setAno(request.ano());
         entity.setNumeroAlunos(request.numeroAlunos());

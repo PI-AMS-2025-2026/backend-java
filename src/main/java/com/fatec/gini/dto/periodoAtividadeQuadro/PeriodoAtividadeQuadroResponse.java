@@ -2,7 +2,7 @@ package com.fatec.gini.dto.periodoAtividadeQuadro;
 
 import java.time.LocalDate;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 
 public record PeriodoAtividadeQuadroResponse(
         Long idPeriodoAtividadeQuadro,

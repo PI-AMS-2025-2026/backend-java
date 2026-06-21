@@ -5,7 +5,7 @@ import java.util.Locale;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 
 @Component
 public class StatusConverter implements Converter<String, Status> {
