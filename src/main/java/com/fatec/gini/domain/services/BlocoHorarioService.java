@@ -1,10 +1,8 @@
 package com.fatec.gini.domain.services;
 
 import java.time.Duration;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.List;
 
 import org.springframework.data.domain.Page;

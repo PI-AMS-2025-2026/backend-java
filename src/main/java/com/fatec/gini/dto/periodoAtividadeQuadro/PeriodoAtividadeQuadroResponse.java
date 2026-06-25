@@ -1,14 +1,19 @@
 package com.fatec.gini.dto.periodoAtividadeQuadro;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fatec.gini.domain.models.Status;
 
 public record PeriodoAtividadeQuadroResponse(
-        Long idPeriodoAtividadeQuadro,
-        Integer ano,
-        Integer periodo,
-        LocalDate dataInicio,
-        LocalDate dataFim,
-        Status status) {
+                Long idPeriodoAtividadeQuadro,
+                Integer ano,
+                Integer periodo,
+                LocalDate dataInicio,
+                LocalDate dataFim,
+                Status status,
+                LocalDateTime created_at,
+                LocalDateTime updated_at
+
+) {
 }

@@ -6,21 +6,23 @@ import com.fatec.gini.dto.curso.CursoResponse;
 
 public class CursoMapper {
 
-    public static Curso toEntity(CursoRequest dto) {
-        Curso curso = new Curso();
-        curso.setNome(dto.nome());
-        curso.setPeriodicidade(dto.periodicidade());
-        curso.setStatus(dto.status());
-        curso.setDuracao(dto.duracao());
-        return curso;
+    public static Curso toEntity(CursoRequest request) {
+        Curso entity = new Curso();
+        entity.setNome(request.nome());
+        entity.setPeriodicidade(request.periodicidade());
+        entity.setStatus(request.status());
+        entity.setDuracao(request.duracao());
+        return entity;
     }
 
-    public static CursoResponse toResponse(Curso curso) {
+    public static CursoResponse toResponse(Curso entity) {
         return new CursoResponse(
-                curso.getId(),
-                curso.getNome(),
-                curso.getPeriodicidade(),
-                curso.getStatus(),
-                curso.getDuracao());
+                entity.getId(),
+                entity.getNome(),
+                entity.getPeriodicidade(),
+                entity.getStatus(),
+                entity.getDuracao(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt());
     }
 }

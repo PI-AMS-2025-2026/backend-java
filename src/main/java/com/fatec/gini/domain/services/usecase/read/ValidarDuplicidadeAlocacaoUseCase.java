@@ -41,7 +41,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ValidarDuplicidadeAlocacaoUseCase {
 
-    private final  AlocacaoRepository alocacaoRepository;
+    private final AlocacaoRepository alocacaoRepository;
 
     public void executarCriacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
@@ -72,4 +72,5 @@ public class ValidarDuplicidadeAlocacaoUseCase {
             throw new BusinessException("Já existe uma alocação cadastrada com os mesmos dados informados.");
         }
     }
-}
+
+ }

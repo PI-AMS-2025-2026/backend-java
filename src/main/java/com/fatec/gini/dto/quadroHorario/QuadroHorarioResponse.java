@@ -12,5 +12,7 @@ public record QuadroHorarioResponse(
     LocalDateTime dataCriacao,
     Status status, 
     CursoResponse curso,
-    PeriodoAtividadeQuadroResponse periodoAtividadeQuadro
+    PeriodoAtividadeQuadroResponse periodoAtividadeQuadro,
+    LocalDateTime created_at,
+        LocalDateTime updated_at
 ) {}

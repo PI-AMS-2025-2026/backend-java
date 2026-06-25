@@ -35,3 +35,12 @@ INSERT INTO bloco_horario (duracao,hora_inicio,hora_fim) VALUES
 INSERT INTO turma ( codigo,periodo,ano,numero_alunos,id_curso) VALUES
 ('2/2026','2',2026,25,2),
 ('1/2026','1',2026,40,1);
+
+INSERT INTO disciplina (nome, carga_horaria, tipo_disciplina, periodo, modalidade, cod_disciplina, cor, id_curso, id_tipo_sala) VALUES
+('Programação Multiplataforma', 80, 'Pratica', 1, 'Presencial', 'ISW044', '#2E86AB', 1, 1);
+
+
+INSERT INTO sala ( codigo, capacidade, id_tipo_sala) VALUES
+('LAB-01', 40, 1),
+('SALA-12', 45, 1),
+('AUD-01', 120, 2);

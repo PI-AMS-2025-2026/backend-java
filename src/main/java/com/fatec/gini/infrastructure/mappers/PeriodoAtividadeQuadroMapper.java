@@ -7,23 +7,25 @@ import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 public class PeriodoAtividadeQuadroMapper {
 
     public static PeriodoAtividadeQuadro toEntity(PeriodoAtividadeQuadroRequest request) {
-        PeriodoAtividadeQuadro periodoAtividadeQuadro = new PeriodoAtividadeQuadro();
-        periodoAtividadeQuadro.setAno(request.ano());
-        periodoAtividadeQuadro.setPeriodo(request.periodo());
-        periodoAtividadeQuadro.setDataInicio(request.dataInicio());
-        periodoAtividadeQuadro.setDataFim(request.dataFim());
-        periodoAtividadeQuadro.setStatus(request.status());
-        return periodoAtividadeQuadro;
+        PeriodoAtividadeQuadro entity = new PeriodoAtividadeQuadro();
+        entity.setAno(request.ano());
+        entity.setPeriodo(request.periodo());
+        entity.setDataInicio(request.dataInicio());
+        entity.setDataFim(request.dataFim());
+        entity.setStatus(request.status());
+        return entity;
 
     }
 
-    public static PeriodoAtividadeQuadroResponse toResponse(PeriodoAtividadeQuadro periodoAtividadeQuadro) {
+    public static PeriodoAtividadeQuadroResponse toResponse(PeriodoAtividadeQuadro entity) {
         return new PeriodoAtividadeQuadroResponse(
-                periodoAtividadeQuadro.getId(),
-                periodoAtividadeQuadro.getAno(),
-                periodoAtividadeQuadro.getPeriodo(),
-                periodoAtividadeQuadro.getDataInicio(),
-                periodoAtividadeQuadro.getDataFim(),
-                periodoAtividadeQuadro.getStatus());
+                entity.getId(),
+                entity.getAno(),
+                entity.getPeriodo(),
+                entity.getDataInicio(),
+                entity.getDataFim(),
+                entity.getStatus(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt());
     }
 }
