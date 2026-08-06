@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.Professor;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 
 
 

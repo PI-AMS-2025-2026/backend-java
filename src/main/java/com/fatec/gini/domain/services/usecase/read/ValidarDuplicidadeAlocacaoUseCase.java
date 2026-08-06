@@ -41,15 +41,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ValidarDuplicidadeAlocacaoUseCase {
 
-    private final  AlocacaoRepository alocacaoRepository;
+    private final AlocacaoRepository alocacaoRepository;
 
     public void executarCriacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioId(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaAndBlocoHorarioId(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
-                        entity.getDiaSemana().getId(),
+                        entity.getDiaSemana(),
                         entity.getBlocoHorario().getId());
 
         if (existeDuplicidade) {
@@ -60,11 +60,11 @@ public class ValidarDuplicidadeAlocacaoUseCase {
 
     public void executarAtualizacao(Alocacao entity) {
         boolean existeDuplicidade = alocacaoRepository
-                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaIdAndBlocoHorarioIdAndIdNot(
+                .existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
                         entity.getTurma().getId(),
                         entity.getDisciplina().getId(),
                         entity.getSala().getId(),
-                        entity.getDiaSemana().getId(),
+                        entity.getDiaSemana(),
                         entity.getBlocoHorario().getId(),
                         entity.getId());
 
@@ -72,4 +72,5 @@ public class ValidarDuplicidadeAlocacaoUseCase {
             throw new BusinessException("Já existe uma alocação cadastrada com os mesmos dados informados.");
         }
     }
-}
+
+ }

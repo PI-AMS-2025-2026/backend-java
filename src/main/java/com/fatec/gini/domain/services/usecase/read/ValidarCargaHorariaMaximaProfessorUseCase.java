@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
@@ -17,81 +18,109 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ValidarCargaHorariaMaximaProfessorUseCase {
 
- private final AlocacaoRepository alocacaoRepository;
+        private final AlocacaoRepository alocacaoRepository;
 
-        private static final long LIMITE_HORAS_DIARIAS = 8; 
+        // Limite máximo de horas que um professor pode lecionar em um único dia
+        private static final Duration LIMITE_CARGA_HORARIA_DIARIA = Duration.ofHours(8);
+
+        // Intervalo mínimo obrigatório entre o fim de uma jornada e o início da próxima
+        private static final Duration DESCANSO_MINIMO_INTERJORNADA = Duration.ofHours(12);
+
+        // Quantidade de minutos existentes em um dia completo
+        private static final long MINUTOS_POR_DIA = Duration.ofDays(1).toMinutes();
 
         @Transactional(readOnly = true)
-        public void validar(Long professorId, Long diaSemanaId) {
+        public void validar(Long professorId, DiaSemana diaSemana) {
 
-                validarCargaHorariaDiaria(professorId, diaSemanaId);
-                validarDescansoMinimo12Horas(professorId, diaSemanaId);
+                // Valida se o professor ultrapassou a carga horária diária permitida
+                validarCargaHorariaDiaria(professorId, diaSemana);
+
+                // Valida se existe pelo menos 12h de descanso entre jornadas
+                validarDescansoMinimo12Horas(professorId, diaSemana);
         }
 
-        // carga horaria maxima por dia
-        private void validarCargaHorariaDiaria(Long professorId, Long diaSemanaId) {
-                // verificar todas as aulas que o professor deu no dia
-                List<Alocacao> alocacoes = alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemanaId);
+        /**
+         * Regra de negócio:
+         * Um professor não pode ultrapassar 8 horas de aula em um único dia.
+         */
+        private void validarCargaHorariaDiaria(Long professorId, DiaSemana diaSemana) {
 
+                List<Alocacao> alocacoes = alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemana);
+
+                // Soma a duração de todos os blocos de horário do dia
                 long totalMinutos = alocacoes.stream()
-                                .mapToLong(a -> Duration.between(
-                                                a.getBlocoHorario().getHoraInicio(),
-                                                // calcula a duração de cada aula
-                                                a.getBlocoHorario().getHoraFim()).toMinutes())
+                                .mapToLong(alocacao -> Duration.between(
+                                                alocacao.getBlocoHorario().getHoraInicio(),
+                                                alocacao.getBlocoHorario().getHoraFim())
+                                                .toMinutes())
                                 .sum();
-                // soma todas as durações
 
-                long totalHoras = totalMinutos / 60;
-
-                if (totalHoras > LIMITE_HORAS_DIARIAS) {
-                        // se passar daquele blocoHorario definido la em cima retorna a mensagem abaixo
+                if (totalMinutos > LIMITE_CARGA_HORARIA_DIARIA.toMinutes()) {
                         throw new BusinessException(
                                         "A carga horária máxima diária do professor foi excedida.");
                 }
         }
 
-        // regra das 12h de descanso interjornada
-        private void validarDescansoMinimo12Horas(Long professorId, Long diaSemanaId) {
-                Long diaAnterior = calcularDiaAnterior(diaSemanaId);
+        /**
+         * Regra de negócio:
+         * Deve existir no mínimo 12 horas de descanso entre o término da última aula
+         * de um dia e o início da primeira aula do dia seguinte.
+         */
+        private void validarDescansoMinimo12Horas(Long professorId, DiaSemana diaSemana) {
 
-                List<Alocacao> aulasDiaAnterior = alocacaoRepository.findUltimaAulaDoDia(professorId, diaAnterior);
-                List<Alocacao> aulasDiaAtual = alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemanaId);
+                // Obtém o dia anterior utilizando o próprio enum
+                DiaSemana diaAnterior = diaSemana.anterior();
 
-                // Sem aulas em qualquer um dos dias = sem restrição de descanso
+                // Busca a última aula do dia anterior
+                List<Alocacao> aulasDiaAnterior = alocacaoRepository.buscarUltimaAulaDoDia(professorId, diaAnterior);
+
+                // Busca todas as aulas do dia atual
+                List<Alocacao> aulasDiaAtual = alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemana);
+
+                // Se não houver aulas em um dos dias não existe restrição de descanso
                 if (aulasDiaAnterior.isEmpty() || aulasDiaAtual.isEmpty()) {
                         return;
                 }
 
-                Alocacao ultimaAulaDiaAnterior = aulasDiaAnterior.get(0);
-                LocalTime fimDiaAnterior = ultimaAulaDiaAnterior.getBlocoHorario().getHoraFim();
+                // Considera a última aula do dia anterior
+                LocalTime fimDiaAnterior = aulasDiaAnterior.getFirst()
+                                .getBlocoHorario()
+                                .getHoraFim();
 
-                // Obtém a primeira aula (mais cedo) do dia atual
+                // Procura o horário mais cedo do dia atual
                 LocalTime inicioDiaAtual = aulasDiaAtual.stream()
-                                .map(a -> a.getBlocoHorario().getHoraInicio())
+                                .map(alocacao -> alocacao.getBlocoHorario().getHoraInicio())
                                 .min(LocalTime::compareTo)
                                 .orElseThrow(() -> new BusinessException("Nenhuma aula encontrada para o dia."));
 
                 long minutosDescanso = calcularMinutosDescansoInterjornada(fimDiaAnterior, inicioDiaAtual);
 
-                if (minutosDescanso < (12 * 60)) {
+                if (minutosDescanso < DESCANSO_MINIMO_INTERJORNADA.toMinutes()) {
                         throw new BusinessException(
                                         "O intervalo mínimo de interjornada de 12h não foi respeitado.");
                 }
         }
 
-        private Long calcularDiaAnterior(Long diaSemanaId) {
-                // Calcula o dia anterior da semana com wrapping (domingo=7 para sábado=6)
-                return (diaSemanaId == 1) ? 7 : diaSemanaId - 1;
-        }
+        /**
+         * Calcula o tempo de descanso entre jornadas.
+         *
+         * Exemplo:
+         * Última aula termina às 18:00
+         * Primeira aula do dia seguinte começa às 07:00
+         *
+         * Descanso:
+         * (24:00 - 18:00) + 07:00
+         * 6h + 7h = 13h
+         */
+        private long calcularMinutosDescansoInterjornada(
+                        LocalTime fimDiaAnterior,
+                        LocalTime inicioDiaAtual) {
 
-        private long calcularMinutosDescansoInterjornada(LocalTime fimDiaAnterior, LocalTime inicioDiaAtual) {
-                // Converte para minutos desde meia-noite para precisão na matemática inteira
-                long minutosFimOntem = fimDiaAnterior.toSecondOfDay() / 60;
-                long minutosInicioHoje = inicioDiaAtual.toSecondOfDay() / 60;
+                long minutosFimDiaAnterior = fimDiaAnterior.toSecondOfDay() / 60;
 
-                // Fórmula: (minutos restantes do dia anterior) + (minutos do dia novo até primeira aula)
-                // Exemplo: aula termina 18:00 (1080 min), começa 07:00 (420 min)
-                // Descanso: (1440 - 1080) + 420 = 360 + 420 = 780 min = 13 horas ✓
-                return (1440 - minutosFimOntem) + minutosInicioHoje;
+                long minutosInicioDiaAtual = inicioDiaAtual.toSecondOfDay() / 60;
+
+                return (MINUTOS_POR_DIA - minutosFimDiaAnterior)
+                                + minutosInicioDiaAtual;
         }
 }

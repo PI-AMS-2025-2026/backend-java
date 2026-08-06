@@ -5,17 +5,18 @@ import java.util.Locale;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.entities.DiaSemana;
 
 @Component
-public class StatusConverter implements Converter<String, Status> {
+public class DiaSemanaConverter implements Converter<String, DiaSemana> {
 
     @Override
-    public Status convert(String source) {
+    public DiaSemana convert(String source) {
         if (source == null) {
             return null;
         }
 
-        return Status.valueOf(source.trim().toUpperCase(Locale.ROOT));
+        return DiaSemana.valueOf(
+                source.trim().toUpperCase(Locale.ROOT));
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoUsuario;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoUsuario;
 
 
 

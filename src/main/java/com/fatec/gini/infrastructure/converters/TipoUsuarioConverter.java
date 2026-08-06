@@ -5,17 +5,18 @@ import java.util.Locale;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoUsuario;
 
 @Component
-public class StatusConverter implements Converter<String, Status> {
+public class TipoUsuarioConverter implements Converter<String, TipoUsuario> {
 
     @Override
-    public Status convert(String source) {
+    public TipoUsuario convert(String source) {
         if (source == null) {
             return null;
         }
 
-        return Status.valueOf(source.trim().toUpperCase(Locale.ROOT));
+        return TipoUsuario.valueOf(
+                source.trim().toUpperCase(Locale.ROOT));
     }
 }

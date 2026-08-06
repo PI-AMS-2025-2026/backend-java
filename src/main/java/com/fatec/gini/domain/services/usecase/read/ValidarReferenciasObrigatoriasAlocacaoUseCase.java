@@ -14,7 +14,6 @@ import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
-import com.fatec.gini.infrastructure.repositories.DiaSemanaRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
@@ -55,7 +54,6 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     private final SalaRepository salaRepository;
     private final ProfessorRepository professorRepository;
     private final UsuarioRepository usuarioRepository;
-    private final DiaSemanaRepository diaSemanaRepository;
     private final BlocoHorarioRepository blocoHorarioRepository;
     private final QuadroHorarioRepository quadroHorarioRepository;
 
@@ -87,12 +85,6 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     public Usuario buscarUsuarioAlteracaoPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário da alteração não encontrado com ID: " + id));
-    }
-
-    @Transactional(readOnly = true)
-    public DiaSemana buscarDiaSemanaPorId(Long id) {
-        return diaSemanaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Dia da semana não encontrado com ID: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -136,7 +128,7 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
         Disciplina disciplina = buscarDisciplinaPorId(entity.getDisciplina().getId());
         Sala sala = buscarSalaPorId(entity.getSala().getId());
         Professor professor = buscarProfessorPorId(entity.getProfessor().getId());
-        DiaSemana diaSemana = buscarDiaSemanaPorId(entity.getDiaSemana().getId());
+        DiaSemana diaSemana = entity.getDiaSemana();
         BlocoHorario blocoHorario = buscarBlocoHorarioPorId(entity.getBlocoHorario().getId());
         QuadroHorario quadroHorario = buscarQuadroHorarioPorId(entity.getQuadroHorario().getId());
 

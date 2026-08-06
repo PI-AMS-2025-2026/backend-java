@@ -1,7 +1,7 @@
 package com.fatec.gini.dto.usuario;
 
-import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoUsuario;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.dto.id.LongDTO;
 
 import jakarta.validation.constraints.Email;

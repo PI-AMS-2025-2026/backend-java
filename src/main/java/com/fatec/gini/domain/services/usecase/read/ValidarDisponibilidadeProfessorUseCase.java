@@ -3,6 +3,7 @@ package com.fatec.gini.domain.services.usecase.read;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -27,7 +28,7 @@ public class ValidarDisponibilidadeProfessorUseCase {
     private final  DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
 
     public void executar(Alocacao entity) {
-        var diaSemana = entity.getDiaSemana().getId();
+        var diaSemana = entity.getDiaSemana();
         var horario = entity.getBlocoHorario().getId();
         var professorId = entity.getProfessor().getId();
 
@@ -35,19 +36,19 @@ public class ValidarDisponibilidadeProfessorUseCase {
         temSobreposicaoAtividades(professorId, diaSemana, horario);
     }
 
-    private void temDisponibilidadeDiaHorario(Long professorId, Long diaId, Long horarioId) {
+    private void temDisponibilidadeDiaHorario(Long professorId, DiaSemana diaSemana, Long horarioId) {
         boolean possuiDisponibilidade = disponibilidadeProfessorRepository
-                .verificarDisponibilidadeProfessor(professorId, diaId, horarioId);
+                .verificarDisponibilidadeProfessor(professorId, diaSemana, horarioId);
 
         if (!possuiDisponibilidade) {
             throw new BusinessException("Professor não possui disponibilidade para o dia e horário informado.");
         }
     }
 
-    private void temSobreposicaoAtividades(Long professorId, Long diaId, Long horarioId) {
+    private void temSobreposicaoAtividades(Long professorId, DiaSemana diaSemana, Long horarioId) {
         boolean temSobreposicao = alocacaoRepository
-                .existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(
-                        professorId, diaId, horarioId);
+                .existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(
+                        professorId, diaSemana, horarioId);
 
         if (temSobreposicao) {
             throw new BusinessException("Professor já está alocado em outra turma/disciplina neste dia e horário.");

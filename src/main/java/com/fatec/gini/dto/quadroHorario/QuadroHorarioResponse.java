@@ -2,7 +2,7 @@ package com.fatec.gini.dto.quadroHorario;
 
 import java.time.LocalDateTime;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 
@@ -12,5 +12,7 @@ public record QuadroHorarioResponse(
     LocalDateTime dataCriacao,
     Status status, 
     CursoResponse curso,
-    PeriodoAtividadeQuadroResponse periodoAtividadeQuadro
+    PeriodoAtividadeQuadroResponse periodoAtividadeQuadro,
+    LocalDateTime created_at,
+        LocalDateTime updated_at
 ) {}

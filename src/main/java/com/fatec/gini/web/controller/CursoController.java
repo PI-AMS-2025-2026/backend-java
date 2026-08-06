@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.CursoService;
 import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class CursoController {
     private final CursoService service;
 
     @GetMapping
-    public ResponseEntity<Page<CursoResponse>> listar(
+    public ResponseEntity<PageResponse<CursoResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String periodicidade,
             @RequestParam(required = false) Status status,

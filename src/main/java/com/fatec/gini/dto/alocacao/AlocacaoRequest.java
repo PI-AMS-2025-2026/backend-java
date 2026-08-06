@@ -1,5 +1,6 @@
 package com.fatec.gini.dto.alocacao;
 
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.dto.id.LongDTO;
 
 import jakarta.validation.constraints.NotNull;
@@ -15,11 +16,11 @@ public record AlocacaoRequest(
     @NotNull(message = "Sala é obrigatória")
     LongDTO sala,
 
-    @NotNull(message = "Usuário é obrigatório")
-    LongDTO usuario,
+    @NotNull(message = "Professor é obrigatório")
+    LongDTO professor,
 
     @NotNull(message = "Dia da semana é obrigatório")
-    LongDTO diaSemana,
+    DiaSemana diaSemana,
 
     @NotNull(message = "Horário é obrigatório")
     LongDTO horario,

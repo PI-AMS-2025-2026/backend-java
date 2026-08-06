@@ -2,14 +2,14 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarDataPeriodoAtividadeQuadroUseCase;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 import com.fatec.gini.infrastructure.mappers.PeriodoAtividadeQuadroMapper;
@@ -28,7 +28,7 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
-        
+
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
@@ -44,18 +44,24 @@ public class PeriodoAtividadeQuadroService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PeriodoAtividadeQuadroResponse> listar(
+    public PageResponse<PeriodoAtividadeQuadroResponse> listar(
             Integer ano,
             Integer periodo,
             Status status,
             java.time.LocalDate dataInicio,
             java.time.LocalDate dataFim,
-            int page,
+            int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(page, size);
-        var pagePeriodo = repository.buscarPorFiltros(ano, periodo, status, dataInicio, dataFim, pageRequest);
-        return pagePeriodo.map(PeriodoAtividadeQuadroMapper::toResponse);
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(ano, periodo, status, dataInicio, dataFim, pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(PeriodoAtividadeQuadroMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
     }
 
     @Transactional

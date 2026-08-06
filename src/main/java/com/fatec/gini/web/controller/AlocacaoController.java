@@ -1,6 +1,7 @@
 package com.fatec.gini.web.controller;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,24 +48,32 @@ public class AlocacaoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(request));
     }
 
+    @PostMapping("/lote")
+    @Operation(summary = "Criar alocações em lote")
+    public ResponseEntity<List<AlocacaoResponse>> criarLote(@RequestBody @Valid List<AlocacaoRequest> requests) {
+        List<AlocacaoResponse> response = service.criarLote(requests);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * Realiza a listagem com suporte a filtros opcionais e paginação.
      */
     @GetMapping
     @Operation(summary = "Listagem de alocações")
-    public ResponseEntity<Page<AlocacaoResponse>> listar(
+    public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
             @RequestParam(required = false) Long turma,
             @RequestParam(required = false) Long disciplina,
             @RequestParam(required = false) Long sala,
             @RequestParam(required = false) Long usuario,
-            @RequestParam(required = false, name = "dia_semana") Long diaSemana,
+            @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
             @RequestParam(required = false) Long horario,
-            @RequestParam(required = false,name = "quadro_horario") Long quadroHorario,
-          @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false, name = "quadro_horario") Long quadroHorario,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         // Encaminha os IDs para a camada de serviço
-        return ResponseEntity.ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, quadroHorario, page, size));
+        return ResponseEntity
+                .ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, quadroHorario, page, size));
     }
 
     /**

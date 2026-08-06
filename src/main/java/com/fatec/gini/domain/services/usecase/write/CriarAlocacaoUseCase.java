@@ -88,7 +88,7 @@ public class CriarAlocacaoUseCase {
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana().getId());
+        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana());
 
         // Validar quadro horário
         validarQuadroHorario.executar(entity);

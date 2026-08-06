@@ -1,7 +1,9 @@
 package com.fatec.gini.dto.alocacao;
 
+import java.time.LocalDateTime;
+
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
-import com.fatec.gini.dto.diaSemana.DiaSemanaResponse;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 import com.fatec.gini.dto.professor.ProfessorResponse;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
@@ -14,7 +16,11 @@ public record AlocacaoResponse(
         DisciplinaResponse disciplina,
         SalaResponse sala,
         ProfessorResponse professor,
-        DiaSemanaResponse diaSemana,
+        DiaSemana diaSemana,
         BlocoHorarioResponse blocoHorario,
-        QuadroHorarioResponse quadroHorario) {
+        QuadroHorarioResponse quadroHorario,
+        LocalDateTime created_at,
+        LocalDateTime updated_at
+    
+    ) {
 }

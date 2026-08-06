@@ -15,6 +15,7 @@ import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.services.usecase.read.ValidarBlocoHorarioUseCase;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioRequest;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.BlocoHorarioMapper;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 
@@ -34,7 +35,7 @@ public class BlocoHorarioService {
         LocalDateTime agora = LocalDateTime.now();
 
         BlocoHorario entity = BlocoHorarioMapper.toEntity(request);
-        entity.setDuracao(calcularDuracao(request.horaInicio(),request.horaFim()));
+        entity.setDuracao(calcularDuracao(request.horaInicio(), request.horaFim()));
         entity.setCreatedAt(agora);
         entity.setUpdatedAt(agora);
         entity = repository.save(entity);
@@ -52,7 +53,7 @@ public class BlocoHorarioService {
                 .peek(validarBlocoHorarioUseCase::executar)
                 .map(BlocoHorarioMapper::toEntity)
                 .peek(entity -> {
-                    entity.setDuracao(calcularDuracao(entity.getHoraInicio(),entity.getHoraFim()));
+                    entity.setDuracao(calcularDuracao(entity.getHoraInicio(), entity.getHoraFim()));
                     entity.setCreatedAt(agora);
                     entity.setUpdatedAt(agora);
                 })
@@ -73,13 +74,18 @@ public class BlocoHorarioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int page,
+    public PageResponse<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int pageNum,
             int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(pageNum, size);
 
-        Page<BlocoHorario> pageBlocoHorario = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
+        Page<BlocoHorario> page = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
 
-        return pageBlocoHorario.map(BlocoHorarioMapper::toResponse);
+       return new PageResponse<>(
+            page.getContent().stream().map(BlocoHorarioMapper::toResponse).toList(),
+            page.getNumber(),
+            page.getSize(),
+            page.getNumberOfElements(),
+            page.getTotalPages());
     }
 
     @Transactional
@@ -106,7 +112,7 @@ public class BlocoHorarioService {
         repository.deleteById(id);
     }
 
-    private int calcularDuracao(LocalTime horaInicio,LocalTime horaFim) {
+    private int calcularDuracao(LocalTime horaInicio, LocalTime horaFim) {
         return (int) Duration.between(horaInicio, horaFim).toMinutes();
     }
 

@@ -1,11 +1,15 @@
 package com.fatec.gini.dto.curso;
 
-import com.fatec.gini.domain.entities.Status;
+import java.time.LocalDateTime;
+
+import com.fatec.gini.domain.models.Status;
 
 public record CursoResponse(
-        Long id,
-        String nome,
-        String periodicidade,
-        Status status,
-        Integer duracao) {
+                Long id,
+                String nome,
+                String periodicidade,
+                Status status,
+                Integer duracao,
+                LocalDateTime created_at,
+                LocalDateTime updated_at) {
 }

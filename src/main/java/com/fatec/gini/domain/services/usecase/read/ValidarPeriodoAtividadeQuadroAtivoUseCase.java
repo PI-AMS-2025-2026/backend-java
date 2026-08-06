@@ -3,7 +3,7 @@ package com.fatec.gini.domain.services.usecase.read;
 import org.springframework.stereotype.Service;
 
 import com.fatec.gini.domain.entities.QuadroHorario;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.infrastructure.repositories.PeriodoAtividadeQuadroRepository;
 import com.fatec.gini.web.exception.BusinessException;
 

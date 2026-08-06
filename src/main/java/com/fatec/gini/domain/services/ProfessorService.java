@@ -2,13 +2,13 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Professor;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.professor.ProfessorRequest;
 import com.fatec.gini.dto.professor.ProfessorResponse;
 import com.fatec.gini.infrastructure.mappers.ProfessorMapper;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProfessorService {
 
-    private final  ProfessorRepository repository;
+    private final ProfessorRepository repository;
 
     @Transactional
     public ProfessorResponse criar(ProfessorRequest request) {
@@ -35,25 +35,29 @@ public class ProfessorService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProfessorResponse> listar(
+    public PageResponse<ProfessorResponse> listar(
             String nome,
             String email,
             String cidade,
             Status status,
-            int page,
+            int pageNum,
             int size
 
     ) {
-        var pageRequest = PageRequest.of(page, size);
-        var pageProfessor = repository.buscarPorFiltros(
-            nome,
-            email,
-            cidade,
-            status,
-            
-            pageRequest);
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(
+                nome,
+                email,
+                cidade,
+                status,
+                pageRequest);
 
-        return pageProfessor.map(ProfessorMapper::toResponse);
+        return new PageResponse<>(
+                page.getContent().stream().map(ProfessorMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
     }
 
     @Transactional(readOnly = true)

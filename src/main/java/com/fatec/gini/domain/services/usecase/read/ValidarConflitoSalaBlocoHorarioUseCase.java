@@ -25,9 +25,9 @@ public class ValidarConflitoSalaBlocoHorarioUseCase {
 
         // Verifica no banco se a sala já está ocupada
         boolean salaOcupada =
-                repository.existsBySalaIdAndDiaSemanaIdAndBlocoHorarioId(
+                repository.existsBySalaIdAndDiaSemanaAndBlocoHorarioId(
                         entity.getSala().getId(),
-                        entity.getDiaSemana().getId(),
+                        entity.getDiaSemana(),
                         entity.getBlocoHorario().getId()
                 );
 

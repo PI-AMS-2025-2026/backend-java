@@ -8,22 +8,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
-       boolean existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(Long professorId, Long diaId, Long blocoHorarioId);
+       boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(Long professorId, DiaSemana diaSemana, Long blocoHorarioId);
 
        @Query("""
-                            SELECT d
-                            FROM DisponibilidadeProfessor d
-                            WHERE (:professorId IS NULL OR d.professor.id = :professorId)
-                            AND (:diaId IS NULL OR d.diaSemana.id = :diaId)
-                            AND (:blocoHorarioId IS NULL OR d.blocoHorario.id = :blocoHorarioId)
+                     SELECT d
+                     FROM DisponibilidadeProfessor d
+                     WHERE (:professorId IS NULL OR d.professor.id = :professorId)
+                     AND (:diaSemana IS NULL OR d.diaSemana = :diaSemana)
+                     AND (:blocoHorarioId IS NULL OR d.blocoHorario.id = :blocoHorarioId)
                      """)
        Page<DisponibilidadeProfessor> buscarComFiltros(
                      @Param("professorId") Long professorId,
-                     @Param("diaId") Long diaId,
+                     @Param("diaSemana") DiaSemana diaSemana,
                      @Param("blocoHorarioId") Long blocoHorarioId,
                      Pageable pageable);
 
@@ -37,12 +38,12 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
                             SELECT COUNT(d) > 0
                             FROM DisponibilidadeProfessor d
                             WHERE d.professor.id = :professorId
-                            AND d.diaSemana.id = :diaId
+                            AND d.diaSemana = :diaSemana
                             AND d.blocoHorario.id = :blocoHorarioId
                      """)
        boolean verificarDisponibilidadeProfessor(
                      @Param("professorId") Long professorId,
-                     @Param("diaId") Long diaId,
+                     @Param("diaSemana") DiaSemana diaSemana,
                      @Param("blocoHorarioId") Long blocoHorarioId);
 
        List<DisponibilidadeProfessor> findByProfessorIdIn(List<Long> professorIds);

@@ -8,32 +8,33 @@ public class DisciplinaMapper {
 
     public static Disciplina toEntity(DisciplinaRequest request) {
 
-        Disciplina disciplina = new Disciplina();
+        Disciplina entity = new Disciplina();
 
-        disciplina.setNome(request.nome());
-        disciplina.setCargaHoraria(request.cargaHoraria());
-        disciplina.setTipoDisciplina(request.tipoDisciplina());
-        disciplina.setPeriodo(request.periodo());
-        disciplina.setModalidade(request.modalidade());
-        disciplina.setCodDisciplina(request.codDisciplina());
-        disciplina.setCor(request.cor());
+        entity.setNome(request.nome());
+        entity.setCargaHoraria(request.cargaHoraria());
+        entity.setTipoDisciplina(request.tipoDisciplina());
+        entity.setPeriodo(request.periodo());
+        entity.setModalidade(request.modalidade());
+        entity.setCodDisciplina(request.codDisciplina());
+        entity.setCor(request.cor());
 
-        return disciplina;
+        return entity;
     }
 
-    public static DisciplinaResponse toResponse(Disciplina disciplina) {
+    public static DisciplinaResponse toResponse(Disciplina entity) {
 
         return new DisciplinaResponse(
-                disciplina.getId(),
-                disciplina.getNome(),
-                disciplina.getCargaHoraria(),
-                disciplina.getTipoDisciplina(),
-                disciplina.getPeriodo(),
-                disciplina.getModalidade(),
-                disciplina.getCodDisciplina(),
-                disciplina.getCor(),
-                disciplina.getCurso() != null ? CursoMapper.toResponse(disciplina.getCurso()) : null,
-                disciplina.getTipoSala() != null ? TipoSalaMapper.toResponse(disciplina.getTipoSala()) : null
-        );
+                entity.getId(),
+                entity.getNome(),
+                entity.getCargaHoraria(),
+                entity.getTipoDisciplina(),
+                entity.getPeriodo(),
+                entity.getModalidade(),
+                entity.getCodDisciplina(),
+                entity.getCor(),
+                entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
+                entity.getTipoSala() != null ? TipoSalaMapper.toResponse(entity.getTipoSala()) : null,
+                entity.getCreatedAt(),
+                entity.getUpdatedAt());
     }
 }

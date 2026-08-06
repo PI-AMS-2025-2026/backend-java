@@ -8,7 +8,6 @@ public class TurmaMapper {
 
     public static Turma toEntity(TurmaRequest request) {
         Turma entity = new Turma();
-        entity.setCodigo(request.codigo());
         entity.setPeriodo(request.periodo());
         entity.setAno(request.ano());
         entity.setNumeroAlunos(request.numeroAlunos());
@@ -17,12 +16,13 @@ public class TurmaMapper {
 
     public static TurmaResponse toResponse(Turma entity) {
         return new TurmaResponse(
-            entity.getId(),
-            entity.getCodigo(),
-            entity.getPeriodo(),
-            entity.getAno(),
-            entity.getNumeroAlunos(),
-            entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null
-        );
+                entity.getId(),
+                entity.getCodigo(),
+                entity.getPeriodo(),
+                entity.getAno(),
+                entity.getNumeroAlunos(),
+                entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
+                entity.getCreatedAt(),
+                entity.getUpdatedAt());
     }
 }

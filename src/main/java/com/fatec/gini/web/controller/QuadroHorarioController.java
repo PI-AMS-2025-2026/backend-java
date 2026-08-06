@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.QuadroHorarioService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 
@@ -31,7 +31,7 @@ public class QuadroHorarioController {
     private final QuadroHorarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<QuadroHorarioResponse>> listar(
+    public ResponseEntity<PageResponse<QuadroHorarioResponse>> listar(
             @RequestParam(name = "curso", required = false) Long idCurso,
             @RequestParam(name = "periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
             @RequestParam(required = false) Status status,

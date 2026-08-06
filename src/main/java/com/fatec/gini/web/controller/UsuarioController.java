@@ -1,10 +1,7 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoUsuario;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.domain.services.UsuarioService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
 
@@ -34,7 +32,7 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioResponse>> listar(
+    public ResponseEntity<PageResponse<UsuarioResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,
 
@@ -83,11 +81,5 @@ public class UsuarioController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.inativar(id);
         return ResponseEntity.noContent().build();
-    }
-    @GetMapping("tipos")
-    public List<String> listar() {
-        return Arrays.stream(TipoUsuario.values())
-                .map(Enum::name)
-                .toList();
     }
 }

@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.SalaService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sala.SalaRequest;
 import com.fatec.gini.dto.sala.SalaResponse;
 
@@ -30,7 +30,7 @@ public class SalaController {
     private final SalaService service;
 
     @GetMapping
-    public ResponseEntity<Page<SalaResponse>> listar(
+    public ResponseEntity<PageResponse<SalaResponse>> listar(
             @RequestParam(name = "tipo_sala", required = false) Long idTipoSala,
             @RequestParam(required = false) Integer capacidade,
             @RequestParam(defaultValue = "0") int page,

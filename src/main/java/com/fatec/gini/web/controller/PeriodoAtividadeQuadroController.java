@@ -1,10 +1,7 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.entities.Status;
-import com.fatec.gini.domain.entities.TipoPeridoAtividadeQuadro;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.PeriodoAtividadeQuadroService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 
@@ -34,7 +31,7 @@ public class PeriodoAtividadeQuadroController {
     private final PeriodoAtividadeQuadroService service;
 
     @GetMapping
-    public ResponseEntity<Page<PeriodoAtividadeQuadroResponse>> listar(
+    public ResponseEntity<PageResponse<PeriodoAtividadeQuadroResponse>> listar(
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer periodo,
             @RequestParam(required = false) Status status,
@@ -52,7 +49,8 @@ public class PeriodoAtividadeQuadroController {
     }
 
     @PostMapping
-    public ResponseEntity<PeriodoAtividadeQuadroResponse> criar(@Valid @RequestBody PeriodoAtividadeQuadroRequest request) {
+    public ResponseEntity<PeriodoAtividadeQuadroResponse> criar(
+            @Valid @RequestBody PeriodoAtividadeQuadroRequest request) {
 
         PeriodoAtividadeQuadroResponse response = service.criar(request);
 
@@ -79,10 +77,4 @@ public class PeriodoAtividadeQuadroController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("tipos")
-    public List<String> listar() {
-        return Arrays.stream(TipoPeridoAtividadeQuadro.values())
-                .map(Enum::name)
-                .toList();
-    }
 }

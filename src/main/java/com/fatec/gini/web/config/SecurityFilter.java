@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@Profile("prod")
+@Profile({ "prod", "dev" })
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 

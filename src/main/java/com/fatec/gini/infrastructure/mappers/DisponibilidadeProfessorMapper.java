@@ -10,11 +10,13 @@ public class DisponibilidadeProfessorMapper {
         return new DisponibilidadeProfessor();
     }
 
-    public static DisponibilidadeProfessorResponse toResponse(DisponibilidadeProfessor disponibilidade) {
+    public static DisponibilidadeProfessorResponse toResponse(DisponibilidadeProfessor entity) {
         return new DisponibilidadeProfessorResponse(
-                disponibilidade.getId(),
-                disponibilidade.getProfessor() != null ? ProfessorMapper.toResponse(disponibilidade.getProfessor()) : null,
-                disponibilidade.getDiaSemana() != null ? DiaSemanaMapper.toResponse(disponibilidade.getDiaSemana()) : null,
-                disponibilidade.getBlocoHorario() != null ? BlocoHorarioMapper.toResponse(disponibilidade.getBlocoHorario()) : null);
+                entity.getId(),
+                entity.getProfessor() != null ? ProfessorMapper.toResponse(entity.getProfessor()) : null,
+                entity.getDiaSemana(),
+                entity.getBlocoHorario() != null ? BlocoHorarioMapper.toResponse(entity.getBlocoHorario()) : null,
+                entity.getCreatedAt(),
+                entity.getUpdatedAt());
     }
 }

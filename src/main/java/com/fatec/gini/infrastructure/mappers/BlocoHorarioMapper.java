@@ -18,7 +18,9 @@ public class BlocoHorarioMapper {
             entity.getId(),
             entity.getHoraInicio(),
             entity.getHoraFim(),
-            entity.getDuracao()
+            entity.getDuracao(),
+            entity.getCreatedAt(),
+            entity.getUpdatedAt()
         );
     }
 }

@@ -2,6 +2,8 @@ package com.fatec.gini.domain.entities;
 
 import java.time.LocalDateTime;
 
+import com.fatec.gini.domain.models.Status;
+
 import jakarta.persistence.Id;
 
 import jakarta.persistence.Column;

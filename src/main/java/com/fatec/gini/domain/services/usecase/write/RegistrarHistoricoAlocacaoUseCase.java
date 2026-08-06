@@ -77,8 +77,8 @@ public class RegistrarHistoricoAlocacaoUseCase {
                 usuarioAlteracao, justificativa);
 
         // Dia da semana
-        registrar("diaSemana", alocacaoSalva.getDiaSemana().getId().toString(),
-                alocacaoAntiga.getDiaSemana().getId().toString(),
+        registrar("diaSemana", alocacaoSalva.getDiaSemana().toString(),
+                alocacaoAntiga.getDiaSemana().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 

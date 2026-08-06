@@ -2,15 +2,15 @@ package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.CursoMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 
@@ -41,17 +41,23 @@ public class CursoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CursoResponse> listar(
+    public PageResponse<CursoResponse> listar(
             String nome,
             String periodicidade,
             Status status,
             Integer duracao,
-            int page,
+            int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(page, size);
-        var pageCurso = repository.buscarPorFiltros(nome, periodicidade, status, duracao, pageRequest);
-        return pageCurso.map(CursoMapper::toResponse);
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(nome, periodicidade, status, duracao, pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(CursoMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
     }
 
     @Transactional

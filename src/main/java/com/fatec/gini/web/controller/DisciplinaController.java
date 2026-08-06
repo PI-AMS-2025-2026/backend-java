@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.fatec.gini.domain.services.DisciplinaService;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
+import com.fatec.gini.dto.paginacao.PageResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class DisciplinaController {
     private final DisciplinaService service;
 
     @GetMapping
-    public ResponseEntity<Page<DisciplinaResponse>> listar(
+    public ResponseEntity<PageResponse<DisciplinaResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(name = "curso", required = false) Long idCurso,
             @RequestParam(name = "tipo_sala", required = false) Long idTipoSala,

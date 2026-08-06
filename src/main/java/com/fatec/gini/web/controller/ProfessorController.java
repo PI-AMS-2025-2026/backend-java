@@ -2,7 +2,6 @@ package com.fatec.gini.web.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fatec.gini.domain.entities.Status;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.ProfessorService;
+import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.professor.ProfessorRequest;
 import com.fatec.gini.dto.professor.ProfessorResponse;
 
@@ -31,7 +31,7 @@ public class ProfessorController {
     private final ProfessorService service;
 
     @GetMapping
-    public ResponseEntity<Page<ProfessorResponse>> listar(
+    public ResponseEntity<PageResponse<ProfessorResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String cidade,
