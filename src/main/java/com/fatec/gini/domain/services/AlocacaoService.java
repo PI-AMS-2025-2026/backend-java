@@ -8,15 +8,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +37,10 @@ public class AlocacaoService {
         private final AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
         private final ValidarDuplicidadeAlocacaoLoteUseCase alocacaoLoteUseCase;
+
+        private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+
+        private final BlocoHorarioRepository blocoHorarioRepository;
 
         public AlocacaoResponse criar(AlocacaoRequest request) {
 
@@ -109,6 +118,26 @@ public class AlocacaoService {
                                 .map(AlocacaoMapper::toResponse)
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Alocação não encontrada com ID: " + id));
+        }
+
+        @Transactional(readOnly = true)
+        public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
+                BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Bloco horário não encontrado com ID: " + request.horario().id()));
+
+                Alocacao alocacaoSimulada = new Alocacao();
+                alocacaoSimulada.setProfessor(new com.fatec.gini.domain.entities.Professor());
+                alocacaoSimulada.getProfessor().setId(request.professor().id());
+                alocacaoSimulada.setDiaSemana(request.diaSemana());
+                alocacaoSimulada.setBlocoHorario(blocoHorario);
+
+                try {
+                        validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(), alocacaoSimulada);
+                        return new ValidarCargaHorariaResponse(true, "Carga horária válida para o professor no dia informado.");
+                } catch (RuntimeException ex) {
+                        return new ValidarCargaHorariaResponse(false, ex.getMessage());
+                }
         }
 
         @Transactional
