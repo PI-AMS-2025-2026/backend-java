@@ -85,7 +85,7 @@ public class AtualizarAlocacaoUseCase {
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana());
+        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana(), entity);
 
         // Validar quadro horário
         validarQuadroHorario.executar(entity);
