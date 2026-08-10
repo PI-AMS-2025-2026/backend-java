@@ -20,6 +20,8 @@ import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
+import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
+import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,15 +46,36 @@ public class AlocacaoController {
      * Valid garante que as regras do DTO (como @NotNull) sejam checadas.
      */
     @PostMapping
-    public ResponseEntity<AlocacaoResponse> criar(@RequestBody @Valid AlocacaoRequest request) {
+    public ResponseEntity criar(@RequestBody @Valid AlocacaoRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(request));
     }
 
     @PostMapping("/lote")
     @Operation(summary = "Criar alocações em lote")
-    public ResponseEntity<List<AlocacaoResponse>> criarLote(@RequestBody @Valid List<AlocacaoRequest> requests) {
-        List<AlocacaoResponse> response = service.criarLote(requests);
+    public ResponseEntity<List> criarLote(@RequestBody @Valid List requests) {
+        List response = service.criarLote(requests);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * RF06 — Sugestão Automática de Ajuste.
+     *
+     * Recebe a tentativa de alocação realizada pelo usuário,
+     * como no processo de arrastar e soltar uma disciplina na grade.
+     *
+     * Caso a combinação selecionada seja incompatível, o sistema
+     * retorna o motivo do conflito e sugestões de horários e salas
+     * compatíveis.
+     *
+     * Este endpoint apenas consulta e gera sugestões.
+     * A alocação não é persistida neste momento.
+     */
+    @PostMapping("/sugestoes")
+    @Operation(summary = "Sugestão automática de ajuste (RF06)")
+    public ResponseEntity<SugestaoResponse> sugerirAjuste(
+            @RequestBody @Valid SugestaoRequest request) {
+
+        return ResponseEntity.ok(service.sugerirAlternativas(request));
     }
 
     /**
@@ -60,7 +83,7 @@ public class AlocacaoController {
      */
     @GetMapping
     @Operation(summary = "Listagem de alocações")
-    public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
+    public ResponseEntity<PageResponse> listar(
             @RequestParam(required = false) Long turma,
             @RequestParam(required = false) Long disciplina,
             @RequestParam(required = false) Long sala,
@@ -73,14 +96,23 @@ public class AlocacaoController {
 
         // Encaminha os IDs para a camada de serviço
         return ResponseEntity
-                .ok(service.listar(turma, disciplina, sala, usuario, diaSemana, horario, quadroHorario, page, size));
+                .ok(service.listar(
+                        turma,
+                        disciplina,
+                        sala,
+                        usuario,
+                        diaSemana,
+                        horario,
+                        quadroHorario,
+                        page,
+                        size));
     }
 
     /**
      * Busca um registro específico pelo seu identificador único.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AlocacaoResponse> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
@@ -88,9 +120,10 @@ public class AlocacaoController {
      * Atualiza os dados de uma alocação existente.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<AlocacaoResponse> atualizar(
+    public ResponseEntity atualizar(
             @PathVariable Long id,
             @RequestBody @Valid AlocacaoRequest request) {
+
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 
@@ -98,7 +131,7 @@ public class AlocacaoController {
      * Remove um registro e retorna o status 204 (No Content).
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
