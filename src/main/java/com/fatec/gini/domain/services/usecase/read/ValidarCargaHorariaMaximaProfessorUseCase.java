@@ -45,7 +45,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
          */
         private void validarCargaHorariaDiaria(Long professorId, DiaSemana diaSemana) {
 
-                List<Alocacao> alocacoes = alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemana);
+                List<Alocacao> alocacoes = alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana);
 
                 // Soma a duração de todos os blocos de horário do dia
                 long totalMinutos = alocacoes.stream()
@@ -75,7 +75,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
                 List<Alocacao> aulasDiaAnterior = alocacaoRepository.buscarUltimaAulaDoDia(professorId, diaAnterior);
 
                 // Busca todas as aulas do dia atual
-                List<Alocacao> aulasDiaAtual = alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemana);
+                List<Alocacao> aulasDiaAtual = alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana);
 
                 // Se não houver aulas em um dos dias não existe restrição de descanso
                 if (aulasDiaAnterior.isEmpty() || aulasDiaAtual.isEmpty()) {
