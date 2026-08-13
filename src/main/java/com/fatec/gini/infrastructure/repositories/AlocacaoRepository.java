@@ -96,9 +96,9 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
     boolean existsByProfessorId(Long professorId);
 
     /* metodo para a implementação da validação das 12h e carga horaria maxima: */
-    List<Alocacao> findByProfessorAndDiaSemana(
-            Long professorId,
-            DiaSemana diaSemana);
+    List<Alocacao> findByProfessorIdAndDiaSemana(
+        Long professorId,
+        DiaSemana diaSemana);
 
     @Query("""
                 SELECT a
