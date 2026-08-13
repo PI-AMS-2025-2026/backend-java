@@ -20,7 +20,6 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.models.Status;
-import com.fatec.gini.domain.services.DisciplinaService;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;

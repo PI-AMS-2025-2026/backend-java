@@ -53,7 +53,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
         private void validarCargaHorariaDiaria(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
                 List<Alocacao> alocacoes = new ArrayList<>(
-                                alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemana));
+                                alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana));
 
                 if (alocacaoAtual != null) {
                         alocacoes.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
@@ -89,7 +89,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
                 // Busca todas as aulas do dia atual
                 List<Alocacao> aulasDiaAtual = new ArrayList<>(
-                                alocacaoRepository.findByProfessorAndDiaSemana(professorId, diaSemana));
+                                alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana));
 
                 if (alocacaoAtual != null) {
                         aulasDiaAtual.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));

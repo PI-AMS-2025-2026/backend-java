@@ -32,7 +32,7 @@ class ValidarCargaHorariaMaximaProfessorUseCaseTest {
         alocacao.setDiaSemana(DiaSemana.SEGUNDA);
         alocacao.setBlocoHorario(new BlocoHorario(LocalTime.of(8, 0), LocalTime.of(16, 0), 480));
 
-        when(repository.findByProfessorAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of());
+        when(repository.findByProfessorIdAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of());
         when(repository.buscarUltimaAulaDoDia(1L, DiaSemana.DOMINGO)).thenReturn(List.of());
 
         assertDoesNotThrow(() -> useCase.validar(1L, DiaSemana.SEGUNDA, alocacao));
@@ -51,7 +51,7 @@ class ValidarCargaHorariaMaximaProfessorUseCaseTest {
         alocacao.setDiaSemana(DiaSemana.SEGUNDA);
         alocacao.setBlocoHorario(new BlocoHorario(LocalTime.of(8, 0), LocalTime.of(17, 0), 540));
 
-        when(repository.findByProfessorAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of());
+        when(repository.findByProfessorIdAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of());
         when(repository.buscarUltimaAulaDoDia(1L, DiaSemana.DOMINGO)).thenReturn(List.of());
 
         assertThrows(BusinessException.class, () -> useCase.validar(1L, DiaSemana.SEGUNDA, alocacao));
@@ -77,7 +77,7 @@ class ValidarCargaHorariaMaximaProfessorUseCaseTest {
         alocacaoAtualizada.setDiaSemana(DiaSemana.SEGUNDA);
         alocacaoAtualizada.setBlocoHorario(new BlocoHorario(LocalTime.of(8, 0), LocalTime.of(12, 0), 240));
 
-        when(repository.findByProfessorAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of(alocacaoExistente));
+        when(repository.findByProfessorIdAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of(alocacaoExistente));
         when(repository.buscarUltimaAulaDoDia(1L, DiaSemana.DOMINGO)).thenReturn(List.of());
 
         assertDoesNotThrow(() -> useCase.validar(1L, DiaSemana.SEGUNDA, alocacaoAtualizada));
@@ -103,7 +103,7 @@ class ValidarCargaHorariaMaximaProfessorUseCaseTest {
         alocacaoAtualizada.setDiaSemana(DiaSemana.SEGUNDA);
         alocacaoAtualizada.setBlocoHorario(new BlocoHorario(LocalTime.of(8, 0), LocalTime.of(17, 0), 540));
 
-        when(repository.findByProfessorAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of(alocacaoExistente));
+        when(repository.findByProfessorIdAndDiaSemana(1L, DiaSemana.SEGUNDA)).thenReturn(List.of(alocacaoExistente));
         when(repository.buscarUltimaAulaDoDia(1L, DiaSemana.DOMINGO)).thenReturn(List.of());
 
         assertThrows(BusinessException.class, () -> useCase.validar(1L, DiaSemana.SEGUNDA, alocacaoAtualizada));
