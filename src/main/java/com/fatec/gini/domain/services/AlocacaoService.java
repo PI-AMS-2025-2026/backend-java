@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
@@ -22,6 +23,7 @@ import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -127,7 +129,7 @@ public class AlocacaoService {
                                                 "Bloco horário não encontrado com ID: " + request.horario().id()));
 
                 Alocacao alocacaoSimulada = new Alocacao();
-                alocacaoSimulada.setProfessor(new com.fatec.gini.domain.entities.Professor());
+                alocacaoSimulada.setProfessor(new Professor());
                 alocacaoSimulada.getProfessor().setId(request.professor().id());
                 alocacaoSimulada.setDiaSemana(request.diaSemana());
                 alocacaoSimulada.setBlocoHorario(blocoHorario);
@@ -135,7 +137,7 @@ public class AlocacaoService {
                 try {
                         validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(), alocacaoSimulada);
                         return new ValidarCargaHorariaResponse(true, "Carga horária válida para o professor no dia informado.");
-                } catch (RuntimeException ex) {
+                } catch (BusinessException ex) {
                         return new ValidarCargaHorariaResponse(false, ex.getMessage());
                 }
         }

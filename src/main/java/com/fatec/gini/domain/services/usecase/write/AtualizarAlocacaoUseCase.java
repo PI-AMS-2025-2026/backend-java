@@ -69,6 +69,8 @@ public class AtualizarAlocacaoUseCase {
     @Transactional
     public Alocacao executar(Long id, Alocacao entity, long professorAlteracao, String justificativaAlteracao) {
 
+        entity.setId(id);
+
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
         var professorAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(professorAlteracao);

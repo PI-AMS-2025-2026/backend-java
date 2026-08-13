@@ -58,7 +58,10 @@ public class AlocacaoController {
     }
 
     @PostMapping("/validar-carga-horaria")
-    @Operation(summary = "Validar carga horária sem persistir alterações",description = "Recebe: professor, diaSemana, horario. Simula uma alocação de teste Executa a validação de carga horária ")
+    @Operation(
+            summary = "Validar jornada do professor sem persistir alterações",
+            description = "Valida as regras aplicáveis à jornada do professor para o dia informado, incluindo o limite diário de 8 horas e o descanso mínimo de 12 horas entre jornadas. Recebe professor, diaSemana e horario para simular uma alocação de teste."
+    )
     public ResponseEntity<ValidarCargaHorariaResponse> validarCargaHorariaSemPersistir(
             @RequestBody @Valid ValidarCargaHorariaRequest request) {
         return ResponseEntity.ok(service.validarCargaHorariaSemPersistir(request));
