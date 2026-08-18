@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/periodo_atividade_quadro"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "ano": 3947,
+      "dataFim": "1994-04-21",
+      "dataInicio": "1969-03-13",
+      "periodo": 2760,
+      "status": "ATIVO"
+    }
+settings: {}
+examples: ./.resources/criar 10.resources/examples
+order: 4000

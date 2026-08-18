@@ -1,0 +1,147 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/historicos-alteracoes/:id"
+  method: GET
+  headers:
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 1594,
+        "dataAlteracao": "1989-08-25",
+        "justificativa": "string",
+        "campoAlterado": "string",
+        "valorAntigo": "string",
+        "valorNovo": "string",
+        "alocacao": {
+          "id": 9631,
+          "turma": {
+            "id": 9334,
+            "codigo": "string",
+            "periodo": 347,
+            "ano": 262,
+            "numeroAlunos": 2419,
+            "curso": {
+              "id": 4757,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 4427,
+              "created_at": "2026-07-14T20:07:19.566Z",
+              "updated_at": "1968-02-09T05:06:24.374Z"
+            },
+            "created_at": "1954-03-26T02:09:27.837Z",
+            "updated_at": "1979-09-11T04:06:27.093Z"
+          },
+          "disciplina": {
+            "id": 8210,
+            "nome": "string",
+            "cargaHoraria": 1168,
+            "tipoDisciplina": "string",
+            "periodo": 6087,
+            "modalidade": "string",
+            "codDisciplina": "string",
+            "cor": "string",
+            "curso": {
+              "id": 1843,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 4977,
+              "created_at": "2005-11-04T01:57:08.941Z",
+              "updated_at": "1957-04-24T23:13:44.069Z"
+            },
+            "tipoSala": {
+              "id": 5546,
+              "nome": "string"
+            },
+            "created_at": "1949-06-05T17:21:39.282Z",
+            "updated_at": "2007-03-24T08:50:52.226Z"
+          },
+          "sala": {
+            "id": 1941,
+            "codigo": "string",
+            "capacidade": 7536,
+            "tipoSala": {
+              "id": 5106,
+              "nome": "string"
+            },
+            "created_at": "2015-09-24T15:35:55.059Z",
+            "updated_at": "1972-01-06T01:27:56.690Z"
+          },
+          "professor": {
+            "id": 7640,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "INATIVO",
+            "created_at": "2005-06-29T00:45:36.215Z",
+            "updated_at": "1951-10-01T11:36:06.053Z"
+          },
+          "diaSemana": "DOMINGO",
+          "blocoHorario": {
+            "id": 1115,
+            "horaInicio": "string",
+            "horaFim": "string",
+            "duracao": 5414,
+            "created_at": "1966-02-16T01:32:11.605Z",
+            "updated_at": "1968-05-10T13:14:48.013Z"
+          },
+          "quadroHorario": {
+            "id": 5518,
+            "versao": 7373,
+            "dataCriacao": "1980-11-15T14:26:33.098Z",
+            "status": "ATIVO",
+            "curso": {
+              "id": 3743,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 7373,
+              "created_at": "2022-12-27T22:49:46.060Z",
+              "updated_at": "1977-01-30T02:53:47.292Z"
+            },
+            "periodoAtividadeQuadro": {
+              "idPeriodoAtividadeQuadro": 8288,
+              "ano": 2241,
+              "periodo": 3912,
+              "dataInicio": "1960-05-03",
+              "dataFim": "2014-11-25",
+              "status": "ATIVO",
+              "created_at": "1955-12-20T13:09:19.541Z",
+              "updated_at": "1989-11-24T17:45:39.758Z"
+            },
+            "created_at": "1979-04-11T07:29:59.079Z",
+            "updated_at": "2001-12-27T13:00:58.633Z"
+          },
+          "created_at": "1961-08-22T23:33:35.316Z",
+          "updated_at": "1964-08-23T20:52:21.946Z"
+        },
+        "usuario": {
+          "id": 901,
+          "nome": "string",
+          "email": "string",
+          "tipoUsuario": "COORDENADOR",
+          "status": "ATIVO",
+          "curso": {
+            "id": 6631,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "ATIVO",
+            "duracao": 8229,
+            "created_at": "2022-01-12T02:10:51.005Z",
+            "updated_at": "1978-09-23T03:04:49.347Z"
+          },
+          "created_at": "2024-10-17T07:46:18.229Z",
+          "updated_at": "1959-03-19T13:05:43.633Z"
+        }
+      }
+order: 1000

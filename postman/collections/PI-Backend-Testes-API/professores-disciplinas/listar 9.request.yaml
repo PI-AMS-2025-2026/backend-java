@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/professores-disciplinas?usuario=9100&disciplina=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  usuario: "9100"
+  disciplina: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 9.resources/examples
+order: 2000

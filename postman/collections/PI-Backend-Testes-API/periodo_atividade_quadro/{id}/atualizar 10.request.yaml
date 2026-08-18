@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/periodo_atividade_quadro/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "ano": 3947,
+      "dataFim": "1994-04-21",
+      "dataInicio": "1969-03-13",
+      "periodo": 2760,
+      "status": "ATIVO"
+    }
+settings: {}
+examples: ./.resources/atualizar 10.resources/examples
+order: 2000

@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/tipos-recurso"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "strin"
+    }
+settings: {}
+examples: ./.resources/criar 3.resources/examples
+order: 3000

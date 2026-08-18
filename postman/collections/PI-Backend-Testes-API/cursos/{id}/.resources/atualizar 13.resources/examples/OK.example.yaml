@@ -1,0 +1,36 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/cursos/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+  body:
+    type: json
+    content: |-
+      {
+        "duracao": 5925,
+        "nome": "string",
+        "periodicidade": "Anual",
+        "status": "ATIVO"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 504,
+        "nome": "string",
+        "periodicidade": "string",
+        "status": "ATIVO",
+        "duracao": 2204,
+        "created_at": "1973-05-02T14:51:10.176Z",
+        "updated_at": "1973-01-25T15:34:34.102Z"
+      }
+order: 1000

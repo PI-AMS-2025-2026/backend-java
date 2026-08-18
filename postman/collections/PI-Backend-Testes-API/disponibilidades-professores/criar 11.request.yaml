@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/disponibilidades-professores"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "blocoHorario": {
+        "id": 3185
+      },
+      "diaSemana": {
+        "id": 6847
+      },
+      "professor": {
+        "id": 3063
+      }
+    }
+settings: {}
+examples: ./.resources/criar 11.resources/examples
+order: 3000

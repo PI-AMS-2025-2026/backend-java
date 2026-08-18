@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{baseUrl}}/disciplinas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "cargaHoraria": 4844,
+      "codDisciplina": "string",
+      "curso": {
+        "id": 7155
+      },
+      "modalidade": "string",
+      "nome": "string",
+      "periodo": 1236,
+      "tipoDisciplina": "string",
+      "tipoSala": {
+        "id": 4209
+      },
+      "cor": "string"
+    }
+settings: {}
+examples: ./.resources/atualizar 12.resources/examples
+order: 2000

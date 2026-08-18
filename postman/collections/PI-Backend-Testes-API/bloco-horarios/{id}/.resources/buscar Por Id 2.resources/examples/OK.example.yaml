@@ -1,0 +1,25 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/bloco-horarios/:id"
+  method: GET
+  headers:
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 7498,
+        "horaInicio": "string",
+        "horaFim": "string",
+        "duracao": 9544,
+        "created_at": "1964-11-15T21:49:22.947Z",
+        "updated_at": "1986-11-22T01:33:48.628Z"
+      }
+order: 1000

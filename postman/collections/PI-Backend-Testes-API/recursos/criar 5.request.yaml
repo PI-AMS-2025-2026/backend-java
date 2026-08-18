@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/recursos"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "string",
+      "tipoRecurso": {
+        "id": 2015
+      }
+    }
+settings: {}
+examples: ./.resources/criar 5.resources/examples
+order: 3000

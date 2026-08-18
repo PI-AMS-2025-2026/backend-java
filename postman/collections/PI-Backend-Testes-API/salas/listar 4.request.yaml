@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/salas?tipo_sala=9100&capacidade=4569&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  tipo_sala: "9100"
+  capacidade: "4569"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 4.resources/examples
+order: 2000

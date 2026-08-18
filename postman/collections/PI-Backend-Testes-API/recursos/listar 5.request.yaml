@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/recursos?nome=string&tipo_recurso=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  nome: string
+  tipo_recurso: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 5.resources/examples
+order: 2000

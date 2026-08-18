@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/cursos/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "duracao": 5925,
+      "nome": "string",
+      "periodicidade": "Anual",
+      "status": "ATIVO"
+    }
+settings: {}
+examples: ./.resources/atualizar 13.resources/examples
+order: 2000

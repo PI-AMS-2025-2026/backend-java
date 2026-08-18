@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/professores-disciplinas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "disciplina": {
+        "id": 3663
+      },
+      "professor": {
+        "id": 8028
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar 9.resources/examples
+order: 2000

@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/quadro-horarios/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "PeriodoAtividadeQuadro": {
+        "id": 2754
+      },
+      "curso": {
+        "id": 2531
+      },
+      "status": "INATIVO",
+      "versao": 8896
+    }
+settings: {}
+examples: ./.resources/atualizar 7.resources/examples
+order: 3000

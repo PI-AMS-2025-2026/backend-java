@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/tipos-sala"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "strin"
+    }
+settings: {}
+examples: ./.resources/criar 2.resources/examples
+order: 3000

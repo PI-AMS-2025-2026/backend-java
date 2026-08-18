@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/usuarios/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "email": "3-XsD32sfF6FY29@lO.gc",
+      "nome": "string",
+      "status": "ATIVO",
+      "tipoUsuario": "COORDENADOR",
+      "senha": "string",
+      "curso": {
+        "id": 1133
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar.resources/examples
+order: 2000

@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/tipos-sala/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "strin"
+    }
+settings: {}
+examples: ./.resources/atualizar 2.resources/examples
+order: 2000

@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/professores?nome=string&email=string&cidade=string&status=INATIVO&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  nome: string
+  email: string
+  cidade: string
+  status: INATIVO
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 8.resources/examples
+order: 2000

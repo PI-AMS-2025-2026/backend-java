@@ -1,0 +1,281 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/alocacoes/lote"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  body:
+    type: json
+    content: |-
+      [
+        {
+          "diaSemana": "QUARTA",
+          "disciplina": {
+            "id": 7887
+          },
+          "horario": {
+            "id": 7797
+          },
+          "professor": {
+            "id": 7375
+          },
+          "quadroHorario": {
+            "id": 6836
+          },
+          "sala": {
+            "id": 8347
+          },
+          "turma": {
+            "id": 8919
+          },
+          "usuarioAlteracao": {
+            "id": 2511
+          },
+          "justificativaAlteracao": "string"
+        },
+        {
+          "diaSemana": "TERCA",
+          "disciplina": {
+            "id": 4497
+          },
+          "horario": {
+            "id": 289
+          },
+          "professor": {
+            "id": 6505
+          },
+          "quadroHorario": {
+            "id": 9912
+          },
+          "sala": {
+            "id": 5559
+          },
+          "turma": {
+            "id": 508
+          },
+          "usuarioAlteracao": {
+            "id": 9101
+          },
+          "justificativaAlteracao": "string"
+        }
+      ]
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      [
+        {
+          "id": 8943,
+          "turma": {
+            "id": 1642,
+            "codigo": "string",
+            "periodo": 4252,
+            "ano": 2562,
+            "numeroAlunos": 4705,
+            "curso": {
+              "id": 5969,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 7032,
+              "created_at": "1975-02-12T13:42:27.524Z",
+              "updated_at": "1981-04-21T23:56:41.926Z"
+            },
+            "created_at": "1997-06-30T18:10:20.668Z",
+            "updated_at": "1952-10-21T14:24:38.516Z"
+          },
+          "disciplina": {
+            "id": 4586,
+            "nome": "string",
+            "cargaHoraria": 2030,
+            "tipoDisciplina": "string",
+            "periodo": 5000,
+            "modalidade": "string",
+            "codDisciplina": "string",
+            "cor": "string",
+            "curso": {
+              "id": 9824,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 6295,
+              "created_at": "1997-06-16T16:02:10.778Z",
+              "updated_at": "1995-06-08T15:12:30.243Z"
+            },
+            "tipoSala": {
+              "id": 9884,
+              "nome": "string"
+            },
+            "created_at": "2014-05-20T22:27:42.403Z",
+            "updated_at": "1987-04-26T12:04:39.455Z"
+          },
+          "sala": {
+            "id": 5029,
+            "codigo": "string",
+            "capacidade": 5759,
+            "tipoSala": {
+              "id": 6969,
+              "nome": "string"
+            },
+            "created_at": "2006-01-23T04:06:09.815Z",
+            "updated_at": "1975-02-08T00:57:10.817Z"
+          },
+          "professor": {
+            "id": 8682,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "INATIVO",
+            "created_at": "2010-04-28T01:38:34.447Z",
+            "updated_at": "1985-10-29T22:28:13.755Z"
+          },
+          "diaSemana": "SABADO",
+          "blocoHorario": {
+            "id": 6596,
+            "horaInicio": "string",
+            "horaFim": "string",
+            "duracao": 6069,
+            "created_at": "1978-05-15T05:32:30.392Z",
+            "updated_at": "2009-03-24T21:23:45.477Z"
+          },
+          "quadroHorario": {
+            "id": 4204,
+            "versao": 7710,
+            "dataCriacao": "2020-12-22T10:37:20.401Z",
+            "status": "ATIVO",
+            "curso": {
+              "id": 3725,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 9416,
+              "created_at": "1976-07-13T04:08:05.552Z",
+              "updated_at": "1946-12-10T21:29:26.799Z"
+            },
+            "periodoAtividadeQuadro": {
+              "idPeriodoAtividadeQuadro": 2469,
+              "ano": 5216,
+              "periodo": 4185,
+              "dataInicio": "1997-03-17",
+              "dataFim": "1955-07-23",
+              "status": "ATIVO",
+              "created_at": "2014-02-03T23:05:39.998Z",
+              "updated_at": "2013-07-08T11:10:48.424Z"
+            },
+            "created_at": "1971-11-26T05:38:45.665Z",
+            "updated_at": "2025-01-24T12:31:11.248Z"
+          },
+          "created_at": "1982-11-09T19:39:52.947Z",
+          "updated_at": "1950-05-06T00:04:06.148Z"
+        },
+        {
+          "id": 8406,
+          "turma": {
+            "id": 8600,
+            "codigo": "string",
+            "periodo": 268,
+            "ano": 1076,
+            "numeroAlunos": 2014,
+            "curso": {
+              "id": 2234,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 439,
+              "created_at": "2011-06-01T01:13:03.500Z",
+              "updated_at": "2007-12-28T23:42:06.145Z"
+            },
+            "created_at": "2001-11-23T15:38:56.051Z",
+            "updated_at": "1968-07-31T04:26:12.778Z"
+          },
+          "disciplina": {
+            "id": 9268,
+            "nome": "string",
+            "cargaHoraria": 5391,
+            "tipoDisciplina": "string",
+            "periodo": 1076,
+            "modalidade": "string",
+            "codDisciplina": "string",
+            "cor": "string",
+            "curso": {
+              "id": 3917,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 9080,
+              "created_at": "2007-11-22T00:42:05.887Z",
+              "updated_at": "2002-10-12T00:54:25.158Z"
+            },
+            "tipoSala": {
+              "id": 866,
+              "nome": "string"
+            },
+            "created_at": "1958-07-11T03:41:15.773Z",
+            "updated_at": "1948-01-13T12:19:25.624Z"
+          },
+          "sala": {
+            "id": 7543,
+            "codigo": "string",
+            "capacidade": 2307,
+            "tipoSala": {
+              "id": 9664,
+              "nome": "string"
+            },
+            "created_at": "1992-07-16T08:47:32.419Z",
+            "updated_at": "1999-08-13T22:48:21.436Z"
+          },
+          "professor": {
+            "id": 2615,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "ATIVO",
+            "created_at": "1950-05-01T00:16:22.119Z",
+            "updated_at": "1979-10-28T23:50:46.855Z"
+          },
+          "diaSemana": "QUINTA",
+          "blocoHorario": {
+            "id": 2990,
+            "horaInicio": "string",
+            "horaFim": "string",
+            "duracao": 8518,
+            "created_at": "1958-08-29T10:31:33.029Z",
+            "updated_at": "1980-02-21T23:07:30.640Z"
+          },
+          "quadroHorario": {
+            "id": 227,
+            "versao": 6075,
+            "dataCriacao": "1961-08-21T00:31:38.338Z",
+            "status": "INATIVO",
+            "curso": {
+              "id": 8340,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 3858,
+              "created_at": "2011-09-11T03:22:47.614Z",
+              "updated_at": "2008-05-12T00:41:04.698Z"
+            },
+            "periodoAtividadeQuadro": {
+              "idPeriodoAtividadeQuadro": 5805,
+              "ano": 7941,
+              "periodo": 1156,
+              "dataInicio": "1956-05-26",
+              "dataFim": "2014-09-19",
+              "status": "INATIVO",
+              "created_at": "1964-12-23T08:32:33.196Z",
+              "updated_at": "2001-10-31T22:14:27.617Z"
+            },
+            "created_at": "1995-10-06T19:14:53.754Z",
+            "updated_at": "2024-09-15T23:51:17.416Z"
+          },
+          "created_at": "1948-01-09T10:31:55.716Z",
+          "updated_at": "2014-11-08T01:16:40.025Z"
+        }
+      ]
+order: 1000

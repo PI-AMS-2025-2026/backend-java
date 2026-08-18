@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/salas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "capacidade": 882,
+      "codigo": "string",
+      "tipoSala": {
+        "id": 998
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar 4.resources/examples
+order: 2000

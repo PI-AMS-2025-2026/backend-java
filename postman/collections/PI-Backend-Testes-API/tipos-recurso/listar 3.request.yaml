@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/tipos-recurso?nome=string"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  nome: string
+settings: {}
+examples: ./.resources/listar 3.resources/examples
+order: 2000

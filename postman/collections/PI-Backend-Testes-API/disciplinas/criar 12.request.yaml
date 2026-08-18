@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/disciplinas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "cargaHoraria": 4844,
+      "codDisciplina": "string",
+      "curso": {
+        "id": 7155
+      },
+      "modalidade": "string",
+      "nome": "string",
+      "periodo": 1236,
+      "tipoDisciplina": "string",
+      "tipoSala": {
+        "id": 4209
+      },
+      "cor": "string"
+    }
+settings: {}
+examples: ./.resources/criar 12.resources/examples
+order: 3000

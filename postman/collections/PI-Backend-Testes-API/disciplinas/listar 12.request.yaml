@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/disciplinas?nome=string&curso=9100&tipo_sala=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  nome: string
+  curso: "9100"
+  tipo_sala: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 12.resources/examples
+order: 2000

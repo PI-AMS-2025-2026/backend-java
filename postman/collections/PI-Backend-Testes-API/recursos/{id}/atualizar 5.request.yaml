@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/recursos/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "string",
+      "tipoRecurso": {
+        "id": 2015
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar 5.resources/examples
+order: 2000

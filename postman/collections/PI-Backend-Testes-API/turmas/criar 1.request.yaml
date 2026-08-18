@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/turmas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "ano": 778,
+      "curso": {
+        "id": 8171
+      },
+      "numeroAlunos": 3610,
+      "periodo": 5171
+    }
+settings: {}
+examples: ./.resources/criar 1.resources/examples
+order: 3000

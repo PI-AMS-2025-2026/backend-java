@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/professores/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "email": "7A0SqZL1p@TAWpGltvioxwUuSbAZxpISVqwqt.lthd",
+      "nome": "string",
+      "status": "INATIVO",
+      "cidade": "string"
+    }
+settings: {}
+examples: ./.resources/atualizar 8.resources/examples
+order: 2000

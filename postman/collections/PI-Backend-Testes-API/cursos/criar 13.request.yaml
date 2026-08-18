@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/cursos"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "duracao": 5925,
+      "nome": "string",
+      "periodicidade": "Anual",
+      "status": "ATIVO"
+    }
+settings: {}
+examples: ./.resources/criar 13.resources/examples
+order: 3000

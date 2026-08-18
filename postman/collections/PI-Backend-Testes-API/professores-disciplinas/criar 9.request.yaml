@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/professores-disciplinas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "disciplina": {
+        "id": 3663
+      },
+      "professor": {
+        "id": 8028
+      }
+    }
+settings: {}
+examples: ./.resources/criar 9.resources/examples
+order: 3000

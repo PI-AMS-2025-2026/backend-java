@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/salas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "capacidade": 882,
+      "codigo": "string",
+      "tipoSala": {
+        "id": 998
+      }
+    }
+settings: {}
+examples: ./.resources/criar 4.resources/examples
+order: 3000

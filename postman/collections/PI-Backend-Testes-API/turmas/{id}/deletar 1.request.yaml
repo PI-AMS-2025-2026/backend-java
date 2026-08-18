@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/turmas/:id"
+method: DELETE
+pathVariables:
+  id: "9100"
+settings: {}
+examples: ./.resources/deletar 1.resources/examples
+order: 3000

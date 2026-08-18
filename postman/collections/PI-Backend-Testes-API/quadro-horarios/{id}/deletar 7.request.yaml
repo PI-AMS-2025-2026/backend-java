@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/quadro-horarios/:id"
+method: DELETE
+pathVariables:
+  id: "9100"
+settings: {}
+examples: ./.resources/deletar 7.resources/examples
+order: 4000

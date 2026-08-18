@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/periodo_atividade_quadro/:id"
+method: GET
+headers:
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+settings: {}
+examples: ./.resources/buscar 10.resources/examples
+order: 1000

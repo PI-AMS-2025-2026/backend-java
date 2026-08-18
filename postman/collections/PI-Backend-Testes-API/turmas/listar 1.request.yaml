@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/turmas?curso=9100&ano=4569&periodo=4569&codigo=string&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  curso: "9100"
+  ano: "4569"
+  periodo: "4569"
+  codigo: string
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 1.resources/examples
+order: 2000

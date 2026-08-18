@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/tipos-sala?nome=string"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  nome: string
+settings: {}
+examples: ./.resources/listar 2.resources/examples
+order: 2000

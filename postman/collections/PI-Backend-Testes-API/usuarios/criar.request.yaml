@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/usuarios"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "3-XsD32sfF6FY29@lO.gc",
+      "nome": "string",
+      "status": "ATIVO",
+      "tipoUsuario": "COORDENADOR",
+      "senha": "string",
+      "curso": {
+        "id": 1133
+      }
+    }
+settings: {}
+examples: ./.resources/criar.resources/examples
+order: 4000
