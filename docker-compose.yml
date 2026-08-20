@@ -4,11 +4,8 @@ services:
     image: postgres:17
     container_name: gini-postgres
 
-    environment:
-      POSTGRES_DB: gini
-      POSTGRES_USER: gini
-      POSTGRES_PASSWORD: gini
-
+    env_file:
+      - .env
     ports:
       - "5432:5432"
 
@@ -26,8 +23,8 @@ services:
     ports:
       - "8080:8080"
 
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
+    env_file:
+      - .env
 
 volumes:
   postgres_data:
