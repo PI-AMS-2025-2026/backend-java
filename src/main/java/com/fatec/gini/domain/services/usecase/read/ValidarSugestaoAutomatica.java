@@ -9,8 +9,8 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Sala;
-import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -40,30 +40,7 @@ public class ValidarSugestaoAutomatica {
 
     private final BlocoHorarioRepository blocoHorarioRepository;
 
-    private final ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
-
-    private final ValidarDisciplinaTipoSalaUseCase validarDisciplinaTipoSala;
-
-    private final ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
-
-    private final ValidarQuadroHorarioUseCase validarQuadroHorario;
-
-    private final ValidarVinculoProfessorDisciplinaUseCase validarVincProfDisciplina;
-
-    private final ValidarDisponibilidadeProfessorUseCase validarDisponibilidadeProfessor;
-
-    private final ValidarConflitoTurmaBlocoHorarioUseCase validarConflitoTurmaHorario;
-
-    private final ValidarConflitoSalaBlocoHorarioUseCase validarConflitoSalaHorario;
-
-    private final ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
-
-    private final ValidarCapacidadeSalaUseCase validarCapacidadeSala;
-
-    private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaProfessor;
-
-    private final ValidarCoerenciaUseCase validarCoerenciaCurso;
-
+    private final ValidarAlocacaoUseCase validarAlocacaoUseCase;
 
     /**
      * Identifica o motivo pelo qual uma tentativa de alocação é inválida.
@@ -74,7 +51,7 @@ public class ValidarSugestaoAutomatica {
 
         try {
 
-            executarTodasValidacoes(entity);
+            validarAlocacaoUseCase.executar(entity);
 
             return null;
 
@@ -83,7 +60,6 @@ public class ValidarSugestaoAutomatica {
             return e.getMessage();
         }
     }
-
 
     /**
      * Procura automaticamente alternativas válidas para a alocação.
@@ -100,24 +76,16 @@ public class ValidarSugestaoAutomatica {
 
         List<Alocacao> sugestoes = new ArrayList<>();
 
-        List<Sala> salas = salaRepository.findAll();
+        List<Sala> salas =
+                salaRepository.findAll();
 
         List<BlocoHorario> blocosHorarios =
                 blocoHorarioRepository.findAll();
 
-        /*
-         * Testa todos os dias disponíveis.
-         */
         for (DiaSemana diaSemana : DiaSemana.values()) {
 
-            /*
-             * Testa todos os blocos de horário cadastrados.
-             */
             for (BlocoHorario blocoHorario : blocosHorarios) {
 
-                /*
-                 * Testa todas as salas cadastradas.
-                 */
                 for (Sala sala : salas) {
 
                     /*
@@ -137,7 +105,7 @@ public class ValidarSugestaoAutomatica {
                      * Cria uma entidade temporária somente
                      * para executar as validações.
                      *
-                     * Esta entidade NÃO é salva.
+                     * Esta entidade não é salva.
                      */
                     Alocacao sugestao = new Alocacao(
                             entity.getTurma(),
@@ -151,7 +119,7 @@ public class ValidarSugestaoAutomatica {
 
                     /*
                      * Verifica se a combinação candidata
-                     * atende TODAS as regras de criação.
+                     * atende todas as regras de negócio.
                      */
                     if (alocacaoValida(sugestao)) {
 
@@ -159,8 +127,7 @@ public class ValidarSugestaoAutomatica {
                     }
 
                     /*
-                     * Limita a quantidade de sugestões
-                     * retornadas ao frontend.
+                     * Limita a quantidade de sugestões.
                      */
                     if (sugestoes.size() >= LIMITE_SUGESTOES) {
 
@@ -173,106 +140,6 @@ public class ValidarSugestaoAutomatica {
         return sugestoes;
     }
 
-
-    /**
-     * Executa todas as validações utilizadas no processo
-     * de criação de uma alocação.
-     *
-     * Importante:
-     * nenhuma operação de persistência é realizada aqui.
-     */
-    private void executarTodasValidacoes(Alocacao entity) {
-
-        /*
-         * Verifica referências obrigatórias.
-         */
-        validarRefObrigatorias.validar(entity);
-
-
-        /*
-         * Verifica se a disciplina pode utilizar
-         * o tipo de sala selecionado.
-         */
-        validarDisciplinaTipoSala.validarCompatibilidadeDisciplinaSala(
-                entity.getDisciplina(),
-                entity.getSala()
-        );
-
-
-        /*
-         * Verifica se a disciplina ainda possui
-         * carga horária disponível no quadro.
-         */
-        validarCargaHorariaDisciplina.executar(entity);
-
-
-        /*
-         * Verifica se o professor não ultrapassou
-         * a carga horária máxima permitida no dia.
-         */
-        validarCargaHorariaProfessor.validar(
-                entity.getProfessor().getId(),
-                entity.getDiaSemana()
-        );
-
-
-        /*
-         * Verifica se o bloco de horário pertence
-         * ao quadro horário informado.
-         */
-        validarQuadroHorario.executar(entity);
-
-
-        /*
-         * Verifica se o professor possui vínculo
-         * com a disciplina.
-         */
-        validarVincProfDisciplina.executar(entity);
-
-
-        /*
-         * Verifica disponibilidade do professor
-         * e conflito com outra atividade.
-         */
-        validarDisponibilidadeProfessor.executar(entity);
-
-
-        /*
-         * Verifica se a turma já possui uma
-         * alocação no mesmo dia e horário.
-         */
-        validarConflitoTurmaHorario.executar(entity);
-
-
-        /*
-         * Verifica se a sala já está ocupada
-         * naquele dia e horário.
-         */
-        validarConflitoSalaHorario.executar(entity);
-
-
-        /*
-         * Verifica se a capacidade da sala é
-         * suficiente para a quantidade de alunos.
-         */
-        validarCapacidadeSala.executar(entity);
-
-
-        /*
-         * Verifica se não existe uma alocação
-         * duplicada.
-         */
-        validarDuplicidade.executarCriacao(entity);
-
-
-        /*
-         * Verifica a coerência entre curso,
-         * quadro horário, turma e disciplina.
-         */
-        validarCoerenciaCurso.validar(entity);
-    }
-
-
     /**
      * Verifica se a combinação candidata é exatamente
      * a mesma que o usuário tentou originalmente.
@@ -283,25 +150,48 @@ public class ValidarSugestaoAutomatica {
             DiaSemana diaSemana,
             BlocoHorario blocoHorario) {
 
+        /*
+         * Proteção contra NullPointerException.
+         *
+         * Caso a alocação original não possua sala,
+         * bloco de horário ou dia da semana, não é possível
+         * considerá-la igual à combinação candidata.
+         */
+        if (entity == null
+                || entity.getDiaSemana() == null
+                || entity.getBlocoHorario() == null
+                || entity.getBlocoHorario().getId() == null
+                || entity.getSala() == null
+                || entity.getSala().getId() == null
+                || sala == null
+                || sala.getId() == null
+                || blocoHorario == null
+                || blocoHorario.getId() == null
+                || diaSemana == null) {
+
+            return false;
+        }
+
         return diaSemana == entity.getDiaSemana()
                 && blocoHorario.getId().equals(
-                        entity.getBlocoHorario().getId())
+                        entity.getBlocoHorario().getId()
+                )
                 && sala.getId().equals(
-                        entity.getSala().getId());
+                        entity.getSala().getId()
+                );
     }
-
 
     /**
      * Verifica se uma combinação candidata é válida.
      *
-     * Caso qualquer regra seja violada, a combinação
-     * é simplesmente descartada.
+     * Caso alguma regra de negócio seja violada,
+     * a combinação é descartada.
      */
     private boolean alocacaoValida(Alocacao entity) {
 
         try {
 
-            executarTodasValidacoes(entity);
+            validarAlocacaoUseCase.executar(entity);
 
             return true;
 

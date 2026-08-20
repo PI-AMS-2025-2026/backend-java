@@ -29,8 +29,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Camada de Controle: Responsável por expor os endpoints da API e
- * tratar as requisições HTTP (entrada e saída de dados).
+ * Camada de controle responsável por expor
+ * os endpoints relacionados às alocações.
  */
 @Tag(name = "Alocações")
 @RestController
@@ -42,61 +42,84 @@ public class AlocacaoController {
     private final AlocacaoService service;
 
     /**
-     * Recebe um JSON (Request) e cria uma nova alocação.
-     * Valid garante que as regras do DTO (como @NotNull) sejam checadas.
+     * Cria uma nova alocação.
      */
     @PostMapping
-    public ResponseEntity criar(@RequestBody @Valid AlocacaoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(request));
+    public ResponseEntity<AlocacaoResponse> criar(
+            @RequestBody @Valid AlocacaoRequest request) {
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(service.criar(request));
     }
 
+    /**
+     * Cria alocações em lote.
+     */
     @PostMapping("/lote")
     @Operation(summary = "Criar alocações em lote")
-    public ResponseEntity<List> criarLote(@RequestBody @Valid List requests) {
-        List response = service.criarLote(requests);
+    public ResponseEntity<List<AlocacaoResponse>> criarLote(
+            @RequestBody @Valid List<@Valid AlocacaoRequest> requests) {
+
+        List<AlocacaoResponse> response =
+                service.criarLote(requests);
+
         return ResponseEntity.ok(response);
     }
 
     /**
      * RF06 — Sugestão Automática de Ajuste.
-     *
-     * Recebe a tentativa de alocação realizada pelo usuário,
-     * como no processo de arrastar e soltar uma disciplina na grade.
-     *
-     * Caso a combinação selecionada seja incompatível, o sistema
-     * retorna o motivo do conflito e sugestões de horários e salas
-     * compatíveis.
-     *
-     * Este endpoint apenas consulta e gera sugestões.
-     * A alocação não é persistida neste momento.
      */
     @PostMapping("/sugestoes")
     @Operation(summary = "Sugestão automática de ajuste (RF06)")
     public ResponseEntity<SugestaoResponse> sugerirAjuste(
             @RequestBody @Valid SugestaoRequest request) {
 
-        return ResponseEntity.ok(service.sugerirAlternativas(request));
+        return ResponseEntity.ok(
+                service.sugerirAlternativas(request)
+        );
     }
 
     /**
-     * Realiza a listagem com suporte a filtros opcionais e paginação.
+     * Realiza a listagem com filtros opcionais e paginação.
      */
     @GetMapping
     @Operation(summary = "Listagem de alocações")
-    public ResponseEntity<PageResponse> listar(
-            @RequestParam(required = false) Long turma,
-            @RequestParam(required = false) Long disciplina,
-            @RequestParam(required = false) Long sala,
-            @RequestParam(required = false) Long usuario,
-            @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
-            @RequestParam(required = false) Long horario,
-            @RequestParam(required = false, name = "quadro_horario") Long quadroHorario,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
 
-        // Encaminha os IDs para a camada de serviço
-        return ResponseEntity
-                .ok(service.listar(
+            @RequestParam(required = false)
+            Long turma,
+
+            @RequestParam(required = false)
+            Long disciplina,
+
+            @RequestParam(required = false)
+            Long sala,
+
+            @RequestParam(required = false)
+            Long usuario,
+
+            @RequestParam(
+                    required = false,
+                    name = "dia_semana")
+            DiaSemana diaSemana,
+
+            @RequestParam(required = false)
+            Long horario,
+
+            @RequestParam(
+                    required = false,
+                    name = "quadro_horario")
+            Long quadroHorario,
+
+            @RequestParam(defaultValue = "0")
+            int page,
+
+            @RequestParam(defaultValue = "10")
+            int size) {
+
+        return ResponseEntity.ok(
+                service.listar(
                         turma,
                         disciplina,
                         sala,
@@ -105,34 +128,47 @@ public class AlocacaoController {
                         horario,
                         quadroHorario,
                         page,
-                        size));
+                        size
+                )
+        );
     }
 
     /**
-     * Busca um registro específico pelo seu identificador único.
+     * Busca uma alocação pelo ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<AlocacaoResponse> buscarPorId(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                service.buscarPorId(id)
+        );
     }
 
     /**
-     * Atualiza os dados de uma alocação existente.
+     * Atualiza uma alocação existente.
      */
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(
+    public ResponseEntity<AlocacaoResponse> atualizar(
             @PathVariable Long id,
             @RequestBody @Valid AlocacaoRequest request) {
 
-        return ResponseEntity.ok(service.atualizar(id, request));
+        return ResponseEntity.ok(
+                service.atualizar(id, request)
+        );
     }
 
     /**
-     * Remove um registro e retorna o status 204 (No Content).
+     * Remove uma alocação.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(
+            @PathVariable Long id) {
+
         service.deletar(id);
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

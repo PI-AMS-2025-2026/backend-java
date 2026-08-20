@@ -26,10 +26,7 @@ public record SugestaoRequest(
         LongDTO horario,
 
         @NotNull(message = "Quadro horário é obrigatório")
-        LongDTO quadroHorario,
-
-        @NotNull(message = "Usuário responsável pela alteração é obrigatório")
-        LongDTO usuarioAlteracao
+        LongDTO quadroHorario
 
 ) {
 }
