@@ -10,7 +10,9 @@ public record ProfessorResponse(
         String email,
         String cidade,
         Status status,
-        LocalDateTime created_at,
-        LocalDateTime updated_at) {
+        // Padroniza os nomes dos campos do payload em camelCase.
+        LocalDateTime createdAt,
+        // Padroniza os nomes dos campos do payload em camelCase.
+        LocalDateTime updatedAt) {
 
 }

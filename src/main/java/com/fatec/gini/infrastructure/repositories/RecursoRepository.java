@@ -8,24 +8,23 @@ import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.Recurso;
 
-
 public interface RecursoRepository extends JpaRepository<Recurso, Long> {
 
     /**
      * Retorna recursos aplicando filtros opcionais.
      *
-     * Regras dos filtros:
-     * - nome: busca parcial, ignorando maiúsculas/minúsculas.
-     * - tipo: busca parcial, ignorando maiúsculas/minúsculas.
+     * Regras dos filtros: - nome: busca parcial, ignorando
+     * maiúsculas/minúsculas. - tipo: busca parcial, ignorando
+     * maiúsculas/minúsculas.
      *
      * Quando um parâmetro é null, o filtro correspondente é ignorado.
      */
     @Query("""
-            SELECT r
-            FROM Recurso r
-            WHERE (:nome IS NULL OR LOWER(r.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-              AND (:idTipoRecurso IS NULL OR r.tipoRecurso.id = :idTipoRecurso)
-            """)
+        SELECT r
+        FROM Recurso r
+        WHERE (:nome IS NULL OR LOWER(r.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+          AND (:idTipoRecurso IS NULL OR r.tipoRecurso.id = :idTipoRecurso)
+        """)
     Page<Recurso> buscarPorFiltros(
             @Param("nome") String nome,
             @Param("idTipoRecurso") Long tipo,

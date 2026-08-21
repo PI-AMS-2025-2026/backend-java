@@ -8,7 +8,9 @@ public class RecursoMapper {
 
     public static Recurso toEntity(RecursoRequest request) {
         Recurso entity = new Recurso();
+
         entity.setNome(request.nome());
+
         return entity;
     }
 
@@ -16,7 +18,9 @@ public class RecursoMapper {
         return new RecursoResponse(
                 entity.getId(),
                 entity.getNome(),
-                entity.getTipoRecurso() != null ? TipoRecursoMapper.toResponse(entity.getTipoRecurso()) : null,
+                entity.getTipoRecurso() != null
+                ? TipoRecursoMapper.toResponse(entity.getTipoRecurso())
+                : null,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
     }

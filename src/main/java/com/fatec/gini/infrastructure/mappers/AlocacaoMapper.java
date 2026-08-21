@@ -20,41 +20,47 @@ public class AlocacaoMapper {
 
         Alocacao entity = new Alocacao();
 
-        if (request.turma() != null) {
+        // Alteração: utiliza diretamente o ID recebido no payload.
+        if (request.turmaId() != null) {
             Turma turma = new Turma();
-            turma.setId(request.turma().id());
+            turma.setId(request.turmaId());
             entity.setTurma(turma);
         }
 
-        if (request.disciplina() != null) {
+        // Alteração: utiliza diretamente o ID recebido no payload.
+        if (request.disciplinaId() != null) {
             Disciplina disciplina = new Disciplina();
-            disciplina.setId(request.disciplina().id());
+            disciplina.setId(request.disciplinaId());
             entity.setDisciplina(disciplina);
         }
 
-        if (request.sala() != null) {
+        // Alteração: utiliza diretamente o ID recebido no payload.
+        if (request.salaId() != null) {
             Sala sala = new Sala();
-            sala.setId(request.sala().id());
+            sala.setId(request.salaId());
             entity.setSala(sala);
         }
 
-        if (request.professor() != null) {
+        // Alteração: utiliza diretamente o ID recebido no payload.
+        if (request.professorId() != null) {
             Professor professor = new Professor();
-            professor.setId(request.professor().id());
+            professor.setId(request.professorId());
             entity.setProfessor(professor);
         }
 
         entity.setDiaSemana(request.diaSemana());
 
-        if (request.horario() != null) {
+        // Alteração: utiliza diretamente o ID do horário recebido no payload.
+        if (request.horarioId() != null) {
             BlocoHorario blocoHorario = new BlocoHorario();
-            blocoHorario.setId(request.horario().id());
+            blocoHorario.setId(request.horarioId());
             entity.setBlocoHorario(blocoHorario);
         }
 
-        if (request.quadroHorario() != null) {
+        // Alteração: utiliza diretamente o ID do quadro horário recebido no payload.
+        if (request.quadroHorarioId() != null) {
             QuadroHorario quadroHorario = new QuadroHorario();
-            quadroHorario.setId(request.quadroHorario().id());
+            quadroHorario.setId(request.quadroHorarioId());
             entity.setQuadroHorario(quadroHorario);
         }
 
@@ -74,6 +80,6 @@ public class AlocacaoMapper {
                 entity.getQuadroHorario() != null ? QuadroHorarioMapper.toResponse(entity.getQuadroHorario()) : null,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
-                );
+        );
     }
 }

@@ -25,8 +25,8 @@ public class QuadroHorarioMapper {
                 entity.getStatus(),
                 entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
                 entity.getPeriodoAtividadeQuadro() != null
-                        ? PeriodoAtividadeQuadroMapper.toResponse(entity.getPeriodoAtividadeQuadro())
-                        : null,
+                ? PeriodoAtividadeQuadroMapper.toResponse(entity.getPeriodoAtividadeQuadro())
+                : null,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
     }

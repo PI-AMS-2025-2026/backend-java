@@ -11,21 +11,18 @@ import org.springframework.data.repository.query.Param;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.models.Status;
 
-
 public interface QuadroHorarioRepository extends JpaRepository<QuadroHorario, Long> {
 
     @Query("""
-            SELECT g FROM QuadroHorario g
-            WHERE (:idCurso IS NULL OR g.curso.id = :idCurso)
-            AND (:idPeriodoAtividadeQuadro IS NULL OR g.periodoAtividadeQuadro.id = :idPeriodoAtividadeQuadro)
-            AND (:status IS NULL OR g.status = :status)
-            """)
-    Page<QuadroHorario> buscarComFiltros(
-            @Param("idCurso") Long idCurso,
-            @Param("idPeriodoAtividadeQuadro") Long idPeriodoAtividadeQuadro,
-            @Param("status") Status status,
-            Pageable pageable
-    );
+        SELECT r
+        FROM Recurso r
+        WHERE (:nome IS NULL OR LOWER(r.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+          AND (:idTipoRecurso IS NULL OR r.tipoRecurso.id = :idTipoRecurso)
+        """)
+    Page<Recurso> buscarPorFiltros(
+            @Param("nome") String nome,
+            @Param("idTipoRecurso") Long tipo,
+            Pageable pageable);
 
     Optional<QuadroHorario> findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
             Long cursoId,
