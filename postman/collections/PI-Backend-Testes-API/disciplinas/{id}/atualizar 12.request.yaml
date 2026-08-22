@@ -1,28 +1,29 @@
 $kind: http-request
+name: atualizar 12
 url: "{{baseUrl}}/disciplinas/:id"
 method: PUT
 headers:
   Content-Type: application/json
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "5"
 body:
   type: json
   content: |-
     {
-      "cargaHoraria": 4844,
-      "codDisciplina": "string",
+      "cargaHoraria": 40,
+      "codDisciplina": "EXA0202",
       "curso": {
-        "id": 7155
+        "id": 3
       },
-      "modalidade": "string",
-      "nome": "string",
-      "periodo": 1236,
-      "tipoDisciplina": "string",
+      "modalidade": "Online",
+      "nome": "Exel Avançado",
+      "periodo": 2,
+      "tipoDisciplina": "Prática",
       "tipoSala": {
-        "id": 4209
+        "id": 1
       },
-      "cor": "string"
+      "cor": "verde"
     }
 settings: {}
 examples: ./.resources/atualizar 12.resources/examples

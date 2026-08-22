@@ -1,22 +1,23 @@
 $kind: http-request
+name: atualizar
 url: "{{baseUrl}}/usuarios/:id"
 method: PUT
 headers:
   Content-Type: application/json
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "4"
 body:
   type: json
   content: |-
     {
-      "email": "3-XsD32sfF6FY29@lO.gc",
-      "nome": "string",
+      "email": "bianchi.chico@gmail.com",
+      "nome": "Francisco Bianchi",
       "status": "ATIVO",
       "tipoUsuario": "COORDENADOR",
-      "senha": "string",
+      "senha": "123456789",
       "curso": {
-        "id": 1133
+        "id": 4
       }
     }
 settings: {}

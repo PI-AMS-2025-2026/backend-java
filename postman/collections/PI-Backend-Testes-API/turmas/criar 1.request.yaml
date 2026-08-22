@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 1
 url: "{{baseUrl}}/turmas"
 method: POST
 headers:
@@ -8,12 +9,12 @@ body:
   type: json
   content: |-
     {
-      "ano": 778,
+      "ano": 2024,
       "curso": {
-        "id": 8171
+        "id": 1
       },
-      "numeroAlunos": 3610,
-      "periodo": 5171
+      "numeroAlunos": 50,
+      "periodo": 4
     }
 settings: {}
 examples: ./.resources/criar 1.resources/examples

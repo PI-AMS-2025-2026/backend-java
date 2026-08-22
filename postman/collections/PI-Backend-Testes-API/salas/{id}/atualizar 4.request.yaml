@@ -1,19 +1,20 @@
 $kind: http-request
+name: atualizar 4
 url: "{{baseUrl}}/salas/:id"
 method: PUT
 headers:
   Content-Type: application/json
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "6"
 body:
   type: json
   content: |-
     {
-      "capacidade": 882,
-      "codigo": "string",
+      "capacidade": 30,
+      "codigo": "LAB-05",
       "tipoSala": {
-        "id": 998
+        "id": 1
       }
     }
 settings: {}

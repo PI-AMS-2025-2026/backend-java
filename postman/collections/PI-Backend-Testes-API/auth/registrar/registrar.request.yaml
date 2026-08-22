@@ -1,4 +1,5 @@
 $kind: http-request
+name: registrar
 url: "{{baseUrl}}/auth/registrar"
 method: POST
 headers:
@@ -7,13 +8,13 @@ body:
   type: json
   content: |-
     {
-      "email": "3-XsD32sfF6FY29@lO.gc",
-      "nome": "string",
+      "email": "teste2@gmail.com",
+      "nome": "teste2",
       "status": "ATIVO",
       "tipoUsuario": "COORDENADOR",
-      "senha": "string",
+      "senha": "banana",
       "curso": {
-        "id": 1133
+        "id": 3
       }
     }
 settings: {}

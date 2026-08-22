@@ -1,11 +1,12 @@
 $kind: http-request
+name: copiar
 url: "{{baseUrl}}/quadro-horarios/:id/copiar"
 method: POST
 headers:
   Content-Type: application/json
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "2"
 body:
   type: json
   content: |-

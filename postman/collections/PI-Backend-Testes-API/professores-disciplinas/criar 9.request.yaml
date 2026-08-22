@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 9
 url: "{{baseUrl}}/professores-disciplinas"
 method: POST
 headers:
@@ -9,10 +10,10 @@ body:
   content: |-
     {
       "disciplina": {
-        "id": 3663
+        "id": 1
       },
       "professor": {
-        "id": 8028
+        "id": 9
       }
     }
 settings: {}

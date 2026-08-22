@@ -1,19 +1,20 @@
 $kind: http-request
+name: atualizar 10
 url: "{{baseUrl}}/periodo_atividade_quadro/:id"
 method: PUT
 headers:
   Content-Type: application/json
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "1"
 body:
   type: json
   content: |-
     {
-      "ano": 3947,
-      "dataFim": "1994-04-21",
-      "dataInicio": "1969-03-13",
-      "periodo": 2760,
+      "ano": 202600,
+      "dataFim": "2028-12-01",
+      "dataInicio": "2028-12-20",
+      "periodo": 444,
       "status": "ATIVO"
     }
 settings: {}

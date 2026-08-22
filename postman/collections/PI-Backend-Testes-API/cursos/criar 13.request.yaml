@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 13
 url: "{{baseUrl}}/cursos"
 method: POST
 headers:
@@ -8,10 +9,10 @@ body:
   type: json
   content: |-
     {
-      "duracao": 5925,
-      "nome": "string",
-      "periodicidade": "Anual",
-      "status": "ATIVO"
+      "duracao": 6,
+      "nome": "Engenharia de Software",
+      "periodicidade": "Semestral",
+      "status": "Ativo"
     }
 settings: {}
 examples: ./.resources/criar 13.resources/examples

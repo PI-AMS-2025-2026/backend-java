@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 4
 url: "{{baseUrl}}/salas"
 method: POST
 headers:
@@ -8,10 +9,10 @@ body:
   type: json
   content: |-
     {
-      "capacidade": 882,
-      "codigo": "string",
+      "capacidade": 20,
+      "codigo": "LAB-04",
       "tipoSala": {
-        "id": 998
+        "id":1
       }
     }
 settings: {}

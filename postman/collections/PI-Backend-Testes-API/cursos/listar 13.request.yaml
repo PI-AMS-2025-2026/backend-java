@@ -1,15 +1,9 @@
 $kind: http-request
-url: "{{baseUrl}}/cursos?nome=string&periodicidade=string&status=INATIVO&duracao=4569&page=0&size=10"
+name: listar 13
+url: http://localhost:8080/cursos
 method: GET
 headers:
   Accept: "*/*"
-queryParams:
-  nome: string
-  periodicidade: string
-  status: INATIVO
-  duracao: "4569"
-  page: "0"
-  size: "10"
 settings: {}
 examples: ./.resources/listar 13.resources/examples
 order: 2000

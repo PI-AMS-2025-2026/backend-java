@@ -1,10 +1,11 @@
 $kind: http-request
+name: buscar 7
 url: "{{baseUrl}}/quadro-horarios/:id"
 method: GET
 headers:
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "2"
 settings: {}
 examples: ./.resources/buscar 7.resources/examples
 order: 2000

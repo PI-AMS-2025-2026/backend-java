@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar
 url: "{{baseUrl}}/usuarios"
 method: POST
 headers:
@@ -8,13 +9,13 @@ body:
   type: json
   content: |-
     {
-      "email": "3-XsD32sfF6FY29@lO.gc",
-      "nome": "string",
-      "status": "ATIVO",
+      "email": "lilian.castilio@fatec.sp.gov.br",
+      "nome": "Lilian Simao",
+      "status": "Ativo",
       "tipoUsuario": "COORDENADOR",
-      "senha": "string",
+      "senha": "lili0909",
       "curso": {
-        "id": 1133
+        "id": 8 
       }
     }
 settings: {}

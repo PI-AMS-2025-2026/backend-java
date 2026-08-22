@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 3
 url: "{{baseUrl}}/tipos-recurso"
 method: POST
 headers:
@@ -8,7 +9,7 @@ body:
   type: json
   content: |-
     {
-      "nome": "strin"
+      "nome": ""
     }
 settings: {}
 examples: ./.resources/criar 3.resources/examples

@@ -1,19 +1,18 @@
 $kind: http-request
-url: "{{baseUrl}}/cursos/:id"
+name: atualizar 13
+url: http://localhost:8080/cursos/13
 method: PUT
 headers:
   Content-Type: application/json
   Accept: "*/*"
-pathVariables:
-  id: "9100"
 body:
   type: json
   content: |-
     {
-      "duracao": 5925,
-      "nome": "string",
-      "periodicidade": "Anual",
-      "status": "ATIVO"
+      "duracao": 4,
+      "nome": "Gestão da Tecnologia de Informação",
+      "periodicidade": "Semestral",
+      "status": "Inativo"
     }
 settings: {}
 examples: ./.resources/atualizar 13.resources/examples

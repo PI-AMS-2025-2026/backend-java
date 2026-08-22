@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar Lote
 url: "{{baseUrl}}/bloco-horarios/lote"
 method: POST
 headers:
@@ -9,12 +10,12 @@ body:
   content: |-
     [
       {
-        "horaFim": "string",
-        "horaInicio": "string"
+        "horaFim": "09:20:00",
+        "horaInicio": "08:30:00"
       },
       {
-        "horaFim": "string",
-        "horaInicio": "string"
+        "horaFim": "10:20:00",
+        "horaInicio": "09:30:00"
       }
     ]
 settings: {}

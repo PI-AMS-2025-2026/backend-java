@@ -1,16 +1,9 @@
 $kind: http-request
-url: "{{baseUrl}}/periodo_atividade_quadro?ano=4569&periodo=4569&status=INATIVO&dataInicio=1993-04-04&dataFim=1993-04-04&page=0&size=10"
+name: listar 10
+url: "{{baseUrl}}/periodo_atividade_quadro"
 method: GET
 headers:
   Accept: "*/*"
-queryParams:
-  ano: "4569"
-  periodo: "4569"
-  status: INATIVO
-  dataInicio: 1993-04-04
-  dataFim: 1993-04-04
-  page: "0"
-  size: "10"
 settings: {}
 examples: ./.resources/listar 10.resources/examples
 order: 3000

@@ -1,16 +1,17 @@
 $kind: http-request
-url: "{{baseUrl}}/usuarios?nome=string&email=string&status=INATIVO&tipo_usuario=COORDENADOR&tipo_usuario_nome=string&page=0&size=10"
+name: listar
+url: "{{baseUrl}}/usuarios?email=tadeu"
 method: GET
 headers:
   Accept: "*/*"
 queryParams:
-  nome: string
-  email: string
-  status: INATIVO
-  tipo_usuario: COORDENADOR
-  tipo_usuario_nome: string
-  page: "0"
-  size: "10"
+  - key: email
+    value: tadeu
+    disabled: false
+    description: ""
+body:
+  type: json
+  content: ""
 settings: {}
 examples: ./.resources/listar.resources/examples
 order: 3000

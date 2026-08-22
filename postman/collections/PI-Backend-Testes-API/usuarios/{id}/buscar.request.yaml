@@ -1,10 +1,16 @@
 $kind: http-request
-url: "{{baseUrl}}/usuarios/:id"
+name: buscar
+url: "{{baseUrl}}/usuarios/:id?email=tadeu.maffeis@gmail.com"
 method: GET
 headers:
   Accept: "*/*"
+queryParams:
+  - key: email
+    value: tadeu.maffeis@gmail.com
+    disabled: false
+    description: ""
 pathVariables:
-  id: "9100"
+  id: "4"
 settings: {}
 examples: ./.resources/buscar.resources/examples
 order: 1000

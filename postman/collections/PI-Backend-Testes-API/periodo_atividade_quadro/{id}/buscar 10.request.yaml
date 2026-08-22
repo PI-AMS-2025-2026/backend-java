@@ -1,10 +1,11 @@
 $kind: http-request
+name: buscar 10
 url: "{{baseUrl}}/periodo_atividade_quadro/:id"
 method: GET
 headers:
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "1"
 settings: {}
 examples: ./.resources/buscar 10.resources/examples
 order: 1000

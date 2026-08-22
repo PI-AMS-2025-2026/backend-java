@@ -1,21 +1,22 @@
 $kind: http-request
+name: atualizar 1
 url: "{{baseUrl}}/turmas/:id"
 method: PUT
 headers:
   Content-Type: application/json
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "1"
 body:
   type: json
   content: |-
     {
-      "ano": 778,
+      "ano": 2026,
       "curso": {
-        "id": 8171
+        "id": 1
       },
-      "numeroAlunos": 3610,
-      "periodo": 5171
+      "numeroAlunos": 24,
+      "periodo": 2
     }
 settings: {}
 examples: ./.resources/atualizar 1.resources/examples

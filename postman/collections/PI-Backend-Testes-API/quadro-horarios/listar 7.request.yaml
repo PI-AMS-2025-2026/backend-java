@@ -1,14 +1,9 @@
 $kind: http-request
-url: "{{baseUrl}}/quadro-horarios?curso=9100&periodo_atividade_quadro=9100&status=INATIVO&page=0&size=10"
+name: listar 7
+url: "{{baseUrl}}/quadro-horarios"
 method: GET
 headers:
   Accept: "*/*"
-queryParams:
-  curso: "9100"
-  periodo_atividade_quadro: "9100"
-  status: INATIVO
-  page: "0"
-  size: "10"
 settings: {}
 examples: ./.resources/listar 7.resources/examples
 order: 2000

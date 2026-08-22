@@ -1,10 +1,9 @@
 $kind: http-request
-url: "{{baseUrl}}/tipos-recurso?nome=string"
+name: listar 3
+url: "{{baseUrl}}/tipos-recurso"
 method: GET
 headers:
   Accept: "*/*"
-queryParams:
-  nome: string
 settings: {}
 examples: ./.resources/listar 3.resources/examples
 order: 2000

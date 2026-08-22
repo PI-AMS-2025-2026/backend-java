@@ -1,10 +1,11 @@
 $kind: http-request
+name: buscar 2
 url: "{{baseUrl}}/tipos-sala/:id"
 method: GET
 headers:
   Accept: "*/*"
 pathVariables:
-  id: "9100"
+  id: "2"
 settings: {}
 examples: ./.resources/buscar 2.resources/examples
 order: 1000

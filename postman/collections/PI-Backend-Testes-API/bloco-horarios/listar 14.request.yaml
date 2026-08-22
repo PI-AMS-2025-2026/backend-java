@@ -1,14 +1,9 @@
 $kind: http-request
-url: "{{baseUrl}}/bloco-horarios?hora_inicio=string&hora_fim=string&duracao=4569&page=0&size=10"
+name: listar 14
+url: "{{baseUrl}}/bloco-horarios"
 method: GET
 headers:
   Accept: "*/*"
-queryParams:
-  hora_inicio: string
-  hora_fim: string
-  duracao: "4569"
-  page: "0"
-  size: "10"
 settings: {}
 examples: ./.resources/listar 14.resources/examples
 order: 3000

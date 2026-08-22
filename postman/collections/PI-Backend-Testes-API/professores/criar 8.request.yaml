@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 8
 url: "{{baseUrl}}/professores"
 method: POST
 headers:
@@ -8,10 +9,10 @@ body:
   type: json
   content: |-
     {
-      "email": "7A0SqZL1p@TAWpGltvioxwUuSbAZxpISVqwqt.lthd",
-      "nome": "string",
-      "status": "INATIVO",
-      "cidade": "string"
+      "email": "liviaaristides@gmail.com",
+      "nome": "Livia Aristides",
+      "status": "inativo",
+      "cidade": "Salto"
     }
 settings: {}
 examples: ./.resources/criar 8.resources/examples

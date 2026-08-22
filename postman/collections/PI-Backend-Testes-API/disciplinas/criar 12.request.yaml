@@ -1,4 +1,5 @@
 $kind: http-request
+name: criar 12
 url: "{{baseUrl}}/disciplinas"
 method: POST
 headers:
@@ -8,19 +9,19 @@ body:
   type: json
   content: |-
     {
-      "cargaHoraria": 4844,
-      "codDisciplina": "string",
+      "cargaHoraria": 80,
+      "codDisciplina": "PI0201111",
       "curso": {
-        "id": 7155
+        "id": 2
       },
-      "modalidade": "string",
-      "nome": "string",
-      "periodo": 1236,
-      "tipoDisciplina": "string",
+      "modalidade": "presencial",
+      "nome": "Projeto Integrador I",
+      "periodo": 2,
+      "tipoDisciplina": "pratica",
       "tipoSala": {
-        "id": 4209
+        "id": 9
       },
-      "cor": "string"
+      "cor": "azul"
     }
 settings: {}
 examples: ./.resources/criar 12.resources/examples
