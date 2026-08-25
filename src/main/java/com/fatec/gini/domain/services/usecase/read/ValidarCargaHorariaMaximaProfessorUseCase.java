@@ -81,32 +81,34 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
          */
         private void validarDescansoMinimo12Horas(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
-                // Obtém o dia anterior utilizando o próprio enum
                 DiaSemana diaAnterior = diaSemana.anterior();
 
-                // Busca a última aula do dia anterior
-                List<Alocacao> aulasDiaAnterior = alocacaoRepository.buscarUltimaAulaDoDia(professorId, diaAnterior);
+                List<Alocacao> aulasDiaAnterior = new ArrayList<>(
+                                alocacaoRepository.buscarUltimaAulaDoDia(professorId, diaAnterior));
 
-                // Busca todas as aulas do dia atual
                 List<Alocacao> aulasDiaAtual = new ArrayList<>(
                                 alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana));
 
                 if (alocacaoAtual != null) {
+                        aulasDiaAnterior.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
                         aulasDiaAtual.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
-                        aulasDiaAtual.add(alocacaoAtual);
+
+                        if (alocacaoAtual.getDiaSemana() == diaAnterior) {
+                                aulasDiaAnterior.add(alocacaoAtual);
+                        }
+                        if (alocacaoAtual.getDiaSemana() == diaSemana) {
+                                aulasDiaAtual.add(alocacaoAtual);
+                        }
                 }
 
-                // Se não houver aulas em um dos dias não existe restrição de descanso
                 if (aulasDiaAnterior.isEmpty() || aulasDiaAtual.isEmpty()) {
                         return;
                 }
 
-                // Considera a última aula do dia anterior
                 LocalTime fimDiaAnterior = aulasDiaAnterior.getFirst()
                                 .getBlocoHorario()
-                                .getHoraFim(); 
+                                .getHoraFim();
 
-                // Procura o horário mais cedo do dia atual
                 LocalTime inicioDiaAtual = aulasDiaAtual.stream()
                                 .map(alocacao -> alocacao.getBlocoHorario().getHoraInicio())
                                 .min(LocalTime::compareTo)
