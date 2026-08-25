@@ -78,7 +78,7 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
                 SELECT COUNT(a) > 0
                 FROM Alocacao a
                 WHERE a.turma.id = :idTurma
-                AND a.diaSemana = :DiaSemana
+                AND a.diaSemana = :diaSemana
                 AND a.blocoHorario.id = :idBlocoHorario
             """)
     boolean existsConflitoTurmaHorario(
