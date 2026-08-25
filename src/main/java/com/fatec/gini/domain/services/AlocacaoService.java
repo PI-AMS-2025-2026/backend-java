@@ -10,11 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.paginacao.PageResponse;
+import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
+import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 
