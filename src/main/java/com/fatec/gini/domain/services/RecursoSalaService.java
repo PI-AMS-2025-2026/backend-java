@@ -33,20 +33,22 @@ public class RecursoSalaService {
     @Transactional
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
 
-        // valida duplicidade
-        if (repository.existsBySalaIdAndRecursoId(request.sala().id(), request.recurso().id())) {
+        // ALTERAÇÃO: utiliza diretamente o salaId recebido no payload.
+        if (repository.existsBySalaIdAndRecursoId(request.salaId(), request.recursoId())) {
             throw new IllegalArgumentException("Recurso já vinculado a essa sala");
         }
 
-        // valida quantidade
+        // Validação mantida para garantir quantidade positiva.
         if (request.quantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
         }
 
-        Sala sala = salaRepository.findById(request.sala().id())
+        // ALTERAÇÃO: busca a sala diretamente pelo ID informado.
+        Sala sala = salaRepository.findById(request.salaId())
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
 
-        Recurso recurso = recursoRepository.findById(request.recurso().id())
+        // ALTERAÇÃO: busca o recurso diretamente pelo ID informado.
+        Recurso recurso = recursoRepository.findById(request.recursoId())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
         RecursoSala entity = new RecursoSala();
@@ -94,8 +96,20 @@ public class RecursoSalaService {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
         }
 
+        // ALTERAÇÃO: permite atualizar a sala pelo ID recebido no payload.
+        Sala sala = salaRepository.findById(request.salaId())
+                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
+
+        // ALTERAÇÃO: permite atualizar o recurso pelo ID recebido no payload.
+        Recurso recurso = recursoRepository.findById(request.recursoId())
+                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
+
+        // ALTERAÇÃO: atualiza os relacionamentos junto com a quantidade.
+        entity.setSala(sala);
+        entity.setRecurso(recurso);
         entity.setQuantidade(request.quantidade());
         entity.setUpdatedAt(LocalDateTime.now());
+
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
 

@@ -1,37 +1,42 @@
 package com.fatec.gini.dto.alocacao;
 
 import com.fatec.gini.domain.entities.DiaSemana;
-import com.fatec.gini.dto.id.LongDTO;
 
 import jakarta.validation.constraints.NotNull;
 
 public record AlocacaoRequest(
 
+    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Turma é obrigatória")
-    LongDTO turma,
+    Long turmaId,
 
+    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Disciplina é obrigatória")
-    LongDTO disciplina,
+    Long disciplinaId,
 
+    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Sala é obrigatória")
-    LongDTO sala,
+    Long salaId,
 
+    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Professor é obrigatório")
-    LongDTO professor,
+    Long professorId,
 
     @NotNull(message = "Dia da semana é obrigatório")
     DiaSemana diaSemana,
 
+    // Alteração: recebe diretamente o ID do bloco de horário.
     @NotNull(message = "Horário é obrigatório")
-    LongDTO horario,
+    Long horarioId,
 
+    // Alteração: recebe diretamente o ID do quadro horário.
     @NotNull(message = "Quadro horário é obrigatório")
-    LongDTO quadroHorario,
-    
-    //Campos de Histórico de Alteração (opcionais para criação,obrigatorios para registrar mudanças)
+    Long quadroHorarioId,
+
     String justificativaAlteracao,
-    
+
+    // Alteração: recebe diretamente o ID do usuário responsável pela alteração.
     @NotNull(message = "Usuário responsável pela alteração é obrigatório")
-    LongDTO usuarioAlteracao
+    Long usuarioAlteracaoId
 ) {
 }

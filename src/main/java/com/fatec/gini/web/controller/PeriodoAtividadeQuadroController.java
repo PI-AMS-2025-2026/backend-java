@@ -57,7 +57,7 @@ public class PeriodoAtividadeQuadroController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(response.idPeriodoAtividadeQuadro())
+                .buildAndExpand(response.id())
                 .toUri();
 
         return ResponseEntity.created(location).body(response);

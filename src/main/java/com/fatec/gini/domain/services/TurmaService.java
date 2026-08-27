@@ -45,7 +45,7 @@ public class TurmaService {
     }
 
     @Transactional(readOnly = true)
-    public TurmaResponse buscarPorId(long id) {
+    public TurmaResponse buscarPorId(Long id) {
         Turma entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
         return TurmaMapper.toResponse(entity);
@@ -71,7 +71,7 @@ public class TurmaService {
     }
 
     @Transactional
-    public TurmaResponse atualizar(long id, TurmaRequest request) {
+    public TurmaResponse atualizar(Long id, TurmaRequest request) {
         Turma entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
 
@@ -90,7 +90,7 @@ public class TurmaService {
     }
 
     @Transactional
-    public void deletar(long id) {
+    public void deletar(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Turma não encontrada com ID: " + id);
         }

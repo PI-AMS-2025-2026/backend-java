@@ -32,7 +32,7 @@ public class RecursoController {
     @GetMapping
     public ResponseEntity<PageResponse<RecursoResponse>> listar(
             @RequestParam(required = false) String nome,
-            @RequestParam(required = false,name = "tipo_recurso") Long idTipoRecurso,
+            @RequestParam(required = false, name = "tipo_recurso") Long idTipoRecurso,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -45,8 +45,11 @@ public class RecursoController {
     }
 
     @PostMapping
-    public ResponseEntity<RecursoResponse> criar(@Valid @RequestBody RecursoRequest request) {
+    public ResponseEntity<RecursoResponse> criar(
+            @Valid @RequestBody RecursoRequest request) {
+
         RecursoResponse response = service.criar(request);
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

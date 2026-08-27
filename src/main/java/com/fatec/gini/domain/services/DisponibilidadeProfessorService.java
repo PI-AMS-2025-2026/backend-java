@@ -25,103 +25,104 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DisponibilidadeProfessorService {
 
-        private final DisponibilidadeProfessorRepository repository;
-        private final ProfessorRepository professorRepository;
-        private final BlocoHorarioRepository blocoHorarioRepository;
+    private final DisponibilidadeProfessorRepository repository;
+    private final ProfessorRepository professorRepository;
+    private final BlocoHorarioRepository blocoHorarioRepository;
 
-        @Transactional
-        public DisponibilidadeProfessorResponse criar(DisponibilidadeProfessorRequest request) {
-                /*
-                 * TO: Validação no local errado colocar em um service específico de regras de
-                 * negócio
-                 * if (repository.existsByProfessorIdAndDiaSemanaIdAndBlocoHorarioId(
-                 * request.idProfessor(), request.idDiaSemana(), request.idBlocoHorario())) {
-                 * throw new RuntimeException(
-                 * "Disponibilidade já cadastrada para este professor neste dia e horário.");
-                 * }
-                 */
+    @Transactional
+    public DisponibilidadeProfessorResponse criar(DisponibilidadeProfessorRequest request) {
 
-                Professor professor = professorRepository.findById(request.professor().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Professor não encontrado com ID: " + request.professor().id()));
+        Professor professor = professorRepository.findById(request.professor().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Professor não encontrado com ID: " + request.professor().id()));
 
-                BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Horário não encontrado com ID: " + request.blocoHorario().id()));
+        BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
-                DisponibilidadeProfessor entity = DisponibilidadeProfessorMapper.toEntity(request);
-                entity.setProfessor(professor);
-                entity.setBlocoHorario(blocoHorario);
-                entity.setCreatedAt(LocalDateTime.now());
-                entity.setUpdatedAt(LocalDateTime.now());
-                repository.save(entity);
+        DisponibilidadeProfessor entity = DisponibilidadeProfessorMapper.toEntity(request);
 
-                return DisponibilidadeProfessorMapper.toResponse(entity);
-        }
+        // ALTERAÇÃO: associa as entidades existentes encontradas no banco.
+        entity.setProfessor(professor);
+        entity.setBlocoHorario(blocoHorario);
 
-        @Transactional(readOnly = true)
-        public DisponibilidadeProfessorResponse buscarPorId(Long id) {
+        // ALTERAÇÃO: registra as datas de criação e atualização.
+        LocalDateTime agora = LocalDateTime.now();
+        entity.setCreatedAt(agora);
+        entity.setUpdatedAt(agora);
 
-                DisponibilidadeProfessor disponibilidade = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Disponibilidade não encontrada com ID: " + id));
-                return DisponibilidadeProfessorMapper.toResponse(disponibilidade);
-        }
+        repository.save(entity);
 
-        @Transactional(readOnly = true)
-        public PageResponse<DisponibilidadeProfessorResponse> listar(
-                        Long professor,
-                        DiaSemana diaSemana,
-                        Long blocoHorario,
-                        int pageNum,
-                        int size) {
+        return DisponibilidadeProfessorMapper.toResponse(entity);
+    }
 
-                var pageRequest = PageRequest.of(pageNum, size);
+    @Transactional(readOnly = true)
+    public DisponibilidadeProfessorResponse buscarPorId(Long id) {
 
-                var page = repository.buscarComFiltros(
-                                professor,
-                                diaSemana,
-                                blocoHorario,
-                                pageRequest);
+        DisponibilidadeProfessor disponibilidade = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Disponibilidade não encontrada com ID: " + id));
+        return DisponibilidadeProfessorMapper.toResponse(disponibilidade);
+    }
 
-                return new PageResponse<>(
-                                page.getContent().stream().map(DisponibilidadeProfessorMapper::toResponse).toList(),
-                                page.getNumber(),
-                                page.getSize(),
-                                page.getNumberOfElements(),
-                                page.getTotalPages());
-        }
+    @Transactional(readOnly = true)
+    public PageResponse<DisponibilidadeProfessorResponse> listar(
+            Long professor,
+            DiaSemana diaSemana,
+            Long blocoHorario,
+            int pageNum,
+            int size) {
 
-        @Transactional
-        public DisponibilidadeProfessorResponse atualizar(Long id, DisponibilidadeProfessorRequest request) {
+        var pageRequest = PageRequest.of(pageNum, size);
 
-                DisponibilidadeProfessor entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Disponibilidade não encontrada com ID: " + id));
+        var page = repository.buscarComFiltros(
+                professor,
+                diaSemana,
+                blocoHorario,
+                pageRequest);
 
-                Professor professor = professorRepository.findById(request.professor().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Professor não encontrado com ID: " + request.professor().id()));
+        return new PageResponse<>(
+                page.getContent().stream().map(DisponibilidadeProfessorMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
+    }
 
-                BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Horário não encontrado com ID: " + request.blocoHorario().id()));
+    @Transactional
+    public DisponibilidadeProfessorResponse atualizar(Long id, DisponibilidadeProfessorRequest request) {
 
-                entity.setProfessor(professor);
-                entity.setBlocoHorario(blocoHorario);
+        DisponibilidadeProfessor entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Disponibilidade não encontrada com ID: " + id));
 
-                entity.setUpdatedAt(LocalDateTime.now());
-                repository.save(entity);
+        Professor professor = professorRepository.findById(request.professor().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Professor não encontrado com ID: " + request.professor().id()));
 
-                return DisponibilidadeProfessorMapper.toResponse(entity);
-        }
+        BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
-        @Transactional
-        public void deletar(Long id) {
-                DisponibilidadeProfessor disponibilidade = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Disponibilidade não encontrada com ID: " + id));
+        entity.setProfessor(professor);
+        entity.setBlocoHorario(blocoHorario);
 
-                repository.delete(disponibilidade);
-        }
+// ALTERAÇÃO: atualiza também o dia da semana informado no payload.
+        entity.setDiaSemana(request.diaSemana());
+
+        entity.setUpdatedAt(LocalDateTime.now());
+        repository.save(entity);
+        repository.save(entity);
+
+        return DisponibilidadeProfessorMapper.toResponse(entity);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        DisponibilidadeProfessor disponibilidade = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Disponibilidade não encontrada com ID: " + id));
+
+        repository.delete(disponibilidade);
+    }
 }

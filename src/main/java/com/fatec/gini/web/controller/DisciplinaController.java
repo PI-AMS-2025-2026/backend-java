@@ -32,13 +32,15 @@ public class DisciplinaController {
     @GetMapping
     public ResponseEntity<PageResponse<DisciplinaResponse>> listar(
             @RequestParam(required = false) String nome,
-            @RequestParam(name = "curso", required = false) Long idCurso,
-            @RequestParam(name = "tipo_sala", required = false) Long idTipoSala,
+            // Alteração: padroniza o filtro para camelCase.
+            @RequestParam(required = false) Long cursoId,
+            // Alteração: padroniza o filtro para camelCase.
+            @RequestParam(required = false) Long tipoSalaId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(nome, idCurso, idTipoSala, page, size));
+                service.listar(nome, cursoId, tipoSalaId, page, size));
     }
 
     @GetMapping("/{id}")

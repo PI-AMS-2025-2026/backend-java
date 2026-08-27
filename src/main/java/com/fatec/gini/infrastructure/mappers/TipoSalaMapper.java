@@ -15,6 +15,9 @@ public class TipoSalaMapper {
     public static TipoSalaResponse toResponse(TipoSala entity) {
         return new TipoSalaResponse(
                 entity.getId(),
-                entity.getNome());
+                entity.getNome(),
+                entity.getCreatedAt(), // Alteração: mapeia a data de criação.
+                entity.getUpdatedAt() // Alteração: mapeia a data de atualização.
+        );
     }
 }

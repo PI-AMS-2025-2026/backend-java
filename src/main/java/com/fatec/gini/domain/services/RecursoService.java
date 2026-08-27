@@ -28,12 +28,16 @@ public class RecursoService {
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
         Recurso entity = RecursoMapper.toEntity(request);
-        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
+
+        // ALTERAÇÃO: o payload agora envia diretamente o ID do tipo de recurso.
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de sala não encontrado com ID: " + request.tipoRecurso().id()));
+                "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
+
         entity.setTipoRecurso(tipo);
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
+
         return RecursoMapper.toResponse(repository.save(entity));
     }
 
@@ -53,7 +57,7 @@ public class RecursoService {
 
         var pageRequest = PageRequest.of(pageNum, size);
         var page = repository.buscarPorFiltros(nome, idTipoRecurso, pageRequest);
-        
+
         return new PageResponse<>(
                 page.getContent().stream().map(RecursoMapper::toResponse).toList(),
                 page.getNumber(),
@@ -65,13 +69,15 @@ public class RecursoService {
     @Transactional
     public RecursoResponse atualizar(Long id, RecursoRequest request) {
         Recurso entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Recurso não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
 
-        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
+        // ALTERAÇÃO: utiliza diretamente o ID recebido no payload.
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de recruso não encontrado com ID: " + request.tipoRecurso().id()));
+                "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
         entity.setUpdatedAt(LocalDateTime.now());

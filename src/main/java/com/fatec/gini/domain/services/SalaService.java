@@ -32,13 +32,17 @@ public class SalaService {
     @Transactional
     public SalaResponse criar(SalaRequest request) {
         Sala entity = SalaMapper.toEntity(request);
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
+
+        // ALTERAÇÃO: busca o tipo de sala diretamente pelo ID recebido no payload.
+        TipoSala tipo = tipoSalaRepository.findById(request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
+
         entity.setTipoSala(tipo);
 
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
+
         return SalaMapper.toResponse(repository.save(entity));
     }
 
@@ -70,16 +74,19 @@ public class SalaService {
     @Transactional
     public SalaResponse atualizar(long id, SalaRequest request) {
         Sala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com ID: " + id));
-
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                "Sala não encontrada com ID: " + id));
+
+        // ALTERAÇÃO: utiliza diretamente o tipoSalaId enviado no payload.
+        TipoSala tipo = tipoSalaRepository.findById(request.tipoSalaId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
 
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());
         entity.setTipoSala(tipo);
         entity.setUpdatedAt(LocalDateTime.now());
+
         return SalaMapper.toResponse(repository.save(entity));
     }
 
