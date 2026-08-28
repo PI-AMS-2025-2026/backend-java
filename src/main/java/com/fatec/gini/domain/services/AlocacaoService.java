@@ -43,11 +43,11 @@ public class AlocacaoService {
 
     private final ValidarDuplicidadeAlocacaoLoteUseCase alocacaoLoteUseCase;
 
-        private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+    private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
-        private final BlocoHorarioRepository blocoHorarioRepository;
+    private final BlocoHorarioRepository blocoHorarioRepository;
 
-        public AlocacaoResponse criar(AlocacaoRequest request) {
+    public AlocacaoResponse criar(AlocacaoRequest request) {
 
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
@@ -59,45 +59,34 @@ public class AlocacaoService {
         return AlocacaoMapper.toResponse(
                 criarAlocacaoUseCase.executar(
                         entity,
-                        request.usuarioAlteracao().id()
-                )
-        );
+                        request.usuarioAlteracaoId())); // Alteração: utiliza diretamente o ID do usuário.
     }
 
     @Transactional
-    public List<AlocacaoResponse> criarLote(
-            List<AlocacaoRequest> requests) {
-
+    public List<AlocacaoResponse> criarLote(List<AlocacaoRequest> requests) {
+        // 1. Validar duplicidades cruzadas dentro do próprio lote recebido
+        // (Pode chamar a validação descrita no passo 2)
         alocacaoLoteUseCase.validarDuplicidadesNoLote(requests);
 
+        // 2. Processar cada requisição usando o CriarAlocacaoUseCase existente
         return requests.stream()
                 .map(request -> {
-
-                    Alocacao entity =
-                            AlocacaoMapper.toEntity(request);
-
+                    Alocacao entity = AlocacaoMapper.toEntity(request);
                     entity.setCreatedAt(LocalDateTime.now());
                     entity.setUpdatedAt(LocalDateTime.now());
 
-                    Alocacao alocacaoSalva =
-                            criarAlocacaoUseCase.executar(
-                                    entity,
-                                    request.usuarioAlteracao().id()
-                            );
-
-                    return AlocacaoMapper.toResponse(
-                            alocacaoSalva
-                    );
+                    // O método executar realiza todas as validações de banco/negócio e persiste
+                    Alocacao alocacaoSalva = criarAlocacaoUseCase.executar(
+                            entity,
+                            request.usuarioAlteracaoId()); // Alteração: utiliza diretamente o ID do usuário.
+                    return AlocacaoMapper.toResponse(alocacaoSalva);
                 })
                 .toList();
     }
 
-    public AlocacaoResponse atualizar(
-            Long id,
-            AlocacaoRequest request) {
+    public AlocacaoResponse atualizar(Long id, AlocacaoRequest request) {
 
-        Alocacao entity =
-                AlocacaoMapper.toEntity(request);
+        Alocacao entity = AlocacaoMapper.toEntity(request);
 
         entity.setUpdatedAt(LocalDateTime.now());
 
@@ -204,7 +193,6 @@ public class AlocacaoService {
                 }
                 repository.deleteById(id);
         }
-
         repository.deleteById(id);
     }
 }

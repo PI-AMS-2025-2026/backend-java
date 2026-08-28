@@ -12,6 +12,7 @@ import com.fatec.gini.web.exception.ParameterException;
 
 @Service
 public class ValidarDuplicidadeAlocacaoLoteUseCase {
+
     @Transactional(readOnly = true)
     public void validarDuplicidadesNoLote(List<AlocacaoRequest> requests) {
         Set<String> chavesTurmaHorario = new HashSet<>();
@@ -19,14 +20,18 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
         Set<String> chavesSalaHorario = new HashSet<>();
 
         for (AlocacaoRequest req : requests) {
-            if (req.diaSemana() == null || req.horario() == null)
+            if (req.diaSemana() == null || req.horarioId() == null) {
                 continue;
+            }
 
-            String diaEHorario = req.diaSemana() + "-" + req.horario().id();
+            // Alteração: utiliza diretamente o ID do horário recebido no payload.
+            String diaEHorario = req.diaSemana() + "-" + req.horarioId();
 
             // 1. Evitar mesma turma no mesmo horário no lote
-            if (req.turma() != null) {
-                String chaveTurma = req.turma().id() + "-" + diaEHorario;
+            if (req.turmaId() != null) {
+                // Alteração: utiliza diretamente o ID da turma.
+                String chaveTurma = req.turmaId() + "-" + diaEHorario;
+
                 if (!chavesTurmaHorario.add(chaveTurma)) {
                     throw new ParameterException(
                             "Existem alocações duplicadas para a mesma turma no mesmo horário dentro do lote.");
@@ -34,8 +39,10 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
             }
 
             // 2. Evitar mesmo professor no mesmo horário no lote
-            if (req.professor() != null) {
-                String chaveProf = req.professor().id() + "-" + diaEHorario;
+            if (req.professorId() != null) {
+                // Alteração: utiliza diretamente o ID do professor.
+                String chaveProf = req.professorId() + "-" + diaEHorario;
+
                 if (!chavesProfessorHorario.add(chaveProf)) {
                     throw new ParameterException(
                             "Existem alocações duplicadas para o mesmo professor no mesmo horário dentro do lote.");
@@ -43,8 +50,10 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
             }
 
             // 3. Evitar mesma sala no mesmo horário no lote
-            if (req.sala() != null) {
-                String chaveSala = req.sala().id() + "-" + diaEHorario;
+            if (req.salaId() != null) {
+                // Alteração: utiliza diretamente o ID da sala.
+                String chaveSala = req.salaId() + "-" + diaEHorario;
+
                 if (!chavesSalaHorario.add(chaveSala)) {
                     throw new ParameterException(
                             "Existem alocações duplicadas para a mesma sala no mesmo horário dentro do lote.");
