@@ -38,35 +38,56 @@ public class TurmaController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(service.listar(idCurso, ano, periodo, codigo, page, size));
+        return ResponseEntity.ok(
+                service.listar(
+                        idCurso,
+                        ano,
+                        periodo,
+                        codigo,
+                        page,
+                        size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TurmaResponse> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<TurmaResponse> buscar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<TurmaResponse> criar(@Valid @RequestBody TurmaRequest request) {
+    public ResponseEntity<TurmaResponse> criar(
+            @Valid @RequestBody TurmaRequest request) {
+
         TurmaResponse response = service.criar(request);
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(response.id())
                 .toUri();
-        return ResponseEntity.created(location).body(response);
+
+        return ResponseEntity
+                .created(location)
+                .body(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TurmaResponse> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody TurmaRequest request) {
-        return ResponseEntity.ok(service.atualizar(id, request));
+
+        return ResponseEntity.ok(
+                service.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(
+            @PathVariable Long id) {
+
         service.deletar(id);
+
         return ResponseEntity.noContent().build();
     }
 }
