@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.Sala;
 
-
 public interface SalaRepository extends JpaRepository<Sala, Long> {
 
     @Query("""
@@ -20,4 +19,8 @@ public interface SalaRepository extends JpaRepository<Sala, Long> {
             @Param("idTipoSala") Long idTipoSala,
             @Param("capacidade") Integer capacidade,
             Pageable pageable);
+
+    boolean existsByCodigoIgnoreCase(String codigo);
+
+    boolean existsByCodigoIgnoreCaseAndIdNot(String codigo, Long id);
 }

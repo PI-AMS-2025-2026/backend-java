@@ -30,7 +30,7 @@ public class Sala {
     @Column(name = "id_sala")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String codigo;
 
     @Column(nullable = false)

@@ -33,48 +33,67 @@ public class QuadroHorarioController {
     @GetMapping
     public ResponseEntity<PageResponse<QuadroHorarioResponse>> listar(
             @RequestParam(name = "curso", required = false) Long idCurso,
-            @RequestParam(name = "periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
+            @RequestParam(
+                    name = "periodo_atividade_quadro",
+                    required = false) Long idPeriodoAtividadeQuadro,
             @RequestParam(required = false) Status status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(idCurso, idPeriodoAtividadeQuadro, status, page, size));
+                service.listar(
+                        idCurso,
+                        idPeriodoAtividadeQuadro,
+                        status,
+                        page,
+                        size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuadroHorarioResponse> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<QuadroHorarioResponse> buscar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                service.buscarPorId(id));
     }
 
     @PostMapping
     public ResponseEntity<QuadroHorarioResponse> criar(
             @Valid @RequestBody QuadroHorarioRequest request) {
 
-        QuadroHorarioResponse response = service.criar(request);
+        QuadroHorarioResponse response =
+                service.criar(request);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri();
+        URI location =
+                ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.id())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(response);
+        return ResponseEntity
+                .created(location)
+                .body(response);
     }
 
-    @PostMapping("{id}/copiar")
-    public ResponseEntity<QuadroHorarioResponse> copiar(@PathVariable Long id,
+    @PostMapping("/{id}/copiar")
+    public ResponseEntity<QuadroHorarioResponse> copiar(
+            @PathVariable Long id,
             @Valid @RequestBody QuadroHorarioRequest request) {
 
-        QuadroHorarioResponse response = service.copiar(id, request);
+        QuadroHorarioResponse response =
+                service.copiar(id, request);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri();
+        URI location =
+                ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.id())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(response);
+        return ResponseEntity
+                .created(location)
+                .body(response);
     }
 
     @PutMapping("/{id}")
@@ -82,12 +101,16 @@ public class QuadroHorarioController {
             @PathVariable Long id,
             @Valid @RequestBody QuadroHorarioRequest request) {
 
-        return ResponseEntity.ok(service.atualizar(id, request));
+        return ResponseEntity.ok(
+                service.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(
+            @PathVariable Long id) {
+
         service.inativar(id);
+
         return ResponseEntity.noContent().build();
     }
 }

@@ -11,6 +11,7 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarCopiarQuadroHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarCursoAtivoUseCase;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -21,72 +22,124 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CopiarQuadroHorarioUseCase {
 
-        private final QuadroHorarioRepository gradeHorariaRepository;
+    private final QuadroHorarioRepository gradeHorariaRepository;
 
-        private final AlocacaoRepository alocacaoRepository;
+    private final AlocacaoRepository alocacaoRepository;
 
-        private final ValidarCopiarQuadroHorarioUseCase validarCopiaGradeHorariaUseCase;
+    private final ValidarCopiarQuadroHorarioUseCase validarCopiaGradeHorariaUseCase;
 
-        // NOVA VALIDAÇÃO
-        private final ValidarQuadroHorarioValidoUseCase validarGradeHorariaValidaUseCase;
+    private final ValidarQuadroHorarioValidoUseCase validarGradeHorariaValidaUseCase;
 
-        @Transactional
-        public QuadroHorario executar(Long idGradeOrigem, QuadroHorario dadosNovaGrade) {
+    private final ValidarCursoAtivoUseCase validarCursoAtivoUseCase;
 
-                // busca alocações uma vez só
-                List<Alocacao> alocacoesAnteriores = alocacaoRepository.findByQuadroHorarioId(idGradeOrigem);
+    @Transactional
+    public QuadroHorario executar(
+            Long idGradeOrigem,
+            QuadroHorario dadosNovaGrade) {
 
-                // valida antes da regra principal
-                validarCopiaGradeHorariaUseCase
-                                .validarRegrasParaCopiaDeGrade(alocacoesAnteriores);
+        // Busca a grade de origem
+        QuadroHorario gradeAnterior =
+                gradeHorariaRepository.findById(idGradeOrigem)
+                        .orElseThrow(() -> new BusinessException(
+                                "Quadro horário de origem não encontrada."));
 
-                // busca grade origem
-                QuadroHorario gradeAnterior = gradeHorariaRepository.findById(idGradeOrigem)
-                                .orElseThrow(() -> new BusinessException("Quadro horário de origem não encontrada."));
+        // Valida se o curso da grade de origem está ativo
+        validarCursoAtivoUseCase.validar(
+                gradeAnterior.getCurso());
 
-                // cria nova grade
-                QuadroHorario novoQuadro = new QuadroHorario();
+        // Busca as alocações da grade de origem
+        List<Alocacao> alocacoesAnteriores =
+                alocacaoRepository.findByQuadroHorarioId(
+                        idGradeOrigem);
 
-                novoQuadro.setVersao(
-                                dadosNovaGrade.getVersao() != null
-                                                ? dadosNovaGrade.getVersao() + 1
-                                                : 1);
+        // Valida se a grade pode ser copiada
+        validarCopiaGradeHorariaUseCase
+                .validarRegrasParaCopiaDeGrade(
+                        alocacoesAnteriores);
 
-                novoQuadro.setDataCriacao(LocalDateTime.now());
+        // Cria a nova grade
+        QuadroHorario novoQuadro =
+                new QuadroHorario();
 
-                novoQuadro.setStatus(Status.ATIVO);
+        novoQuadro.setVersao(
+                dadosNovaGrade.getVersao() != null
+                        ? dadosNovaGrade.getVersao() + 1
+                        : gradeAnterior.getVersao() + 1);
 
-                novoQuadro.setCurso(gradeAnterior.getCurso());
+        novoQuadro.setDataCriacao(
+                LocalDateTime.now());
 
-                novoQuadro.setPeriodoAtividadeQuadro(dadosNovaGrade.getPeriodoAtividadeQuadro());
+        novoQuadro.setCreatedAt(
+                LocalDateTime.now());
 
-                // NOVA VALIDAÇÃO DA ISSUE #56
-                validarGradeHorariaValidaUseCase
-                                .validarQuadroAtivoDuplicado(novoQuadro);
+        novoQuadro.setUpdatedAt(
+                LocalDateTime.now());
 
-                // salva nova grade
-                novoQuadro = gradeHorariaRepository.save(novoQuadro);
+        novoQuadro.setStatus(
+                Status.ATIVO);
 
-                // cria novas alocações
-                List<Alocacao> novasAlocacoes = new ArrayList<>();
+        // A nova grade mantém o mesmo curso da grade de origem
+        novoQuadro.setCurso(
+                gradeAnterior.getCurso());
 
-                for (Alocacao antiga : alocacoesAnteriores) {
+        // O período vem da requisição da nova grade
+        novoQuadro.setPeriodoAtividadeQuadro(
+                dadosNovaGrade.getPeriodoAtividadeQuadro());
 
-                        Alocacao nova = new Alocacao();
+        // Valida se já existe outra grade ativa
+        // para o mesmo curso e período
+        validarGradeHorariaValidaUseCase
+                .validarQuadroAtivoDuplicado(
+                        novoQuadro);
 
-                        nova.setQuadroHorario(novoQuadro);
-                        nova.setTurma(antiga.getTurma());
-                        nova.setDiaSemana(antiga.getDiaSemana());
-                        nova.setBlocoHorario(antiga.getBlocoHorario());
-                        nova.setDisciplina(antiga.getDisciplina());
-                        nova.setProfessor(antiga.getProfessor());
-                        nova.setSala(antiga.getSala());
+        // Salva a nova grade
+        novoQuadro =
+                gradeHorariaRepository.save(
+                        novoQuadro);
 
-                        novasAlocacoes.add(nova);
-                }
+        // Cria novas alocações
+        List<Alocacao> novasAlocacoes =
+                new ArrayList<>();
 
-                alocacaoRepository.saveAll(novasAlocacoes);
+        for (Alocacao antiga : alocacoesAnteriores) {
 
-                return novoQuadro;
+            Alocacao nova =
+                    new Alocacao();
+
+            nova.setQuadroHorario(
+                    novoQuadro);
+
+            nova.setTurma(
+                    antiga.getTurma());
+
+            nova.setDiaSemana(
+                    antiga.getDiaSemana());
+
+            nova.setBlocoHorario(
+                    antiga.getBlocoHorario());
+
+            nova.setDisciplina(
+                    antiga.getDisciplina());
+
+            nova.setProfessor(
+                    antiga.getProfessor());
+
+            nova.setSala(
+                    antiga.getSala());
+
+            nova.setCreatedAt(
+                    LocalDateTime.now());
+
+            nova.setUpdatedAt(
+                    LocalDateTime.now());
+
+            novasAlocacoes.add(
+                    nova);
         }
+
+        alocacaoRepository.saveAll(
+                novasAlocacoes);
+
+        return novoQuadro;
+    }
 }
