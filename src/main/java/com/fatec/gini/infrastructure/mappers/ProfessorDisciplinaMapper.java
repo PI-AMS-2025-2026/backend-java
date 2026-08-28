@@ -9,8 +9,10 @@ public class ProfessorDisciplinaMapper {
     public static ProfessorDisciplinaResponse toResponse(ProfessorDisciplina entity) {
         return new ProfessorDisciplinaResponse(
                 entity.getId(),
-                entity.getProfessor() != null ? ProfessorMapper.toResponse(entity.getProfessor()) : null,
-                entity.getDisciplina() != null ? DisciplinaMapper.toResponse(entity.getDisciplina()) : null
+                // O payload retorna somente o ID do professor relacionado.
+                entity.getProfessor() != null ? entity.getProfessor().getId() : null,
+                // O payload retorna somente o ID da disciplina relacionada.
+                entity.getDisciplina() != null ? entity.getDisciplina().getId() : null
         );
     }
 

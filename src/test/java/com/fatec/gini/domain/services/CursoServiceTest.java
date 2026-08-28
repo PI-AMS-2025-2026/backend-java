@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.models.Status;
-import com.fatec.gini.domain.services.CursoService;
 import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;

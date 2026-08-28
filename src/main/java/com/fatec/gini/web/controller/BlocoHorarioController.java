@@ -34,12 +34,18 @@ public class BlocoHorarioController {
 
     @GetMapping
     public ResponseEntity<PageResponse<BlocoHorarioResponse>> listar(
-            @RequestParam(value = "hora_inicio", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
-            @RequestParam(value = "hora_fim", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
+            // Alteração: padroniza os parâmetros da API para camelCase.
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
+            // Alteração: padroniza os parâmetros da API para camelCase.
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
             @RequestParam(required = false) Integer duracao,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.listar(horaInicio, horaFim, duracao, page, size));
+
+        return ResponseEntity.ok(
+                service.listar(horaInicio, horaFim, duracao, page, size));
     }
 
     @GetMapping("/{id}")
@@ -63,7 +69,7 @@ public class BlocoHorarioController {
     public ResponseEntity<List<BlocoHorarioResponse>> criarLote(@Valid @RequestBody List<BlocoHorarioRequest> request) {
 
         List<BlocoHorarioResponse> response = service.criarLote(request);
-   
+
         return ResponseEntity.ok(response);
     }
 

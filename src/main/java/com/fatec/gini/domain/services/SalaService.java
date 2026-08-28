@@ -103,7 +103,8 @@ public class SalaService {
                             + request.codigo());
         }
 
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
+        // ALTERAÇÃO: utiliza diretamente o tipoSalaId enviado no payload.
+        TipoSala tipo = tipoSalaRepository.findById(request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Tipo de sala não encontrado com ID: "
                                 + request.tipoSala().id()));

@@ -15,6 +15,9 @@ public class TipoRecursoMapper {
     public static TipoRecursoResponse toResponse(TipoRecurso entity) {
         return new TipoRecursoResponse(
                 entity.getId(),
-                entity.getNome());
+                entity.getNome(),
+                entity.getCreatedAt(), // Alteração: mapeia a data de criação.
+                entity.getUpdatedAt() // Alteração: mapeia a data de atualização.
+        );
     }
 }

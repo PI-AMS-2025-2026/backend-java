@@ -5,8 +5,10 @@ import com.fatec.gini.dto.id.LongDTO;
 import jakarta.validation.constraints.NotNull;
 
 public record ProfessorDisciplinaRequest(
-        @NotNull LongDTO professor,
-        @NotNull LongDTO disciplina
-) {
-}
+        @NotNull(message = "Professor é obrigatório")
+        LongDTO professor,
+        @NotNull(message = "Disciplina é obrigatória")
+        LongDTO disciplina
+        ) {
 
+}
