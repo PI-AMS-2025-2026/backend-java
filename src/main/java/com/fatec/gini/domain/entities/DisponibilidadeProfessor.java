@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -33,6 +34,9 @@ public class DisponibilidadeProfessor {
     @JoinColumn(name = "id_professor", nullable = false)
     private Professor professor;
 
+    // CORREÇÃO: força o Hibernate a persistir o nome do enum (ex: "SEGUNDA") em vez do ordinal (0,1,2...),
+    // evitando que os dados fiquem inconsistentes caso a ordem do enum DiaSemana mude no futuro
+    @Enumerated(EnumType.STRING)
     private DiaSemana diaSemana;
 
     @ManyToOne
