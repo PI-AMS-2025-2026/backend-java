@@ -28,6 +28,7 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
+        atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
 
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
         entity.setCreatedAt(LocalDateTime.now());
