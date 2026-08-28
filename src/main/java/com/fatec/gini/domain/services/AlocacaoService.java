@@ -8,19 +8,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
-import com.fatec.gini.dto.id.LongDTO;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +42,12 @@ public class AlocacaoService {
     private final AtualizarAlocacaoUseCase atualizarAlocacaoUseCase;
 
     private final ValidarDuplicidadeAlocacaoLoteUseCase alocacaoLoteUseCase;
+
+    private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+
+    private final BlocoHorarioRepository blocoHorarioRepository;
+
+    public AlocacaoResponse criar(AlocacaoRequest request) {
 
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
@@ -77,49 +89,109 @@ public class AlocacaoService {
         Alocacao entity = AlocacaoMapper.toEntity(request);
 
         entity.setUpdatedAt(LocalDateTime.now());
-        String justificativaAlteracao = request.justificativaAlteracao();
 
-       return AlocacaoMapper.toResponse(
-        atualizarAlocacaoUseCase.executar(
-                id,
-                entity,
-                request.usuarioAlteracaoId(), // Alteração: utiliza diretamente o ID do usuário.
-                justificativaAlteracao));
+        String justificativaAlteracao =
+                request.justificativaAlteracao();
+
+        return AlocacaoMapper.toResponse(
+                atualizarAlocacaoUseCase.executar(
+                        id,
+                        entity,
+                        request.usuarioAlteracao().id(),
+                        justificativaAlteracao
+                )
+        );
     }
 
+    /*
+     * RF06 — Sugestão Automática de Ajuste.
+     *
+     * Recebe uma tentativa de posicionamento da disciplina
+     * na grade de horários.
+     *
+     * Caso a combinação seja inválida, retorna o motivo
+     * e alternativas compatíveis.
+     *
+     * Nenhuma alocação é persistida neste processo.
+     */
     @Transactional(readOnly = true)
-    public PageResponse<AlocacaoResponse> listar(
-            Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
-            DiaSemana diaSemana, Long horarioId, Long quadroHorarioId, int pageNum,
-            int size) {
+    public SugestaoResponse sugerirAlternativas(
+            SugestaoRequest request) {
 
-        var pageRequest = PageRequest.of(pageNum, size);
+        /*
+         * Cria uma AlocacaoRequest temporária apenas para
+         * reutilizar o AlocacaoMapper existente.
+         */
+        AlocacaoRequest tentativa =
+                new AlocacaoRequest(
+                        request.turma(),
+                        request.disciplina(),
+                        request.sala(),
+                        request.professor(),
+                        request.diaSemana(),
+                        request.horario(),
+                        request.quadroHorario(),
+                        null,
+                        null
+                );
 
-        var page = repository.buscarPorFiltros(
-                turmaId, disciplinaId, salaId, usuarioId,
-                diaSemana, horarioId, quadroHorarioId, pageRequest);
+        /*
+         * Cria uma entidade temporária.
+         *
+         * Essa entidade não é salva no banco.
+         */
+        Alocacao entity =
+                AlocacaoMapper.toEntity(tentativa);
 
-        return new PageResponse<>(
-                page.getContent().stream().map(AlocacaoMapper::toResponse).toList(),
-                page.getNumber(),
-                page.getSize(),
-                page.getNumberOfElements(),
-                page.getTotalPages());
-    }
+        /*
+         * Primeiro verifica se a combinação escolhida
+         * pelo usuário já é válida.
+         */
+        String motivo =
+                validarSugestaoAutomatica
+                        .identificarMotivo(entity);
 
-    @Transactional(readOnly = true)
-    public AlocacaoResponse buscarPorId(Long id) {
-        return repository.findById(id)
-                .map(AlocacaoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(
-                "Alocação não encontrada com ID: " + id));
-    }
+        /*
+         * Se não existe conflito, não há necessidade
+         * de gerar sugestões.
+         */
+        if (motivo == null) {
 
-    @Transactional
-    public void deletar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException(
-                    "Alocação não encontrada com ID: " + id);
+            return new SugestaoResponse(
+                    true,
+                    "A combinação informada é válida.",
+                    null,
+                    List.of()
+            );
+        }
+
+        @Transactional(readOnly = true)
+        public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
+                BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Bloco horário não encontrado com ID: " + request.horario().id()));
+
+                Alocacao alocacaoSimulada = new Alocacao();
+                alocacaoSimulada.setProfessor(new Professor());
+                alocacaoSimulada.getProfessor().setId(request.professor().id());
+                alocacaoSimulada.setDiaSemana(request.diaSemana());
+                alocacaoSimulada.setBlocoHorario(blocoHorario);
+
+                try {
+                        validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(), alocacaoSimulada);
+                        return new ValidarCargaHorariaResponse(true, "Carga horária válida para o professor no dia informado.");
+                } catch (BusinessException ex) {
+                        return new ValidarCargaHorariaResponse(false, ex.getMessage());
+                }
+        }
+
+        @Transactional
+        public void deletar(Long id) {
+                if (!repository.existsById(id)) {
+                        throw new EntityNotFoundException(
+                                        "Alocação não encontrada com ID: " + id);
+                }
+                repository.deleteById(id);
         }
         repository.deleteById(id);
     }

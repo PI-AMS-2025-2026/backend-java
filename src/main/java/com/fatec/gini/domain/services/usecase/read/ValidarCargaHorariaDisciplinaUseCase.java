@@ -18,14 +18,19 @@ public class ValidarCargaHorariaDisciplinaUseCase {
     private final  DisciplinaRepository disciplinaRepository;
 
     public void executar(Alocacao entity) {
+        executar(entity, null);
+    }
+
+    public void executar(Alocacao entity, Long alocacaoId) {
         var disciplina = disciplinaRepository.findById(entity.getDisciplina().getId())
                 .orElseThrow(() -> new BusinessException("Disciplina não encontrada."));
 
         // Busca o somatório filtrando por Disciplina E por Quadro Horário
-        int cargaHorariaAtual = alocacaoRepository.somarDuracaoPorDisciplinaEQuadro(
-                disciplina.getId(), 
-                entity.getQuadroHorario().getId()
-        );
+        int cargaHorariaAtual = alocacaoId == null
+            ? alocacaoRepository.somarDuracaoPorDisciplinaEQuadro(
+                disciplina.getId(), entity.getQuadroHorario().getId())
+            : alocacaoRepository.somarDuracaoPorDisciplinaEQuadroHorarioEIdNot(
+                disciplina.getId(), entity.getQuadroHorario().getId(), alocacaoId);
         int novaDuracao = entity.getBlocoHorario().getDuracao();
 
         if (cargaHorariaAtual + novaDuracao > disciplina.getCargaHoraria()) {
