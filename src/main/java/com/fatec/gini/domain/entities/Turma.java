@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "turma")
+@Table(
+    name = "turma",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "uk_turma_curso_ano_periodo",
+            columnNames = {
+                "id_curso",
+                "ano",
+                "periodo"
+            }
+        )
+    }
+)
 public class Turma {
 
     @Id
@@ -55,7 +68,12 @@ public class Turma {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Turma(String codigo, Integer periodo, Integer ano, Integer numeroAlunos) {
+    public Turma(
+            String codigo,
+            Integer periodo,
+            Integer ano,
+            Integer numeroAlunos) {
+
         this.codigo = codigo;
         this.periodo = periodo;
         this.ano = ano;
@@ -74,16 +92,22 @@ public class Turma {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
+
         if (obj == null)
             return false;
+
         if (getClass() != obj.getClass())
             return false;
+
         Turma other = (Turma) obj;
+
         if (id == null) {
             if (other.id != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!id.equals(other.id)) {
             return false;
+        }
+
         return true;
     }
 }
