@@ -68,6 +68,8 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public PeriodoAtividadeQuadroResponse atualizar(long id, PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
+        atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
+
 
         PeriodoAtividadeQuadro entity = repository.findById(id)
                 .orElseThrow(
