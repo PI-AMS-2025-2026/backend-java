@@ -20,7 +20,20 @@ public interface SalaRepository extends JpaRepository<Sala, Long> {
             @Param("capacidade") Integer capacidade,
             Pageable pageable);
 
+    /**
+     * Verifica se já existe uma sala com o mesmo código,
+     * ignorando diferença entre letras maiúsculas e minúsculas.
+     */
     boolean existsByCodigoIgnoreCase(String codigo);
 
-    boolean existsByCodigoIgnoreCaseAndIdNot(String codigo, Long id);
+    /**
+     * Verifica se já existe outra sala com o mesmo código,
+     * ignorando diferença entre letras maiúsculas e minúsculas.
+     *
+     * Utilizado durante a atualização para que a própria sala
+     * não seja considerada uma duplicidade.
+     */
+    boolean existsByCodigoIgnoreCaseAndIdNot(
+            String codigo,
+            Long id);
 }

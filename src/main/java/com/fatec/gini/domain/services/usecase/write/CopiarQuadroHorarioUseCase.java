@@ -37,71 +37,108 @@ public class CopiarQuadroHorarioUseCase {
             Long idGradeOrigem,
             QuadroHorario dadosNovaGrade) {
 
-        // Busca a grade de origem
+        /*
+         * Busca primeiro o quadro de origem.
+         */
         QuadroHorario gradeAnterior =
-                gradeHorariaRepository.findById(idGradeOrigem)
+                gradeHorariaRepository.findById(
+                        idGradeOrigem)
                         .orElseThrow(() -> new BusinessException(
                                 "Quadro horário de origem não encontrada."));
 
-        // Valida se o curso da grade de origem está ativo
+        /*
+         * O curso da grade que será reaproveitada precisa
+         * estar ativo.
+         */
         validarCursoAtivoUseCase.validar(
                 gradeAnterior.getCurso());
 
-        // Busca as alocações da grade de origem
+        /*
+         * Busca as alocações da grade de origem uma única vez.
+         */
         List<Alocacao> alocacoesAnteriores =
                 alocacaoRepository.findByQuadroHorarioId(
                         idGradeOrigem);
 
-        // Valida se a grade pode ser copiada
+        /*
+         * Executa as validações existentes para garantir
+         * que a grade pode ser copiada.
+         */
         validarCopiaGradeHorariaUseCase
                 .validarRegrasParaCopiaDeGrade(
                         alocacoesAnteriores);
 
-        // Cria a nova grade
+        /*
+         * Cria uma nova entidade.
+         *
+         * A grade de origem nunca é alterada.
+         */
         QuadroHorario novoQuadro =
                 new QuadroHorario();
 
+        /*
+         * A nova versão será baseada na versão informada
+         * para a nova grade.
+         */
         novoQuadro.setVersao(
                 dadosNovaGrade.getVersao() != null
                         ? dadosNovaGrade.getVersao() + 1
                         : gradeAnterior.getVersao() + 1);
 
-        novoQuadro.setDataCriacao(
-                LocalDateTime.now());
+        LocalDateTime agora =
+                LocalDateTime.now();
 
-        novoQuadro.setCreatedAt(
-                LocalDateTime.now());
+        novoQuadro.setDataCriacao(agora);
 
-        novoQuadro.setUpdatedAt(
-                LocalDateTime.now());
-
+        /*
+         * Mantém o comportamento existente da cópia:
+         * a nova grade é criada como ATIVA.
+         */
         novoQuadro.setStatus(
                 Status.ATIVO);
 
-        // A nova grade mantém o mesmo curso da grade de origem
+        /*
+         * O curso é mantido da grade de origem.
+         */
         novoQuadro.setCurso(
                 gradeAnterior.getCurso());
 
-        // O período vem da requisição da nova grade
+        /*
+         * O período é o informado para a nova grade.
+         */
         novoQuadro.setPeriodoAtividadeQuadro(
                 dadosNovaGrade.getPeriodoAtividadeQuadro());
 
-        // Valida se já existe outra grade ativa
-        // para o mesmo curso e período
+        novoQuadro.setCreatedAt(agora);
+        novoQuadro.setUpdatedAt(agora);
+
+        /*
+         * Verifica se já existe outro quadro ativo
+         * para o mesmo curso e período.
+         */
         validarGradeHorariaValidaUseCase
                 .validarQuadroAtivoDuplicado(
                         novoQuadro);
 
-        // Salva a nova grade
+        /*
+         * Persiste somente a nova grade.
+         */
         novoQuadro =
                 gradeHorariaRepository.save(
                         novoQuadro);
 
-        // Cria novas alocações
+        /*
+         * Cria novas alocações.
+         *
+         * As entidades são novas e apontam para o novo quadro,
+         * portanto alterações futuras não modificam as
+         * alocações da grade de origem.
+         */
         List<Alocacao> novasAlocacoes =
                 new ArrayList<>();
 
-        for (Alocacao antiga : alocacoesAnteriores) {
+        for (Alocacao antiga :
+                alocacoesAnteriores) {
 
             Alocacao nova =
                     new Alocacao();
@@ -127,16 +164,13 @@ public class CopiarQuadroHorarioUseCase {
             nova.setSala(
                     antiga.getSala());
 
-            nova.setCreatedAt(
-                    LocalDateTime.now());
-
-            nova.setUpdatedAt(
-                    LocalDateTime.now());
-
             novasAlocacoes.add(
                     nova);
         }
 
+        /*
+         * Salva todas as novas alocações em lote.
+         */
         alocacaoRepository.saveAll(
                 novasAlocacoes);
 

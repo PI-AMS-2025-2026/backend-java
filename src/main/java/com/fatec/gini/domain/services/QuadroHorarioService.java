@@ -48,9 +48,21 @@ public class QuadroHorarioService {
             Long id,
             QuadroHorarioRequest request) {
 
-        QuadroHorario dadosNovaGrade =
-                QuadroHorarioMapper.toEntity(request);
+        QuadroHorario gradeOrigem = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Quadro horário não encontrada com ID: " + id));
 
+        /*
+         * Valida o curso da grade de origem antes de realizar
+         * o reaproveitamento.
+         */
+        validarCursoAtivoUseCase.validar(
+                gradeOrigem.getCurso());
+
+        /*
+         * Busca o período informado no request para que a nova
+         * grade seja criada no período correto.
+         */
         PeriodoAtividadeQuadro periodo =
                 periodoRepository.findById(
                         request.PeriodoAtividadeQuadro().id())
@@ -58,8 +70,18 @@ public class QuadroHorarioService {
                                 "Período Atividade Quadro não encontrado com ID: "
                                         + request.PeriodoAtividadeQuadro().id()));
 
+        /*
+         * Cria uma entidade apenas com os dados necessários
+         * para a nova grade.
+         */
+        QuadroHorario dadosNovaGrade =
+                QuadroHorarioMapper.toEntity(request);
+
         dadosNovaGrade.setPeriodoAtividadeQuadro(periodo);
 
+        /*
+         * Executa a cópia somente uma vez.
+         */
         QuadroHorario copia =
                 copiarQuadroHorarioUseCase.executar(
                         id,
@@ -82,6 +104,10 @@ public class QuadroHorarioService {
                                 "Curso não encontrado com ID: "
                                         + request.curso().id()));
 
+        /*
+         * Não permite criação de quadro horário
+         * utilizando curso inativo.
+         */
         validarCursoAtivoUseCase.validar(curso);
 
         PeriodoAtividadeQuadro periodo =
@@ -102,8 +128,11 @@ public class QuadroHorarioService {
         validarPeriodoAtividadeQuadroAtivoUseCase
                 .executar(entity);
 
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
+        LocalDateTime agora =
+                LocalDateTime.now();
+
+        entity.setCreatedAt(agora);
+        entity.setUpdatedAt(agora);
 
         return QuadroHorarioMapper.toResponse(
                 repository.save(entity));
@@ -131,7 +160,9 @@ public class QuadroHorarioService {
             int size) {
 
         var pageRequest =
-                PageRequest.of(pageNum, size);
+                PageRequest.of(
+                        pageNum,
+                        size);
 
         var page =
                 repository.buscarComFiltros(
@@ -169,6 +200,10 @@ public class QuadroHorarioService {
                                 "Curso não encontrado com ID: "
                                         + request.curso().id()));
 
+        /*
+         * Não permite que um quadro horário seja associado
+         * a um curso inativo.
+         */
         validarCursoAtivoUseCase.validar(curso);
 
         PeriodoAtividadeQuadro periodo =
@@ -183,13 +218,19 @@ public class QuadroHorarioService {
         entity.setCurso(curso);
         entity.setPeriodoAtividadeQuadro(periodo);
 
+        /*
+         * Na atualização, o próprio ID é ignorado pela consulta
+         * AndIdNot(), evitando que o próprio quadro seja considerado
+         * uma duplicidade.
+         */
         validarQuadroHorarioValidoUseCase
                 .validarQuadroAtivoDuplicado(entity);
 
         validarPeriodoAtividadeQuadroAtivoUseCase
                 .executar(entity);
 
-        entity.setUpdatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(
+                LocalDateTime.now());
 
         return QuadroHorarioMapper.toResponse(
                 repository.save(entity));
@@ -205,7 +246,8 @@ public class QuadroHorarioService {
                                         + id));
 
         entity.setStatus(Status.INATIVO);
-        entity.setUpdatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(
+                LocalDateTime.now());
 
         repository.save(entity);
     }

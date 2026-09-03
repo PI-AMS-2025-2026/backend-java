@@ -13,64 +13,85 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ValidarQuadroHorarioValidoUseCase {
 
-    private final  QuadroHorarioRepository quadroHorarioRepository;
+    private final QuadroHorarioRepository quadroHorarioRepository;
 
     /**
-     * Valida se já existe outra grade horária ativa
+     * Valida se já existe outro quadro horário ativo
      * para o mesmo curso e período atividade quadro.
      */
-    public void validarQuadroAtivoDuplicado(QuadroHorario quadroHorario) {
+    public void validarQuadroAtivoDuplicado(
+            QuadroHorario quadroHorario) {
 
-        // A validação só é necessária para grades ativas
+        /*
+         * A validação só é necessária para quadros ativos.
+         */
         if (quadroHorario.getStatus() != Status.ATIVO) {
             return;
         }
 
         boolean existeConflito;
 
-        // Criação
+        /*
+         * Criação:
+         * como o ID ainda é null, verifica qualquer quadro
+         * ativo com o mesmo curso e período.
+         */
         if (quadroHorario.getId() == null) {
 
             existeConflito =
                     quadroHorarioRepository
                             .existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(
-                                    quadroHorario.getCurso().getId(),
-                                    quadroHorario.getPeriodoAtividadeQuadro().getId(),
-                                    Status.ATIVO
-                            );
+                                    quadroHorario
+                                            .getCurso()
+                                            .getId(),
 
+                                    quadroHorario
+                                            .getPeriodoAtividadeQuadro()
+                                            .getId(),
+
+                                    Status.ATIVO);
         } else {
 
-            // Atualização
+            /*
+             * Atualização:
+             * procura outro quadro, ignorando o próprio ID.
+             */
             existeConflito =
                     quadroHorarioRepository
                             .existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(
-                                    quadroHorario.getCurso().getId(),
-                                    quadroHorario.getPeriodoAtividadeQuadro().getId(),
+                                    quadroHorario
+                                            .getCurso()
+                                            .getId(),
+
+                                    quadroHorario
+                                            .getPeriodoAtividadeQuadro()
+                                            .getId(),
+
                                     Status.ATIVO,
-                                    quadroHorario.getId()
-                            );
+
+                                    quadroHorario
+                                            .getId());
         }
 
         if (existeConflito) {
 
             throw new BusinessException(
-                    "Já existe um quadro horário ativa para este curso no período atividade quadro selecionado."
-            );
+                    "Já existe um quadro horário ativo para este curso no período atividade quadro selecionado.");
         }
     }
 
     /**
-     * Valida se a quadro horário pode ser alterada.
-     * Apenas quadro ativos podem sofrer alterações.
+     * Valida se o quadro horário pode ser alterado.
+     *
+     * Apenas quadros ativos podem sofrer alterações.
      */
-    public void validarAlteracaoGradeAtiva(QuadroHorario gradeHorariaAtual) {
+    public void validarAlteracaoGradeAtiva(
+            QuadroHorario gradeHorariaAtual) {
 
         if (gradeHorariaAtual.getStatus() != Status.ATIVO) {
 
             throw new BusinessException(
-                    "Não é permitido realizar alterações em um quadro horário que não esteja ativa."
-            );
+                    "Não é permitido realizar alterações em um quadro horário que não esteja ativo.");
         }
     }
 }

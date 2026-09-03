@@ -35,21 +35,26 @@ public class SalaService {
 
         if (repository.existsByCodigoIgnoreCase(request.codigo())) {
             throw new BusinessException(
-                    "Já existe uma sala cadastrada com o código: " + request.codigo());
+                    "Já existe uma sala cadastrada com o código: "
+                            + request.codigo());
         }
 
         Sala entity = SalaMapper.toEntity(request);
 
         TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Tipo de sala não encontrado com ID: " + request.tipoSala().id()));
+                        "Tipo de sala não encontrado com ID: "
+                                + request.tipoSala().id()));
 
         entity.setTipoSala(tipo);
 
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
+        LocalDateTime agora = LocalDateTime.now();
 
-        return SalaMapper.toResponse(repository.save(entity));
+        entity.setCreatedAt(agora);
+        entity.setUpdatedAt(agora);
+
+        return SalaMapper.toResponse(
+                repository.save(entity));
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +74,9 @@ public class SalaService {
             int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(pageNum, size);
+        var pageRequest = PageRequest.of(
+                pageNum,
+                size);
 
         var page = repository.buscarPorFiltros(
                 idTipoSala,
@@ -88,7 +95,9 @@ public class SalaService {
     }
 
     @Transactional
-    public SalaResponse atualizar(long id, SalaRequest request) {
+    public SalaResponse atualizar(
+            long id,
+            SalaRequest request) {
 
         Sala entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -99,11 +108,12 @@ public class SalaService {
                 id)) {
 
             throw new BusinessException(
-                    "Já existe uma sala cadastrada com o código: "
+                    "Já existe outra sala cadastrada com o código: "
                             + request.codigo());
         }
 
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
+        TipoSala tipo = tipoSalaRepository.findById(
+                request.tipoSala().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Tipo de sala não encontrado com ID: "
                                 + request.tipoSala().id()));
@@ -113,7 +123,8 @@ public class SalaService {
         entity.setTipoSala(tipo);
         entity.setUpdatedAt(LocalDateTime.now());
 
-        return SalaMapper.toResponse(repository.save(entity));
+        return SalaMapper.toResponse(
+                repository.save(entity));
     }
 
     @Transactional

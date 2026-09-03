@@ -9,6 +9,15 @@ import com.fatec.gini.web.exception.BusinessException;
 @Service
 public class ValidarCursoAtivoUseCase {
 
+    /**
+     * Valida se o curso está ativo.
+     *
+     * Cursos inativos não podem ser utilizados
+     * para criação, atualização ou reaproveitamento
+     * de quadros horários.
+     *
+     * @param curso curso que será validado
+     */
     public void validar(Curso curso) {
 
         if (curso == null) {

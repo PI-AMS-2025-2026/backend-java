@@ -32,13 +32,27 @@ public class QuadroHorarioController {
 
     @GetMapping
     public ResponseEntity<PageResponse<QuadroHorarioResponse>> listar(
-            @RequestParam(name = "curso", required = false) Long idCurso,
+            @RequestParam(
+                    name = "curso",
+                    required = false)
+            Long idCurso,
+
             @RequestParam(
                     name = "periodo_atividade_quadro",
-                    required = false) Long idPeriodoAtividadeQuadro,
-            @RequestParam(required = false) Status status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+                    required = false)
+            Long idPeriodoAtividadeQuadro,
+
+            @RequestParam(
+                    required = false)
+            Status status,
+
+            @RequestParam(
+                    defaultValue = "0")
+            int page,
+
+            @RequestParam(
+                    defaultValue = "10")
+            int size) {
 
         return ResponseEntity.ok(
                 service.listar(
@@ -59,7 +73,9 @@ public class QuadroHorarioController {
 
     @PostMapping
     public ResponseEntity<QuadroHorarioResponse> criar(
-            @Valid @RequestBody QuadroHorarioRequest request) {
+            @Valid
+            @RequestBody
+            QuadroHorarioRequest request) {
 
         QuadroHorarioResponse response =
                 service.criar(request);
@@ -79,10 +95,15 @@ public class QuadroHorarioController {
     @PostMapping("/{id}/copiar")
     public ResponseEntity<QuadroHorarioResponse> copiar(
             @PathVariable Long id,
-            @Valid @RequestBody QuadroHorarioRequest request) {
+
+            @Valid
+            @RequestBody
+            QuadroHorarioRequest request) {
 
         QuadroHorarioResponse response =
-                service.copiar(id, request);
+                service.copiar(
+                        id,
+                        request);
 
         URI location =
                 ServletUriComponentsBuilder
@@ -99,10 +120,15 @@ public class QuadroHorarioController {
     @PutMapping("/{id}")
     public ResponseEntity<QuadroHorarioResponse> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody QuadroHorarioRequest request) {
+
+            @Valid
+            @RequestBody
+            QuadroHorarioRequest request) {
 
         return ResponseEntity.ok(
-                service.atualizar(id, request));
+                service.atualizar(
+                        id,
+                        request));
     }
 
     @DeleteMapping("/{id}")
