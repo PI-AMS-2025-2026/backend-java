@@ -7,11 +7,18 @@ import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
 import com.fatec.gini.dto.professor.ProfessorResponse;
 
 public record DisponibilidadeProfessorResponse(
-                Long id,
-                ProfessorResponse usuario,
-                DiaSemana diaSemana,
-                BlocoHorarioResponse blocoHorario,
-                LocalDateTime created_at,
-                LocalDateTime updated_at) {
+
+        Long id,
+
+        // ALTERAÇÃO: mantém o mesmo conceito usado no Request e na entidade.
+        ProfessorResponse professor,
+
+        DiaSemana diaSemana,
+
+        BlocoHorarioResponse blocoHorario,
+
+        LocalDateTime created_at,
+
+        LocalDateTime updated_at) {
 
 }

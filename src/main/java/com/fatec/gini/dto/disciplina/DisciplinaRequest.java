@@ -1,7 +1,5 @@
 package com.fatec.gini.dto.disciplina;
 
-import com.fatec.gini.dto.id.LongDTO;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,9 +28,11 @@ public record DisciplinaRequest(
 
     String cor,
 
+    // Alteração: recebe diretamente o ID do curso para simplificar o payload.
     @NotNull(message = "O curso é obrigatório")
-    LongDTO curso,
+    Long cursoId,
 
+    // Alteração: recebe diretamente o ID do tipo de sala para simplificar o payload.
     @NotNull(message = "O tipo de sala é obrigatório")
-    LongDTO tipoSala
+    Long tipoSalaId
 ) {}

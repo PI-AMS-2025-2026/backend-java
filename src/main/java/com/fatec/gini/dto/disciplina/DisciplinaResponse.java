@@ -6,6 +6,7 @@ import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.tipoSala.TipoSalaResponse;
 
 public record DisciplinaResponse(
+
         Long id,
         String nome,
         Integer cargaHoraria,
@@ -16,6 +17,11 @@ public record DisciplinaResponse(
         String cor,
         CursoResponse curso,
         TipoSalaResponse tipoSala,
-        LocalDateTime created_at,
-        LocalDateTime updated_at) {
+
+        // Alteração: padroniza o campo da resposta para camelCase.
+        LocalDateTime createdAt,
+
+        // Alteração: padroniza o campo da resposta para camelCase.
+        LocalDateTime updatedAt) {
+
 }

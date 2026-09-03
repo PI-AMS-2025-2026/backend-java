@@ -25,7 +25,7 @@ public class TipoRecurso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_recurso")
+    @Column(name = "id_tipo_recurso") // Alteração: corrige o nome da coluna do ID.
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -50,18 +50,23 @@ public class TipoRecurso {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         TipoRecurso other = (TipoRecurso) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 

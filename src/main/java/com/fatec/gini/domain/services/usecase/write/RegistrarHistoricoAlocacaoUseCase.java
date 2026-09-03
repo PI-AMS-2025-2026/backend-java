@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RegistrarHistoricoAlocacaoUseCase {
 
-    private final  HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
+    private final HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
 
     /*
      * O usuraioAlteracao é o usuário que realizou a operação (criação ou
@@ -43,12 +43,15 @@ public class RegistrarHistoricoAlocacaoUseCase {
      * alteração no histórico, garantindo rastreabilidade e responsabilidade pelas
      * mudanças realizadas.
      */
-
     @Transactional
     public void registrarCriacao(Alocacao alocacaoSalva, Usuario usuarioAlteracao) {
-        registrar("Alocação_" + alocacaoSalva.getId(), null, alocacaoSalva.toString(), alocacaoSalva, usuarioAlteracao,
+        registrar(
+                "alocacao",
+                null,
+                alocacaoSalva.getId().toString(), // Registra apenas o ID da alocação no histórico.
+                alocacaoSalva,
+                usuarioAlteracao,
                 "Criação de alocação");
-
     }
 
     @Transactional

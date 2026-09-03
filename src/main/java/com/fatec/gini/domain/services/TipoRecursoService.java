@@ -36,8 +36,10 @@ public class TipoRecursoService {
     @Transactional
     public TipoRecursoResponse criar(TipoRecursoRequest request) {
         TipoRecurso entity = TipoRecursoMapper.toEntity(request);
+
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
+
         return TipoRecursoMapper.toResponse(repository.save(entity));
     }
 
@@ -53,10 +55,12 @@ public class TipoRecursoService {
     @Transactional
     public TipoRecursoResponse atualizar(Long id, TipoRecursoRequest request) {
         TipoRecurso entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de recurso não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Tipo de recurso não encontrado com ID: " + id));
 
         entity.setNome(request.nome());
-        entity.setUpdatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now()); // Alteração: atualiza somente a data de alteração.
+
         return TipoRecursoMapper.toResponse(repository.save(entity));
     }
 
