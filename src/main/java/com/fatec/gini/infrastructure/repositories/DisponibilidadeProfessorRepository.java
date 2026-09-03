@@ -13,7 +13,13 @@ import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
+       // CORREÇÃO: usado no service para impedir cadastro duplicado
+       // (mesmo professor + dia da semana + bloco de horário)
+
        boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(Long professorId, DiaSemana diaSemana, Long blocoHorarioId);
+
+       // CORREÇÃO: mesma checagem de duplicidade, usada na atualização (ignora o próprio registro via IdNot)
+       boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(Long professorId, DiaSemana diaSemana, Long blocoHorarioId, Long id);
 
        @Query("""
                      SELECT d
@@ -46,5 +52,7 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
                      @Param("diaSemana") DiaSemana diaSemana,
                      @Param("blocoHorarioId") Long blocoHorarioId);
 
+
+                     
        List<DisponibilidadeProfessor> findByProfessorIdIn(List<Long> professorIds);
 }

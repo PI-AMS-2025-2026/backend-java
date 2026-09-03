@@ -21,4 +21,7 @@ public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
         @Param("idTipoSala") Long idTipoSala,
         Pageable pageable
     );
+// CORREÇÃO: usados no service para bloquear codDisciplina duplicado com mensagem explícita
+    boolean existsByCodDisciplina(String codDisciplina);
+    boolean existsByCodDisciplinaAndIdNot(String codDisciplina, Long id);
 }
