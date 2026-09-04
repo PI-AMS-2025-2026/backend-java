@@ -18,3 +18,5 @@ api:
   security:
     token:
       secret: ${JWT_SECRET:gini}
+      expirationMs: ${TOKEN_EXPIRATION_MS:86400000}
+      refreshExpirationMs: ${REFRESH_TOKEN_EXPIRATION_MS:604800000}

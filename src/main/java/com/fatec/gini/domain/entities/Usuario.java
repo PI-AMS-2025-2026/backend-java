@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -118,7 +117,7 @@ public class Usuario implements UserDetails {
      * Retorna a senha desse usuário
      */
     @Override
-    public @Nullable String getPassword() {
+    public String getPassword() {
         return senha;
     }
 
@@ -137,7 +136,5 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return status.equals(Status.ATIVO);
     }
-
-
 
 }

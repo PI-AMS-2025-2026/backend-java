@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@Profile({ "prod" })
+@Profile("prod" )
 @RequiredArgsConstructor
 public class ConfiguracaoSeguranca {
 
@@ -29,6 +29,7 @@ public class ConfiguracaoSeguranca {
     /**
      * Configurações de CORS para permitir requisições do frontend.
      * 
+     * @return
      * @return
      */
     @Bean
@@ -64,8 +65,14 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers(HttpMethod.POST, "/auth/login")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/auth/registrar")
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/auth/logout")
+                        .permitAll()
+
+                        // .requestMatchers(HttpMethod.POST, "/auth/registrar")
+                        // .permitAll()
 
                         // Somente administrador
                         .requestMatchers("/usuarios/**")

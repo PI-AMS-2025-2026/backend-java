@@ -1,8 +1,6 @@
 package com.fatec.gini.domain.services;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fatec.gini.domain.entities.Usuario;
-
 
 @Service
 public class TokenService {
@@ -19,11 +17,17 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    @Value("${api.security.token.expirationMs:86400000}")
+    private Long tokenExpirationMs;
+
+    private final String issuer = "fatec-gini";
+
+    // Cria o JWT usado para autorizar as requisicoes do usuario autenticado.
     public String gerarToken(Usuario usuario) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
             String token = JWT.create()
-                    .withIssuer("fatec-gini")
+                    .withIssuer(issuer)
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(gerarValidade())
                     .sign(algorithm);
@@ -33,22 +37,25 @@ public class TokenService {
         }
     }
 
+    // Valida assinatura, emissor e validade do JWT e devolve o email do usuario.
     public String validarToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
             return JWT.require(algorithm)
-                    .withIssuer("fatec-gini")
+                    .withIssuer(issuer)
                     .build()
                     .verify(token)
                     .getSubject()
 
             ;
-        } catch (JWTCreationException exception) {
+
+        } catch (JWTVerificationException exception) {
             return "";
         }
     }
 
+    // Define a data de expiracao do token a partir da configuracao da aplicacao.
     private Instant gerarValidade() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return Instant.now().plusMillis(tokenExpirationMs);
     }
 }

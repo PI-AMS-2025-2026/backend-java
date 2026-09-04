@@ -20,11 +20,9 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.models.Status;
-import com.fatec.gini.domain.services.DisciplinaService;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
-import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
@@ -51,8 +49,8 @@ class DisciplinaServiceTest {
 
     @Test
     void deveCriarDisciplinaComCursoETipoSalaValidos() {
-        LongDTO cursoId = new LongDTO(1L);
-        LongDTO tipoSalaId = new LongDTO(2L);
+        long cursoId = 1L;
+        long tipoSalaId = 2L;
 
         DisciplinaRequest request = new DisciplinaRequest(
                 "Programação Orientada a Objetos", 80, "Obrigatória", 3,
@@ -83,8 +81,8 @@ class DisciplinaServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoCursoNaoExisteAoCriarDisciplina() {
-        LongDTO cursoId = new LongDTO(99L);
-        LongDTO tipoSalaId = new LongDTO(2L);
+        long cursoId = 99L;
+        long tipoSalaId = 2L;
 
         DisciplinaRequest request = new DisciplinaRequest(
                 "Banco de Dados", 60, "Obrigatória", 2,
@@ -97,8 +95,8 @@ class DisciplinaServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoTipoSalaNaoExisteAoCriarDisciplina() {
-        LongDTO cursoId = new LongDTO(1L);
-        LongDTO tipoSalaId = new LongDTO(99L);
+        long cursoId = 1L;
+        long tipoSalaId = 99L;
 
         DisciplinaRequest request = new DisciplinaRequest(
                 "Estruturas de Dados", 60, "Obrigatória", 2,
@@ -146,8 +144,8 @@ class DisciplinaServiceTest {
         TipoSala novoTipoSala = new TipoSala("Laboratório");
         novoTipoSala.setId(3L);
 
-        LongDTO cursoId = new LongDTO(2L);
-        LongDTO tipoSalaId = new LongDTO(3L);
+        long cursoId = 2L;
+        long tipoSalaId = 3L;
 
         DisciplinaRequest requestAtualizado = new DisciplinaRequest(
                 "Banco de Dados Avançado", 80, "Optativa", 4,

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,36 +20,42 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@Profile({ "prod", "dev" })
+@Profile({ "prod", "test" })
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-    final TokenService tokenService;
-
-    final UsuarioRepository usuarioRepository;
+    private final TokenService tokenService;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        // Recupera e valida o Bearer token antes de encaminhar a requisicao.
         var token = this.recoverToken(request);
 
         if (token != null) {
             var email = tokenService.validarToken(token);
-            UserDetails usuario = usuarioRepository.findByEmail(email);
+            if (email != null && !email.isBlank()) {
+                UserDetails usuario = usuarioRepository.findByEmail(email);
 
-            var auth = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                if (usuario != null && usuario.isEnabled()) {
+                    // Coloca o usuario autenticado no contexto usado pelos controllers.
+                    var auth = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            }
         }
         filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request) {
+        // Aceita somente o formato Authorization: Bearer <token>.
         var authHeader = request.getHeader("Authorization");
-        if (authHeader == null)
+        if (authHeader == null || !authHeader.startsWith("Bearer ") || authHeader.length() <= 7) {
             return null;
-        else
-            return authHeader.replace("Bearer ", "");
+        }
+        return authHeader.substring(7).trim();
     }
-
 }
+
