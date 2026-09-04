@@ -39,49 +39,38 @@ public class QuadroHorarioService {
 
     private final ValidarPeriodoAtividadeQuadroAtivoUseCase validarPeriodoAtividadeQuadroAtivoUseCase;
 
-    private final ValidarCursoAtivoUseCase validarCursoAtivoUseCase;
-
     private final CopiarQuadroHorarioUseCase copiarQuadroHorarioUseCase;
+
+    private final ValidarCursoAtivoUseCase validarCursoAtivoUseCase;
 
     @Transactional
     public QuadroHorarioResponse copiar(
             Long id,
             QuadroHorarioRequest request) {
 
-        QuadroHorario gradeOrigem = repository.findById(id)
+        /*
+         * Verifica se o quadro de origem existe.
+         */
+        repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Quadro horário não encontrada com ID: " + id));
 
         /*
-         * Valida o curso da grade de origem antes de realizar
-         * o reaproveitamento.
-         */
-        validarCursoAtivoUseCase.validar(
-                gradeOrigem.getCurso());
-
-        /*
-         * Busca o período informado no request para que a nova
-         * grade seja criada no período correto.
-         */
-        PeriodoAtividadeQuadro periodo =
-                periodoRepository.findById(
-                        request.PeriodoAtividadeQuadro().id())
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                "Período Atividade Quadro não encontrado com ID: "
-                                        + request.PeriodoAtividadeQuadro().id()));
-
-        /*
-         * Cria uma entidade apenas com os dados necessários
-         * para a nova grade.
+         * Converte os dados da requisição para a entidade.
+         *
+         * O CopiarQuadroHorarioUseCase utiliza principalmente
+         * a versão e o período da nova grade.
          */
         QuadroHorario dadosNovaGrade =
                 QuadroHorarioMapper.toEntity(request);
 
-        dadosNovaGrade.setPeriodoAtividadeQuadro(periodo);
+        dadosNovaGrade.setPeriodoAtividadeQuadro(
+                periodoRepository.findById(
+                        request.periodoAtividadeQuadro().id())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Período Atividade Quadro não encontrado com ID: "
+                                        + request.periodoAtividadeQuadro().id())));
 
-        /*
-         * Executa a cópia somente uma vez.
-         */
         QuadroHorario copia =
                 copiarQuadroHorarioUseCase.executar(
                         id,
@@ -97,6 +86,9 @@ public class QuadroHorarioService {
         QuadroHorario entity =
                 QuadroHorarioMapper.toEntity(request);
 
+        /*
+         * Busca o curso informado.
+         */
         Curso curso =
                 cursoRepository.findById(
                         request.curso().id())
@@ -105,26 +97,43 @@ public class QuadroHorarioService {
                                         + request.curso().id()));
 
         /*
-         * Não permite criação de quadro horário
-         * utilizando curso inativo.
+         * O curso precisa estar ativo para criação
+         * de um quadro horário.
          */
         validarCursoAtivoUseCase.validar(curso);
 
+        /*
+         * Busca o período informado.
+         */
         PeriodoAtividadeQuadro periodo =
                 periodoRepository.findById(
-                        request.PeriodoAtividadeQuadro().id())
+                        request.periodoAtividadeQuadro().id())
                         .orElseThrow(() -> new EntityNotFoundException(
-                                "Período Atividade Quadro não encontrado com ID: "
-                                        + request.PeriodoAtividadeQuadro().id()));
+                                "Período Atividade Quadro não encontrado com ID:  "
+                                        + request.periodoAtividadeQuadro().id()));
 
         entity.setCurso(curso);
         entity.setPeriodoAtividadeQuadro(periodo);
-        entity.setDataCriacao(LocalDateTime.now());
-        entity.setStatus(request.status());
 
+        entity.setDataCriacao(
+                LocalDateTime.now());
+
+        /*
+         * Todo novo quadro horário deve iniciar como ATIVO,
+         * independentemente do status enviado na requisição.
+         */
+        entity.setStatus(Status.ATIVO);
+
+        /*
+         * Verifica se já existe outro quadro ativo
+         * para o mesmo curso e período.
+         */
         validarQuadroHorarioValidoUseCase
                 .validarQuadroAtivoDuplicado(entity);
 
+        /*
+         * Valida se o período está ativo.
+         */
         validarPeriodoAtividadeQuadroAtivoUseCase
                 .executar(entity);
 
@@ -145,8 +154,7 @@ public class QuadroHorarioService {
         QuadroHorario entity =
                 repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(
-                                "Quadro horário não encontrada com ID: "
-                                        + id));
+                                "Quadro horário não encontrada com ID: " + id));
 
         return QuadroHorarioMapper.toResponse(entity);
     }
@@ -190,9 +198,11 @@ public class QuadroHorarioService {
         QuadroHorario entity =
                 repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(
-                                "Quadro horário não encontrada com ID: "
-                                        + id));
+                                "Quadro horário não encontrada com ID: " + id));
 
+        /*
+         * Busca o curso informado na atualização.
+         */
         Curso curso =
                 cursoRepository.findById(
                         request.curso().id())
@@ -201,31 +211,42 @@ public class QuadroHorarioService {
                                         + request.curso().id()));
 
         /*
-         * Não permite que um quadro horário seja associado
-         * a um curso inativo.
+         * O curso precisa estar ativo para alteração
+         * do quadro horário.
          */
         validarCursoAtivoUseCase.validar(curso);
 
+        /*
+         * Busca o período informado.
+         */
         PeriodoAtividadeQuadro periodo =
                 periodoRepository.findById(
-                        request.PeriodoAtividadeQuadro().id())
+                        request.periodoAtividadeQuadro().id())
                         .orElseThrow(() -> new EntityNotFoundException(
-                                "Período Atividade Quadro não encontrado com ID: "
-                                        + request.PeriodoAtividadeQuadro().id()));
+                                "Período Atividade Quadro não encontrado com ID:  "
+                                        + request.periodoAtividadeQuadro().id()));
 
-        entity.setVersao(request.versao());
-        entity.setStatus(request.status());
+        entity.setVersao(
+                request.versao());
+
+        entity.setStatus(
+                request.status());
+
         entity.setCurso(curso);
-        entity.setPeriodoAtividadeQuadro(periodo);
+
+        entity.setPeriodoAtividadeQuadro(
+                periodo);
 
         /*
-         * Na atualização, o próprio ID é ignorado pela consulta
-         * AndIdNot(), evitando que o próprio quadro seja considerado
-         * uma duplicidade.
+         * A validação utiliza o ID do próprio quadro para
+         * não considerá-lo como duplicado.
          */
         validarQuadroHorarioValidoUseCase
                 .validarQuadroAtivoDuplicado(entity);
 
+        /*
+         * Valida se o período está ativo.
+         */
         validarPeriodoAtividadeQuadroAtivoUseCase
                 .executar(entity);
 
@@ -237,15 +258,17 @@ public class QuadroHorarioService {
     }
 
     @Transactional
-    public void inativar(Long id) {
+    public void inativar(
+            Long id) {
 
         QuadroHorario entity =
                 repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(
-                                "Quadro horário não encontrada com ID: "
-                                        + id));
+                                "Quadro horário não encontrada com ID: " + id));
 
-        entity.setStatus(Status.INATIVO);
+        entity.setStatus(
+                Status.INATIVO);
+
         entity.setUpdatedAt(
                 LocalDateTime.now());
 
