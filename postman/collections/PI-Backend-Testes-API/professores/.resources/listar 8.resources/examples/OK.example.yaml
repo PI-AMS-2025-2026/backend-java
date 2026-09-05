@@ -1,0 +1,48 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/professores?nome=string&email=string&cidade=string&status=INATIVO&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+    email: string
+    cidade: string
+    status: INATIVO
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 7426,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "INATIVO",
+            "created_at": "1968-10-31T02:37:30.367Z",
+            "updated_at": "1997-06-07T04:54:12.055Z"
+          },
+          {
+            "id": 8571,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "ATIVO",
+            "created_at": "1950-02-09T02:12:34.171Z",
+            "updated_at": "2001-11-18T13:13:00.172Z"
+          }
+        ],
+        "page": 614,
+        "size": 4654,
+        "totalElements": 2097,
+        "totalPages": 8291
+      }
+order: 1000

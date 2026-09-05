@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/recurso-sala?salaId=9100&recursoId=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  salaId: "9100"
+  recursoId: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 6.resources/examples
+order: 2000

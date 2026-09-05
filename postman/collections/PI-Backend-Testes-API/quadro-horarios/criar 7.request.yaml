@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/quadro-horarios"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "PeriodoAtividadeQuadro": {
+        "id": 2754
+      },
+      "curso": {
+        "id": 2531
+      },
+      "status": "INATIVO",
+      "versao": 8896
+    }
+settings: {}
+examples: ./.resources/criar 7.resources/examples
+order: 3000

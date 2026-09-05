@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/periodo_atividade_quadro/tipos"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar Tipos Periodo.resources/examples
+order: 1000

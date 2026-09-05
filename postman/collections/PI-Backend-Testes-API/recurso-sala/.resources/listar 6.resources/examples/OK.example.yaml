@@ -1,0 +1,78 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/recurso-sala?salaId=9100&recursoId=9100&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    salaId: "9100"
+    recursoId: "9100"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 4679,
+            "sala": {
+              "id": 10,
+              "codigo": "string",
+              "capacidade": 8050,
+              "tipoSala": {
+                "id": 8562,
+                "nome": "string"
+              },
+              "created_at": "2011-01-21T05:35:37.101Z",
+              "updated_at": "2025-11-26T09:41:58.640Z"
+            },
+            "recurso": {
+              "id": 3438,
+              "nome": "string",
+              "tipo": {
+                "id": 7000,
+                "nome": "string"
+              },
+              "created_at": "1949-01-13T08:37:42.106Z",
+              "updated_at": "1968-03-07T23:25:38.170Z"
+            },
+            "quantidade": 1629
+          },
+          {
+            "id": 9757,
+            "sala": {
+              "id": 3874,
+              "codigo": "string",
+              "capacidade": 7899,
+              "tipoSala": {
+                "id": 4458,
+                "nome": "string"
+              },
+              "created_at": "1957-10-01T18:32:18.598Z",
+              "updated_at": "1992-09-05T03:17:58.628Z"
+            },
+            "recurso": {
+              "id": 9491,
+              "nome": "string",
+              "tipo": {
+                "id": 7972,
+                "nome": "string"
+              },
+              "created_at": "2005-10-03T00:12:45.425Z",
+              "updated_at": "1971-06-30T09:44:58.679Z"
+            },
+            "quantidade": 9771
+          }
+        ],
+        "page": 2303,
+        "size": 9807,
+        "totalElements": 4516,
+        "totalPages": 5548
+      }
+order: 1000

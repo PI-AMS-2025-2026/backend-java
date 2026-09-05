@@ -1,0 +1,150 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/alocacoes/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+  body:
+    type: json
+    content: |-
+      {
+        "diaSemana": "TERCA",
+        "disciplina": {
+          "id": 4406
+        },
+        "horario": {
+          "id": 3280
+        },
+        "professor": {
+          "id": 7959
+        },
+        "quadroHorario": {
+          "id": 1053
+        },
+        "sala": {
+          "id": 6519
+        },
+        "turma": {
+          "id": 9993
+        },
+        "usuarioAlteracao": {
+          "id": 6279
+        },
+        "justificativaAlteracao": "string"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 420,
+        "turma": {
+          "id": 6889,
+          "codigo": "string",
+          "periodo": 4891,
+          "ano": 7276,
+          "numeroAlunos": 6364,
+          "curso": {
+            "id": 1545,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "ATIVO",
+            "duracao": 587,
+            "created_at": "1958-03-01T08:28:11.185Z",
+            "updated_at": "2017-04-16T05:00:13.351Z"
+          },
+          "created_at": "1948-10-11T05:08:46.947Z",
+          "updated_at": "1960-10-01T21:53:19.489Z"
+        },
+        "disciplina": {
+          "id": 3300,
+          "nome": "string",
+          "cargaHoraria": 9886,
+          "tipoDisciplina": "string",
+          "periodo": 1588,
+          "modalidade": "string",
+          "codDisciplina": "string",
+          "cor": "string",
+          "curso": {
+            "id": 231,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "INATIVO",
+            "duracao": 337,
+            "created_at": "1954-04-19T15:12:51.228Z",
+            "updated_at": "1981-06-16T01:26:58.187Z"
+          },
+          "tipoSala": {
+            "id": 8113,
+            "nome": "string"
+          },
+          "created_at": "1969-05-25T12:21:06.815Z",
+          "updated_at": "1956-08-06T16:58:00.436Z"
+        },
+        "sala": {
+          "id": 2542,
+          "codigo": "string",
+          "capacidade": 415,
+          "tipoSala": {
+            "id": 1026,
+            "nome": "string"
+          },
+          "created_at": "1951-06-24T01:35:11.989Z",
+          "updated_at": "1981-09-13T07:38:54.497Z"
+        },
+        "professor": {
+          "id": 9172,
+          "nome": "string",
+          "email": "string",
+          "cidade": "string",
+          "status": "ATIVO",
+          "created_at": "2000-05-23T08:13:24.409Z",
+          "updated_at": "2015-01-16T00:34:14.354Z"
+        },
+        "diaSemana": "TERCA",
+        "blocoHorario": {
+          "id": 5754,
+          "horaInicio": "string",
+          "horaFim": "string",
+          "duracao": 2171,
+          "created_at": "1984-10-01T03:44:01.514Z",
+          "updated_at": "1977-06-28T16:42:44.592Z"
+        },
+        "quadroHorario": {
+          "id": 159,
+          "versao": 4221,
+          "dataCriacao": "2025-10-23T23:51:01.587Z",
+          "status": "INATIVO",
+          "curso": {
+            "id": 5675,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "INATIVO",
+            "duracao": 198,
+            "created_at": "1998-02-01T05:10:48.665Z",
+            "updated_at": "1989-05-24T23:38:32.104Z"
+          },
+          "periodoAtividadeQuadro": {
+            "idPeriodoAtividadeQuadro": 2115,
+            "ano": 8069,
+            "periodo": 4156,
+            "dataInicio": "2010-12-22",
+            "dataFim": "1987-03-10",
+            "status": "INATIVO",
+            "created_at": "1978-07-21T04:04:20.506Z",
+            "updated_at": "1985-07-04T18:59:18.451Z"
+          },
+          "created_at": "1973-03-27T11:29:56.844Z",
+          "updated_at": "1975-02-15T07:44:32.864Z"
+        },
+        "created_at": "2008-11-16T03:42:21.875Z",
+        "updated_at": "2004-06-14T11:35:28.394Z"
+      }
+order: 1000

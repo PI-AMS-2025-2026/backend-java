@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/alocacoes/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "diaSemana": "TERCA",
+      "disciplina": {
+        "id": 4406
+      },
+      "horario": {
+        "id": 3280
+      },
+      "professor": {
+        "id": 7959
+      },
+      "quadroHorario": {
+        "id": 1053
+      },
+      "sala": {
+        "id": 6519
+      },
+      "turma": {
+        "id": 9993
+      },
+      "usuarioAlteracao": {
+        "id": 6279
+      },
+      "justificativaAlteracao": "string"
+    }
+settings: {}
+examples: ./.resources/atualizar 15.resources/examples
+order: 2000

@@ -1,0 +1,28 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/tipos-sala/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+  body:
+    type: json
+    content: |-
+      {
+        "nome": "strin"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 9997,
+        "nome": "string"
+      }
+order: 1000

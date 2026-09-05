@@ -1,0 +1,48 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/cursos?nome=string&periodicidade=string&status=INATIVO&duracao=4569&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+    periodicidade: string
+    status: INATIVO
+    duracao: "4569"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 6540,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "INATIVO",
+            "duracao": 8673,
+            "created_at": "2011-10-08T23:24:30.934Z",
+            "updated_at": "2010-11-12T16:23:42.735Z"
+          },
+          {
+            "id": 7892,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "INATIVO",
+            "duracao": 7891,
+            "created_at": "2014-08-26T06:15:41.551Z",
+            "updated_at": "1990-06-07T17:52:17.058Z"
+          }
+        ],
+        "page": 891,
+        "size": 59,
+        "totalElements": 9096,
+        "totalPages": 2184
+      }
+order: 1000

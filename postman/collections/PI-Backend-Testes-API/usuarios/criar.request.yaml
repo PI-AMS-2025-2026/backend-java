@@ -1,0 +1,23 @@
+$kind: http-request
+name: criar
+url: "{{baseUrl}}/usuarios"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "lilian.castilio@fatec.sp.gov.br",
+      "nome": "Lilian Simao",
+      "status": "Ativo",
+      "tipoUsuario": "COORDENADOR",
+      "senha": "lili0909",
+      "curso": {
+        "id": 8 
+      }
+    }
+settings: {}
+examples: ./.resources/criar.resources/examples
+order: 4000

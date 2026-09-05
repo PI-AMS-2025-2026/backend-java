@@ -1,0 +1,241 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/alocacoes?turma=9100&disciplina=9100&sala=9100&usuario=9100&dia_semana=DOMINGO&horario=9100&quadro_horario=9100&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    turma: "9100"
+    disciplina: "9100"
+    sala: "9100"
+    usuario: "9100"
+    dia_semana: DOMINGO
+    horario: "9100"
+    quadro_horario: "9100"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 8620,
+            "turma": {
+              "id": 6405,
+              "codigo": "string",
+              "periodo": 4579,
+              "ano": 9615,
+              "numeroAlunos": 886,
+              "curso": {
+                "id": 3308,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "ATIVO",
+                "duracao": 9527,
+                "created_at": "1983-08-31T16:58:11.643Z",
+                "updated_at": "1950-11-16T09:28:12.634Z"
+              },
+              "created_at": "2022-07-23T05:32:15.206Z",
+              "updated_at": "2015-01-16T13:46:06.786Z"
+            },
+            "disciplina": {
+              "id": 1438,
+              "nome": "string",
+              "cargaHoraria": 7228,
+              "tipoDisciplina": "string",
+              "periodo": 6459,
+              "modalidade": "string",
+              "codDisciplina": "string",
+              "cor": "string",
+              "curso": {
+                "id": 9196,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "ATIVO",
+                "duracao": 8880,
+                "created_at": "2020-09-05T09:39:17.831Z",
+                "updated_at": "1997-03-11T11:13:37.195Z"
+              },
+              "tipoSala": {
+                "id": 1235,
+                "nome": "string"
+              },
+              "created_at": "1964-04-25T06:27:43.725Z",
+              "updated_at": "1976-04-23T12:53:24.665Z"
+            },
+            "sala": {
+              "id": 8418,
+              "codigo": "string",
+              "capacidade": 3707,
+              "tipoSala": {
+                "id": 141,
+                "nome": "string"
+              },
+              "created_at": "1974-10-09T02:10:43.190Z",
+              "updated_at": "1960-10-11T15:11:58.986Z"
+            },
+            "professor": {
+              "id": 4966,
+              "nome": "string",
+              "email": "string",
+              "cidade": "string",
+              "status": "ATIVO",
+              "created_at": "1991-08-14T08:17:45.538Z",
+              "updated_at": "1986-07-14T07:17:43.626Z"
+            },
+            "diaSemana": "TERCA",
+            "blocoHorario": {
+              "id": 119,
+              "horaInicio": "string",
+              "horaFim": "string",
+              "duracao": 4928,
+              "created_at": "2014-01-05T01:09:20.054Z",
+              "updated_at": "2001-03-20T17:57:42.649Z"
+            },
+            "quadroHorario": {
+              "id": 5849,
+              "versao": 5711,
+              "dataCriacao": "1993-03-26T21:17:16.608Z",
+              "status": "INATIVO",
+              "curso": {
+                "id": 982,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "ATIVO",
+                "duracao": 9614,
+                "created_at": "1980-11-10T01:33:24.477Z",
+                "updated_at": "2017-12-31T23:48:45.858Z"
+              },
+              "periodoAtividadeQuadro": {
+                "idPeriodoAtividadeQuadro": 1402,
+                "ano": 173,
+                "periodo": 9167,
+                "dataInicio": "2003-05-11",
+                "dataFim": "1988-09-04",
+                "status": "INATIVO",
+                "created_at": "2004-11-01T07:10:28.631Z",
+                "updated_at": "2005-08-03T21:41:11.696Z"
+              },
+              "created_at": "1988-06-23T06:15:42.074Z",
+              "updated_at": "1992-01-12T20:26:33.713Z"
+            },
+            "created_at": "1976-11-10T00:34:11.314Z",
+            "updated_at": "2023-10-07T21:25:56.764Z"
+          },
+          {
+            "id": 7492,
+            "turma": {
+              "id": 5924,
+              "codigo": "string",
+              "periodo": 6851,
+              "ano": 2086,
+              "numeroAlunos": 7327,
+              "curso": {
+                "id": 2491,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "ATIVO",
+                "duracao": 7208,
+                "created_at": "1948-03-17T14:13:51.599Z",
+                "updated_at": "1998-09-04T09:15:17.830Z"
+              },
+              "created_at": "1954-04-20T08:50:41.173Z",
+              "updated_at": "2005-12-18T14:02:12.628Z"
+            },
+            "disciplina": {
+              "id": 815,
+              "nome": "string",
+              "cargaHoraria": 2606,
+              "tipoDisciplina": "string",
+              "periodo": 6525,
+              "modalidade": "string",
+              "codDisciplina": "string",
+              "cor": "string",
+              "curso": {
+                "id": 8547,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "INATIVO",
+                "duracao": 955,
+                "created_at": "1982-01-20T23:05:50.964Z",
+                "updated_at": "1952-07-28T20:40:30.543Z"
+              },
+              "tipoSala": {
+                "id": 5510,
+                "nome": "string"
+              },
+              "created_at": "2000-10-26T16:55:22.595Z",
+              "updated_at": "2003-01-28T00:39:34.993Z"
+            },
+            "sala": {
+              "id": 9021,
+              "codigo": "string",
+              "capacidade": 2570,
+              "tipoSala": {
+                "id": 9052,
+                "nome": "string"
+              },
+              "created_at": "2007-01-29T08:27:24.106Z",
+              "updated_at": "1946-11-14T06:57:49.285Z"
+            },
+            "professor": {
+              "id": 1904,
+              "nome": "string",
+              "email": "string",
+              "cidade": "string",
+              "status": "ATIVO",
+              "created_at": "2000-06-19T19:12:01.734Z",
+              "updated_at": "1951-07-12T07:01:59.921Z"
+            },
+            "diaSemana": "DOMINGO",
+            "blocoHorario": {
+              "id": 1382,
+              "horaInicio": "string",
+              "horaFim": "string",
+              "duracao": 7934,
+              "created_at": "1977-05-31T16:01:33.899Z",
+              "updated_at": "1994-01-08T08:12:09.154Z"
+            },
+            "quadroHorario": {
+              "id": 8935,
+              "versao": 8776,
+              "dataCriacao": "2002-05-11T13:07:55.228Z",
+              "status": "INATIVO",
+              "curso": {
+                "id": 7876,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "INATIVO",
+                "duracao": 7393,
+                "created_at": "1994-03-31T14:41:11.098Z",
+                "updated_at": "2009-06-28T23:46:34.814Z"
+              },
+              "periodoAtividadeQuadro": {
+                "idPeriodoAtividadeQuadro": 993,
+                "ano": 9918,
+                "periodo": 7262,
+                "dataInicio": "2024-05-22",
+                "dataFim": "1983-09-28",
+                "status": "ATIVO",
+                "created_at": "1954-08-27T12:09:59.785Z",
+                "updated_at": "1955-06-28T19:26:39.284Z"
+              },
+              "created_at": "1988-02-10T00:55:37.684Z",
+              "updated_at": "1954-11-07T21:09:12.725Z"
+            },
+            "created_at": "1959-04-21T16:53:16.174Z",
+            "updated_at": "1982-02-12T10:07:46.471Z"
+          }
+        ],
+        "page": 1709,
+        "size": 5789,
+        "totalElements": 7224,
+        "totalPages": 3377
+      }
+order: 1000

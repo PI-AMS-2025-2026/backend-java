@@ -1,0 +1,48 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/recursos?nome=string&tipo_recurso=9100&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+    tipo_recurso: "9100"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 8845,
+            "nome": "string",
+            "tipo": {
+              "id": 3929,
+              "nome": "string"
+            },
+            "created_at": "1972-09-09T18:06:41.011Z",
+            "updated_at": "2015-12-05T02:34:08.428Z"
+          },
+          {
+            "id": 1692,
+            "nome": "string",
+            "tipo": {
+              "id": 941,
+              "nome": "string"
+            },
+            "created_at": "2008-12-14T09:41:01.390Z",
+            "updated_at": "1950-12-31T03:33:23.782Z"
+          }
+        ],
+        "page": 8936,
+        "size": 3580,
+        "totalElements": 5372,
+        "totalPages": 5056
+      }
+order: 1000

@@ -1,0 +1,22 @@
+$kind: http-request
+name: atualizar 4
+url: "{{baseUrl}}/salas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "6"
+body:
+  type: json
+  content: |-
+    {
+      "capacidade": 30,
+      "codigo": "LAB-05",
+      "tipoSala": {
+        "id": 1
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar 4.resources/examples
+order: 2000

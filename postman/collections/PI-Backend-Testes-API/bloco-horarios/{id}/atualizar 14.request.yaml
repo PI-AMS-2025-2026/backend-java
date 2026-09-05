@@ -1,0 +1,19 @@
+$kind: http-request
+name: atualizar 14
+url: "{{baseUrl}}/bloco-horarios/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "1"
+body:
+  type: json
+  content: |-
+    {
+      "horaFim": "14:10:00",
+      "horaInicio": "13:20:00"
+    }
+settings: {}
+examples: ./.resources/atualizar 14.resources/examples
+order: 2000

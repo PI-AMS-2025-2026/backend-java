@@ -1,0 +1,75 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/disponibilidades-professores?professor=9100&dia_semana=DOMINGO&bloco_horario=9100&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    professor: "9100"
+    dia_semana: DOMINGO
+    bloco_horario: "9100"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 4297,
+            "usuario": {
+              "id": 388,
+              "nome": "string",
+              "email": "string",
+              "cidade": "string",
+              "status": "ATIVO",
+              "created_at": "1998-10-20T21:50:55.319Z",
+              "updated_at": "2020-12-23T22:42:36.459Z"
+            },
+            "diaSemana": "SEXTA",
+            "blocoHorario": {
+              "id": 5179,
+              "horaInicio": "string",
+              "horaFim": "string",
+              "duracao": 8020,
+              "created_at": "1989-10-18T03:42:40.675Z",
+              "updated_at": "1975-05-14T21:53:08.137Z"
+            },
+            "created_at": "1971-05-06T18:01:10.965Z",
+            "updated_at": "1953-11-14T04:24:05.235Z"
+          },
+          {
+            "id": 8296,
+            "usuario": {
+              "id": 6844,
+              "nome": "string",
+              "email": "string",
+              "cidade": "string",
+              "status": "ATIVO",
+              "created_at": "2023-07-12T16:18:12.731Z",
+              "updated_at": "2012-07-05T06:48:07.690Z"
+            },
+            "diaSemana": "TERCA",
+            "blocoHorario": {
+              "id": 142,
+              "horaInicio": "string",
+              "horaFim": "string",
+              "duracao": 6146,
+              "created_at": "2002-08-01T01:14:39.899Z",
+              "updated_at": "2017-08-29T00:04:03.732Z"
+            },
+            "created_at": "1950-04-27T04:57:03.502Z",
+            "updated_at": "1976-03-27T20:16:39.204Z"
+          }
+        ],
+        "page": 5608,
+        "size": 6487,
+        "totalElements": 7159,
+        "totalPages": 3957
+      }
+order: 1000

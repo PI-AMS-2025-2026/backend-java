@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "adm@gini.com",
+      "senha": "123456"
+    }
+settings: {}
+examples: ./.resources/login.resources/examples
+order: 1000

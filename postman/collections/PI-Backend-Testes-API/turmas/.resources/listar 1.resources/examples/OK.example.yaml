@@ -1,0 +1,66 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/turmas?curso=9100&ano=4569&periodo=4569&codigo=string&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    curso: "9100"
+    ano: "4569"
+    periodo: "4569"
+    codigo: string
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 7328,
+            "codigo": "string",
+            "periodo": 1332,
+            "ano": 7227,
+            "numeroAlunos": 4013,
+            "curso": {
+              "id": 8407,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 3532,
+              "created_at": "1989-02-02T02:38:55.139Z",
+              "updated_at": "1952-10-12T09:17:09.522Z"
+            },
+            "created_at": "1967-06-21T07:46:22.036Z",
+            "updated_at": "1979-10-26T09:28:08.853Z"
+          },
+          {
+            "id": 4941,
+            "codigo": "string",
+            "periodo": 1700,
+            "ano": 4846,
+            "numeroAlunos": 505,
+            "curso": {
+              "id": 9132,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 1399,
+              "created_at": "2003-03-04T06:03:23.940Z",
+              "updated_at": "1983-03-15T04:32:23.445Z"
+            },
+            "created_at": "2001-04-23T21:34:44.916Z",
+            "updated_at": "1947-12-06T09:42:10.078Z"
+          }
+        ],
+        "page": 4471,
+        "size": 8963,
+        "totalElements": 797,
+        "totalPages": 2037
+      }
+order: 1000

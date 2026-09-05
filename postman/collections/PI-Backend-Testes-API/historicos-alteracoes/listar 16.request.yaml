@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/historicos-alteracoes?alocacao=9100&usuario=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  alocacao: "9100"
+  usuario: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 16.resources/examples
+order: 2000

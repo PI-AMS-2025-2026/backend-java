@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/usuarios/tipos"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar Tipos Usuario.resources/examples
+order: 1000

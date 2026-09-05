@@ -1,0 +1,18 @@
+$kind: http-request
+name: atualizar 3
+url: "{{baseUrl}}/tipos-recurso/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "6"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Mesa"
+    }
+settings: {}
+examples: ./.resources/atualizar 3.resources/examples
+order: 2000

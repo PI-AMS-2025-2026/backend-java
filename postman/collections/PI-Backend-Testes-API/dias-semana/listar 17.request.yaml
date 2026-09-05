@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/dias-semana"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 17.resources/examples
+order: 1000

@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 1
+url: "{{baseUrl}}/turmas"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 1.resources/examples
+order: 2000

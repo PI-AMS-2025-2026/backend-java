@@ -1,0 +1,18 @@
+$kind: http-request
+name: atualizar 2
+url: "{{baseUrl}}/tipos-sala/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "2"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Sala"
+    }
+settings: {}
+examples: ./.resources/atualizar 2.resources/examples
+order: 2000

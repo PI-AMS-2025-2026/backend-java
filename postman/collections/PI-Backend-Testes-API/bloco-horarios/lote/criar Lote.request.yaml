@@ -1,0 +1,23 @@
+$kind: http-request
+name: criar Lote
+url: "{{baseUrl}}/bloco-horarios/lote"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    [
+      {
+        "horaFim": "09:20:00",
+        "horaInicio": "08:30:00"
+      },
+      {
+        "horaFim": "10:20:00",
+        "horaInicio": "09:30:00"
+      }
+    ]
+settings: {}
+examples: ./.resources/criar Lote.resources/examples
+order: 1000

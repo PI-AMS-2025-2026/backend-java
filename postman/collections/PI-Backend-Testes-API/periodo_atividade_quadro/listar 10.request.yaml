@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 10
+url: "{{baseUrl}}/periodo_atividade_quadro"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 10.resources/examples
+order: 3000

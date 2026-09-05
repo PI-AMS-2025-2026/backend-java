@@ -1,0 +1,28 @@
+$kind: http-request
+name: criar 12
+url: "{{baseUrl}}/disciplinas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "cargaHoraria": 80,
+      "codDisciplina": "PI0201111",
+      "curso": {
+        "id": 2
+      },
+      "modalidade": "presencial",
+      "nome": "Projeto Integrador I",
+      "periodo": 2,
+      "tipoDisciplina": "pratica",
+      "tipoSala": {
+        "id": 9
+      },
+      "cor": "azul"
+    }
+settings: {}
+examples: ./.resources/criar 12.resources/examples
+order: 3000

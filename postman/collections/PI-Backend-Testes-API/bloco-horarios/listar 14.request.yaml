@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 14
+url: "{{baseUrl}}/bloco-horarios"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 14.resources/examples
+order: 3000

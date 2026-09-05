@@ -1,0 +1,36 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/professores/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+  body:
+    type: json
+    content: |-
+      {
+        "email": "7A0SqZL1p@TAWpGltvioxwUuSbAZxpISVqwqt.lthd",
+        "nome": "string",
+        "status": "INATIVO",
+        "cidade": "string"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 6892,
+        "nome": "string",
+        "email": "string",
+        "cidade": "string",
+        "status": "INATIVO",
+        "created_at": "1977-02-14T18:57:23.915Z",
+        "updated_at": "1949-02-12T19:18:50.070Z"
+      }
+order: 1000

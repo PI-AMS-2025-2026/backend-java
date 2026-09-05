@@ -1,0 +1,17 @@
+$kind: http-request
+name: listar
+url: "{{baseUrl}}/usuarios?email=tadeu"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  - key: email
+    value: tadeu
+    disabled: false
+    description: ""
+body:
+  type: json
+  content: ""
+settings: {}
+examples: ./.resources/listar.resources/examples
+order: 3000

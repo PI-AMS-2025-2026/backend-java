@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 9
+url: "{{baseUrl}}/professores-disciplinas"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 9.resources/examples
+order: 2000

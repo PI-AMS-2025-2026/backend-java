@@ -1,0 +1,9 @@
+$kind: http-request
+name: deletar 4
+url: "{{baseUrl}}/salas/:id"
+method: DELETE
+pathVariables:
+  id: "1"
+settings: {}
+examples: ./.resources/deletar 4.resources/examples
+order: 3000

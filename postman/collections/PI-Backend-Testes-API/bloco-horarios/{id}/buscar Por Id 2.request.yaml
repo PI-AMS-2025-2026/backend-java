@@ -1,0 +1,11 @@
+$kind: http-request
+name: buscar Por Id 2
+url: "{{baseUrl}}/bloco-horarios/:id"
+method: GET
+headers:
+  Accept: "*/*"
+pathVariables:
+  id: "1"
+settings: {}
+examples: ./.resources/buscar Por Id 2.resources/examples
+order: 1000
