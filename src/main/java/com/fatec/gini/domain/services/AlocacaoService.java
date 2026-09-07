@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
-import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
@@ -37,6 +37,10 @@ public class AlocacaoService {
 
     private final ValidarDuplicidadeAlocacaoLoteUseCase alocacaoLoteUseCase;
 
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
+    private final ValidarSugestaoAutomatica validarSugestaoAutomatica;
+
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
         Alocacao entity = AlocacaoMapper.toEntity(request);
@@ -47,7 +51,7 @@ public class AlocacaoService {
         return AlocacaoMapper.toResponse(
                 criarAlocacaoUseCase.executar(
                         entity,
-                        request.usuarioAlteracaoId())); // Alteração: utiliza diretamente o ID do usuário.
+                        validarAutorizacaoCurso.usuarioAutenticado().getId()));
     }
 
     @Transactional
@@ -66,7 +70,7 @@ public class AlocacaoService {
                     // O método executar realiza todas as validações de banco/negócio e persiste
                     Alocacao alocacaoSalva = criarAlocacaoUseCase.executar(
                             entity,
-                            request.usuarioAlteracaoId()); // Alteração: utiliza diretamente o ID do usuário.
+                            validarAutorizacaoCurso.usuarioAutenticado().getId());
                     return AlocacaoMapper.toResponse(alocacaoSalva);
                 })
                 .toList();
@@ -83,9 +87,102 @@ public class AlocacaoService {
         atualizarAlocacaoUseCase.executar(
                 id,
                 entity,
-                request.usuarioAlteracaoId(), // Alteração: utiliza diretamente o ID do usuário.
+                validarAutorizacaoCurso.usuarioAutenticado().getId(),
                 justificativaAlteracao));
     }
+
+     /*
+     * RF06 — Sugestão Automática de Ajuste.
+     *
+     * Recebe uma tentativa de posicionamento da disciplina
+     * na grade de horários.
+     *
+     * Caso a combinação seja inválida, retorna o motivo
+     * e alternativas compatíveis.
+     *
+     * Nenhuma alocação é persistida neste processo.
+     */
+    @Transactional(readOnly = true)
+    public SugestaoResponse sugerirAlternativas(
+            SugestaoRequest request) {
+
+        /*
+         * Cria uma AlocacaoRequest temporária apenas para
+         * reutilizar o AlocacaoMapper existente.
+         */
+        AlocacaoRequest tentativa =
+                new AlocacaoRequest(
+                        request.turma().id(),
+                        request.disciplina().id(),
+                        request.sala().id(),
+                        request.professor().id(),
+                        request.diaSemana(),
+                        request.horario().id(),
+                        request.quadroHorario().id(),
+                        null,
+                        null
+                );
+
+        /*
+         * Cria uma entidade temporária.
+         *
+         * Essa entidade não é salva no banco.
+         */
+        Alocacao entity =
+                AlocacaoMapper.toEntity(tentativa);
+
+        /*
+         * Primeiro verifica se a combinação escolhida
+         * pelo usuário já é válida.
+         */
+        String motivo =
+                validarSugestaoAutomatica
+                        .identificarMotivo(entity);
+
+        /*
+         * Se não existe conflito, não há necessidade
+         * de gerar sugestões.
+         */
+        if (motivo == null) {
+
+            return new SugestaoResponse(
+                    true,
+                    "A combinação informada é válida.",
+                    null,
+                    List.of()
+            );
+        }
+
+        /*
+         * Caso exista conflito, procura alternativas.
+         */
+        List<AlocacaoRequest> sugestoes =
+                validarSugestaoAutomatica
+                        .executar(entity)
+                        .stream()
+                        .map(sugestao ->
+                                new AlocacaoRequest(
+                                        sugestao.getTurma().getId(),
+                                        sugestao.getDisciplina().getId(),
+                                        sugestao.getSala().getId(),
+                                        sugestao.getProfessor().getId(),
+                                        sugestao.getDiaSemana(),
+                                        sugestao.getBlocoHorario().getId(),
+                                        sugestao.getQuadroHorario().getId(),
+                                        null,
+                                        null
+                                )
+                        )
+                        .toList();
+
+        return new SugestaoResponse(
+                false,
+                "Não é possível realizar a alocação.",
+                motivo,
+                sugestoes
+        );
+    }
+
 
     @Transactional(readOnly = true)
     public PageResponse<AlocacaoResponse> listar(
@@ -97,7 +194,8 @@ public class AlocacaoService {
 
         var page = repository.buscarPorFiltros(
                 turmaId, disciplinaId, salaId, usuarioId,
-                diaSemana, horarioId, quadroHorarioId, pageRequest);
+                diaSemana, horarioId, quadroHorarioId,
+                validarAutorizacaoCurso.cursoParaFiltro(null), pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(AlocacaoMapper::toResponse).toList(),
@@ -109,18 +207,19 @@ public class AlocacaoService {
 
     @Transactional(readOnly = true)
     public AlocacaoResponse buscarPorId(Long id) {
-        return repository.findById(id)
-                .map(AlocacaoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(
-                "Alocação não encontrada com ID: " + id));
+        Alocacao entity = repository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(
+            "Alocação não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
+        return AlocacaoMapper.toResponse(entity);
     }
 
     @Transactional
     public void deletar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException(
-                    "Alocação não encontrada com ID: " + id);
-        }
+        Alocacao entity = repository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(
+                "Alocação não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
         repository.deleteById(id);
     }
 }

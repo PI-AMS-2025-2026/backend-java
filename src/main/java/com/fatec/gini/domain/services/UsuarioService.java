@@ -11,6 +11,7 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
+import com.fatec.gini.domain.services.usecase.read.ValidarCursoObrigatorioUsuarioUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
@@ -29,10 +30,14 @@ public class UsuarioService {
 
     private final CursoRepository cursoRepository;
 
+    private final ValidarCursoObrigatorioUsuarioUseCase validarCursoObrigatorioUsuario;
+
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
         Usuario entity = UsuarioMapper.toEntity(request);
+
+        validarCursoObrigatorioUsuario.executar(request);
 
         if (request.curso() != null) {
             Curso curso = cursoRepository.findById(request.curso().id())
@@ -87,6 +92,8 @@ public class UsuarioService {
 
         Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+
+        validarCursoObrigatorioUsuario.executar(request);
 
         entity.setNome(request.nome());
         entity.setEmail(request.email());

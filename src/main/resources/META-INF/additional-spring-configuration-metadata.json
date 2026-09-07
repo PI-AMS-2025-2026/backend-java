@@ -13,5 +13,10 @@
     "name": "api.security.token.refreshExpirationMs",
     "type": "java.lang.Long",
     "description": "Tempo de expiração do JWT refresh token em milissegundos"
+  },
+  {
+    "name": "app.security.authorization.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'app.security.authorization.enabled'"
   }
 ]}

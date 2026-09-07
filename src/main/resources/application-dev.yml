@@ -14,6 +14,10 @@ spring:
       path: /h2-console
   flyway:
     enabled: false
+app:
+  security:
+    authorization:
+      enabled: false
 api:
   security:
     token:

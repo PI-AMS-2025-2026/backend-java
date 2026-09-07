@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
@@ -23,8 +24,11 @@ public class CursoService {
 
     private final CursoRepository repository;
 
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
     @Transactional
     public CursoResponse criar(CursoRequest dto) {
+        validarAutorizacaoCurso.validarAdministrador();
         Curso entity = CursoMapper.toEntity(dto);
 
         entity.setCreatedAt(LocalDateTime.now());
@@ -35,9 +39,10 @@ public class CursoService {
 
     @Transactional(readOnly = true)
     public CursoResponse buscarPorId(Long id) {
-        return repository.findById(id)
-                .map(CursoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
+        Curso curso = repository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(curso);
+        return CursoMapper.toResponse(curso);
     }
 
     @Transactional(readOnly = true)
@@ -50,7 +55,8 @@ public class CursoService {
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(nome, periodicidade, status, duracao, pageRequest);
+        var page = repository.buscarPorFiltros(nome, periodicidade, status, duracao,
+                validarAutorizacaoCurso.cursoParaFiltro(null), pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(CursoMapper::toResponse).toList(),
@@ -62,6 +68,7 @@ public class CursoService {
 
     @Transactional
     public CursoResponse atualizar(Long id, CursoRequest request) {
+        validarAutorizacaoCurso.validarAdministrador();
         Curso entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 
@@ -85,6 +92,7 @@ public class CursoService {
      */
     @Transactional
     public void inativar(Long id) {
+        validarAutorizacaoCurso.validarAdministrador();
         Curso entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + id));
 

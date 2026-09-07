@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@Profile("prod" )
+@Profile("prod")
 @RequiredArgsConstructor
 public class ConfiguracaoSeguranca {
 
@@ -91,14 +91,35 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers("/alocacoes/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/professores/**")
+                        .requestMatchers(HttpMethod.GET, "/professores/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/professores/**")
+                        .hasRole("ADMIN")
 
                         .requestMatchers("/disponibilidades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/cursos/**")
+                        .requestMatchers(HttpMethod.GET, "/cursos/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/cursos/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-sala/**", "/recursos/**",
+                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-sala/**", "/recursos/**",
+                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-sala/**", "/recursos/**",
+                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .hasRole("ADMIN")
 
                         .anyRequest().authenticated())
 

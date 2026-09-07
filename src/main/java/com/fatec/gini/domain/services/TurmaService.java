@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.services.usecase.read.ValidarTurmaSemVinculosUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.turma.TurmaRequest;
 import com.fatec.gini.dto.turma.TurmaResponse;
@@ -29,12 +30,15 @@ public class TurmaService {
 
     private final ValidarTurmaSemVinculosUseCase validarTurmaSemVinculos;
 
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
     @Transactional
     public TurmaResponse criar(TurmaRequest request) {
         Turma entity = TurmaMapper.toEntity(request);
 
         Curso curso = cursoRepository.findById(request.curso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+        validarAutorizacaoCurso.validarCurso(curso);
         entity.setCurso(curso);
         entity.setCodigo(request.periodo() + "/" + request.ano());
 
@@ -48,6 +52,7 @@ public class TurmaService {
     public TurmaResponse buscarPorId(Long id) {
         Turma entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
         return TurmaMapper.toResponse(entity);
     }
 
@@ -60,7 +65,7 @@ public class TurmaService {
             int pageNum,
             int size) {
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(idCurso, ano, periodo, codigo, pageRequest);
+        var page = repository.buscarPorFiltros(validarAutorizacaoCurso.cursoParaFiltro(idCurso), ano, periodo, codigo, pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(TurmaMapper::toResponse).toList(),
@@ -77,6 +82,8 @@ public class TurmaService {
 
         Curso curso = cursoRepository.findById(request.curso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+        validarAutorizacaoCurso.validarCurso(curso);
 
         entity.setCodigo(request.periodo() + "/" + request.ano());
 
@@ -91,9 +98,9 @@ public class TurmaService {
 
     @Transactional
     public void deletar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Turma não encontrada com ID: " + id);
-        }
+        Turma entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
         validarTurmaSemVinculos.validar(id);
         repository.deleteById(id);
     }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.entities.ProfessorDisciplina;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaRequest;
 import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaResponse;
@@ -27,6 +28,8 @@ public class ProfessorDisciplinaService {
     private final ProfessorRepository professorRepository;
     private final DisciplinaRepository disciplinaRepository;
 
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
     @Transactional
     public ProfessorDisciplinaResponse criar(ProfessorDisciplinaRequest request) {
 
@@ -40,6 +43,7 @@ public class ProfessorDisciplinaService {
 
         Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
                 .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
+        validarAutorizacaoCurso.validarCurso(disciplina.getCurso());
 
         ProfessorDisciplina entity = ProfessorDisciplinaMapper.toEntity(request);
         entity.setProfessor(professor);
@@ -52,6 +56,7 @@ public class ProfessorDisciplinaService {
     public ProfessorDisciplinaResponse buscarPorId(Long id) {
         ProfessorDisciplina entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+        validarAutorizacaoCurso.validarCurso(entity.getDisciplina().getCurso());
 
         return ProfessorDisciplinaMapper.toResponse(entity);
     }
@@ -85,6 +90,8 @@ public class ProfessorDisciplinaService {
 
         Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
                 .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
+        validarAutorizacaoCurso.validarCurso(entity.getDisciplina().getCurso());
+        validarAutorizacaoCurso.validarCurso(disciplina.getCurso());
 
         entity.setProfessor(professor);
         entity.setDisciplina(disciplina);
@@ -96,6 +103,7 @@ public class ProfessorDisciplinaService {
     public void deletar(Long id) {
         ProfessorDisciplina entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+        validarAutorizacaoCurso.validarCurso(entity.getDisciplina().getCurso());
 
         repository.delete(entity);
     }

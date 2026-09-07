@@ -21,6 +21,7 @@ import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
@@ -43,6 +44,9 @@ class DisciplinaServiceTest {
 
     @Mock
     private ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
+
+    @Mock
+    private ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @InjectMocks
     private DisciplinaService disciplinaService;
@@ -166,7 +170,9 @@ class DisciplinaServiceTest {
 
     @Test
     void deveDeletarDisciplinaSemVinculos() {
-        when(repository.existsById(5L)).thenReturn(true);
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(5L);
+        when(repository.findById(5L)).thenReturn(Optional.of(disciplina));
 
         disciplinaService.deletar(5L);
 
@@ -175,7 +181,7 @@ class DisciplinaServiceTest {
 
     @Test
     void deveLancarExcecaoAoDeletarDisciplinaInexistente() {
-        when(repository.existsById(99L)).thenReturn(false);
+        when(repository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> disciplinaService.deletar(99L));
 
@@ -184,7 +190,9 @@ class DisciplinaServiceTest {
 
     @Test
     void deveBloquearExclusaoQuandoDisciplinaTemVinculos() {
-        when(repository.existsById(5L)).thenReturn(true);
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(5L);
+        when(repository.findById(5L)).thenReturn(Optional.of(disciplina));
 
         doThrow(new RuntimeException("Disciplina possui vínculos"))
                 .when(validarDisciplinaSemVinculos).validar(5L);

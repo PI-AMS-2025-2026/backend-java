@@ -10,6 +10,7 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
@@ -33,6 +34,8 @@ public class DisciplinaService {
 
     private final ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
     @Transactional
     public DisciplinaResponse criar(DisciplinaRequest request) {
 
@@ -42,6 +45,7 @@ public class DisciplinaService {
         Curso curso = cursoRepository.findById(request.cursoId())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Curso não encontrado com ID: " + request.cursoId()));
+        validarAutorizacaoCurso.validarCurso(curso);
 
 // Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
         TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
@@ -64,6 +68,8 @@ public class DisciplinaService {
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Disciplina não encontrada com ID: " + id));
 
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+
         return DisciplinaMapper.toResponse(entity);
     }
 
@@ -79,7 +85,7 @@ public class DisciplinaService {
 
         var page = repository.findByFiltros(
                 nome,
-                cursoId,
+                validarAutorizacaoCurso.cursoParaFiltro(cursoId),
                 tipoSalaId,
                 pageRequest);
 
@@ -102,6 +108,8 @@ public class DisciplinaService {
         Curso curso = cursoRepository.findById(request.cursoId())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Curso não encontrado com ID: " + request.cursoId()));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+        validarAutorizacaoCurso.validarCurso(curso);
 
         // Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
         TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
@@ -125,9 +133,9 @@ public class DisciplinaService {
     @Transactional
     public void deletar(Long id) {
 
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Disciplina não encontrada com ID: " + id);
-        }
+                Disciplina entity = repository.findById(id)
+                                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
+                validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
         validarDisciplinaSemVinculos.validar(id);
 
