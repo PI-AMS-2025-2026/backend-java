@@ -69,7 +69,8 @@ public class ProfessorDisciplinaService {
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(professorId, disciplinaId, pageRequest);
+        var page = repository.buscarPorFiltros(professorId, disciplinaId,
+                validarAutorizacaoCurso.cursoParaFiltro(null), pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(ProfessorDisciplinaMapper::toResponse).toList(),

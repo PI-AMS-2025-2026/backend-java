@@ -56,9 +56,8 @@ public class AutenticacaoController {
                 Usuario usuario = (Usuario) authentication.getPrincipal();
 
                 // Emite um token curto para as requisicoes e um refresh token para renova-lo.
-                String accessToken = tokenService.gerarToken(usuario);
-
                 RefreshToken refreshToken = refreshTokenService.createRefreshToken(usuario.getId());
+                String accessToken = tokenService.gerarToken(usuario, refreshToken.getToken());
 
                 return ResponseEntity.ok(
                                 new LoginResponse(

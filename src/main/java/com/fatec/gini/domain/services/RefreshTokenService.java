@@ -66,7 +66,7 @@ public class RefreshTokenService {
 
         RefreshToken novoRefresh = createRefreshToken(usuario.getId());
 
-        String accessToken = tokenService.gerarToken(usuario);
+        String accessToken = tokenService.gerarToken(usuario, novoRefresh.getToken());
 
         return new LoginResponse(
                 accessToken,

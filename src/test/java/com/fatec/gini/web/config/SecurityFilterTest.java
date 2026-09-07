@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
+import com.fatec.gini.infrastructure.repositories.RefreshTokenRepository;
 
 import jakarta.servlet.FilterChain;
 
@@ -36,6 +38,9 @@ class SecurityFilterTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Mock
     private FilterChain filterChain;
@@ -102,6 +107,8 @@ class SecurityFilterTest {
         String email = "inexistente@fatec.sp.gov.br";
         request.addHeader("Authorization", "Bearer valid_token");
         when(tokenService.validarToken("valid_token")).thenReturn(email);
+        when(tokenService.validarSessao("valid_token")).thenReturn("session");
+        when(refreshTokenRepository.findByToken("session")).thenReturn(java.util.Optional.of(mock(com.fatec.gini.domain.entities.RefreshToken.class)));
         when(usuarioRepository.findByEmail(email)).thenReturn(null);
 
         securityFilter.doFilterInternal(request, response, filterChain);
@@ -120,6 +127,8 @@ class SecurityFilterTest {
         Usuario usuarioInativo = new Usuario("Usuario Inativo", email, "123456", Status.INATIVO, TipoUsuario.COORDENADOR);
 
         when(tokenService.validarToken("valid_token")).thenReturn(email);
+        when(tokenService.validarSessao("valid_token")).thenReturn("session");
+        when(refreshTokenRepository.findByToken("session")).thenReturn(java.util.Optional.of(mock(com.fatec.gini.domain.entities.RefreshToken.class)));
         when(usuarioRepository.findByEmail(email)).thenReturn(usuarioInativo);
 
         securityFilter.doFilterInternal(request, response, filterChain);
@@ -138,6 +147,8 @@ class SecurityFilterTest {
         Usuario usuarioAtivo = new Usuario("Admin Teste", email, "123456", Status.ATIVO, TipoUsuario.ADMINISTRADOR);
 
         when(tokenService.validarToken("valid_jwt_token")).thenReturn(email);
+        when(tokenService.validarSessao("valid_jwt_token")).thenReturn("session");
+        when(refreshTokenRepository.findByToken("session")).thenReturn(java.util.Optional.of(mock(com.fatec.gini.domain.entities.RefreshToken.class)));
         when(usuarioRepository.findByEmail(email)).thenReturn(usuarioAtivo);
 
         securityFilter.doFilterInternal(request, response, filterChain);

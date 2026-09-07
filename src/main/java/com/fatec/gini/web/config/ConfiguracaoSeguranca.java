@@ -71,9 +71,6 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers(HttpMethod.POST, "/auth/logout")
                         .permitAll()
 
-                        // .requestMatchers(HttpMethod.POST, "/auth/registrar")
-                        // .permitAll()
-
                         // Somente administrador
                         .requestMatchers("/usuarios/**")
                         .hasRole("ADMIN")

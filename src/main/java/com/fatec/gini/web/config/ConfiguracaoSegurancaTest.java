@@ -80,9 +80,6 @@ public class ConfiguracaoSegurancaTest {
                         .requestMatchers("/h2-console/**")
                         .permitAll()
 
-                        // .requestMatchers(HttpMethod.POST, "/auth/registrar")
-                        // .permitAll()
-
                         // Somente administrador
                         .requestMatchers("/usuarios/**")
                         .hasRole("ADMIN")

@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
+import com.fatec.gini.infrastructure.repositories.RefreshTokenRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +25,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
     private final UsuarioRepository usuarioRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,7 +35,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (token != null) {
             var email = tokenService.validarToken(token);
-            if (email != null && !email.isBlank()) {
+                var session = tokenService.validarSessao(token);
+                    if (email != null && !email.isBlank()
+                        && session != null
+                        && refreshTokenRepository.findByToken(session).isPresent()) {
                 UserDetails usuario = usuarioRepository.findByEmail(email);
 
                 if (usuario != null && usuario.isEnabled()) {

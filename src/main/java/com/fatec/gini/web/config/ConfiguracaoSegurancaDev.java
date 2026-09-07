@@ -16,6 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 @Profile("dev")
+/**
+ * Apenas o perfil dev deve liberar todos os endpoints, para facilitar o desenvolvimento
+ */
 public class ConfiguracaoSegurancaDev {
     /**
      * Configurações de CORS para permitir requisições do frontend.

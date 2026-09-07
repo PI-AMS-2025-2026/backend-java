@@ -7,7 +7,6 @@
 | DELETE /usuarios/{id}                     | ✅    | ❌         |
 | GET /usuarios/tipos                       | ✅    | ❌         |
 | POST /auth/login                          | ✅    | ✅         |
-| POST /auth/registrar                      | ✅    | ✅         |
 | GET /cursos                               | ✅    | ❌         |
 | POST /cursos                              | ✅    | ❌         |
 | GET /cursos/{id}                          | ✅    | ✅         |

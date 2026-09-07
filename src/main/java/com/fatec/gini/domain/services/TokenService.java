@@ -24,14 +24,20 @@ public class TokenService {
 
     // Cria o JWT usado para autorizar as requisicoes do usuario autenticado.
     public String gerarToken(Usuario usuario) {
+        return gerarToken(usuario, null);
+    }
+
+    public String gerarToken(Usuario usuario, String sessionToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
-            String token = JWT.create()
+            var builder = JWT.create()
                     .withIssuer(issuer)
                     .withSubject(usuario.getEmail())
-                    .withExpiresAt(gerarValidade())
-                    .sign(algorithm);
-            return token;
+                    .withExpiresAt(gerarValidade());
+            if (sessionToken != null) {
+                builder.withClaim("session", sessionToken);
+            }
+            return builder.sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Erro ao gerar um novo token");
         }
@@ -51,6 +57,20 @@ public class TokenService {
 
         } catch (JWTVerificationException exception) {
             return "";
+        }
+    }
+
+    public String validarSessao(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(this.secret);
+            return JWT.require(algorithm)
+                    .withIssuer(issuer)
+                    .build()
+                    .verify(token)
+                    .getClaim("session")
+                    .asString();
+        } catch (JWTVerificationException exception) {
+            return null;
         }
     }
 

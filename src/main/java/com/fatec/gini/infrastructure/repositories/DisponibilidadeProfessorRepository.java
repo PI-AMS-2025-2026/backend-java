@@ -21,11 +21,16 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
                      WHERE (:professorId IS NULL OR d.professor.id = :professorId)
                      AND (:diaSemana IS NULL OR d.diaSemana = :diaSemana)
                      AND (:blocoHorarioId IS NULL OR d.blocoHorario.id = :blocoHorarioId)
+                                    AND (:cursoId IS NULL OR EXISTS (
+                                           SELECT pd.id FROM ProfessorDisciplina pd
+                                           WHERE pd.professor = d.professor AND pd.disciplina.curso.id = :cursoId
+                                    ))
                      """)
        Page<DisponibilidadeProfessor> buscarComFiltros(
                      @Param("professorId") Long professorId,
                      @Param("diaSemana") DiaSemana diaSemana,
                      @Param("blocoHorarioId") Long blocoHorarioId,
+                     @Param("cursoId") Long cursoId,
                      Pageable pageable);
 
        /**
