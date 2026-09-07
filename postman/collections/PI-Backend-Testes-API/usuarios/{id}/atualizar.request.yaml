@@ -1,0 +1,25 @@
+$kind: http-request
+name: atualizar
+url: "{{baseUrl}}/usuarios/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "4"
+body:
+  type: json
+  content: |-
+    {
+      "email": "bianchi.chico@gmail.com",
+      "nome": "Francisco Bianchi",
+      "status": "ATIVO",
+      "tipoUsuario": "COORDENADOR",
+      "senha": "123456789",
+      "curso": {
+        "id": 4
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar.resources/examples
+order: 2000

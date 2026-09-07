@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/alocacoes?turma=9100&disciplina=9100&sala=9100&usuario=9100&dia_semana=DOMINGO&horario=9100&quadro_horario=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  turma: "9100"
+  disciplina: "9100"
+  sala: "9100"
+  usuario: "9100"
+  dia_semana: DOMINGO
+  horario: "9100"
+  quadro_horario: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/Listagem de alocações.resources/examples
+order: 3000

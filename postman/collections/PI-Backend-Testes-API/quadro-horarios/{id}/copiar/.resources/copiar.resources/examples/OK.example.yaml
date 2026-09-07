@@ -1,0 +1,58 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/quadro-horarios/:id/copiar"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+  body:
+    type: json
+    content: |-
+      {
+        "PeriodoAtividadeQuadro": {
+          "id": 2754
+        },
+        "curso": {
+          "id": 2531
+        },
+        "status": "INATIVO",
+        "versao": 8896
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 9828,
+        "versao": 3398,
+        "dataCriacao": "1954-09-30T10:58:03.285Z",
+        "status": "INATIVO",
+        "curso": {
+          "id": 2921,
+          "nome": "string",
+          "periodicidade": "string",
+          "status": "ATIVO",
+          "duracao": 7701,
+          "created_at": "1949-06-14T20:03:36.564Z",
+          "updated_at": "1968-06-05T20:57:51.172Z"
+        },
+        "periodoAtividadeQuadro": {
+          "idPeriodoAtividadeQuadro": 8338,
+          "ano": 6550,
+          "periodo": 3490,
+          "dataInicio": "1998-04-21",
+          "dataFim": "1960-11-10",
+          "status": "INATIVO",
+          "created_at": "1973-02-23T20:38:27.686Z",
+          "updated_at": "1978-05-27T10:46:19.707Z"
+        },
+        "created_at": "1991-12-17T21:43:41.021Z",
+        "updated_at": "1964-04-22T03:37:35.890Z"
+      }
+order: 1000

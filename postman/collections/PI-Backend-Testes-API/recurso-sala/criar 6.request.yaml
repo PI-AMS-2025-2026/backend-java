@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/recurso-sala"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "quantidade": 6002,
+      "recurso": {
+        "id": 4707
+      },
+      "sala": {
+        "id": 2676
+      }
+    }
+settings: {}
+examples: ./.resources/criar 6.resources/examples
+order: 3000

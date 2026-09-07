@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 13
+url: http://localhost:8080/cursos
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 13.resources/examples
+order: 2000

@@ -1,0 +1,79 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/disciplinas?nome=string&curso=9100&tipo_sala=9100&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+    curso: "9100"
+    tipo_sala: "9100"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 3404,
+            "nome": "string",
+            "cargaHoraria": 8308,
+            "tipoDisciplina": "string",
+            "periodo": 7882,
+            "modalidade": "string",
+            "codDisciplina": "string",
+            "cor": "string",
+            "curso": {
+              "id": 9690,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 3291,
+              "created_at": "2014-09-25T11:59:17.163Z",
+              "updated_at": "1988-12-24T13:14:20.081Z"
+            },
+            "tipoSala": {
+              "id": 1275,
+              "nome": "string"
+            },
+            "created_at": "2001-12-11T11:38:41.417Z",
+            "updated_at": "2017-01-21T11:05:46.404Z"
+          },
+          {
+            "id": 5867,
+            "nome": "string",
+            "cargaHoraria": 1606,
+            "tipoDisciplina": "string",
+            "periodo": 2537,
+            "modalidade": "string",
+            "codDisciplina": "string",
+            "cor": "string",
+            "curso": {
+              "id": 5366,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 9053,
+              "created_at": "1956-09-07T23:42:26.683Z",
+              "updated_at": "2009-01-29T00:57:31.334Z"
+            },
+            "tipoSala": {
+              "id": 8564,
+              "nome": "string"
+            },
+            "created_at": "1974-07-06T09:18:22.328Z",
+            "updated_at": "1947-08-19T16:06:38.550Z"
+          }
+        ],
+        "page": 7645,
+        "size": 6258,
+        "totalElements": 5526,
+        "totalPages": 3449
+      }
+order: 1000

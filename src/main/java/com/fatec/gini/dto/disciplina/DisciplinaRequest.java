@@ -17,13 +17,16 @@ public record DisciplinaRequest(
     String tipoDisciplina,
 
     @NotNull(message = "O período é obrigatório")
+    // CORREÇÃO: impede cadastro com período zero ou negativo
+    @Positive(message = "O período deve ser maior que zero")
     Integer periodo,
 
     @NotBlank(message = "A modalidade é obrigatória")
     String modalidade,
 
+    // CORREÇÃO: mensagem customizada para indicar explicitamente que o erro é do campo codDisciplina
     @NotBlank(message = "O código da disciplina é obrigatório")
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 20, message = "O código da disciplina (codDisciplina) deve ter entre 3 e 20 caracteres")
     String codDisciplina,
 
     String cor,

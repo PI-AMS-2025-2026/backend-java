@@ -1,0 +1,27 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/tipos-recurso?nome=string"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      [
+        {
+          "id": 6632,
+          "nome": "string"
+        },
+        {
+          "id": 6245,
+          "nome": "string"
+        }
+      ]
+order: 1000

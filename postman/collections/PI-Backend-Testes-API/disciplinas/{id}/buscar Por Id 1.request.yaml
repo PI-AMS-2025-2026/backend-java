@@ -1,0 +1,11 @@
+$kind: http-request
+name: buscar Por Id 1
+url: "{{baseUrl}}/disciplinas/:id"
+method: GET
+headers:
+  Accept: "*/*"
+pathVariables:
+  id: "1"
+settings: {}
+examples: ./.resources/buscar Por Id 1.resources/examples
+order: 1000

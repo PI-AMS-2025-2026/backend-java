@@ -8,19 +8,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
+import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +48,10 @@ public class AlocacaoService {
 
     private final ValidarSugestaoAutomatica validarSugestaoAutomatica;
 
+    private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+
+    private final BlocoHorarioRepository blocoHorarioRepository;
+
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
         Alocacao entity = AlocacaoMapper.toEntity(request);
@@ -57,7 +68,6 @@ public class AlocacaoService {
     @Transactional
     public List<AlocacaoResponse> criarLote(List<AlocacaoRequest> requests) {
         // 1. Validar duplicidades cruzadas dentro do próprio lote recebido
-        // (Pode chamar a validação descrita no passo 2)
         alocacaoLoteUseCase.validarDuplicidadesNoLote(requests);
 
         // 2. Processar cada requisição usando o CriarAlocacaoUseCase existente
@@ -67,7 +77,6 @@ public class AlocacaoService {
                     entity.setCreatedAt(LocalDateTime.now());
                     entity.setUpdatedAt(LocalDateTime.now());
 
-                    // O método executar realiza todas as validações de banco/negócio e persiste
                     Alocacao alocacaoSalva = criarAlocacaoUseCase.executar(
                             entity,
                             validarAutorizacaoCurso.usuarioAutenticado().getId());
@@ -83,15 +92,15 @@ public class AlocacaoService {
         entity.setUpdatedAt(LocalDateTime.now());
         String justificativaAlteracao = request.justificativaAlteracao();
 
-       return AlocacaoMapper.toResponse(
-        atualizarAlocacaoUseCase.executar(
-                id,
-                entity,
-                validarAutorizacaoCurso.usuarioAutenticado().getId(),
-                justificativaAlteracao));
+        return AlocacaoMapper.toResponse(
+                atualizarAlocacaoUseCase.executar(
+                        id,
+                        entity,
+                        validarAutorizacaoCurso.usuarioAutenticado().getId(),
+                        justificativaAlteracao));
     }
 
-     /*
+    /*
      * RF06 — Sugestão Automática de Ajuste.
      *
      * Recebe uma tentativa de posicionamento da disciplina
@@ -106,83 +115,51 @@ public class AlocacaoService {
     public SugestaoResponse sugerirAlternativas(
             SugestaoRequest request) {
 
-        /*
-         * Cria uma AlocacaoRequest temporária apenas para
-         * reutilizar o AlocacaoMapper existente.
-         */
-        AlocacaoRequest tentativa =
-                new AlocacaoRequest(
-                        request.turma().id(),
-                        request.disciplina().id(),
-                        request.sala().id(),
-                        request.professor().id(),
-                        request.diaSemana(),
-                        request.horario().id(),
-                        request.quadroHorario().id(),
-                        null,
-                        null
-                );
+        AlocacaoRequest tentativa = new AlocacaoRequest(
+                request.turma().id(),
+                request.disciplina().id(),
+                request.sala().id(),
+                request.professor().id(),
+                request.diaSemana(),
+                request.horario().id(),
+                request.quadroHorario().id(),
+                null,
+                null);
 
-        /*
-         * Cria uma entidade temporária.
-         *
-         * Essa entidade não é salva no banco.
-         */
-        Alocacao entity =
-                AlocacaoMapper.toEntity(tentativa);
+        Alocacao entity = AlocacaoMapper.toEntity(tentativa);
 
-        /*
-         * Primeiro verifica se a combinação escolhida
-         * pelo usuário já é válida.
-         */
-        String motivo =
-                validarSugestaoAutomatica
-                        .identificarMotivo(entity);
+        String motivo = validarSugestaoAutomatica.identificarMotivo(entity);
 
-        /*
-         * Se não existe conflito, não há necessidade
-         * de gerar sugestões.
-         */
         if (motivo == null) {
 
             return new SugestaoResponse(
                     true,
                     "A combinação informada é válida.",
                     null,
-                    List.of()
-            );
+                    List.of());
         }
 
-        /*
-         * Caso exista conflito, procura alternativas.
-         */
-        List<AlocacaoRequest> sugestoes =
-                validarSugestaoAutomatica
-                        .executar(entity)
-                        .stream()
-                        .map(sugestao ->
-                                new AlocacaoRequest(
-                                        sugestao.getTurma().getId(),
-                                        sugestao.getDisciplina().getId(),
-                                        sugestao.getSala().getId(),
-                                        sugestao.getProfessor().getId(),
-                                        sugestao.getDiaSemana(),
-                                        sugestao.getBlocoHorario().getId(),
-                                        sugestao.getQuadroHorario().getId(),
-                                        null,
-                                        null
-                                )
-                        )
-                        .toList();
+        List<AlocacaoRequest> sugestoes = validarSugestaoAutomatica
+                .executar(entity)
+                .stream()
+                .map(sugestao -> new AlocacaoRequest(
+                        sugestao.getTurma().getId(),
+                        sugestao.getDisciplina().getId(),
+                        sugestao.getSala().getId(),
+                        sugestao.getProfessor().getId(),
+                        sugestao.getDiaSemana(),
+                        sugestao.getBlocoHorario().getId(),
+                        sugestao.getQuadroHorario().getId(),
+                        null,
+                        null))
+                .toList();
 
         return new SugestaoResponse(
                 false,
                 "Não é possível realizar a alocação.",
                 motivo,
-                sugestoes
-        );
+                sugestoes);
     }
-
 
     @Transactional(readOnly = true)
     public PageResponse<AlocacaoResponse> listar(
@@ -208,8 +185,8 @@ public class AlocacaoService {
     @Transactional(readOnly = true)
     public AlocacaoResponse buscarPorId(Long id) {
         Alocacao entity = repository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(
-            "Alocação não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Alocação não encontrada com ID: " + id));
         validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
         return AlocacaoMapper.toResponse(entity);
     }
@@ -217,9 +194,31 @@ public class AlocacaoService {
     @Transactional
     public void deletar(Long id) {
         Alocacao entity = repository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(
-                "Alocação não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Alocação não encontrada com ID: " + id));
         validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
         repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
+        BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Bloco horário não encontrado com ID: " + request.horario().id()));
+
+        Alocacao alocacaoSimulada = new Alocacao();
+        alocacaoSimulada.setProfessor(new Professor());
+        alocacaoSimulada.getProfessor().setId(request.professor().id());
+        alocacaoSimulada.setDiaSemana(request.diaSemana());
+        alocacaoSimulada.setBlocoHorario(blocoHorario);
+
+        try {
+            validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(),
+                    alocacaoSimulada);
+            return new ValidarCargaHorariaResponse(true,
+                    "Carga horária válida para o professor no dia informado.");
+        } catch (BusinessException ex) {
+            return new ValidarCargaHorariaResponse(false, ex.getMessage());
+        }
     }
 }

@@ -3,9 +3,11 @@ package com.fatec.gini.domain.services;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.AccessDeniedException;
+        import org.springframework.security.access.AccessDeniedException;
+        import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
@@ -46,13 +48,18 @@ public class DisponibilidadeProfessorService {
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
+        // CORREÇÃO: impede cadastro duplicado de disponibilidade para o mesmo professor, dia e bloco de horário
+        if (repository.existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(
+                professor.getId(), request.diaSemana(), blocoHorario.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe uma disponibilidade cadastrada para este professor neste dia e bloco de horário.");
+        }
+
         DisponibilidadeProfessor entity = DisponibilidadeProfessorMapper.toEntity(request);
 
-        // ALTERAÇÃO: associa as entidades existentes encontradas no banco.
         entity.setProfessor(professor);
         entity.setBlocoHorario(blocoHorario);
 
-        // ALTERAÇÃO: registra as datas de criação e atualização.
         LocalDateTime agora = LocalDateTime.now();
         entity.setCreatedAt(agora);
         entity.setUpdatedAt(agora);
@@ -114,14 +121,21 @@ public class DisponibilidadeProfessorService {
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Horário não encontrado com ID: " + request.blocoHorario().id()));
 
+        // CORREÇÃO: mesma validação de duplicidade ao atualizar, ignorando o próprio registro sendo editado
+        if (repository.existsByProfessorIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
+                professor.getId(), request.diaSemana(), blocoHorario.getId(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe outra disponibilidade cadastrada para este professor neste dia e bloco de horário.");
+        }
+
         entity.setProfessor(professor);
         entity.setBlocoHorario(blocoHorario);
-
-// ALTERAÇÃO: atualiza também o dia da semana informado no payload.
         entity.setDiaSemana(request.diaSemana());
 
         entity.setUpdatedAt(LocalDateTime.now());
-        repository.save(entity);
+
+        // CORREÇÃO: removida a chamada duplicada a repository.save(entity) que existia neste método
+
         repository.save(entity);
 
         return DisponibilidadeProfessorMapper.toResponse(entity);
@@ -135,7 +149,7 @@ public class DisponibilidadeProfessorService {
         validarProfessor(disponibilidade.getProfessor().getId());
 
         repository.delete(disponibilidade);
-    }
+        }
 
         private void validarProfessor(Long professorId) {
                 Long cursoId = validarAutorizacaoCurso.cursoParaFiltro(null);

@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/disponibilidades-professores?professor=9100&dia_semana=DOMINGO&bloco_horario=9100&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  professor: "9100"
+  dia_semana: DOMINGO
+  bloco_horario: "9100"
+  page: "0"
+  size: "10"
+settings: {}
+examples: ./.resources/listar 11.resources/examples
+order: 2000

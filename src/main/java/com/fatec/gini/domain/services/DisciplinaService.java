@@ -3,8 +3,10 @@ package com.fatec.gini.domain.services;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Disciplina;
@@ -26,17 +28,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DisciplinaService {
 
-    private final DisciplinaRepository repository;
+        private final DisciplinaRepository repository;
 
-    private final CursoRepository cursoRepository;
+        private final CursoRepository cursoRepository;
 
-    private final TipoSalaRepository tipoSalaRepository;
+        private final TipoSalaRepository tipoSalaRepository;
 
-    private final ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
+        private final ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
         private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
-    @Transactional
+        @Transactional
     public DisciplinaResponse criar(DisciplinaRequest request) {
 
         Disciplina entity = DisciplinaMapper.toEntity(request);
@@ -127,18 +129,20 @@ public class DisciplinaService {
         entity.setTipoSala(tipoSala);
 
         entity.setUpdatedAt(LocalDateTime.now());
+        if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe outra disciplina cadastrada com o código (codDisciplina): " + request.codDisciplina());
+        }
         return DisciplinaMapper.toResponse(repository.save(entity));
     }
 
     @Transactional
     public void deletar(Long id) {
 
-                Disciplina entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
-                validarAutorizacaoCurso.validarCurso(entity.getCurso());
-
+        Disciplina entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
         validarDisciplinaSemVinculos.validar(id);
-
         repository.deleteById(id);
     }
 }

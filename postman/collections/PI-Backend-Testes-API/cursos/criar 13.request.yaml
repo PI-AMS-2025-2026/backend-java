@@ -1,0 +1,19 @@
+$kind: http-request
+name: criar 13
+url: "{{baseUrl}}/cursos"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "duracao": 6,
+      "nome": "Engenharia de Software",
+      "periodicidade": "Semestral",
+      "status": "Ativo"
+    }
+settings: {}
+examples: ./.resources/criar 13.resources/examples
+order: 3000

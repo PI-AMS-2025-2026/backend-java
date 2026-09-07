@@ -1,0 +1,5 @@
+$kind: collection
+name: PI-Backend-Testes-API
+description: ""
+variables:
+  baseUrl: http://localhost:8080

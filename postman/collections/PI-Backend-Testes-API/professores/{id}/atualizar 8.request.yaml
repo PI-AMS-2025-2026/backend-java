@@ -1,0 +1,21 @@
+$kind: http-request
+name: atualizar 8
+url: "{{baseUrl}}/professores/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "3"
+body:
+  type: json
+  content: |-
+    {
+      "email": "renato.cardoso@hotmail.com",
+      "nome": "Renato Cardoso",
+      "status": "inativo",
+      "cidade": "Jundiaí"
+    }
+settings: {}
+examples: ./.resources/atualizar 8.resources/examples
+order: 2000

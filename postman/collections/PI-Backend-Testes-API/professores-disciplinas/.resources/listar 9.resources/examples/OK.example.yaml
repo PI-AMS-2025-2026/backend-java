@@ -1,0 +1,102 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/professores-disciplinas?usuario=9100&disciplina=9100&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    usuario: "9100"
+    disciplina: "9100"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 2501,
+            "professor": {
+              "id": 4447,
+              "nome": "string",
+              "email": "string",
+              "cidade": "string",
+              "status": "ATIVO",
+              "created_at": "1971-10-31T11:11:27.962Z",
+              "updated_at": "2008-09-01T17:11:12.110Z"
+            },
+            "disciplina": {
+              "id": 2373,
+              "nome": "string",
+              "cargaHoraria": 2178,
+              "tipoDisciplina": "string",
+              "periodo": 4654,
+              "modalidade": "string",
+              "codDisciplina": "string",
+              "cor": "string",
+              "curso": {
+                "id": 7921,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "INATIVO",
+                "duracao": 2692,
+                "created_at": "2005-07-01T02:51:20.508Z",
+                "updated_at": "1976-12-22T01:32:09.941Z"
+              },
+              "tipoSala": {
+                "id": 7386,
+                "nome": "string"
+              },
+              "created_at": "2004-06-17T13:28:23.027Z",
+              "updated_at": "2001-11-06T23:07:01.321Z"
+            }
+          },
+          {
+            "id": 4632,
+            "professor": {
+              "id": 4261,
+              "nome": "string",
+              "email": "string",
+              "cidade": "string",
+              "status": "ATIVO",
+              "created_at": "1947-11-26T09:12:12.767Z",
+              "updated_at": "1971-01-20T23:22:53.113Z"
+            },
+            "disciplina": {
+              "id": 8649,
+              "nome": "string",
+              "cargaHoraria": 4782,
+              "tipoDisciplina": "string",
+              "periodo": 4370,
+              "modalidade": "string",
+              "codDisciplina": "string",
+              "cor": "string",
+              "curso": {
+                "id": 7103,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "INATIVO",
+                "duracao": 6706,
+                "created_at": "1965-01-19T23:00:15.629Z",
+                "updated_at": "1981-08-24T18:32:15.669Z"
+              },
+              "tipoSala": {
+                "id": 7515,
+                "nome": "string"
+              },
+              "created_at": "1983-07-18T07:02:23.506Z",
+              "updated_at": "1959-07-31T16:21:11.542Z"
+            }
+          }
+        ],
+        "page": 2571,
+        "size": 2919,
+        "totalElements": 7521,
+        "totalPages": 2795
+      }
+order: 1000

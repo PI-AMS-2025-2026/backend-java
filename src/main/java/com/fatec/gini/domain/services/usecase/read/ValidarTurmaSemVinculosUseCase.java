@@ -12,12 +12,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ValidarTurmaSemVinculosUseCase {
 
-    private final  AlocacaoRepository alocacaoRepository;
+    private final AlocacaoRepository alocacaoRepository;
 
     @Transactional(readOnly = true)
     public void validar(Long idTurma) {
+
         if (alocacaoRepository.existsByTurmaId(idTurma)) {
-            throw new BusinessException("Não é possível excluir turma vinculada a alocações.");
+
+            throw new BusinessException(
+                    "Não é possível excluir turma vinculada a alocações.");
         }
     }
 }

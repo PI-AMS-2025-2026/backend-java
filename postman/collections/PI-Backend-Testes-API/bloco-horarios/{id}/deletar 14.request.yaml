@@ -1,0 +1,9 @@
+$kind: http-request
+name: deletar 14
+url: "{{baseUrl}}/bloco-horarios/:id"
+method: DELETE
+pathVariables:
+  id: "1"
+settings: {}
+examples: ./.resources/deletar 14.resources/examples
+order: 3000

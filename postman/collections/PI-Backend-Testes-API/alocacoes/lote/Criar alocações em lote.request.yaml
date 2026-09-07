@@ -1,0 +1,64 @@
+$kind: http-request
+url: "{{baseUrl}}/alocacoes/lote"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    [
+      {
+        "diaSemana": "QUARTA",
+        "disciplina": {
+          "id": 7887
+        },
+        "horario": {
+          "id": 7797
+        },
+        "professor": {
+          "id": 7375
+        },
+        "quadroHorario": {
+          "id": 6836
+        },
+        "sala": {
+          "id": 8347
+        },
+        "turma": {
+          "id": 8919
+        },
+        "usuarioAlteracao": {
+          "id": 2511
+        },
+        "justificativaAlteracao": "string"
+      },
+      {
+        "diaSemana": "TERCA",
+        "disciplina": {
+          "id": 4497
+        },
+        "horario": {
+          "id": 289
+        },
+        "professor": {
+          "id": 6505
+        },
+        "quadroHorario": {
+          "id": 9912
+        },
+        "sala": {
+          "id": 5559
+        },
+        "turma": {
+          "id": 508
+        },
+        "usuarioAlteracao": {
+          "id": 9101
+        },
+        "justificativaAlteracao": "string"
+      }
+    ]
+settings: {}
+examples: ./.resources/Criar alocações em lote.resources/examples
+order: 1000

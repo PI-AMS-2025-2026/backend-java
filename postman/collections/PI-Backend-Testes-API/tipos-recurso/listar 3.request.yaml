@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 3
+url: "{{baseUrl}}/tipos-recurso"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 3.resources/examples
+order: 2000

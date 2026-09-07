@@ -21,6 +21,8 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
+import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
@@ -69,6 +71,13 @@ public class AlocacaoController {
                 List<AlocacaoResponse> response = service.criarLote(requests);
 
                 return ResponseEntity.ok(response);
+        }
+
+        @PostMapping("/validar-carga-horaria")
+        @Operation(summary = "Validar jornada do professor sem persistir alterações")
+        public ResponseEntity<ValidarCargaHorariaResponse> validarCargaHorariaSemPersistir(
+                        @RequestBody @Valid ValidarCargaHorariaRequest request) {
+                return ResponseEntity.ok(service.validarCargaHorariaSemPersistir(request));
         }
 
         /**

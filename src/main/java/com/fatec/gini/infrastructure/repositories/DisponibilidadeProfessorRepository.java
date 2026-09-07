@@ -13,43 +13,48 @@ import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
-       boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(Long professorId, DiaSemana diaSemana, Long blocoHorarioId);
+    /**
+     * Verifica duplicidade na criação (mesmo professor + dia da semana + bloco de horário).
+     */
+    boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(Long professorId, DiaSemana diaSemana, Long blocoHorarioId);
 
-       @Query("""
-                     SELECT d
-                     FROM DisponibilidadeProfessor d
-                     WHERE (:professorId IS NULL OR d.professor.id = :professorId)
-                     AND (:diaSemana IS NULL OR d.diaSemana = :diaSemana)
-                     AND (:blocoHorarioId IS NULL OR d.blocoHorario.id = :blocoHorarioId)
-                                    AND (:cursoId IS NULL OR EXISTS (
-                                           SELECT pd.id FROM ProfessorDisciplina pd
-                                           WHERE pd.professor = d.professor AND pd.disciplina.curso.id = :cursoId
-                                    ))
-                     """)
-       Page<DisponibilidadeProfessor> buscarComFiltros(
-                     @Param("professorId") Long professorId,
-                     @Param("diaSemana") DiaSemana diaSemana,
-                     @Param("blocoHorarioId") Long blocoHorarioId,
-                     @Param("cursoId") Long cursoId,
-                     Pageable pageable);
+    /**
+     * Verifica duplicidade na atualização, ignorando o próprio registro em edição (via IdNot).
+     */
+    boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(Long professorId, DiaSemana diaSemana, Long blocoHorarioId, Long id);
 
-       /**
-        * REGRA DE DISPONIBILIDADE: "O professor pode trabalhar agora?"
-        * A regra verifica se existe um registro prévio que autorize a alocação do
-        * usuário para o par DiaSemana/Horário informado.
-        * retorna true se o contador for > 0 (possui permissão), false caso contrário.
-        */
-       @Query("""
-                            SELECT COUNT(d) > 0
-                            FROM DisponibilidadeProfessor d
-                            WHERE d.professor.id = :professorId
-                            AND d.diaSemana = :diaSemana
-                            AND d.blocoHorario.id = :blocoHorarioId
-                     """)
-       boolean verificarDisponibilidadeProfessor(
-                     @Param("professorId") Long professorId,
-                     @Param("diaSemana") DiaSemana diaSemana,
-                     @Param("blocoHorarioId") Long blocoHorarioId);
+    @Query("""
+            SELECT d
+            FROM DisponibilidadeProfessor d
+            WHERE (:professorId IS NULL OR d.professor.id = :professorId)
+            AND (:diaSemana IS NULL OR d.diaSemana = :diaSemana)
+            AND (:blocoHorarioId IS NULL OR d.blocoHorario.id = :blocoHorarioId)
+            AND (:cursoId IS NULL OR EXISTS (
+                SELECT pd.id FROM ProfessorDisciplina pd
+                WHERE pd.professor = d.professor AND pd.disciplina.curso.id = :cursoId
+            ))
+            """)
+    Page<DisponibilidadeProfessor> buscarComFiltros(
+            @Param("professorId") Long professorId,
+            @Param("diaSemana") DiaSemana diaSemana,
+            @Param("blocoHorarioId") Long blocoHorarioId,
+            @Param("cursoId") Long cursoId,
+            Pageable pageable);
 
-       List<DisponibilidadeProfessor> findByProfessorIdIn(List<Long> professorIds);
+    /**
+     * Verifica se existe registro que autorize a alocação do professor para o par DiaSemana/Horário.
+     */
+    @Query("""
+            SELECT COUNT(d) > 0
+            FROM DisponibilidadeProfessor d
+            WHERE d.professor.id = :professorId
+            AND d.diaSemana = :diaSemana
+            AND d.blocoHorario.id = :blocoHorarioId
+            """)
+    boolean verificarDisponibilidadeProfessor(
+            @Param("professorId") Long professorId,
+            @Param("diaSemana") DiaSemana diaSemana,
+            @Param("blocoHorarioId") Long blocoHorarioId);
+
+    List<DisponibilidadeProfessor> findByProfessorIdIn(List<Long> professorIds);
 }

@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/disponibilidades-professores/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "9100"
+body:
+  type: json
+  content: |-
+    {
+      "blocoHorario": {
+        "id": 3185
+      },
+      "diaSemana": {
+        "id": 6847
+      },
+      "professor": {
+        "id": 3063
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar 11.resources/examples
+order: 2000

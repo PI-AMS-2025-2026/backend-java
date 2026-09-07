@@ -1,0 +1,21 @@
+$kind: http-request
+name: criar 9
+url: "{{baseUrl}}/professores-disciplinas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "disciplina": {
+        "id": 1
+      },
+      "professor": {
+        "id": 9
+      }
+    }
+settings: {}
+examples: ./.resources/criar 9.resources/examples
+order: 3000

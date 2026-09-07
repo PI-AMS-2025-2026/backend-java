@@ -1,0 +1,19 @@
+$kind: http-request
+name: atualizar 13
+url: http://localhost:8080/cursos/13
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "duracao": 4,
+      "nome": "Gestão da Tecnologia de Informação",
+      "periodicidade": "Semestral",
+      "status": "Inativo"
+    }
+settings: {}
+examples: ./.resources/atualizar 13.resources/examples
+order: 2000

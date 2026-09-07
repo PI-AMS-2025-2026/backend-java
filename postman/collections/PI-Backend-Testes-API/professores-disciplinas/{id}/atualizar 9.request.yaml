@@ -1,0 +1,23 @@
+$kind: http-request
+name: atualizar 9
+url: "{{baseUrl}}/professores-disciplinas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "2"
+body:
+  type: json
+  content: |-
+    {
+      "disciplina": {
+        "id": 1
+      },
+      "professor": {
+        "id": 4
+      }
+    }
+settings: {}
+examples: ./.resources/atualizar 9.resources/examples
+order: 2000

@@ -69,6 +69,24 @@ public class AtualizarAlocacaoUseCase {
     @Transactional
     public Alocacao executar(Long id, Alocacao entity, long professorAlteracao, String justificativaAlteracao) {
 
+        Alocacao alocacaoAtual = alocacaoRepository.findById(id)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
+                        "Alocação não encontrada com ID: " + id));
+
+        Alocacao alocacaoAntiga = new Alocacao(
+                alocacaoAtual.getTurma(),
+                alocacaoAtual.getDisciplina(),
+                alocacaoAtual.getSala(),
+                alocacaoAtual.getProfessor(),
+                alocacaoAtual.getDiaSemana(),
+                alocacaoAtual.getBlocoHorario(),
+                alocacaoAtual.getQuadroHorario());
+        alocacaoAntiga.setId(alocacaoAtual.getId());
+        alocacaoAntiga.setCreatedAt(alocacaoAtual.getCreatedAt());
+
+        entity.setId(id);
+        entity.setCreatedAt(alocacaoAtual.getCreatedAt());
+
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
         var professorAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(professorAlteracao);
@@ -81,11 +99,11 @@ public class AtualizarAlocacaoUseCase {
         );
 
         // Validar limite máximo da carga horária total da disciplina 
-        validarCargaHorariaDisciplina.executar(entity);
+        validarCargaHorariaDisciplina.executar(entity, id);
 
         // Validar se o professor já atingiu a carga horária máxima diária para o dia da
         // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana());
+        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana(), entity);
 
         // Validar quadro horário
         validarQuadroHorario.executar(entity);
@@ -108,7 +126,7 @@ public class AtualizarAlocacaoUseCase {
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
         // registrar histórico de atualização
-        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, entity, professorAlteracaoEntity,
+        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, alocacaoAntiga, professorAlteracaoEntity,
                 justificativaAlteracao);
 
         // validar coerência entre curso da quadro horário, turma e disciplina
