@@ -12,9 +12,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "curso")
+@Table(
+    name = "curso",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "uk_curso_nome_periodicidade_duracao",
+            columnNames = {"nome", "periodicidade", "duracao"}
+        )
+    }
+)
 public class Curso {
 
     @Id
@@ -33,7 +41,8 @@ public class Curso {
     @Column(name = "id_curso")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    // Alteração: nome não é mais único sozinho.
+    @Column(nullable = false)
     private String nome;
 
     @Column(nullable = false)
@@ -83,17 +92,22 @@ public class Curso {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
+
         if (obj == null)
             return false;
+
         if (getClass() != obj.getClass())
             return false;
+
         Curso other = (Curso) obj;
+
         if (id == null) {
             if (other.id != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!id.equals(other.id)) {
             return false;
+        }
+
         return true;
     }
-
 }
