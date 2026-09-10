@@ -78,8 +78,6 @@ public class QuadroHorarioService {
         validarQuadroHorarioValidoUseCase.validarQuadroAtivoDuplicado(entity);
         validarPeriodoAtividadeQuadroAtivoUseCase.executar(entity);
 
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return QuadroHorarioMapper.toResponse(repository.save(entity));
     }
@@ -141,7 +139,6 @@ public class QuadroHorarioService {
         validarQuadroHorarioValidoUseCase.validarQuadroAtivoDuplicado(entity);
         validarPeriodoAtividadeQuadroAtivoUseCase.executar(entity);
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return QuadroHorarioMapper.toResponse(repository.save(entity));
     }
@@ -154,7 +151,6 @@ public class QuadroHorarioService {
         validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
         entity.setStatus(Status.INATIVO);
-        entity.setUpdatedAt(LocalDateTime.now());
         repository.save(entity);
     }
 

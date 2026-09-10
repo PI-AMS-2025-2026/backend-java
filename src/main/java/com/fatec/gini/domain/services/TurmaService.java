@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.models.Status;
-import com.fatec.gini.domain.services.usecase.read.ValidarTurmaSemVinculosUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarTurmaSemVinculosUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.turma.TurmaRequest;
 import com.fatec.gini.dto.turma.TurmaResponse;
@@ -69,10 +67,6 @@ public class TurmaService {
 
         entity.setCodigo(
                 request.periodo() + "/" + request.ano());
-
-        entity.setCreatedAt(LocalDateTime.now());
-
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return TurmaMapper.toResponse(
                 repository.save(entity));
@@ -162,7 +156,6 @@ public class TurmaService {
 
         entity.setCurso(curso);
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return TurmaMapper.toResponse(
                 repository.save(entity));

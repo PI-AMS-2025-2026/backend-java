@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +29,6 @@ public class CursoService {
         validarAutorizacaoCurso.validarAdministrador();
         Curso entity = CursoMapper.toEntity(dto);
 
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return CursoMapper.toResponse(repository.save(entity));
     }
@@ -77,7 +73,6 @@ public class CursoService {
         entity.setStatus(request.status());
         entity.setDuracao(request.duracao());
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return CursoMapper.toResponse(repository.save(entity));
     }
@@ -98,7 +93,6 @@ public class CursoService {
 
         entity.setStatus(Status.INATIVO);
 
-        entity.setUpdatedAt(LocalDateTime.now());
         repository.save(entity);
     }
 }

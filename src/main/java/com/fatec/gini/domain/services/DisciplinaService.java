@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,8 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
-import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
@@ -57,8 +55,6 @@ public class DisciplinaService {
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
 
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return DisciplinaMapper.toResponse(repository.save(entity));
     }
@@ -128,7 +124,6 @@ public class DisciplinaService {
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
 
-        entity.setUpdatedAt(LocalDateTime.now());
         if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Já existe outra disciplina cadastrada com o código (codDisciplina): " + request.codDisciplina());

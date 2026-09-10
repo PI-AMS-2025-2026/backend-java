@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +11,8 @@ import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.professor.ProfessorRequest;
 import com.fatec.gini.dto.professor.ProfessorResponse;
 import com.fatec.gini.infrastructure.mappers.ProfessorMapper;
-import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +30,6 @@ public class ProfessorService {
 
         Professor professor = ProfessorMapper.toEntity(request);
 
-        professor.setCreatedAt(LocalDateTime.now());
-        professor.setUpdatedAt(LocalDateTime.now());
 
         return ProfessorMapper.toResponse(repository.save(professor));
     }
@@ -83,7 +79,6 @@ public class ProfessorService {
         professor.setEmail(request.email());
         professor.setStatus(request.status());
 
-        professor.setUpdatedAt(LocalDateTime.now());
 
         return ProfessorMapper.toResponse(repository.save(professor));
     }
@@ -95,7 +90,6 @@ public class ProfessorService {
             validarProfessor(professor);
 
         professor.setStatus(Status.INATIVO);
-        professor.setUpdatedAt(LocalDateTime.now());
 
         repository.save(professor);
     }

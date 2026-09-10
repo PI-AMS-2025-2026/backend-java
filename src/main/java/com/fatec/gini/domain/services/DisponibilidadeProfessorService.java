@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
 
 import org.springframework.data.domain.PageRequest;
         import org.springframework.security.access.AccessDeniedException;
@@ -59,10 +58,6 @@ public class DisponibilidadeProfessorService {
 
         entity.setProfessor(professor);
         entity.setBlocoHorario(blocoHorario);
-
-        LocalDateTime agora = LocalDateTime.now();
-        entity.setCreatedAt(agora);
-        entity.setUpdatedAt(agora);
 
         repository.save(entity);
 
@@ -132,7 +127,6 @@ public class DisponibilidadeProfessorService {
         entity.setBlocoHorario(blocoHorario);
         entity.setDiaSemana(request.diaSemana());
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         // CORREÇÃO: removida a chamada duplicada a repository.save(entity) que existia neste método
 

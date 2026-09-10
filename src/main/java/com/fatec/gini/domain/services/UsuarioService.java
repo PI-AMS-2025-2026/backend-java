@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,8 +46,6 @@ public class UsuarioService {
         String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
 
         entity.setSenha(encrypSenha);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(entity));
     }
@@ -107,7 +103,6 @@ public class UsuarioService {
             entity.setCurso(curso);
         }
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(entity));
     }
@@ -118,7 +113,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 
         entity.setStatus(Status.INATIVO);
-        entity.setUpdatedAt(LocalDateTime.now());
 
         repository.save(entity);
     }
