@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import com.fatec.gini.dto.sala.SalaResponse;
 import com.fatec.gini.infrastructure.mappers.SalaMapper;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,23 +32,38 @@ public class SalaService {
 
     @Transactional
     public SalaResponse criar(SalaRequest request) {
+
+        if (repository.existsByCodigoIgnoreCase(request.codigo())) {
+            throw new BusinessException(
+                    "Já existe uma sala cadastrada com o código: "
+                            + request.codigo());
+        }
+
         Sala entity = SalaMapper.toEntity(request);
 
-        // ALTERAÇÃO: busca o tipo de sala diretamente pelo ID recebido no payload.
         TipoSala tipo = tipoSalaRepository.findById(request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
+                        "Tipo de sala não encontrado com ID: "
+                                + request.tipoSalaId()));
 
         entity.setTipoSala(tipo);
 
+        LocalDateTime agora = LocalDateTime.now();
 
-        return SalaMapper.toResponse(repository.save(entity));
+        entity.setCreatedAt(agora);
+        entity.setUpdatedAt(agora);
+
+        return SalaMapper.toResponse(
+                repository.save(entity));
     }
 
     @Transactional(readOnly = true)
     public SalaResponse buscarPorId(long id) {
+
         Sala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Sala não encontrada com ID: " + id));
+
         return SalaMapper.toResponse(entity);
     }
 
@@ -56,11 +74,20 @@ public class SalaService {
             int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(idTipoSala, capacidade, pageRequest);
+        var pageRequest = PageRequest.of(
+                pageNum,
+                size);
+
+        var page = repository.buscarPorFiltros(
+                idTipoSala,
+                capacidade,
+                pageRequest);
 
         return new PageResponse<>(
-                page.getContent().stream().map(SalaMapper::toResponse).toList(),
+                page.getContent()
+                        .stream()
+                        .map(SalaMapper::toResponse)
+                        .toList(),
                 page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
@@ -68,29 +95,47 @@ public class SalaService {
     }
 
     @Transactional
-    public SalaResponse atualizar(long id, SalaRequest request) {
+    public SalaResponse atualizar(
+            long id,
+            SalaRequest request) {
+
         Sala entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                "Sala não encontrada com ID: " + id));
+                        "Sala não encontrada com ID: " + id));
 
-        // ALTERAÇÃO: utiliza diretamente o tipoSalaId enviado no payload.
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSalaId())
+        if (repository.existsByCodigoIgnoreCaseAndIdNot(
+                request.codigo(),
+                id)) {
+
+            throw new BusinessException(
+                    "Já existe outra sala cadastrada com o código: "
+                            + request.codigo());
+        }
+
+        TipoSala tipo = tipoSalaRepository.findById(
+                request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
+                        "Tipo de sala não encontrado com ID: "
+                                + request.tipoSalaId()));
 
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());
         entity.setTipoSala(tipo);
 
-        return SalaMapper.toResponse(repository.save(entity));
+        return SalaMapper.toResponse(
+                repository.save(entity));
     }
 
     @Transactional
     public void deletar(long id) {
+
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Sala não encontrada com ID: " + id);
+            throw new EntityNotFoundException(
+                    "Sala não encontrada com ID: " + id);
         }
+
         validarSalaSemVinculos.validar(id);
+
         repository.deleteById(id);
     }
 }
