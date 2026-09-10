@@ -1,0 +1,51 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/periodo_atividade_quadro?ano=4569&periodo=4569&status=INATIVO&dataInicio=1993-04-04&dataFim=1993-04-04&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    ano: "4569"
+    periodo: "4569"
+    status: INATIVO
+    dataInicio: 1993-04-04
+    dataFim: 1993-04-04
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "idPeriodoAtividadeQuadro": 6216,
+            "ano": 2827,
+            "periodo": 878,
+            "dataInicio": "1962-06-05",
+            "dataFim": "1946-11-25",
+            "status": "INATIVO",
+            "created_at": "2015-06-03T20:43:43.873Z",
+            "updated_at": "1969-12-19T05:45:39.806Z"
+          },
+          {
+            "idPeriodoAtividadeQuadro": 2462,
+            "ano": 436,
+            "periodo": 5958,
+            "dataInicio": "1992-06-26",
+            "dataFim": "1949-12-04",
+            "status": "INATIVO",
+            "created_at": "2008-07-23T20:04:32.855Z",
+            "updated_at": "2008-06-24T15:53:15.389Z"
+          }
+        ],
+        "page": 8522,
+        "size": 6936,
+        "totalElements": 9137,
+        "totalPages": 3646
+      }
+order: 1000

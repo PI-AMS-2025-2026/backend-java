@@ -1,0 +1,50 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/salas?tipo_sala=9100&capacidade=4569&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    tipo_sala: "9100"
+    capacidade: "4569"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 581,
+            "codigo": "string",
+            "capacidade": 3688,
+            "tipoSala": {
+              "id": 8930,
+              "nome": "string"
+            },
+            "created_at": "1960-01-02T04:01:28.594Z",
+            "updated_at": "1949-06-25T18:56:42.770Z"
+          },
+          {
+            "id": 1349,
+            "codigo": "string",
+            "capacidade": 2955,
+            "tipoSala": {
+              "id": 5590,
+              "nome": "string"
+            },
+            "created_at": "2003-06-02T11:13:43.683Z",
+            "updated_at": "1978-11-17T05:59:16.537Z"
+          }
+        ],
+        "page": 3503,
+        "size": 327,
+        "totalElements": 8856,
+        "totalPages": 3070
+      }
+order: 1000

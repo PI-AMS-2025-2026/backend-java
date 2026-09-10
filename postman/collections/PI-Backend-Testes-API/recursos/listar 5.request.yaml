@@ -1,0 +1,12 @@
+$kind: http-request
+name: listar 5
+url: "{{baseUrl}}/recursos"
+method: GET
+headers:
+  Accept: "*/*"
+body:
+  type: json
+  content: ""
+settings: {}
+examples: ./.resources/listar 5.resources/examples
+order: 2000

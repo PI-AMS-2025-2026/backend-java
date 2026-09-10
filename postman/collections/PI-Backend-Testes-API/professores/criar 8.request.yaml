@@ -1,0 +1,19 @@
+$kind: http-request
+name: criar 8
+url: "{{baseUrl}}/professores"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "liviaaristides@gmail.com",
+      "nome": "Livia Aristides",
+      "status": "inativo",
+      "cidade": "Salto"
+    }
+settings: {}
+examples: ./.resources/criar 8.resources/examples
+order: 3000

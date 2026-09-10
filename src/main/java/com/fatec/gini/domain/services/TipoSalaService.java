@@ -1,0 +1,72 @@
+package com.fatec.gini.domain.services;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fatec.gini.domain.entities.TipoSala;
+import com.fatec.gini.dto.tipoSala.TipoSalaRequest;
+import com.fatec.gini.dto.tipoSala.TipoSalaResponse;
+import com.fatec.gini.infrastructure.mappers.TipoSalaMapper;
+import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class TipoSalaService {
+
+    private final TipoSalaRepository repository;
+
+    // Lista todos ou filtra por nome
+    @Transactional(readOnly = true)
+    public List<TipoSalaResponse> listar(String nome) {
+
+        List<TipoSala> lista = repository.buscarPorFiltro(nome);
+
+        return lista.stream()
+                .map(TipoSalaMapper::toResponse)
+                .toList();
+    }
+
+    // Cria um novo tipo de sala
+    @Transactional
+    public TipoSalaResponse criar(TipoSalaRequest request) {
+        TipoSala entity = TipoSalaMapper.toEntity(request);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
+        return TipoSalaMapper.toResponse(repository.save(entity));
+    }
+
+    // Busca por ID com tratamento de erro
+    @Transactional(readOnly = true)
+    public TipoSalaResponse buscarPorId(Long id) {
+        TipoSala entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id));
+        return TipoSalaMapper.toResponse(entity);
+    }
+
+    // Atualiza um tipo de sala existente
+    @Transactional
+    public TipoSalaResponse atualizar(Long id, TipoSalaRequest request) {
+        TipoSala entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id));
+
+        entity.setNome(request.nome());
+
+        entity.setUpdatedAt(LocalDateTime.now());
+        return TipoSalaMapper.toResponse(repository.save(entity));
+    }
+
+    // Remove um tipo de sala
+    @Transactional
+    public void deletar(Long id) {
+        if (!repository.existsById(id)) {
+            throw new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id);
+        }
+        repository.deleteById(id);
+    }
+}

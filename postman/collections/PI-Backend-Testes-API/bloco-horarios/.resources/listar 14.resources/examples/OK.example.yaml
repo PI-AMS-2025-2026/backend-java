@@ -1,0 +1,45 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/bloco-horarios?hora_inicio=string&hora_fim=string&duracao=4569&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    hora_inicio: string
+    hora_fim: string
+    duracao: "4569"
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 5117,
+            "horaInicio": "string",
+            "horaFim": "string",
+            "duracao": 5187,
+            "created_at": "2019-10-20T22:06:48.496Z",
+            "updated_at": "2012-10-16T06:32:13.633Z"
+          },
+          {
+            "id": 530,
+            "horaInicio": "string",
+            "horaFim": "string",
+            "duracao": 5661,
+            "created_at": "1985-07-31T15:11:50.488Z",
+            "updated_at": "1996-12-10T02:20:21.718Z"
+          }
+        ],
+        "page": 8364,
+        "size": 8606,
+        "totalElements": 4658,
+        "totalPages": 5047
+      }
+order: 1000

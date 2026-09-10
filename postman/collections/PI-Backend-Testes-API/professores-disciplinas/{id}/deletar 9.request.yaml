@@ -1,0 +1,9 @@
+$kind: http-request
+name: deletar 9
+url: "{{baseUrl}}/professores-disciplinas/:id"
+method: DELETE
+pathVariables:
+  id: "1"
+settings: {}
+examples: ./.resources/deletar 9.resources/examples
+order: 3000

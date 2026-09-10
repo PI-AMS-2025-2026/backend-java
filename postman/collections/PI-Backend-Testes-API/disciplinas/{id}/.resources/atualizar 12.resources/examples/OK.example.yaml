@@ -1,0 +1,61 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/disciplinas/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "9100"
+  body:
+    type: json
+    content: |-
+      {
+        "cargaHoraria": 4844,
+        "codDisciplina": "string",
+        "curso": {
+          "id": 7155
+        },
+        "modalidade": "string",
+        "nome": "string",
+        "periodo": 1236,
+        "tipoDisciplina": "string",
+        "tipoSala": {
+          "id": 4209
+        },
+        "cor": "string"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 5854,
+        "nome": "string",
+        "cargaHoraria": 3982,
+        "tipoDisciplina": "string",
+        "periodo": 7819,
+        "modalidade": "string",
+        "codDisciplina": "string",
+        "cor": "string",
+        "curso": {
+          "id": 5390,
+          "nome": "string",
+          "periodicidade": "string",
+          "status": "INATIVO",
+          "duracao": 4312,
+          "created_at": "1953-02-08T18:15:36.836Z",
+          "updated_at": "1962-11-24T17:28:12.511Z"
+        },
+        "tipoSala": {
+          "id": 8798,
+          "nome": "string"
+        },
+        "created_at": "2011-02-24T23:34:14.977Z",
+        "updated_at": "1993-11-17T18:35:57.465Z"
+      }
+order: 1000

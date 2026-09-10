@@ -1,0 +1,16 @@
+$kind: http-request
+name: criar 2
+url: "{{baseUrl}}/tipos-sala"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Sala 2"
+    }
+settings: {}
+examples: ./.resources/criar 2.resources/examples
+order: 3000

@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  sql:
+    init:
+      encoding: UTF-8
+  h2:
+    console:
+      enabled: false
+  flyway:
+    enabled: true
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET}
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false

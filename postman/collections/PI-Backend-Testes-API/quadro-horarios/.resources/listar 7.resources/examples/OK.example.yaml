@@ -1,0 +1,83 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/quadro-horarios?curso=9100&periodo_atividade_quadro=9100&status=INATIVO&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    curso: "9100"
+    periodo_atividade_quadro: "9100"
+    status: INATIVO
+    page: "0"
+    size: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 4703,
+            "versao": 5738,
+            "dataCriacao": "2000-05-14T09:34:37.104Z",
+            "status": "INATIVO",
+            "curso": {
+              "id": 3055,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 8598,
+              "created_at": "2011-02-22T02:17:01.547Z",
+              "updated_at": "2023-01-07T13:00:01.298Z"
+            },
+            "periodoAtividadeQuadro": {
+              "idPeriodoAtividadeQuadro": 9246,
+              "ano": 1926,
+              "periodo": 5510,
+              "dataInicio": "2026-01-04",
+              "dataFim": "1966-11-09",
+              "status": "ATIVO",
+              "created_at": "1969-11-19T12:41:33.618Z",
+              "updated_at": "1996-05-10T20:28:20.617Z"
+            },
+            "created_at": "2020-12-27T12:52:28.311Z",
+            "updated_at": "2003-06-19T19:58:52.916Z"
+          },
+          {
+            "id": 8357,
+            "versao": 3747,
+            "dataCriacao": "2010-11-16T16:15:16.564Z",
+            "status": "INATIVO",
+            "curso": {
+              "id": 8328,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 1969,
+              "created_at": "2009-07-19T07:29:09.270Z",
+              "updated_at": "1992-09-13T23:24:19.520Z"
+            },
+            "periodoAtividadeQuadro": {
+              "idPeriodoAtividadeQuadro": 6051,
+              "ano": 6227,
+              "periodo": 3385,
+              "dataInicio": "2001-11-11",
+              "dataFim": "1961-07-06",
+              "status": "ATIVO",
+              "created_at": "1954-07-01T06:56:23.099Z",
+              "updated_at": "1956-07-30T22:43:20.502Z"
+            },
+            "created_at": "1995-01-03T13:03:01.816Z",
+            "updated_at": "2023-06-20T14:28:54.034Z"
+          }
+        ],
+        "page": 893,
+        "size": 5672,
+        "totalElements": 9586,
+        "totalPages": 4337
+      }
+order: 1000

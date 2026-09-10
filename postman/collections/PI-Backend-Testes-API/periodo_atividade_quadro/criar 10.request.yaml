@@ -1,0 +1,20 @@
+$kind: http-request
+name: criar 10
+url: "{{baseUrl}}/periodo_atividade_quadro"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "ano": 2024,
+      "dataFim": "2024-01-26",
+      "dataInicio": "2028-12-20",
+      "periodo": 6,
+      "status": "ativo"
+    }
+settings: {}
+examples: ./.resources/criar 10.resources/examples
+order: 4000

@@ -1,0 +1,9 @@
+$kind: http-request
+name: listar 7
+url: "{{baseUrl}}/quadro-horarios"
+method: GET
+headers:
+  Accept: "*/*"
+settings: {}
+examples: ./.resources/listar 7.resources/examples
+order: 2000

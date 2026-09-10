@@ -1,0 +1,23 @@
+$kind: http-request
+name: atualizar 1
+url: "{{baseUrl}}/turmas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "1"
+body:
+  type: json
+  content: |-
+    {
+      "ano": 2026,
+      "curso": {
+        "id": 1
+      },
+      "numeroAlunos": 24,
+      "periodo": 2
+    }
+settings: {}
+examples: ./.resources/atualizar 1.resources/examples
+order: 2000

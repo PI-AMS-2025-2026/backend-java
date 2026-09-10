@@ -1,0 +1,22 @@
+$kind: http-request
+name: registrar
+url: "{{baseUrl}}/auth/registrar"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "teste2@gmail.com",
+      "nome": "teste2",
+      "status": "ATIVO",
+      "tipoUsuario": "COORDENADOR",
+      "senha": "banana",
+      "curso": {
+        "id": 3
+      }
+    }
+settings: {}
+examples: ./.resources/registrar.resources/examples
+order: 1000

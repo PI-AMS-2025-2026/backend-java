@@ -1,0 +1,25 @@
+$kind: http-request
+name: copiar
+url: "{{baseUrl}}/quadro-horarios/:id/copiar"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  id: "2"
+body:
+  type: json
+  content: |-
+    {
+      "PeriodoAtividadeQuadro": {
+        "id": 2754
+      },
+      "curso": {
+        "id": 2531
+      },
+      "status": "INATIVO",
+      "versao": 8896
+    }
+settings: {}
+examples: ./.resources/copiar.resources/examples
+order: 1000
