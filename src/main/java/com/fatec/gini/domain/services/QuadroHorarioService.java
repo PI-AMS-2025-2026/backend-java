@@ -51,7 +51,6 @@ public class QuadroHorarioService {
         validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
         QuadroHorario copia = copiarQuadroHorarioUseCase.executar(id, entity);
-        copiarQuadroHorarioUseCase.executar(id, entity);
 
         return QuadroHorarioMapper.toResponse(copia);
     }
