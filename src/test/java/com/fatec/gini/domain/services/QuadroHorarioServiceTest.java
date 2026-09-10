@@ -14,7 +14,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -70,7 +69,6 @@ class QuadroHorarioServiceTest {
      */
     private CopiarQuadroHorarioUseCase copiarQuadroHorarioUseCase;
 
-    @InjectMocks
     private QuadroHorarioService service;
 
     @BeforeEach
@@ -513,76 +511,76 @@ class QuadroHorarioServiceTest {
     // CÓPIA - CURSO INATIVO
     // ============================================================
 
-    @Test
-    void deveLancarExcecaoAoCopiarQuadroComCursoInativo() {
+@Test
+void deveLancarExcecaoAoCopiarQuadroComCursoInativo() {
 
-        Long idOrigem = 1L;
+    Long idOrigem = 1L;
 
-        LongDTO periodoDTO =
-                new LongDTO(2L);
+    LongDTO periodoDTO =
+            new LongDTO(2L);
 
-        QuadroHorarioRequest request =
-                new QuadroHorarioRequest(
-                        1,
-                        Status.ATIVO,
-                        null,
-                        periodoDTO);
+    QuadroHorarioRequest request =
+            new QuadroHorarioRequest(
+                    1,
+                    Status.ATIVO,
+                    null,
+                    periodoDTO);
 
-        QuadroHorario dadosNovaGrade =
-                new QuadroHorario();
+    Curso cursoInativo =
+            new Curso(
+                    "ADS",
+                    "Semestral",
+                    Status.INATIVO,
+                    6);
 
-        dadosNovaGrade.setVersao(
-                request.versao());
+    cursoInativo.setId(1L);
 
-        dadosNovaGrade.setPeriodoAtividadeQuadro(
-                new PeriodoAtividadeQuadro());
+    QuadroHorario quadroOrigem =
+            new QuadroHorario(
+                    1,
+                    Status.ATIVO);
 
-        dadosNovaGrade.getPeriodoAtividadeQuadro()
-                .setId(2L);
+    quadroOrigem.setId(idOrigem);
+    quadroOrigem.setCurso(cursoInativo);
 
-        Curso cursoInativo =
-                new Curso(
-                        "ADS",
-                        "Semestral",
-                        Status.INATIVO,
-                        6);
+    PeriodoAtividadeQuadro periodoNovo =
+            new PeriodoAtividadeQuadro();
 
-        cursoInativo.setId(1L);
+    periodoNovo.setId(2L);
+    periodoNovo.setStatus(Status.ATIVO);
 
-        QuadroHorario quadroOrigem =
-                new QuadroHorario(
-                        1,
-                        Status.ATIVO);
+    /*
+     * O service.copiar() primeiro busca o quadro de origem
+     * e o período informado na requisição.
+     */
+    when(repository.findById(idOrigem))
+            .thenReturn(Optional.of(quadroOrigem));
 
-        quadroOrigem.setId(idOrigem);
-        quadroOrigem.setCurso(cursoInativo);
+    when(periodoRepository.findById(2L))
+            .thenReturn(Optional.of(periodoNovo));
 
-        /*
-         * Agora o repository é mockado,
-         * mas o CopiarQuadroHorarioUseCase é REAL.
-         */
-        when(repository.findById(idOrigem))
-                .thenReturn(Optional.of(quadroOrigem));
+    /*
+     * O use case real será executado através do service.
+     * A validação do curso inativo deve interromper o fluxo.
+     */
+    doThrow(new BusinessException(
+            "Não é permitido criar ou alterar quadro horário para um curso inativo."))
+            .when(validarCursoAtivoUseCase)
+            .validar(cursoInativo);
 
-        doThrow(new BusinessException(
-                "Não é permitido criar ou alterar quadro horário para um curso inativo."))
-                .when(validarCursoAtivoUseCase)
-                .validar(cursoInativo);
+    BusinessException exception =
+            assertThrows(
+                    BusinessException.class,
+                    () -> service.copiar(
+                            idOrigem,
+                            request));
 
-        BusinessException exception =
-                assertThrows(
-                        BusinessException.class,
-                        () -> copiarQuadroHorarioUseCase.executar(
-                                idOrigem,
-                                dadosNovaGrade));
+    assertThat(exception.getMessage())
+            .contains("curso inativo");
 
-        assertThat(exception.getMessage())
-                .contains("curso inativo");
-
-        verify(validarCursoAtivoUseCase)
-                .validar(cursoInativo);
-    }
-
+    verify(validarCursoAtivoUseCase)
+            .validar(cursoInativo);
+}
     // ============================================================
     // CÓPIA - CURSO ATIVO
     // ============================================================
@@ -630,8 +628,18 @@ class QuadroHorarioServiceTest {
         dadosNovaGrade.setPeriodoAtividadeQuadro(
                 periodoNovo);
 
+        QuadroHorarioRequest request =
+                new QuadroHorarioRequest(
+                        1,
+                        Status.ATIVO,
+                        null,
+                        new LongDTO(2L));
+
         when(repository.findById(idOrigem))
                 .thenReturn(Optional.of(quadroOrigem));
+
+        when(periodoRepository.findById(2L))
+                .thenReturn(Optional.of(periodoNovo));
 
         /*
          * Como o curso está ativo, a validação não lança exceção.
@@ -677,24 +685,30 @@ class QuadroHorarioServiceTest {
         when(repository.save(any(QuadroHorario.class)))
                 .thenReturn(quadroSalvo);
 
-        QuadroHorario resultado =
-                copiarQuadroHorarioUseCase.executar(
+        QuadroHorarioResponse resultado =
+                service.copiar(
                         idOrigem,
-                        dadosNovaGrade);
+                        request);
 
-        assertThat(resultado.getId())
+        assertThat(resultado.id())
                 .isEqualTo(2L);
 
-        assertThat(resultado.getStatus())
+        assertThat(resultado.status())
                 .isEqualTo(Status.ATIVO);
 
-        assertThat(resultado.getVersao())
+        assertThat(resultado.versao())
                 .isEqualTo(2);
 
-        assertThat(resultado.getCurso().getStatus())
+        assertThat(resultado.curso().status())
                 .isEqualTo(Status.ATIVO);
 
         verify(validarCursoAtivoUseCase)
                 .validar(cursoAtivo);
+
+        verify(repository)
+                .findById(idOrigem);
+
+        verify(periodoRepository)
+                .findById(2L);
     }
 }
