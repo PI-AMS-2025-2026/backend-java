@@ -1,9 +1,9 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+        import org.springframework.security.access.AccessDeniedException;
+        import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +19,8 @@ import com.fatec.gini.infrastructure.mappers.DisponibilidadeProfessorMapper;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class DisponibilidadeProfessorService {
     private final DisponibilidadeProfessorRepository repository;
     private final ProfessorRepository professorRepository;
     private final BlocoHorarioRepository blocoHorarioRepository;
+        private final ProfessorDisciplinaRepository professorDisciplinaRepository;
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @Transactional
     public DisponibilidadeProfessorResponse criar(DisponibilidadeProfessorRequest request) {
@@ -37,6 +41,7 @@ public class DisponibilidadeProfessorService {
         Professor professor = professorRepository.findById(request.professor().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Professor não encontrado com ID: " + request.professor().id()));
+        validarProfessor(professor.getId());
 
         BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -54,10 +59,6 @@ public class DisponibilidadeProfessorService {
         entity.setProfessor(professor);
         entity.setBlocoHorario(blocoHorario);
 
-        LocalDateTime agora = LocalDateTime.now();
-        entity.setCreatedAt(agora);
-        entity.setUpdatedAt(agora);
-
         repository.save(entity);
 
         return DisponibilidadeProfessorMapper.toResponse(entity);
@@ -69,6 +70,7 @@ public class DisponibilidadeProfessorService {
         DisponibilidadeProfessor disponibilidade = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Disponibilidade não encontrada com ID: " + id));
+        validarProfessor(disponibilidade.getProfessor().getId());
         return DisponibilidadeProfessorMapper.toResponse(disponibilidade);
     }
 
@@ -86,6 +88,7 @@ public class DisponibilidadeProfessorService {
                 professor,
                 diaSemana,
                 blocoHorario,
+                validarAutorizacaoCurso.cursoParaFiltro(null),
                 pageRequest);
 
         return new PageResponse<>(
@@ -102,10 +105,12 @@ public class DisponibilidadeProfessorService {
         DisponibilidadeProfessor entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Disponibilidade não encontrada com ID: " + id));
+        validarProfessor(entity.getProfessor().getId());
 
         Professor professor = professorRepository.findById(request.professor().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Professor não encontrado com ID: " + request.professor().id()));
+        validarProfessor(professor.getId());
 
         BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.blocoHorario().id())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -122,8 +127,7 @@ public class DisponibilidadeProfessorService {
         entity.setBlocoHorario(blocoHorario);
         entity.setDiaSemana(request.diaSemana());
 
-        entity.setUpdatedAt(LocalDateTime.now());
-        
+
         // CORREÇÃO: removida a chamada duplicada a repository.save(entity) que existia neste método
 
         repository.save(entity);
@@ -136,7 +140,17 @@ public class DisponibilidadeProfessorService {
         DisponibilidadeProfessor disponibilidade = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Disponibilidade não encontrada com ID: " + id));
+        validarProfessor(disponibilidade.getProfessor().getId());
 
         repository.delete(disponibilidade);
-    }
+        }
+
+        private void validarProfessor(Long professorId) {
+                Long cursoId = validarAutorizacaoCurso.cursoParaFiltro(null);
+                if (cursoId != null && !professorDisciplinaRepository
+                                .existsByProfessorIdAndDisciplinaCursoId(professorId, cursoId)) {
+                        throw new AccessDeniedException(
+                                        "Professor não pertence ao curso do usuário");
+                }
+        }
 }

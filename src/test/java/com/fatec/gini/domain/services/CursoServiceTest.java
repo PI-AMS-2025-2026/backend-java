@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.models.Status;
+    import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
@@ -31,6 +32,9 @@ class CursoServiceTest {
 
     @Mock
     private CursoRepository repository;
+
+    @Mock
+    private ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @InjectMocks
     private CursoService cursoService;
@@ -114,7 +118,7 @@ class CursoServiceTest {
         // é só o retorno do SERVICE que virou PageResponse, não o do repositório.
         Page<Curso> paginaSimulada = new PageImpl<>(List.of(curso1, curso2));
 
-        when(repository.buscarPorFiltros(any(), any(), any(), any(), any(PageRequest.class)))
+        when(repository.buscarPorFiltros(any(), any(), any(), any(), any(), any(PageRequest.class)))
                 .thenReturn(paginaSimulada);
 
         // ---------- Act ----------

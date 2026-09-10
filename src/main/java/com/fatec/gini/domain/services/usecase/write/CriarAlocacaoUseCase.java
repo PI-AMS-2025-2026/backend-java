@@ -61,42 +61,6 @@ public class CriarAlocacaoUseCase {
                 usuarioAlteracaoEntity
         );
 
-        // Validar limite máximo da carga horária total da disciplina
-        validarCargaHorariaDisciplina.executar(entity);
-
-        // Validar se o professor já atingiu a carga horária máxima diária para o dia da
-        // semana da alocação
-        validarCargaHorariaUseCase.validar(entity.getProfessor().getId(), entity.getDiaSemana(), entity);
-
-        // Validar quadro horário
-        validarQuadroHorario.executar(entity);
-
-        // Validar vinculo professor disciplina
-        validarVincProfDisciplina.executar(entity);
-
-        // validar disponibilidade do professor
-        validarDisponibilidadeProfessor.executar(entity);
-        // validar conflito da turma
-        validarConflitoTurmaHorario.executar(entity);
-
-        // validar conflito da sala
-        validarConflitoSalaHorario.executar(entity);
-
-        // validar capacidade da sala
-        validarCapacidadeSala.executar(entity);
-
-        // validar duplicidade
-        validarDuplicidade.executarCriacao(entity);
-
-        // salvar alocação
-        Alocacao alocacaoSalva = alocacaoRepository.save(entity);
-
-        // registrar histórico de criação
-        historicoAlocacaoUseCase.registrarCriacao(alocacaoSalva, usuarioAlteracaoEntity);       
-
-        // validar coerência entre curso do quadro horário, turma e disciplina
-        validarCoerenciaCurso.validar(entity);
-
         return alocacaoSalva;
     }
 }

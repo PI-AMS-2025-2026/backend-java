@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +22,7 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCopiarQuadroHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCursoAtivoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoAtividadeQuadroAtivoUseCase;
@@ -52,6 +54,9 @@ class QuadroHorarioServiceTest {
 
     @Mock
     private ValidarPeriodoAtividadeQuadroAtivoUseCase validarPeriodoAtividadeQuadroAtivoUseCase;
+
+        @Mock
+        private ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @Mock
     private ValidarCursoAtivoUseCase validarCursoAtivoUseCase;
@@ -94,6 +99,7 @@ class QuadroHorarioServiceTest {
                 validarQuadroHorarioValidoUseCase,
                 validarPeriodoAtividadeQuadroAtivoUseCase,
                 copiarQuadroHorarioUseCase,
+                validarAutorizacaoCurso,
                 validarCursoAtivoUseCase);
     }
 
@@ -131,9 +137,6 @@ class QuadroHorarioServiceTest {
 
         when(cursoRepository.findById(1L))
                 .thenReturn(Optional.of(cursoInativo));
-
-        when(periodoRepository.findById(1L))
-                .thenReturn(Optional.of(periodo));
 
         doThrow(new BusinessException(
                 "Não é permitido criar ou alterar quadro horário para um curso inativo."))
@@ -330,9 +333,6 @@ class QuadroHorarioServiceTest {
 
         when(cursoRepository.findById(1L))
                 .thenReturn(Optional.of(cursoInativo));
-
-        when(periodoRepository.findById(1L))
-                .thenReturn(Optional.of(periodo));
 
         doThrow(new BusinessException(
                 "Não é permitido criar ou alterar quadro horário para um curso inativo."))
@@ -705,7 +705,7 @@ void deveLancarExcecaoAoCopiarQuadroComCursoInativo() {
         verify(validarCursoAtivoUseCase)
                 .validar(cursoAtivo);
 
-        verify(repository)
+        verify(repository, times(2))
                 .findById(idOrigem);
 
         verify(periodoRepository)

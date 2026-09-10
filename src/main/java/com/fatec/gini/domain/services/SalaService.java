@@ -41,10 +41,10 @@ public class SalaService {
 
         Sala entity = SalaMapper.toEntity(request);
 
-        TipoSala tipo = tipoSalaRepository.findById(request.tipoSala().id())
+        TipoSala tipo = tipoSalaRepository.findById(request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Tipo de sala não encontrado com ID: "
-                                + request.tipoSala().id()));
+                                + request.tipoSalaId()));
 
         entity.setTipoSala(tipo);
 
@@ -113,15 +113,14 @@ public class SalaService {
         }
 
         TipoSala tipo = tipoSalaRepository.findById(
-                request.tipoSala().id())
+                request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Tipo de sala não encontrado com ID: "
-                                + request.tipoSala().id()));
+                                + request.tipoSalaId()));
 
         entity.setCodigo(request.codigo());
         entity.setCapacidade(request.capacidade());
         entity.setTipoSala(tipo);
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return SalaMapper.toResponse(
                 repository.save(entity));

@@ -17,12 +17,16 @@ public interface ProfessorDisciplinaRepository extends JpaRepository<ProfessorDi
         FROM ProfessorDisciplina pd
         WHERE (:professorId IS NULL OR pd.professor.id = :professorId)
           AND (:disciplinaId IS NULL OR pd.disciplina.id = :disciplinaId)
+          AND (:cursoId IS NULL OR pd.disciplina.curso.id = :cursoId)
     """)
     Page<ProfessorDisciplina> buscarPorFiltros(
         @Param("professorId") Long professorId,
         @Param("disciplinaId") Long disciplinaId,
+        @Param("cursoId") Long cursoId,
         Pageable pageable
     );
+
+    boolean existsByProfessorIdAndDisciplinaCursoId(Long professorId, Long cursoId);
 
     boolean existsByProfessorIdAndDisciplinaId(
         @Param("idProfessor") Long idProfessor,
