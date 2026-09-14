@@ -10,7 +10,7 @@ body:
   type: json
   content: |-
     {
-      "diaSemana": "TERCA",
+      "diaSemana": "TERÇA",
       "disciplina": {
         "id": 4406
       },

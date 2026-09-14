@@ -22,7 +22,7 @@ public class CriarAlocacaoUseCase {
 
     private final ValidarReferenciasObrigatoriasAlocacaoUseCase validarRefObrigatorias;
 
-    private final RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
+    private final RegistrarHistoricoVersaoAlocacaoUseCase historicoVersaoAlocacaoUseCase;
 
     private final AlocacaoRepository alocacaoRepository;
 
@@ -56,7 +56,7 @@ public class CriarAlocacaoUseCase {
         /*
          * Registra o histórico da criação.
          */
-        historicoAlocacaoUseCase.registrarCriacao(
+        historicoVersaoAlocacaoUseCase.registrarCriacao(
                 alocacaoSalva,
                 usuarioAlteracaoEntity
         );

@@ -71,6 +71,9 @@ public class ConfiguracaoSegurancaTest {
 
                         .requestMatchers(HttpMethod.POST, "/auth/logout")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/grades/**")
+                        .permitAll()
                         
                         // Libera a interface, os arquivos estaticos e a especificacao do Swagger.
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
@@ -89,9 +92,6 @@ public class ConfiguracaoSegurancaTest {
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         .requestMatchers("/turmas/**")
-                        .hasAnyRole("ADMIN", "COORDENADOR")
-
-                        .requestMatchers("/grades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         .requestMatchers("/alocacoes/**")
