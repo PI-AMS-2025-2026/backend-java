@@ -3,6 +3,9 @@ package com.fatec.gini.domain.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fatec.gini.domain.models.Status;
 
 import jakarta.persistence.Column;
@@ -67,9 +70,11 @@ public class Curso {
     @OneToMany(mappedBy = "curso")
     private List<Usuario> usuarios;
 
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
@@ -35,120 +34,110 @@ public class DisciplinaService {
 
         private final ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
-        @Transactional
-        public DisciplinaResponse criar(DisciplinaRequest request) {
-
-                Disciplina entity = DisciplinaMapper.toEntity(request);
-
-                // Alteração: utiliza diretamente o ID do curso recebido no payload.
-                Curso curso = cursoRepository.findById(request.cursoId())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Curso não encontrado com ID: " + request.cursoId()));
-
-                // Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
-                TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
-
-                entity.setCurso(curso);
-                entity.setTipoSala(tipoSala);
-
-                entity.setCreatedAt(LocalDateTime.now());
-                entity.setUpdatedAt(LocalDateTime.now());
-
-                // CORREÇÃO: valida duplicidade de codDisciplina antes de salvar, com mensagem explícita do campo
-                // (antes o erro de unique constraint vinha genérico do Hibernate, sem citar o atributo)
-                if (repository.existsByCodDisciplina(request.codDisciplina())) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT,
-                                        "Já existe uma disciplina cadastrada com o código (codDisciplina): "
-                                                        + request.codDisciplina());
-                }
-
-                return DisciplinaMapper.toResponse(repository.save(entity));
-        }
-
-        @Transactional(readOnly = true)
-        public DisciplinaResponse buscarPorId(Long id) {
-
-                Disciplina entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Disciplina não encontrada com ID: " + id));
-
-                return DisciplinaMapper.toResponse(entity);
-        }
-
-        @Transactional(readOnly = true)
-        public PageResponse<DisciplinaResponse> listar(
-                        String nome,
-                        Long cursoId,
-                        Long tipoSalaId,
-                        int pageNum,
-                        int size) {
-
-                var pageRequest = PageRequest.of(pageNum, size);
-
-                var page = repository.findByFiltros(
-                                nome,
-                                cursoId,
-                                tipoSalaId,
-                                pageRequest);
-
-                return new PageResponse<>(
-                                page.getContent().stream().map(DisciplinaMapper::toResponse).toList(),
-                                page.getNumber(),
-                                page.getSize(),
-                                page.getNumberOfElements(),
-                                page.getTotalPages());
-        }
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
         @Transactional
-        public DisciplinaResponse atualizar(Long id, DisciplinaRequest request) {
+    public DisciplinaResponse criar(DisciplinaRequest request) {
 
-                Disciplina entity = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Disciplina não encontrada com ID: " + id));
+        Disciplina entity = DisciplinaMapper.toEntity(request);
 
-                // Alteração: utiliza diretamente o ID do curso recebido no payload.
-                Curso curso = cursoRepository.findById(request.cursoId())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Curso não encontrado com ID: " + request.cursoId()));
+        // Alteração: utiliza diretamente o ID do curso recebido no payload.
+        Curso curso = cursoRepository.findById(request.cursoId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Curso não encontrado com ID: " + request.cursoId()));
+        validarAutorizacaoCurso.validarCurso(curso);
 
-                // Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
-                TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
+// Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
+        TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
 
-                entity.setNome(request.nome());
-                entity.setCargaHoraria(request.cargaHoraria());
-                entity.setTipoDisciplina(request.tipoDisciplina());
-                entity.setPeriodo(request.periodo());
-                entity.setModalidade(request.modalidade());
-                entity.setCodDisciplina(request.codDisciplina());
-                entity.setCor(request.cor());
-                entity.setCurso(curso);
-                entity.setTipoSala(tipoSala);
+        entity.setCurso(curso);
+        entity.setTipoSala(tipoSala);
 
-                entity.setUpdatedAt(LocalDateTime.now());
-                
-                // CORREÇÃO: mesma validação de duplicidade de codDisciplina, ignorando a própria disciplina (IdNot)
-                if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT,
-                                        "Já existe outra disciplina cadastrada com o código (codDisciplina): "
-                                                        + request.codDisciplina());
-                }
 
-                return DisciplinaMapper.toResponse(repository.save(entity));
+        return DisciplinaMapper.toResponse(repository.save(entity));
+    }
+
+    @Transactional(readOnly = true)
+    public DisciplinaResponse buscarPorId(Long id) {
+
+        Disciplina entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Disciplina não encontrada com ID: " + id));
+
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+
+        return DisciplinaMapper.toResponse(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<DisciplinaResponse> listar(
+            String nome,
+            Long cursoId,
+            Long tipoSalaId,
+            int pageNum,
+            int size) {
+
+        var pageRequest = PageRequest.of(pageNum, size);
+
+        var page = repository.findByFiltros(
+                nome,
+                validarAutorizacaoCurso.cursoParaFiltro(cursoId),
+                tipoSalaId,
+                pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(DisciplinaMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
+    }
+
+    @Transactional
+    public DisciplinaResponse atualizar(Long id, DisciplinaRequest request) {
+
+        Disciplina entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Disciplina não encontrada com ID: " + id));
+
+        // Alteração: utiliza diretamente o ID do curso recebido no payload.
+        Curso curso = cursoRepository.findById(request.cursoId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Curso não encontrado com ID: " + request.cursoId()));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+        validarAutorizacaoCurso.validarCurso(curso);
+
+        // Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
+        TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
+
+        entity.setNome(request.nome());
+        entity.setCargaHoraria(request.cargaHoraria());
+        entity.setTipoDisciplina(request.tipoDisciplina());
+        entity.setPeriodo(request.periodo());
+        entity.setModalidade(request.modalidade());
+        entity.setCodDisciplina(request.codDisciplina());
+        entity.setCor(request.cor());
+        entity.setCurso(curso);
+        entity.setTipoSala(tipoSala);
+
+        if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe outra disciplina cadastrada com o código (codDisciplina): " + request.codDisciplina());
         }
+        return DisciplinaMapper.toResponse(repository.save(entity));
+    }
 
-        @Transactional
-        public void deletar(Long id) {
+    @Transactional
+    public void deletar(Long id) {
 
-                if (!repository.existsById(id)) {
-                        throw new EntityNotFoundException("Disciplina não encontrada com ID: " + id);
-                }
-
-                validarDisciplinaSemVinculos.validar(id);
-
-                repository.deleteById(id);
-        }
+        Disciplina entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+        validarDisciplinaSemVinculos.validar(id);
+        repository.deleteById(id);
+    }
 }

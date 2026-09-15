@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +33,6 @@ public class RecursoService {
                 "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }
@@ -80,7 +76,6 @@ public class RecursoService {
                 "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }
