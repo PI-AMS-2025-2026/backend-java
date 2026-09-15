@@ -10,6 +10,7 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCursoAtivoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarPeriodoAtividadeQuadroAtivoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CopiarQuadroHorarioUseCase;
@@ -41,26 +42,20 @@ public class QuadroHorarioService {
 
     private final CopiarQuadroHorarioUseCase copiarQuadroHorarioUseCase;
 
-    private final ValidarCursoAtivoUseCase validarCursoAtivoUseCase;
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
+        private final ValidarCursoAtivoUseCase validarCursoAtivoUseCase;
 
     @Transactional
     public QuadroHorarioResponse copiar(
             Long id,
             QuadroHorarioRequest request) {
 
-        /*
-         * Verifica se o quadro de origem existe.
-         */
-        repository.findById(id)
+                QuadroHorario origem = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Quadro horário não encontrada com ID: " + id));
+                validarAutorizacaoCurso.validarCurso(origem.getCurso());
 
-        /*
-         * Converte os dados da requisição para a entidade.
-         *
-         * O CopiarQuadroHorarioUseCase utiliza principalmente
-         * a versão e o período da nova grade.
-         */
         QuadroHorario dadosNovaGrade =
                 QuadroHorarioMapper.toEntity(request);
 
@@ -95,6 +90,7 @@ public class QuadroHorarioService {
                         .orElseThrow(() -> new EntityNotFoundException(
                                 "Curso não encontrado com ID: "
                                         + request.curso().id()));
+        validarAutorizacaoCurso.validarCurso(curso);
 
         /*
          * O curso precisa estar ativo para criação
@@ -155,7 +151,7 @@ public class QuadroHorarioService {
                 repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(
                                 "Quadro horário não encontrada com ID: " + id));
-
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
         return QuadroHorarioMapper.toResponse(entity);
     }
 
@@ -172,12 +168,11 @@ public class QuadroHorarioService {
                         pageNum,
                         size);
 
-        var page =
-                repository.buscarComFiltros(
-                        idCurso,
-                        idPeriodoAtividadeQuadro,
-                        status,
-                        pageRequest);
+        var page = repository.buscarComFiltros(
+                validarAutorizacaoCurso.cursoParaFiltro(idCurso),
+                idPeriodoAtividadeQuadro,
+                status,
+                pageRequest);
 
         return new PageResponse<>(
                 page.getContent()
@@ -199,6 +194,7 @@ public class QuadroHorarioService {
                 repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(
                                 "Quadro horário não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
         /*
          * Busca o curso informado na atualização.
@@ -209,6 +205,7 @@ public class QuadroHorarioService {
                         .orElseThrow(() -> new EntityNotFoundException(
                                 "Curso não encontrado com ID: "
                                         + request.curso().id()));
+        validarAutorizacaoCurso.validarCurso(curso);
 
         /*
          * O curso precisa estar ativo para alteração
@@ -265,10 +262,9 @@ public class QuadroHorarioService {
                 repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(
                                 "Quadro horário não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
-        entity.setStatus(
-                Status.INATIVO);
-
+        entity.setStatus(Status.INATIVO);
         entity.setUpdatedAt(
                 LocalDateTime.now());
 

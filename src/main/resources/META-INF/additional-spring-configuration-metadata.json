@@ -1,5 +1,22 @@
-{"properties": [{
-  "name": "api.security.token.secret",
-  "type": "java.lang.String",
-  "description": "Chave unica para gerar JWT"
-}]}
+{"properties": [
+  {
+    "name": "api.security.token.secret",
+    "type": "java.lang.String",
+    "description": "Chave unica para gerar JWT"
+  },
+  {
+    "name": "api.security.token.expirationMs",
+    "type": "java.lang.Long",
+    "description": "Tempo de expiração do JWT access token em milissegundos"
+  },
+  {
+    "name": "api.security.token.refreshExpirationMs",
+    "type": "java.lang.Long",
+    "description": "Tempo de expiração do JWT refresh token em milissegundos"
+  },
+  {
+    "name": "app.security.authorization.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'app.security.authorization.enabled'"
+  }
+]}

@@ -63,7 +63,8 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             "(:professorId IS NULL OR a.professor.id = :professorId) AND " +
             "(:diaSemana IS NULL OR a.diaSemana = :diaSemana) AND " +
             "(:blocoHorarioId IS NULL OR a.blocoHorario.id = :blocoHorarioId) AND " +
-            "(:quadroHorarioId IS NULL OR a.quadroHorario.id = :quadroHorarioId)")
+            "(:quadroHorarioId IS NULL OR a.quadroHorario.id = :quadroHorarioId) AND " +
+            "(:cursoId IS NULL OR a.quadroHorario.curso.id = :cursoId)")
     Page<Alocacao> buscarPorFiltros(
             @Param("turmaId") Long turmaId,
             @Param("disciplinaId") Long disciplinaId,
@@ -72,6 +73,7 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("diaSemana") DiaSemana diaSemana,
             @Param("blocoHorarioId") Long blocoHorarioId,
             @Param("quadroHorarioId") Long quadroHorarioId,
+            @Param("cursoId") Long cursoId,
             Pageable pageable);
 
     @Query("""
