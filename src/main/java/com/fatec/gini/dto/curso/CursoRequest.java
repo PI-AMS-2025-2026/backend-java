@@ -2,7 +2,9 @@ package com.fatec.gini.dto.curso;
 
 import com.fatec.gini.domain.models.Status;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record CursoRequest(
 
@@ -11,14 +13,13 @@ public record CursoRequest(
     String nome,
 
     @NotBlank(message = "Periodicidade é obrigatória")
-    @Pattern(regexp = "Semestral|Anual", message = "Periodicidade deve ser 'Semestral' ou 'Anual'")
     String periodicidade,
 
     @NotNull(message = "Status é obrigatório")
     Status status,
 
     @NotNull(message = "Duração é obrigatória")
-    @Min(value = 1, message = "Duração deve ser maior ou igual a 1")
     Integer duracao
+
 ) {
 }
