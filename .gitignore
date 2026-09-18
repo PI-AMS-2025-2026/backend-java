@@ -32,5 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 
+### Postman ###
+.postman/
+postman/
 
 .env
