@@ -11,6 +11,11 @@ import com.fatec.gini.domain.entities.TipoSala;
 
 public interface TipoSalaRepository extends JpaRepository<TipoSala, Long> {
 
+
+      /* 
+  Verifica se já existe um Tipo de Sala com o mesmo nome.
+   */
+  boolean existsByNomeIgnoreCase(String nome);
     /**
      * Retorna tipos de sala aplicando filtro opcional por nome.
      *
