@@ -12,7 +12,7 @@
 	<artifactId>gini</artifactId>
 	<version>0.0.1</version>
 	<name>gini</name>
-	<description>Backend do Projeto Integrador desenvolvido para automatizar a criação, validação e gerenciamento de grades horárias acadêmicas da Fatec Itu.</description>
+	<description>Backend do Projeto Integrador desenvolvido para automatizar a criação, validação e gerenciamento de quadros horários acadêmicas da Fatec Itu.</description>
 	<url/>
 	<licenses>
 	<license/>

@@ -54,7 +54,7 @@ response:
               "created_at": "2023-07-12T16:18:12.731Z",
               "updated_at": "2012-07-05T06:48:07.690Z"
             },
-            "diaSemana": "TERCA",
+            "diaSemana": "TERÇA",
             "blocoHorario": {
               "id": 142,
               "horaInicio": "string",

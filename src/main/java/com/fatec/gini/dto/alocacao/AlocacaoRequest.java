@@ -26,7 +26,7 @@ public record AlocacaoRequest(
     DiaSemana diaSemana,
 
     // Alteração: recebe diretamente o ID do bloco de horário.
-    @NotNull(message = "Horário é obrigatório")
+    @NotNull(message = "Bloco de horário é obrigatório")
     Long horarioId,
 
     // Alteração: recebe diretamente o ID do quadro horário.

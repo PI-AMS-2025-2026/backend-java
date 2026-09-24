@@ -109,7 +109,7 @@ public class AlocacaoController {
 
                         @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
 
-                        @RequestParam(required = false) Long horario,
+                        @RequestParam(required = false, name = "bloco_horario") Long blocoHorario,
 
                         @RequestParam(required = false, name = "quadro_horario") Long quadroHorario,
 
@@ -124,7 +124,7 @@ public class AlocacaoController {
                                                 sala,
                                                 usuario,
                                                 diaSemana,
-                                                horario,
+                                                blocoHorario,
                                                 quadroHorario,
                                                 page,
                                                 size));

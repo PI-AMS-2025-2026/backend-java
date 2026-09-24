@@ -34,7 +34,7 @@ body:
         "justificativaAlteracao": "string"
       },
       {
-        "diaSemana": "TERCA",
+        "diaSemana": "TERÇA",
         "disciplina": {
           "id": 4497
         },

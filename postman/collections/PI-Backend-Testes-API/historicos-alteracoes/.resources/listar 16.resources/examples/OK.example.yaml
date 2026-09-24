@@ -91,7 +91,7 @@ response:
                 "created_at": "1982-07-07T10:44:23.256Z",
                 "updated_at": "2013-06-30T18:13:17.196Z"
               },
-              "diaSemana": "TERCA",
+              "diaSemana": "TERÇA",
               "blocoHorario": {
                 "id": 2154,
                 "horaInicio": "string",

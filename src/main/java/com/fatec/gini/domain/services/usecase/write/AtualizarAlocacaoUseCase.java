@@ -56,7 +56,7 @@ public class AtualizarAlocacaoUseCase {
 
     private final  ValidarCapacidadeSalaUseCase validarCapacidadeSala;
 
-    private final  RegistrarHistoricoAlocacaoUseCase historicoAlocacaoUseCase;
+    private final  RegistrarHistoricoVersaoAlocacaoUseCase historicoVersaoAlocacaoUseCase;
 
     private final  ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
@@ -125,8 +125,8 @@ public class AtualizarAlocacaoUseCase {
         // salvar alocação
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
-        // registrar histórico de atualização
-        historicoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, alocacaoAntiga, professorAlteracaoEntity,
+        // registrar histórico de versão da atualização
+        historicoVersaoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, alocacaoAntiga, professorAlteracaoEntity,
                 justificativaAlteracao);
 
         // validar coerência entre curso da quadro horário, turma e disciplina

@@ -71,6 +71,9 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers(HttpMethod.POST, "/auth/logout")
                         .permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/grades/**")
+                        .permitAll()
+
                         // Somente administrador
                         .requestMatchers("/usuarios/**")
                         .hasRole("ADMIN")
@@ -80,9 +83,6 @@ public class ConfiguracaoSeguranca {
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         .requestMatchers("/turmas/**")
-                        .hasAnyRole("ADMIN", "COORDENADOR")
-
-                        .requestMatchers("/grades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         .requestMatchers("/alocacoes/**")
