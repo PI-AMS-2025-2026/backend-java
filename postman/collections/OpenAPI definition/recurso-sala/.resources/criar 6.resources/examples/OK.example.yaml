@@ -1,0 +1,151 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/recurso-sala"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  body:
+    type: json
+    content: |-
+      {
+        "quantidade": 7048,
+        "recursoId": 96,
+        "salaId": 6987
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 6811,
+        "sala": {
+          "id": 1292,
+          "codigo": "string",
+          "capacidade": 7227,
+          "tipoSala": {
+            "id": 9939,
+            "nome": "string",
+            "created_at": "1973-02-17T17:57:48.473Z",
+            "updated_at": "1956-04-04T07:23:09.385Z"
+          },
+          "created_at": "1957-05-18T06:28:09.873Z",
+          "updated_at": "2010-04-28T02:27:32.328Z"
+        },
+        "recurso": {
+          "id": 9501,
+          "nome": "string",
+          "tipo": {
+            "id": 7756,
+            "nome": "string",
+            "created_at": "2013-11-26T21:04:56.519Z",
+            "updated_at": "1992-03-31T12:30:37.919Z"
+          },
+          "created_at": "2016-09-02T07:18:20.978Z",
+          "updated_at": "1993-06-06T21:22:22.040Z"
+        },
+        "quantidade": 2549
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sala": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "codigo": {
+                "type": "string"
+              },
+              "capacidade": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "tipoSala": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "nome": {
+                    "type": "string"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "recurso": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "tipo": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "nome": {
+                    "type": "string"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "quantidade": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000

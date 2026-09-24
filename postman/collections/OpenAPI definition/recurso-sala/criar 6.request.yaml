@@ -1,0 +1,42 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/recurso-sala"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "quantidade": 10,
+      "recursoId": 5,
+      "salaId": 1
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "salaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "recursoId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantidade": {
+          "type": "integer",
+          "minimum": 1,
+          "format": "int32"
+        }
+      },
+      "required": [
+        "quantidade",
+        "recursoId",
+        "salaId"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 6.resources/examples
+order: 3000

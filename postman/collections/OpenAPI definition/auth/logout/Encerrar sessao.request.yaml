@@ -1,0 +1,28 @@
+$kind: http-request
+description: Revoga o refresh token informado.
+url: "{{baseUrl}}/auth/logout"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "refreshToken": "82c2cdad-06e6-4686-b73e-064045f9f607"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "refreshToken"
+      ]
+    }
+settings: {}
+examples: ./.resources/Encerrar sessao.resources/examples
+order: 1000

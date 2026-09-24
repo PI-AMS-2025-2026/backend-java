@@ -1,0 +1,33 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/bloco-horarios"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "horaFim": "08:30:00",
+      "horaInicio": "07:40:00"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "horaInicio": {
+          "type": "string"
+        },
+        "horaFim": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "horaFim",
+        "horaInicio"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 14.resources/examples
+order: 3000

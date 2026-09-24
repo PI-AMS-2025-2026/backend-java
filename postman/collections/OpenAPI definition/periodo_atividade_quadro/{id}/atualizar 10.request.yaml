@@ -1,0 +1,78 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/periodo_atividade_quadro/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "1"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "ano": 2025,
+      "dataFim": "2027-11-12",
+      "dataInicio": "2025-07-22",
+      "periodo": 6,
+      "status": "INATIVO"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "ano": {
+          "type": "integer",
+          "minimum": 2026,
+          "maximum": 9999,
+          "format": "int32"
+        },
+        "periodo": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9,
+          "format": "int32"
+        },
+        "dataInicio": {
+          "type": "string",
+          "format": "date"
+        },
+        "dataFim": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        }
+      },
+      "required": [
+        "ano",
+        "dataFim",
+        "dataInicio",
+        "periodo",
+        "status"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 10.resources/examples
+order: 2000

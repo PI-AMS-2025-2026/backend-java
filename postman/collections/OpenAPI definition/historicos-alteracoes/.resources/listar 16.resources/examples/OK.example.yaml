@@ -1,0 +1,819 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/historicos-alteracoes?alocacao=5534&usuario=5534&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    alocacao: "5534"
+    usuario: "5534"
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 174,
+            "dataAlteracao": "1960-04-12",
+            "justificativa": "string",
+            "campoAlterado": "string",
+            "valorAntigo": "string",
+            "valorNovo": "string",
+            "alocacao": {
+              "id": 6510,
+              "turma": {
+                "id": 8769,
+                "codigo": "string",
+                "periodo": 7455,
+                "ano": 8506,
+                "numeroAlunos": 8114,
+                "curso": {
+                  "id": 7149,
+                  "nome": "string",
+                  "periodicidade": "string",
+                  "status": "ATIVO",
+                  "duracao": 8728,
+                  "createdAt": "2022-02-12T17:16:53.489Z",
+                  "updatedAt": "1951-11-20T05:23:09.933Z"
+                },
+                "created_at": "2008-10-07T17:38:30.403Z",
+                "updated_at": "1976-01-01T14:37:48.308Z"
+              },
+              "disciplina": {
+                "id": 4670,
+                "nome": "string",
+                "cargaHoraria": 9122,
+                "tipoDisciplina": "string",
+                "periodo": 3425,
+                "modalidade": "string",
+                "codDisciplina": "string",
+                "cor": "string",
+                "curso": {
+                  "id": 1230,
+                  "nome": "string",
+                  "periodicidade": "string",
+                  "status": "INATIVO",
+                  "duracao": 5843,
+                  "createdAt": "1954-10-12T09:07:32.207Z",
+                  "updatedAt": "1954-01-21T19:41:40.313Z"
+                },
+                "tipoSala": {
+                  "id": 8766,
+                  "nome": "string",
+                  "created_at": "1958-09-08T10:27:16.621Z",
+                  "updated_at": "2014-04-09T18:58:23.943Z"
+                },
+                "createdAt": "1971-04-02T14:17:21.973Z",
+                "updatedAt": "2023-08-12T04:55:59.680Z"
+              },
+              "sala": {
+                "id": 7437,
+                "codigo": "string",
+                "capacidade": 9349,
+                "tipoSala": {
+                  "id": 2219,
+                  "nome": "string",
+                  "created_at": "1996-02-13T12:43:44.051Z",
+                  "updated_at": "1998-11-03T12:07:06.328Z"
+                },
+                "created_at": "2015-06-13T12:46:09.273Z",
+                "updated_at": "2001-10-22T03:30:27.415Z"
+              },
+              "professor": {
+                "id": 8177,
+                "nome": "string",
+                "email": "string",
+                "cidade": "string",
+                "status": "ATIVO",
+                "createdAt": "2014-03-11T07:46:12.649Z",
+                "updatedAt": "1995-11-17T09:51:58.966Z"
+              },
+              "diaSemana": "SABADO",
+              "blocoHorario": {
+                "id": 1625,
+                "horaInicio": "string",
+                "horaFim": "string",
+                "duracao": 7521,
+                "createdAt": "1953-01-04T19:58:54.499Z",
+                "updatedAt": "1980-06-20T22:01:51.854Z"
+              },
+              "quadroHorario": {
+                "id": 9958,
+                "versao": 7107,
+                "dataCriacao": "2021-12-03T17:07:26.554Z",
+                "status": "ATIVO",
+                "curso": {
+                  "id": 4359,
+                  "nome": "string",
+                  "periodicidade": "string",
+                  "status": "INATIVO",
+                  "duracao": 2490,
+                  "createdAt": "1949-02-01T03:22:08.624Z",
+                  "updatedAt": "1967-10-03T20:01:37.501Z"
+                },
+                "periodoAtividadeQuadro": {
+                  "id": 6965,
+                  "ano": 2240,
+                  "periodo": 8537,
+                  "dataInicio": "2016-10-30",
+                  "dataFim": "2004-03-24",
+                  "status": "ATIVO",
+                  "createdAt": "2011-11-07T05:00:14.514Z",
+                  "updatedAt": "1959-01-21T12:41:08.573Z"
+                },
+                "createdAt": "2001-11-07T02:07:54.202Z",
+                "updatedAt": "1951-01-18T17:50:35.740Z"
+              },
+              "created_at": "2000-09-25T16:27:52.265Z",
+              "updated_at": "1971-12-20T02:31:48.742Z"
+            },
+            "usuario": {
+              "id": 6366,
+              "nome": "string",
+              "email": "string",
+              "tipoUsuario": "COORDENADOR",
+              "status": "ATIVO",
+              "curso": {
+                "id": 1498,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "INATIVO",
+                "duracao": 6702,
+                "createdAt": "1952-11-28T09:12:15.453Z",
+                "updatedAt": "1950-01-07T00:30:45.719Z"
+              },
+              "created_at": "1998-12-06T01:14:18.974Z",
+              "updated_at": "2020-03-19T20:22:31.777Z"
+            }
+          },
+          {
+            "id": 5961,
+            "dataAlteracao": "1965-02-22",
+            "justificativa": "string",
+            "campoAlterado": "string",
+            "valorAntigo": "string",
+            "valorNovo": "string",
+            "alocacao": {
+              "id": 8372,
+              "turma": {
+                "id": 3095,
+                "codigo": "string",
+                "periodo": 782,
+                "ano": 9048,
+                "numeroAlunos": 6175,
+                "curso": {
+                  "id": 2851,
+                  "nome": "string",
+                  "periodicidade": "string",
+                  "status": "INATIVO",
+                  "duracao": 9798,
+                  "createdAt": "2019-12-22T14:07:13.753Z",
+                  "updatedAt": "1996-08-23T20:54:27.890Z"
+                },
+                "created_at": "1993-09-23T21:03:04.637Z",
+                "updated_at": "2004-06-08T00:16:59.891Z"
+              },
+              "disciplina": {
+                "id": 2123,
+                "nome": "string",
+                "cargaHoraria": 8001,
+                "tipoDisciplina": "string",
+                "periodo": 4397,
+                "modalidade": "string",
+                "codDisciplina": "string",
+                "cor": "string",
+                "curso": {
+                  "id": 9467,
+                  "nome": "string",
+                  "periodicidade": "string",
+                  "status": "INATIVO",
+                  "duracao": 3133,
+                  "createdAt": "1998-08-19T14:59:14.098Z",
+                  "updatedAt": "1999-09-19T22:56:13.899Z"
+                },
+                "tipoSala": {
+                  "id": 7683,
+                  "nome": "string",
+                  "created_at": "1984-03-26T11:53:57.728Z",
+                  "updated_at": "1957-12-30T07:07:40.286Z"
+                },
+                "createdAt": "2019-05-04T10:33:37.592Z",
+                "updatedAt": "1981-12-19T05:13:59.278Z"
+              },
+              "sala": {
+                "id": 1762,
+                "codigo": "string",
+                "capacidade": 1134,
+                "tipoSala": {
+                  "id": 6768,
+                  "nome": "string",
+                  "created_at": "1953-09-15T18:54:25.139Z",
+                  "updated_at": "1996-10-31T06:24:18.250Z"
+                },
+                "created_at": "2013-01-04T12:03:38.361Z",
+                "updated_at": "2002-01-14T19:58:17.381Z"
+              },
+              "professor": {
+                "id": 6575,
+                "nome": "string",
+                "email": "string",
+                "cidade": "string",
+                "status": "ATIVO",
+                "createdAt": "1984-10-30T18:53:28.519Z",
+                "updatedAt": "1981-04-26T12:09:57.982Z"
+              },
+              "diaSemana": "QUARTA",
+              "blocoHorario": {
+                "id": 8301,
+                "horaInicio": "string",
+                "horaFim": "string",
+                "duracao": 4371,
+                "createdAt": "2005-04-18T13:57:37.397Z",
+                "updatedAt": "1953-09-29T21:00:07.896Z"
+              },
+              "quadroHorario": {
+                "id": 7753,
+                "versao": 5226,
+                "dataCriacao": "1948-08-10T13:13:05.289Z",
+                "status": "ATIVO",
+                "curso": {
+                  "id": 4758,
+                  "nome": "string",
+                  "periodicidade": "string",
+                  "status": "INATIVO",
+                  "duracao": 7731,
+                  "createdAt": "2008-07-29T23:30:32.149Z",
+                  "updatedAt": "2025-12-14T01:03:12.737Z"
+                },
+                "periodoAtividadeQuadro": {
+                  "id": 4075,
+                  "ano": 431,
+                  "periodo": 6141,
+                  "dataInicio": "2018-02-27",
+                  "dataFim": "1953-09-03",
+                  "status": "ATIVO",
+                  "createdAt": "2004-04-29T22:55:49.091Z",
+                  "updatedAt": "1992-11-19T06:35:33.671Z"
+                },
+                "createdAt": "2023-04-05T22:59:10.849Z",
+                "updatedAt": "1963-06-23T23:26:29.502Z"
+              },
+              "created_at": "2011-08-09T09:17:24.468Z",
+              "updated_at": "2019-12-13T10:47:26.000Z"
+            },
+            "usuario": {
+              "id": 1967,
+              "nome": "string",
+              "email": "string",
+              "tipoUsuario": "ADMINISTRADOR",
+              "status": "ATIVO",
+              "curso": {
+                "id": 9489,
+                "nome": "string",
+                "periodicidade": "string",
+                "status": "INATIVO",
+                "duracao": 8887,
+                "createdAt": "1957-07-15T21:18:23.401Z",
+                "updatedAt": "1987-02-12T03:20:42.885Z"
+              },
+              "created_at": "2004-04-22T17:44:32.005Z",
+              "updated_at": "1956-09-11T12:39:01.438Z"
+            }
+          }
+        ],
+        "page": 1535,
+        "size": 6052,
+        "totalElements": 2694,
+        "totalPages": 83
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "dataAlteracao": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "justificativa": {
+                  "type": "string"
+                },
+                "campoAlterado": {
+                  "type": "string"
+                },
+                "valorAntigo": {
+                  "type": "string"
+                },
+                "valorNovo": {
+                  "type": "string"
+                },
+                "alocacao": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "turma": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "codigo": {
+                          "type": "string"
+                        },
+                        "periodo": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "ano": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "numeroAlunos": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "curso": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "nome": {
+                              "type": "string"
+                            },
+                            "periodicidade": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "ATIVO",
+                                "INATIVO"
+                              ]
+                            },
+                            "duracao": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "disciplina": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "nome": {
+                          "type": "string"
+                        },
+                        "cargaHoraria": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "tipoDisciplina": {
+                          "type": "string"
+                        },
+                        "periodo": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "modalidade": {
+                          "type": "string"
+                        },
+                        "codDisciplina": {
+                          "type": "string"
+                        },
+                        "cor": {
+                          "type": "string"
+                        },
+                        "curso": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "nome": {
+                              "type": "string"
+                            },
+                            "periodicidade": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "ATIVO",
+                                "INATIVO"
+                              ]
+                            },
+                            "duracao": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "tipoSala": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "nome": {
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "sala": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "codigo": {
+                          "type": "string"
+                        },
+                        "capacidade": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "tipoSala": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "nome": {
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "professor": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "nome": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "cidade": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ATIVO",
+                            "INATIVO"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "diaSemana": {
+                      "type": "string",
+                      "enum": [
+                        "DOMINGO",
+                        "SEGUNDA",
+                        "TERCA",
+                        "QUARTA",
+                        "QUINTA",
+                        "SEXTA",
+                        "SABADO"
+                      ]
+                    },
+                    "blocoHorario": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "horaInicio": {
+                          "type": "string"
+                        },
+                        "horaFim": {
+                          "type": "string"
+                        },
+                        "duracao": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "quadroHorario": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "versao": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "dataCriacao": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ATIVO",
+                            "INATIVO"
+                          ]
+                        },
+                        "curso": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "nome": {
+                              "type": "string"
+                            },
+                            "periodicidade": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "ATIVO",
+                                "INATIVO"
+                              ]
+                            },
+                            "duracao": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "periodoAtividadeQuadro": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "ano": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "periodo": {
+                              "type": "integer",
+                              "format": "int32"
+                            },
+                            "dataInicio": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "dataFim": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "ATIVO",
+                                "INATIVO"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "usuario": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "tipoUsuario": {
+                      "type": "string",
+                      "enum": [
+                        "ADMINISTRADOR",
+                        "COORDENADOR"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ATIVO",
+                        "INATIVO"
+                      ]
+                    },
+                    "curso": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "nome": {
+                          "type": "string"
+                        },
+                        "periodicidade": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ATIVO",
+                            "INATIVO"
+                          ]
+                        },
+                        "duracao": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000

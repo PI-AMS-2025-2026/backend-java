@@ -1,0 +1,141 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/disponibilidades-professores"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  body:
+    type: json
+    content: |-
+      {
+        "blocoHorario": {
+          "id": 901
+        },
+        "diaSemana": "SABADO",
+        "professor": {
+          "id": 6534
+        }
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 8356,
+        "professor": {
+          "id": 9399,
+          "nome": "string",
+          "email": "string",
+          "cidade": "string",
+          "status": "INATIVO",
+          "createdAt": "2022-06-03T05:29:23.635Z",
+          "updatedAt": "1965-05-24T22:21:15.606Z"
+        },
+        "dia_semana": "SABADO",
+        "bloco_horario": {
+          "id": 5527,
+          "horaInicio": "string",
+          "horaFim": "string",
+          "duracao": 8982,
+          "createdAt": "2020-07-03T08:13:46.931Z",
+          "updatedAt": "1953-05-13T13:48:22.353Z"
+        },
+        "created_at": "2023-03-11T14:04:06.774Z",
+        "updated_at": "1984-05-05T19:26:24.748Z"
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "professor": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "cidade": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "ATIVO",
+                  "INATIVO"
+                ]
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "dia_semana": {
+            "type": "string",
+            "enum": [
+              "DOMINGO",
+              "SEGUNDA",
+              "TERCA",
+              "QUARTA",
+              "QUINTA",
+              "SEXTA",
+              "SABADO"
+            ]
+          },
+          "bloco_horario": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "horaInicio": {
+                "type": "string"
+              },
+              "horaFim": {
+                "type": "string"
+              },
+              "duracao": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+order: 1000

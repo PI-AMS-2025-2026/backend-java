@@ -1,0 +1,109 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/professores?nome=string&email=string&cidade=string&status=ATIVO&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+    email: string
+    cidade: string
+    status: ATIVO
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 8199,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "ATIVO",
+            "createdAt": "1958-02-12T19:47:57.962Z",
+            "updatedAt": "1965-04-09T19:34:41.682Z"
+          },
+          {
+            "id": 2461,
+            "nome": "string",
+            "email": "string",
+            "cidade": "string",
+            "status": "INATIVO",
+            "createdAt": "1966-04-10T00:07:44.905Z",
+            "updatedAt": "1999-11-07T21:45:43.379Z"
+          }
+        ],
+        "page": 3874,
+        "size": 2382,
+        "totalElements": 7978,
+        "totalPages": 2129
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "nome": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "cidade": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ATIVO",
+                    "INATIVO"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000

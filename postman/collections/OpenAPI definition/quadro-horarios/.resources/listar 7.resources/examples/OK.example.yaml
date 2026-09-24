@@ -1,0 +1,217 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/quadro-horarios?curso=5534&periodo_atividade_quadro=5534&status=ATIVO&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    curso: "5534"
+    periodo_atividade_quadro: "5534"
+    status: ATIVO
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 5635,
+            "versao": 3828,
+            "dataCriacao": "1962-11-14T15:53:45.691Z",
+            "status": "ATIVO",
+            "curso": {
+              "id": 5501,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 9866,
+              "createdAt": "1982-07-04T08:39:02.366Z",
+              "updatedAt": "2001-05-07T00:05:42.605Z"
+            },
+            "periodoAtividadeQuadro": {
+              "id": 9125,
+              "ano": 2930,
+              "periodo": 9019,
+              "dataInicio": "1951-09-30",
+              "dataFim": "1982-09-17",
+              "status": "INATIVO",
+              "createdAt": "1991-08-23T12:35:48.042Z",
+              "updatedAt": "2025-03-26T09:47:40.714Z"
+            },
+            "createdAt": "1953-09-13T19:07:58.001Z",
+            "updatedAt": "1985-03-05T00:38:23.708Z"
+          },
+          {
+            "id": 3504,
+            "versao": 2597,
+            "dataCriacao": "1948-09-16T05:34:45.993Z",
+            "status": "INATIVO",
+            "curso": {
+              "id": 7898,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "ATIVO",
+              "duracao": 9139,
+              "createdAt": "1967-09-28T13:44:49.686Z",
+              "updatedAt": "1989-12-11T22:09:09.680Z"
+            },
+            "periodoAtividadeQuadro": {
+              "id": 7450,
+              "ano": 9123,
+              "periodo": 4857,
+              "dataInicio": "1960-04-20",
+              "dataFim": "1973-04-08",
+              "status": "INATIVO",
+              "createdAt": "1964-02-28T04:03:44.820Z",
+              "updatedAt": "1983-07-08T18:07:51.924Z"
+            },
+            "createdAt": "2014-10-02T15:30:21.912Z",
+            "updatedAt": "1948-11-03T15:47:29.148Z"
+          }
+        ],
+        "page": 5498,
+        "size": 7499,
+        "totalElements": 4587,
+        "totalPages": 1337
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "versao": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "dataCriacao": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ATIVO",
+                    "INATIVO"
+                  ]
+                },
+                "curso": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "periodicidade": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ATIVO",
+                        "INATIVO"
+                      ]
+                    },
+                    "duracao": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "periodoAtividadeQuadro": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "ano": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "periodo": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "dataInicio": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "dataFim": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ATIVO",
+                        "INATIVO"
+                      ]
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000
