@@ -9,22 +9,26 @@ import org.springframework.data.repository.query.Param;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.models.Status;
 
-
 public interface CursoRepository extends JpaRepository<Curso, Long> {
+
+    // Alteração: verifica duplicidade considerando nome,
+    // periodicidade e duração.
+    boolean existsByNomeIgnoreCaseAndPeriodicidadeIgnoreCaseAndDuracao(
+            String nome,
+            String periodicidade,
+            Integer duracao);
 
     /**
      * Retorna cursos aplicando filtros opcionais.
      *
      * Regras dos filtros:
-     * 
+     *
      * @param nome          busca parcial, ignorando maiúsculas/minúsculas.
      * @param periodicidade comparação exata, ignorando maiúsculas/minúsculas.
      * @param status        comparação exata, respeitando maiúsculas/minúsculas.
      * @param duracao       comparação exata.
-     *                      </br>
-     *                      </br>
-     *                      Quando um parâmetro é null, o filtro correspondente é
-     *                      ignorado.
+     *
+     * Quando um parâmetro é null, o filtro correspondente é ignorado.
      */
     @Query("""
             SELECT c
