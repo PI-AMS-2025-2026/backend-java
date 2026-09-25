@@ -25,6 +25,11 @@ public class RecursoService {
 
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
+
+        if (repository.existsByNomeIgnoreCase(request.nome())) {
+    throw new IllegalArgumentException("Esse recurso já possui cadastro");
+    }
+
         Recurso entity = RecursoMapper.toEntity(request);
 
         // ALTERAÇÃO: o payload agora envia diretamente o ID do tipo de recurso.
