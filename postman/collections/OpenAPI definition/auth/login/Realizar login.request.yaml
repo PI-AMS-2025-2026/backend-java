@@ -1,0 +1,30 @@
+$kind: http-request
+description: Autentica o usuario e retorna tokens de acesso e de renovacao.
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "roberto.silva@gmail.com",
+      "senha": "321654"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "senha": {
+          "type": "string"
+        }
+      }
+    }
+settings: {}
+examples: ./.resources/Realizar login.resources/examples
+order: 1000

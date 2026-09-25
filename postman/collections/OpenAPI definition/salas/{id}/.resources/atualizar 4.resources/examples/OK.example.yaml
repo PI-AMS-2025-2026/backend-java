@@ -1,0 +1,84 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/salas/:id"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  pathVariables:
+    id: "5534"
+  body:
+    type: json
+    content: |-
+      {
+        "capacidade": 5397,
+        "codigo": "string",
+        "tipoSalaId": 4284
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 3444,
+        "codigo": "string",
+        "capacidade": 2354,
+        "tipoSala": {
+          "id": 6554,
+          "nome": "string",
+          "created_at": "2016-07-02T08:26:10.130Z",
+          "updated_at": "1965-11-25T02:22:48.002Z"
+        },
+        "created_at": "2011-05-12T13:02:49.954Z",
+        "updated_at": "2014-09-09T07:45:31.194Z"
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "capacidade": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoSala": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+order: 1000

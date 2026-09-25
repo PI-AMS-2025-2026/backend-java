@@ -1,0 +1,42 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/salas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "capacidade": 10,
+      "codigo": "SALAPF",
+      "tipoSalaId": 5
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 20
+        },
+        "capacidade": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tipoSalaId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "capacidade",
+        "codigo",
+        "tipoSalaId"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 4.resources/examples
+order: 3000

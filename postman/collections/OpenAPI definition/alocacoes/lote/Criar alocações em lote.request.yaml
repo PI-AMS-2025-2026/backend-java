@@ -1,0 +1,99 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/alocacoes/lote"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    [
+      {
+        "diaSemana": "TERCA",
+        "disciplinaId": 3286,
+        "horarioId": 5764,
+        "professorId": 5325,
+        "quadroHorarioId": 7838,
+        "salaId": 3419,
+        "turmaId": 1416,
+        "usuarioAlteracaoId": 6641,
+        "justificativaAlteracao": "string"
+      },
+      {
+        "diaSemana": "SABADO",
+        "disciplinaId": 3906,
+        "horarioId": 1600,
+        "professorId": 2469,
+        "quadroHorarioId": 4957,
+        "salaId": 4839,
+        "turmaId": 9714,
+        "usuarioAlteracaoId": 2598,
+        "justificativaAlteracao": "string"
+      }
+    ]
+  $type: |-
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "turmaId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "disciplinaId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "salaId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "professorId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "diaSemana": {
+            "type": "string",
+            "enum": [
+              "DOMINGO",
+              "SEGUNDA",
+              "TERCA",
+              "QUARTA",
+              "QUINTA",
+              "SEXTA",
+              "SABADO"
+            ]
+          },
+          "horarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quadroHorarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "justificativaAlteracao": {
+            "type": "string"
+          },
+          "usuarioAlteracaoId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "diaSemana",
+          "disciplinaId",
+          "horarioId",
+          "professorId",
+          "quadroHorarioId",
+          "salaId",
+          "turmaId",
+          "usuarioAlteracaoId"
+        ]
+      }
+    }
+settings: {}
+examples: ./.resources/Criar alocações em lote.resources/examples
+order: 1000

@@ -1,0 +1,51 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/cursos"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "duracao": 6,
+      "nome": "Analise e Desenvolvimento de Sistemas",
+      "periodicidade": "semestral",
+      "status": "inativo"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "periodicidade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        },
+        "duracao": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "duracao",
+        "nome",
+        "periodicidade",
+        "status"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 13.resources/examples
+order: 3000

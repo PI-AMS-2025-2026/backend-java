@@ -1,0 +1,71 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/salas?tipo_sala=5534&capacidade=1676&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  - key: tipo_sala
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+  - key: capacidade
+    value: "1676"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+  - key: page
+    value: "0"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        }
+      }
+  - key: size
+    value: "10"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32",
+            "default": 10
+          }
+        }
+      }
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/listar 4.resources/examples
+order: 2000

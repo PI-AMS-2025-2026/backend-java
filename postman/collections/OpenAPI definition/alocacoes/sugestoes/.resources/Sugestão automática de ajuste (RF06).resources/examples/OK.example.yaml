@@ -1,0 +1,145 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/alocacoes/sugestoes"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  body:
+    type: json
+    content: |-
+      {
+        "diaSemana": "SEXTA",
+        "disciplina": {
+          "id": 5359
+        },
+        "horario": {
+          "id": 5907
+        },
+        "professor": {
+          "id": 9750
+        },
+        "quadroHorario": {
+          "id": 2749
+        },
+        "sala": {
+          "id": 8407
+        },
+        "turma": {
+          "id": 8002
+        }
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "sucesso": false,
+        "mensagem": "string",
+        "motivo": "string",
+        "sugestoes": [
+          {
+            "diaSemana": "DOMINGO",
+            "disciplinaId": 818,
+            "horarioId": 7017,
+            "professorId": 2680,
+            "quadroHorarioId": 1275,
+            "salaId": 1795,
+            "turmaId": 3733,
+            "usuarioAlteracaoId": 9207,
+            "justificativaAlteracao": "string"
+          },
+          {
+            "diaSemana": "SEGUNDA",
+            "disciplinaId": 3530,
+            "horarioId": 5442,
+            "professorId": 8898,
+            "quadroHorarioId": 1954,
+            "salaId": 940,
+            "turmaId": 1540,
+            "usuarioAlteracaoId": 9116,
+            "justificativaAlteracao": "string"
+          }
+        ]
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "sucesso": {
+            "type": "boolean"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "sugestoes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turmaId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "disciplinaId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "salaId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "professorId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "diaSemana": {
+                  "type": "string",
+                  "enum": [
+                    "DOMINGO",
+                    "SEGUNDA",
+                    "TERCA",
+                    "QUARTA",
+                    "QUINTA",
+                    "SEXTA",
+                    "SABADO"
+                  ]
+                },
+                "horarioId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "quadroHorarioId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "justificativaAlteracao": {
+                  "type": "string"
+                },
+                "usuarioAlteracaoId": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              },
+              "required": [
+                "diaSemana",
+                "disciplinaId",
+                "horarioId",
+                "professorId",
+                "quadroHorarioId",
+                "salaId",
+                "turmaId",
+                "usuarioAlteracaoId"
+              ]
+            }
+          }
+        }
+      }
+order: 1000

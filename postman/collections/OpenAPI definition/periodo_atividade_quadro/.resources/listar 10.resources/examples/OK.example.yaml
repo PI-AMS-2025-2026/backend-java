@@ -1,0 +1,119 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/periodo_atividade_quadro?ano=1676&periodo=1676&status=ATIVO&dataInicio=1998-02-07&dataFim=1998-02-07&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    ano: "1676"
+    periodo: "1676"
+    status: ATIVO
+    dataInicio: 1998-02-07
+    dataFim: 1998-02-07
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 4786,
+            "ano": 4667,
+            "periodo": 9938,
+            "dataInicio": "1965-05-02",
+            "dataFim": "1980-04-06",
+            "status": "ATIVO",
+            "createdAt": "1979-09-28T11:50:29.603Z",
+            "updatedAt": "2005-03-15T07:39:50.219Z"
+          },
+          {
+            "id": 2978,
+            "ano": 8725,
+            "periodo": 6606,
+            "dataInicio": "1974-10-07",
+            "dataFim": "1989-11-25",
+            "status": "INATIVO",
+            "createdAt": "1956-08-27T05:17:24.968Z",
+            "updatedAt": "1984-08-16T23:02:58.110Z"
+          }
+        ],
+        "page": 8501,
+        "size": 5254,
+        "totalElements": 5976,
+        "totalPages": 6789
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "ano": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "periodo": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "dataInicio": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "dataFim": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ATIVO",
+                    "INATIVO"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000
