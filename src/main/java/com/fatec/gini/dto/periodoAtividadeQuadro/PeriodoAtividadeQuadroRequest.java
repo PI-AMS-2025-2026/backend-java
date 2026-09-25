@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Positive;
 public record PeriodoAtividadeQuadroRequest(
         @NotNull(message = "O ano é obrigatório")
         @Positive(message = "O ano deve ser um número inteiro maior que zero")
-        @Min(value = 2026, message = "O ano deve ser maior ou igual a 2026")
+        @Min(value = 2008, message = "O ano deve ser maior ou igual a 2008") 
         @Max(value = 9999, message = "O ano deve ser menor ou igual a 9999")
         Integer ano,
       

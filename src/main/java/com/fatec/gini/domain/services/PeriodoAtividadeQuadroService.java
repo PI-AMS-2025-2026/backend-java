@@ -27,6 +27,7 @@ public class PeriodoAtividadeQuadroService {
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
         atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
+        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo());
 
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
