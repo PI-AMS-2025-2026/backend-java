@@ -1,0 +1,30 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/disciplinas/:id"
+method: GET
+headers:
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "1"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/buscar Por Id 1.resources/examples
+order: 1000

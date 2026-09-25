@@ -1,0 +1,48 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/tipos-sala/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "1"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Laboratório"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "nome"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 2.resources/examples
+order: 2000

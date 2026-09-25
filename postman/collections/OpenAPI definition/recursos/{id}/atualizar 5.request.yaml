@@ -1,0 +1,54 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/recursos/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "6"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Lampada LED",
+      "tipoRecurso": 2
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "tipoRecurso": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "nome",
+        "tipoRecurso"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 5.resources/examples
+order: 2000

@@ -1,0 +1,60 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/salas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "capacidade": 5397,
+      "codigo": "string",
+      "tipoSalaId": 4284
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 20
+        },
+        "capacidade": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tipoSalaId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "capacidade",
+        "codigo",
+        "tipoSalaId"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 4.resources/examples
+order: 2000

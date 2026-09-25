@@ -1,0 +1,75 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/turmas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "6"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "ano": 2026,
+      "curso": {
+        "id": 5
+      },
+      "numeroAlunos": 25,
+      "periodo": 2
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "periodo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ano": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 9999,
+          "format": "int32"
+        },
+        "numeroAlunos": {
+          "type": "integer",
+          "maximum": 50,
+          "format": "int32"
+        },
+        "curso": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "ano",
+        "curso",
+        "numeroAlunos",
+        "periodo"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 1.resources/examples
+order: 2000

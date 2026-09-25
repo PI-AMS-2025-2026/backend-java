@@ -1,0 +1,30 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/tipos-recurso/:id"
+method: GET
+headers:
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/buscar 3.resources/examples
+order: 1000

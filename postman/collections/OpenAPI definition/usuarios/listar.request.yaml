@@ -1,0 +1,12 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/usuarios"
+method: GET
+headers:
+  Accept: "*/*"
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/listar.resources/examples
+order: 2000

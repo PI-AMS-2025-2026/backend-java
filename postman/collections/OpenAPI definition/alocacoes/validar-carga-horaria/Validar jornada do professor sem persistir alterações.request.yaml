@@ -1,0 +1,63 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/alocacoes/validar-carga-horaria"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "diaSemana": "SEXTA",
+      "horario": {
+        "id": 7360
+      },
+      "professor": {
+        "id": 3383
+      }
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "professor": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "diaSemana": {
+          "type": "string",
+          "enum": [
+            "DOMINGO",
+            "SEGUNDA",
+            "TERCA",
+            "QUARTA",
+            "QUINTA",
+            "SEXTA",
+            "SABADO"
+          ]
+        },
+        "horario": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "diaSemana",
+        "horario",
+        "professor"
+      ]
+    }
+settings: {}
+examples: ./.resources/Validar jornada do professor sem persistir alterações.resources/examples
+order: 1000

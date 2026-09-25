@@ -1,0 +1,12 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/disponibilidades-professores"
+method: GET
+headers:
+  Accept: "*/*"
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/listar 11.resources/examples
+order: 2000

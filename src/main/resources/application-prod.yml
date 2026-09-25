@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  sql:
+    init:
+      encoding: UTF-8
+      mode: never
+  h2:
+    console:
+      enabled: false
+  flyway:
+    enabled: true
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET}
+      expirationMs: ${TOKEN_EXPIRATION_MS:86400000}
+      refreshExpirationMs: ${REFRESH_TOKEN_EXPIRATION_MS:604800000}
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false

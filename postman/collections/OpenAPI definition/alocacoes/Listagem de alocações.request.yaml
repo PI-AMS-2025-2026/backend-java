@@ -1,0 +1,12 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/alocacoes"
+method: GET
+headers:
+  Accept: "*/*"
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/Listagem de alocações.resources/examples
+order: 2000

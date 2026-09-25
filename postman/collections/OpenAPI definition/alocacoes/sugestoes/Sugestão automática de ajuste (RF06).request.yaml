@@ -1,0 +1,115 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/alocacoes/sugestoes"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "diaSemana": "SEXTA",
+      "disciplina": {
+        "id": 5359
+      },
+      "horario": {
+        "id": 5907
+      },
+      "professor": {
+        "id": 9750
+      },
+      "quadroHorario": {
+        "id": 2749
+      },
+      "sala": {
+        "id": 8407
+      },
+      "turma": {
+        "id": 8002
+      }
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "turma": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "disciplina": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "sala": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "professor": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "diaSemana": {
+          "type": "string",
+          "enum": [
+            "DOMINGO",
+            "SEGUNDA",
+            "TERCA",
+            "QUARTA",
+            "QUINTA",
+            "SEXTA",
+            "SABADO"
+          ]
+        },
+        "horario": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "quadroHorario": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "diaSemana",
+        "disciplina",
+        "horario",
+        "professor",
+        "quadroHorario",
+        "sala",
+        "turma"
+      ]
+    }
+settings: {}
+examples: ./.resources/Sugestão automática de ajuste (RF06).resources/examples
+order: 1000

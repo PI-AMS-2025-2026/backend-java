@@ -1,0 +1,87 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/usuarios/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "9"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "email": "robert.silva@gmail.com",
+      "nome": "Roberto Costa",
+      "status": "ATIVO",
+      "tipoUsuario": "ADMINISTRADOR",
+      "senha": "123456"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "format": "email"
+        },
+        "senha": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 2147483647
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        },
+        "tipoUsuario": {
+          "type": "string",
+          "enum": [
+            "ADMINISTRADOR",
+            "COORDENADOR"
+          ]
+        },
+        "curso": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "email",
+        "nome",
+        "status",
+        "tipoUsuario"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar.resources/examples
+order: 2000
