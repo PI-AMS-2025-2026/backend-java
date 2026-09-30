@@ -1,0 +1,69 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/cursos/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "7"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "duracao": 4,
+      "nome": "Ciencias da COmputação",
+      "periodicidade": "semestral",
+      "status": "ATIVO"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "periodicidade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        },
+        "duracao": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "duracao",
+        "nome",
+        "periodicidade",
+        "status"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 13.resources/examples
+order: 2000

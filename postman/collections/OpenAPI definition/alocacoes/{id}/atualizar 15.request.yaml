@@ -1,0 +1,101 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/alocacoes/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "diaSemana": "DOMINGO",
+      "disciplinaId": 7135,
+      "horarioId": 1491,
+      "professorId": 8463,
+      "quadroHorarioId": 1722,
+      "salaId": 463,
+      "turmaId": 5826,
+      "usuarioAlteracaoId": 8205,
+      "justificativaAlteracao": "string"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "turmaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "disciplinaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "salaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "professorId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "diaSemana": {
+          "type": "string",
+          "enum": [
+            "DOMINGO",
+            "SEGUNDA",
+            "TERCA",
+            "QUARTA",
+            "QUINTA",
+            "SEXTA",
+            "SABADO"
+          ]
+        },
+        "horarioId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quadroHorarioId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "justificativaAlteracao": {
+          "type": "string"
+        },
+        "usuarioAlteracaoId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "diaSemana",
+        "disciplinaId",
+        "horarioId",
+        "professorId",
+        "quadroHorarioId",
+        "salaId",
+        "turmaId",
+        "usuarioAlteracaoId"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 15.resources/examples
+order: 2000

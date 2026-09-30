@@ -1,0 +1,36 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/recursos"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Lampada",
+      "tipoRecurso": 2
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "tipoRecurso": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "nome",
+        "tipoRecurso"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 5.resources/examples
+order: 3000

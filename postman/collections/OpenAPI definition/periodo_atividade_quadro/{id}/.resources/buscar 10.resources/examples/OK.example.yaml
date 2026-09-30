@@ -1,0 +1,71 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/periodo_atividade_quadro/:id"
+  method: GET
+  headers:
+    Accept: "*/*"
+  pathVariables:
+    id: "5534"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 9594,
+        "ano": 2367,
+        "periodo": 7482,
+        "dataInicio": "1947-08-06",
+        "dataFim": "1953-02-20",
+        "status": "INATIVO",
+        "createdAt": "1999-09-12T01:38:34.698Z",
+        "updatedAt": "1957-06-10T09:51:58.769Z"
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ano": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "periodo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dataInicio": {
+            "type": "string",
+            "format": "date"
+          },
+          "dataFim": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ATIVO",
+              "INATIVO"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+order: 1000

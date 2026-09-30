@@ -1,0 +1,64 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/quadro-horarios"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "curso": {
+        "id": 5
+      },
+      "periodoAtividadeQuadro": {
+        "id": 1
+      },
+      "status": "ATIVO",
+      "versao": 3
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "versao": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        },
+        "curso": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "periodoAtividadeQuadro": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "curso",
+        "periodoAtividadeQuadro",
+        "status",
+        "versao"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 7.resources/examples
+order: 3000

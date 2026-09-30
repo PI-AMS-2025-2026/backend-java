@@ -1,0 +1,57 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/turmas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "ano": 2025,
+      "curso": {
+        "id": 1
+      },
+      "numeroAlunos": 25,
+      "periodo": 4
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "periodo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ano": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 9999,
+          "format": "int32"
+        },
+        "numeroAlunos": {
+          "type": "integer",
+          "maximum": 50,
+          "format": "int32"
+        },
+        "curso": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "ano",
+        "curso",
+        "numeroAlunos",
+        "periodo"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 1.resources/examples
+order: 3000

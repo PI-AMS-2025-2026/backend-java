@@ -1,0 +1,126 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/salas?tipo_sala=5534&capacidade=1676&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    tipo_sala: "5534"
+    capacidade: "1676"
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 8304,
+            "codigo": "string",
+            "capacidade": 8687,
+            "tipoSala": {
+              "id": 4459,
+              "nome": "string",
+              "created_at": "1967-07-23T03:42:23.955Z",
+              "updated_at": "1973-09-10T05:36:38.910Z"
+            },
+            "created_at": "2023-05-01T12:44:21.436Z",
+            "updated_at": "1968-11-05T09:40:13.190Z"
+          },
+          {
+            "id": 9455,
+            "codigo": "string",
+            "capacidade": 5137,
+            "tipoSala": {
+              "id": 78,
+              "nome": "string",
+              "created_at": "2007-07-08T21:14:38.526Z",
+              "updated_at": "1966-07-02T14:48:54.863Z"
+            },
+            "created_at": "1967-07-07T05:45:00.993Z",
+            "updated_at": "2010-10-12T10:51:56.334Z"
+          }
+        ],
+        "page": 6479,
+        "size": 7658,
+        "totalElements": 7850,
+        "totalPages": 1818
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "codigo": {
+                  "type": "string"
+                },
+                "capacidade": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "tipoSala": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000

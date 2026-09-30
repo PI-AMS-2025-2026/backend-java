@@ -1,0 +1,152 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/disciplinas"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  body:
+    type: json
+    content: |-
+      {
+        "cargaHoraria": 4683,
+        "codDisciplina": "string",
+        "cursoId": 8164,
+        "modalidade": "string",
+        "nome": "string",
+        "periodo": 7098,
+        "tipoDisciplina": "string",
+        "tipoSalaId": 8833,
+        "cor": "string"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "id": 8872,
+        "nome": "string",
+        "cargaHoraria": 6876,
+        "tipoDisciplina": "string",
+        "periodo": 7796,
+        "modalidade": "string",
+        "codDisciplina": "string",
+        "cor": "string",
+        "curso": {
+          "id": 1801,
+          "nome": "string",
+          "periodicidade": "string",
+          "status": "ATIVO",
+          "duracao": 2324,
+          "createdAt": "2010-01-31T11:26:48.093Z",
+          "updatedAt": "2015-09-16T06:46:34.183Z"
+        },
+        "tipoSala": {
+          "id": 8807,
+          "nome": "string",
+          "created_at": "1948-07-05T04:58:05.696Z",
+          "updated_at": "1975-12-05T02:37:13.890Z"
+        },
+        "createdAt": "1980-05-04T14:32:20.641Z",
+        "updatedAt": "1957-12-09T05:06:48.390Z"
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoDisciplina": {
+            "type": "string"
+          },
+          "periodo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modalidade": {
+            "type": "string"
+          },
+          "codDisciplina": {
+            "type": "string"
+          },
+          "cor": {
+            "type": "string"
+          },
+          "curso": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "periodicidade": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "ATIVO",
+                  "INATIVO"
+                ]
+              },
+              "duracao": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "tipoSala": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+order: 1000

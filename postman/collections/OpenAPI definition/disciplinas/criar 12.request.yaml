@@ -1,0 +1,76 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/disciplinas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "cargaHoraria": 40,
+      "codDisciplina": "EXL008",
+      "cursoId": 3,
+      "modalidade": "presencial",
+      "nome": "Exel avançado",
+      "periodo": 2,
+      "tipoDisciplina": "Online",
+      "tipoSalaId": 1,
+      "cor": "verde"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cargaHoraria": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tipoDisciplina": {
+          "type": "string",
+          "minLength": 1
+        },
+        "periodo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "modalidade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "codDisciplina": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        "cor": {
+          "type": "string"
+        },
+        "cursoId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoSalaId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "cargaHoraria",
+        "codDisciplina",
+        "cursoId",
+        "modalidade",
+        "nome",
+        "periodo",
+        "tipoDisciplina",
+        "tipoSalaId"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 12.resources/examples
+order: 3000

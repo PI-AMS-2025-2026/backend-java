@@ -1,0 +1,69 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/usuarios"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "roberto.silva@gmail.com",
+      "nome": "Roberto Silva",
+      "status": "ATIVO",
+      "tipoUsuario": "ADMINISTRADOR",
+      "senha": "321654"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "format": "email"
+        },
+        "senha": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 2147483647
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        },
+        "tipoUsuario": {
+          "type": "string",
+          "enum": [
+            "ADMINISTRADOR",
+            "COORDENADOR"
+          ]
+        },
+        "curso": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "email",
+        "nome",
+        "status",
+        "tipoUsuario"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar.resources/examples
+order: 3000

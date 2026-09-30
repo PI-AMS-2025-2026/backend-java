@@ -1,0 +1,49 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/professores-disciplinas"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "disciplina": {
+        "id": 3
+      },
+      "professor": {
+        "id": 7
+      }
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "professor": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "disciplina": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "disciplina",
+        "professor"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 9.resources/examples
+order: 3000

@@ -1,0 +1,160 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/turmas?curso=5534&ano=1676&periodo=1676&codigo=string&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    curso: "5534"
+    ano: "1676"
+    periodo: "1676"
+    codigo: string
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 9631,
+            "codigo": "string",
+            "periodo": 9371,
+            "ano": 2416,
+            "numeroAlunos": 25,
+            "curso": {
+              "id": 4707,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 1593,
+              "createdAt": "1970-05-09T04:21:13.323Z",
+              "updatedAt": "1965-10-01T09:24:33.837Z"
+            },
+            "created_at": "2017-01-15T19:54:59.789Z",
+            "updated_at": "2025-12-15T10:47:39.059Z"
+          },
+          {
+            "id": 5734,
+            "codigo": "string",
+            "periodo": 1959,
+            "ano": 7433,
+            "numeroAlunos": 6822,
+            "curso": {
+              "id": 8425,
+              "nome": "string",
+              "periodicidade": "string",
+              "status": "INATIVO",
+              "duracao": 5200,
+              "createdAt": "1988-03-23T03:12:56.011Z",
+              "updatedAt": "2005-03-18T10:52:39.237Z"
+            },
+            "created_at": "2026-02-24T20:32:23.819Z",
+            "updated_at": "2012-10-11T21:38:51.871Z"
+          }
+        ],
+        "page": 155,
+        "size": 2969,
+        "totalElements": 3532,
+        "totalPages": 9743
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "codigo": {
+                  "type": "string"
+                },
+                "periodo": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "ano": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "numeroAlunos": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "curso": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "periodicidade": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ATIVO",
+                        "INATIVO"
+                      ]
+                    },
+                    "duracao": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000

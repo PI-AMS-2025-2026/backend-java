@@ -1,0 +1,71 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/historicos-alteracoes?alocacao=5534&usuario=5534&page=0&size=10"
+method: GET
+headers:
+  Accept: "*/*"
+queryParams:
+  - key: alocacao
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+  - key: usuario
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+  - key: page
+    value: "0"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        }
+      }
+  - key: size
+    value: "10"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32",
+            "default": 10
+          }
+        }
+      }
+body:
+  type: text
+  content: ""
+settings: {}
+examples: ./.resources/listar 16.resources/examples
+order: 1000

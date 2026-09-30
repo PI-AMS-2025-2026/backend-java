@@ -1,0 +1,60 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/recurso-sala/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "1"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "quantidade": 1,
+      "recursoId": 1,
+      "salaId": 1
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "salaId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "recursoId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantidade": {
+          "type": "integer",
+          "minimum": 1,
+          "format": "int32"
+        }
+      },
+      "required": [
+        "quantidade",
+        "recursoId",
+        "salaId"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 6.resources/examples
+order: 2000

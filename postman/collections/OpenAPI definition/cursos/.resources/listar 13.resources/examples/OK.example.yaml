@@ -1,0 +1,110 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/cursos?nome=string&periodicidade=string&status=ATIVO&duracao=1676&page=0&size=10"
+  method: GET
+  headers:
+    Accept: "*/*"
+  queryParams:
+    nome: string
+    periodicidade: string
+    status: ATIVO
+    duracao: "1676"
+    page: "0"
+    size: "10"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "content": [
+          {
+            "id": 4149,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "ATIVO",
+            "duracao": 8890,
+            "createdAt": "1978-05-25T23:49:17.166Z",
+            "updatedAt": "1952-04-19T04:35:31.480Z"
+          },
+          {
+            "id": 4148,
+            "nome": "string",
+            "periodicidade": "string",
+            "status": "INATIVO",
+            "duracao": 8287,
+            "createdAt": "1964-09-24T10:37:30.270Z",
+            "updatedAt": "2024-10-14T16:49:56.873Z"
+          }
+        ],
+        "page": 2899,
+        "size": 3273,
+        "totalElements": 9033,
+        "totalPages": 6948
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "nome": {
+                  "type": "string"
+                },
+                "periodicidade": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ATIVO",
+                    "INATIVO"
+                  ]
+                },
+                "duracao": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+order: 1000

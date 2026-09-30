@@ -1,0 +1,29 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/dias-semana"
+  method: GET
+  headers:
+    Accept: "*/*"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      [
+        "string",
+        "string"
+      ]
+    $type: |-
+      {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+order: 1000

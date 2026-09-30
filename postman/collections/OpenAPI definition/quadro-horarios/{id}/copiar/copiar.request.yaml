@@ -1,0 +1,82 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/quadro-horarios/:id/copiar"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "5534"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "curso": {
+        "id": 4569
+      },
+      "periodoAtividadeQuadro": {
+        "id": 2700
+      },
+      "status": "INATIVO",
+      "versao": 2236
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "versao": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        },
+        "curso": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "periodoAtividadeQuadro": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "required": [
+        "curso",
+        "periodoAtividadeQuadro",
+        "status",
+        "versao"
+      ]
+    }
+settings: {}
+examples: ./.resources/copiar.resources/examples
+order: 1000

@@ -1,0 +1,10 @@
+workspace:
+  id: d59e34e2-3963-4192-8ef1-f7d40dfb1181
+cloudResources:
+  collections: {}
+localResources:
+  specs:
+    - ../postman/specs/OpenAPI definition/postman.json
+resourceNameMappings:
+  specs:
+    - ../postman/specs/OpenAPI definition/postman.json: OpenAPI definition

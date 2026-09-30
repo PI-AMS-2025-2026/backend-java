@@ -1,0 +1,29 @@
+$kind: http-request
+description: Valida o refresh token e gera um novo par de tokens.
+url: "{{baseUrl}}/auth/refresh"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "refreshToken": "a5f611cf-4444-444a-b31a-6baf15e2671c"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "refreshToken"
+      ]
+    }
+settings: {}
+examples: ./.resources/Renovar tokens.resources/examples
+order: 1000

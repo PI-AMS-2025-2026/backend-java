@@ -1,0 +1,94 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/disciplinas/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+pathVariables:
+  - key: id
+    value: "6"
+    disabled: false
+    description: ""
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+body:
+  type: json
+  content: |-
+    {
+      "cargaHoraria": 80,
+      "codDisciplina": "SI456",
+      "cursoId": 1,
+      "modalidade": "Teorica",
+      "nome": "Sistemas da Informação",
+      "periodo": 2,
+      "tipoDisciplina": "Remoto",
+      "tipoSalaId": 1,
+      "cor": "laranja"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cargaHoraria": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tipoDisciplina": {
+          "type": "string",
+          "minLength": 1
+        },
+        "periodo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "modalidade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "codDisciplina": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        "cor": {
+          "type": "string"
+        },
+        "cursoId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tipoSalaId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "cargaHoraria",
+        "codDisciplina",
+        "cursoId",
+        "modalidade",
+        "nome",
+        "periodo",
+        "tipoDisciplina",
+        "tipoSalaId"
+      ]
+    }
+settings: {}
+examples: ./.resources/atualizar 12.resources/examples
+order: 2000

@@ -1,0 +1,49 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/professores"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: "*/*"
+body:
+  type: json
+  content: |-
+    {
+      "email": "glauco.todesco@gmail.com",
+      "nome": "Glauco Todesco",
+      "status": "ATIVO",
+      "cidade": "Sorocaba"
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "format": "email"
+        },
+        "cidade": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ATIVO",
+            "INATIVO"
+          ]
+        }
+      },
+      "required": [
+        "email",
+        "nome",
+        "status"
+      ]
+    }
+settings: {}
+examples: ./.resources/criar 8.resources/examples
+order: 3000

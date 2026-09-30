@@ -1,0 +1,44 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/alocacoes/validar-carga-horaria"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: "*/*"
+  body:
+    type: json
+    content: |-
+      {
+        "diaSemana": "SEXTA",
+        "horario": {
+          "id": 7360
+        },
+        "professor": {
+          "id": 3383
+        }
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: "*/*"
+  body:
+    type: text
+    content: |-
+      {
+        "valido": true,
+        "mensagem": "string"
+      }
+    $type: |-
+      {
+        "type": "object",
+        "properties": {
+          "valido": {
+            "type": "boolean"
+          },
+          "mensagem": {
+            "type": "string"
+          }
+        }
+      }
+order: 1000
