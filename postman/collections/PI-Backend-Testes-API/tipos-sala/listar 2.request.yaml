@@ -1,9 +1,0 @@
-$kind: http-request
-name: listar 2
-url: "{{baseUrl}}/tipos-sala"
-method: GET
-headers:
-  Accept: "*/*"
-settings: {}
-examples: ./.resources/listar 2.resources/examples
-order: 2000

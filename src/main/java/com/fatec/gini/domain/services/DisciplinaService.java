@@ -1,5 +1,7 @@
 package com.fatec.gini.domain.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,15 +41,27 @@ public class DisciplinaService {
         @Transactional
     public DisciplinaResponse criar(DisciplinaRequest request) {
 
-        Disciplina entity = DisciplinaMapper.toEntity(request);
-
         // Alteração: utiliza diretamente o ID do curso recebido no payload.
         Curso curso = cursoRepository.findById(request.cursoId())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Curso não encontrado com ID: " + request.cursoId()));
         validarAutorizacaoCurso.validarCurso(curso);
 
-// Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
+        // CORREÇÃO: impede cadastro de codDisciplina duplicado, com mensagem explícita do campo
+        if (repository.existsByCodDisciplina(request.codDisciplina())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe uma disciplina cadastrada com o código (codDisciplina): " + request.codDisciplina());
+        }
+
+        // CORREÇÃO: impede cadastro de disciplina duplicada (mesmo nome já cadastrado nesse curso)
+        if (repository.existsByNomeIgnoreCaseAndCursoId(request.nome(), curso.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Essa disciplina já possui cadastro");
+        }
+
+        Disciplina entity = DisciplinaMapper.toEntity(request);
+
+        // Alteração: utiliza diretamente o ID do tipo de sala recebido no payload.
         TipoSala tipoSala = tipoSalaRepository.findById(request.tipoSalaId())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
@@ -55,6 +69,8 @@ public class DisciplinaService {
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
 
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return DisciplinaMapper.toResponse(repository.save(entity));
     }
@@ -114,6 +130,17 @@ public class DisciplinaService {
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Tipo de sala não encontrado com ID: " + request.tipoSalaId()));
 
+        if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe outra disciplina cadastrada com o código (codDisciplina): " + request.codDisciplina());
+        }
+
+        // CORREÇÃO: mesma checagem de duplicidade na atualização, ignorando a própria disciplina (IdNot)
+        if (repository.existsByNomeIgnoreCaseAndCursoIdAndIdNot(request.nome(), curso.getId(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Essa disciplina já possui cadastro");
+        }
+
         entity.setNome(request.nome());
         entity.setCargaHoraria(request.cargaHoraria());
         entity.setTipoDisciplina(request.tipoDisciplina());
@@ -124,10 +151,8 @@ public class DisciplinaService {
         entity.setCurso(curso);
         entity.setTipoSala(tipoSala);
 
-        if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Já existe outra disciplina cadastrada com o código (codDisciplina): " + request.codDisciplina());
-        }
+        entity.setUpdatedAt(LocalDateTime.now());
+
         return DisciplinaMapper.toResponse(repository.save(entity));
     }
 

@@ -10,6 +10,11 @@ import com.fatec.gini.domain.entities.Recurso;
 
 public interface RecursoRepository extends JpaRepository<Recurso, Long> {
 
+
+  /* 
+  Verifica se já existe um recurso com o mesmo nome.
+   */
+  boolean existsByNomeIgnoreCase(String nome);
     /**
      * Retorna recursos aplicando filtros opcionais.
      *

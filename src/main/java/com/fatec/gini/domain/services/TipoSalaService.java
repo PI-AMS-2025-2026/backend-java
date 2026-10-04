@@ -34,7 +34,13 @@ public class TipoSalaService {
     // Cria um novo tipo de sala
     @Transactional
     public TipoSalaResponse criar(TipoSalaRequest request) {
+
+        if (repository.existsByNomeIgnoreCase(request.nome())) {
+    throw new IllegalArgumentException("Esse tipo_sala já possui cadastro");
+    }
+
         TipoSala entity = TipoSalaMapper.toEntity(request);
+
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 
