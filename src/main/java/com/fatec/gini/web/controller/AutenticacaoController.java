@@ -14,7 +14,10 @@ import com.fatec.gini.domain.services.RefreshTokenService;
 import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.dto.auth.LoginRequest;
 import com.fatec.gini.dto.auth.LoginResponse;
+import com.fatec.gini.dto.auth.RedefinirSenhaRequest;
 import com.fatec.gini.dto.auth.RefreshTokenRequest;
+import com.fatec.gini.dto.auth.SolicitarRecuperacaoSenhaRequest;
+import com.fatec.gini.domain.services.PasswordResetService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,6 +38,7 @@ public class AutenticacaoController {
 
         private final TokenService tokenService;
         private final RefreshTokenService refreshTokenService;
+        private final PasswordResetService passwordResetService;
 
         @Operation(summary = "Realizar login", description = "Autentica o usuario e retorna tokens de acesso e de renovacao.")
         @ApiResponses({
@@ -84,6 +88,30 @@ public class AutenticacaoController {
         public ResponseEntity<Void> logout(@RequestBody @Valid RefreshTokenRequest request) {
                 // A revogacao impede que o refresh token seja reutilizado.
                 refreshTokenService.revoke(request.refreshToken());
+                return ResponseEntity.noContent().build();
+        }
+
+        @Operation(summary = "Solicitar recuperação de senha", description = "Envia um link de recuperação para o e-mail informado.")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "202", description = "Solicitação recebida"),
+                        @ApiResponse(responseCode = "422", description = "E-mail inválido", content = @Content)
+        })
+        @PostMapping("/solicitar-recuperacao")
+        public ResponseEntity<Void> solicitarRecuperacao(
+                        @RequestBody @Valid SolicitarRecuperacaoSenhaRequest request) {
+                passwordResetService.solicitarRecuperacao(request.email());
+                return ResponseEntity.accepted().build();
+        }
+
+        @Operation(summary = "Redefinir senha", description = "Valida o token de recuperação e altera a senha do usuário.")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "204", description = "Senha redefinida com sucesso"),
+                        @ApiResponse(responseCode = "400", description = "Token inválido ou expirado", content = @Content),
+                        @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
+        })
+        @PostMapping("/redefinir-senha")
+        public ResponseEntity<Void> redefinirSenha(@RequestBody @Valid RedefinirSenhaRequest request) {
+                passwordResetService.redefinirSenha(request.token(), request.senha());
                 return ResponseEntity.noContent().build();
         }
 }

@@ -112,19 +112,19 @@ public class ConfiguracaoSegurancaTest {
                         .requestMatchers("/cursos/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())

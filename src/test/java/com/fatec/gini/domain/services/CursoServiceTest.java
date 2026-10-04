@@ -71,7 +71,7 @@ class CursoServiceTest {
         Curso cursoExistente = new Curso("ADS", "Semestral", Status.ATIVO, 6);
         cursoExistente.setId(1L);
 
-        CursoRequest requestAtualizado = new CursoRequest("Engenharia de Software", "Anual", Status.ATIVO, 8);
+        CursoRequest requestAtualizado = new CursoRequest("Engenharia de Software", "Semestral", Status.ATIVO, 8);
 
         when(repository.findById(1L)).thenReturn(Optional.of(cursoExistente));
         when(repository.save(any(Curso.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -81,7 +81,7 @@ class CursoServiceTest {
 
         // ---------- Assert ----------
         assertThat(resultado.nome()).isEqualTo("Engenharia de Software");
-        assertThat(resultado.periodicidade()).isEqualTo("Anual");
+        assertThat(resultado.periodicidade()).isEqualTo("Semestral");
         assertThat(resultado.duracao()).isEqualTo(8);
     }
 

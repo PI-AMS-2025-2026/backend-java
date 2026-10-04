@@ -99,13 +99,13 @@ public class AlocacaoController {
         @Operation(summary = "Listagem de alocações")
         public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
 
-                        @RequestParam(required = false) Long turma,
+                        @RequestParam(name = "turma", required = false) Long turma,
 
-                        @RequestParam(required = false) Long disciplina,
+                        @RequestParam(name = "disciplina", required = false) Long disciplina,
 
-                        @RequestParam(required = false) Long sala,
+                        @RequestParam(name = "sala", required = false) Long sala,
 
-                        @RequestParam(required = false) Long usuario,
+                        @RequestParam(name = "usuario", required = false) Long usuario,
 
                         @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
 
@@ -113,9 +113,9 @@ public class AlocacaoController {
 
                         @RequestParam(required = false, name = "quadro_horario") Long quadroHorario,
 
-                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(name = "page", defaultValue = "0") int page,
 
-                        @RequestParam(defaultValue = "10") int size) {
+                        @RequestParam(name = "size", defaultValue = "10") int size) {
 
                 return ResponseEntity.ok(
                                 service.listar(

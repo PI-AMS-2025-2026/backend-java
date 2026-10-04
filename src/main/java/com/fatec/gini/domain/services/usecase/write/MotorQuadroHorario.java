@@ -17,11 +17,16 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.grade.CursoGradeResumoResponse;
 import com.fatec.gini.dto.grade.DisciplinaGradeResumoResponse;
 import com.fatec.gini.dto.grade.GradeCursoResponse;
+import com.fatec.gini.dto.grade.GradeTurmaResponse;
+import com.fatec.gini.dto.grade.HorarioTurmaGradeResponse;
 import com.fatec.gini.dto.grade.QuadroHorarioGradeResumoResponse;
 import com.fatec.gini.dto.grade.SalaGradeResumoResponse;
+import com.fatec.gini.dto.grade.TurmaGradeResumoResponse;
+import com.fatec.gini.dto.grade.BlocoGradeSimplesResponse;
 import com.fatec.gini.dto.quadroHorario.BlocoQuadroResponse;
 import com.fatec.gini.dto.quadroHorario.CelulaGradeResponse;
 import com.fatec.gini.dto.quadroHorario.TurmaQuadroResponse;
@@ -42,10 +47,16 @@ public class MotorQuadroHorario {
         private final QuadroHorarioRepository quadroHorarioRepository;
         private final TurmaRepository turmaRepository;
         private final AlocacaoRepository alocacaoRepository;
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
         public GradeCursoResponse contruir(Long cursoId) {
+                return construir(cursoId);
+        }
+
+        public GradeCursoResponse construir(Long cursoId) {
                 Curso curso = cursoRepository.findById(cursoId)
                                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+                validarAutorizacaoCurso.validarCurso(curso);
 
                 QuadroHorario quadroAtivo = buscarQuadroAtivo(cursoId);
 
@@ -127,6 +138,30 @@ public class MotorQuadroHorario {
                                 turmasResponse);
         }
 
+        public GradeTurmaResponse construir(Long cursoId, Long turmaId) {
+                Curso curso = cursoRepository.findById(cursoId)
+                                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+                validarAutorizacaoCurso.validarCurso(curso);
+
+                Turma turma = turmaRepository.findByIdAndCursoId(turmaId, cursoId)
+                                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada para o curso informado"));
+                QuadroHorario quadroAtivo = buscarQuadroAtivo(cursoId);
+                List<Alocacao> alocacoes = alocacaoRepository.buscarAlocacoesGradeTurma(
+                                cursoId, turmaId, quadroAtivo.getId());
+
+                List<HorarioTurmaGradeResponse> horarios = alocacoes.stream()
+                                .map(this::converterHorarioTurmaResponse)
+                                .toList();
+
+                return new GradeTurmaResponse(
+                                new CursoGradeResumoResponse(curso.getId(), curso.getNome()),
+                                new TurmaGradeResumoResponse(turma.getId(), turma.getCodigo(), turma.getAno(),
+                                                turma.getPeriodo()),
+                                new QuadroHorarioGradeResumoResponse(quadroAtivo.getId(), quadroAtivo.getVersao(),
+                                                quadroAtivo.getStatus()),
+                                horarios);
+        }
+
         private CelulaGradeResponse criarCelulaVazia(DiaSemana diaSemana, Long blocoHorarioId) {
                 return new CelulaGradeResponse(
                                 diaSemana,
@@ -172,6 +207,17 @@ public class MotorQuadroHorario {
                                 new SalaGradeResumoResponse(
                                                 alocacao.getSala().getId(),
                                                 alocacao.getSala().getCodigo()),
+                                alocacao.getId());
+        }
+
+        private HorarioTurmaGradeResponse converterHorarioTurmaResponse(Alocacao alocacao) {
+                BlocoHorario bloco = alocacao.getBlocoHorario();
+                return new HorarioTurmaGradeResponse(
+                                alocacao.getDiaSemana(),
+                                new BlocoGradeSimplesResponse(bloco.getId(), bloco.getHoraInicio(), bloco.getHoraFim()),
+                                new DisciplinaGradeResumoResponse(
+                                                alocacao.getDisciplina().getId(), alocacao.getDisciplina().getNome()),
+                                new SalaGradeResumoResponse(alocacao.getSala().getId(), alocacao.getSala().getCodigo()),
                                 alocacao.getId());
         }
 

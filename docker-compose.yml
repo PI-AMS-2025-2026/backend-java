@@ -1,30 +1,57 @@
+# Uso local: copie .env.exemple para .env e execute `docker compose up --build`.
+# Mailpit: http://localhost:8025 | SMTP: localhost:1025
 services:
 
   postgres:
     image: postgres:17
     container_name: gini-postgres
-
-    env_file:
-      - .env
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gini}
+      POSTGRES_USER: ${POSTGRES_USER:-gini}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gini}
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: .
-
     container_name: gini-api
-
     depends_on:
-      - postgres
-
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
     ports:
       - "8080:8080"
-
     env_file:
       - .env
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-gini}
+      DB_USER: ${POSTGRES_USER:-gini}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-gini}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_AUTH: "false"
+      SMTP_STARTTLS: "false"
+      SMTP_FROM: ${SMTP_FROM:-noreply@gini.local}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      PASSWORD_RESET_EXPIRATION_MINUTES: ${PASSWORD_RESET_EXPIRATION_MINUTES:-15}
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: gini-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
 volumes:
   postgres_data:

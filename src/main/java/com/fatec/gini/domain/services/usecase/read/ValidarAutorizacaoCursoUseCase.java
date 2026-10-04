@@ -27,6 +27,13 @@ public class ValidarAutorizacaoCursoUseCase {
      * @throws AccessDeniedException Se não houver autenticação ativa ou se o principal não for uma instância de {@link Usuario}.
      */
     public Usuario usuarioAutenticado() {
+        if (!authorizationEnabled) {
+            Usuario usuarioPadrao = new Usuario();
+            usuarioPadrao.setId(1L);
+            usuarioPadrao.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
+            return usuarioPadrao;
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof Usuario usuario)) {

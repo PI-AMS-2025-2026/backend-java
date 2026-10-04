@@ -18,5 +18,20 @@
     "name": "app.security.authorization.enabled",
     "type": "java.lang.String",
     "description": "A description for 'app.security.authorization.enabled'"
+  },
+  {
+    "name": "app.frontend-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.frontend-url'"
+  },
+  {
+    "name": "app.password-reset.expiration-minutes",
+    "type": "java.lang.String",
+    "description": "A description for 'app.password-reset.expiration-minutes'"
+  },
+  {
+    "name": "app.mail.from",
+    "type": "java.lang.String",
+    "description": "A description for 'app.mail.from'"
   }
 ]}

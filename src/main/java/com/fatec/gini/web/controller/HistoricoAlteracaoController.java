@@ -14,7 +14,7 @@ import com.fatec.gini.dto.paginacao.PageResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/historicos-alteracoes")
+@RequestMapping("/historicos-versoes-alocacoes")
 @RequiredArgsConstructor
 public class HistoricoAlteracaoController {
 
@@ -24,8 +24,8 @@ public class HistoricoAlteracaoController {
 	public ResponseEntity<PageResponse<HistoricoVersaoAlocacaoResponse>> listar(
 			@RequestParam(required = false, name = "alocacao") Long idAlocacao,
 			@RequestParam(required = false, name = "usuario") Long idUsuario,
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 
 		return ResponseEntity.ok(service.listar(idAlocacao, idUsuario, page, size));
 	}

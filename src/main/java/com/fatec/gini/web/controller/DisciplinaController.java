@@ -31,13 +31,13 @@ public class DisciplinaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<DisciplinaResponse>> listar(
-            @RequestParam(required = false) String nome,
+            @RequestParam(name = "nome", required = false) String nome,
             // Alteração: padroniza o filtro para camelCase.
-            @RequestParam(required = false) Long cursoId,
+            @RequestParam(name = "curso_id", required = false) Long cursoId,
             // Alteração: padroniza o filtro para camelCase.
-            @RequestParam(required = false) Long tipoSalaId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "tipo_sala_id", required = false) Long tipoSalaId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
                 service.listar(nome, cursoId, tipoSalaId, page, size));

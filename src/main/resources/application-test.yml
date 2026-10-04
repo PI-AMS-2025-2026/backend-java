@@ -14,6 +14,23 @@ spring:
       path: /h2-console
   flyway:
     enabled: false
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:false}
+          starttls:
+            enable: ${SMTP_STARTTLS:false}
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  mail:
+    from: ${SMTP_FROM:noreply@gini.local}
+  password-reset:
+    expiration-minutes: ${PASSWORD_RESET_EXPIRATION_MINUTES:15}
 api:
   security:
     token:
