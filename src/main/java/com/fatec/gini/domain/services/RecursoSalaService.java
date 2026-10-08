@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +53,6 @@ public class RecursoSalaService {
         entity.setQuantidade(request.quantidade());
         entity.setSala(sala);
         entity.setRecurso(recurso);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }
@@ -108,7 +104,6 @@ public class RecursoSalaService {
         entity.setSala(sala);
         entity.setRecurso(recurso);
         entity.setQuantidade(request.quantidade());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoSalaMapper.toResponse(repository.save(entity));
     }

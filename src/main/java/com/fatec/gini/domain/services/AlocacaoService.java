@@ -1,6 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +10,7 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
@@ -43,42 +43,38 @@ public class AlocacaoService {
 
     private final ValidarDuplicidadeAlocacaoLoteUseCase alocacaoLoteUseCase;
 
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
+    private final ValidarSugestaoAutomatica validarSugestaoAutomatica;
+
     private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
     private final BlocoHorarioRepository blocoHorarioRepository;
 
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
-    public AlocacaoResponse criar(AlocacaoRequest request) {
-
         Alocacao entity = AlocacaoMapper.toEntity(request);
 
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return AlocacaoMapper.toResponse(
                 criarAlocacaoUseCase.executar(
                         entity,
-                        request.usuarioAlteracaoId())); // Alteração: utiliza diretamente o ID do usuário.
+                        validarAutorizacaoCurso.usuarioAutenticado().getId()));
     }
 
     @Transactional
     public List<AlocacaoResponse> criarLote(List<AlocacaoRequest> requests) {
         // 1. Validar duplicidades cruzadas dentro do próprio lote recebido
-        // (Pode chamar a validação descrita no passo 2)
         alocacaoLoteUseCase.validarDuplicidadesNoLote(requests);
 
         // 2. Processar cada requisição usando o CriarAlocacaoUseCase existente
         return requests.stream()
                 .map(request -> {
                     Alocacao entity = AlocacaoMapper.toEntity(request);
-                    entity.setCreatedAt(LocalDateTime.now());
-                    entity.setUpdatedAt(LocalDateTime.now());
 
-                    // O método executar realiza todas as validações de banco/negócio e persiste
                     Alocacao alocacaoSalva = criarAlocacaoUseCase.executar(
                             entity,
-                            request.usuarioAlteracaoId()); // Alteração: utiliza diretamente o ID do usuário.
+                            validarAutorizacaoCurso.usuarioAutenticado().getId());
                     return AlocacaoMapper.toResponse(alocacaoSalva);
                 })
                 .toList();
@@ -88,19 +84,14 @@ public class AlocacaoService {
 
         Alocacao entity = AlocacaoMapper.toEntity(request);
 
-        entity.setUpdatedAt(LocalDateTime.now());
-
-        String justificativaAlteracao =
-                request.justificativaAlteracao();
+        String justificativaAlteracao = request.justificativaAlteracao();
 
         return AlocacaoMapper.toResponse(
                 atualizarAlocacaoUseCase.executar(
                         id,
                         entity,
-                        request.usuarioAlteracao().id(),
-                        justificativaAlteracao
-                )
-        );
+                        validarAutorizacaoCurso.usuarioAutenticado().getId(),
+                        justificativaAlteracao));
     }
 
     /*
@@ -118,81 +109,110 @@ public class AlocacaoService {
     public SugestaoResponse sugerirAlternativas(
             SugestaoRequest request) {
 
-        /*
-         * Cria uma AlocacaoRequest temporária apenas para
-         * reutilizar o AlocacaoMapper existente.
-         */
-        AlocacaoRequest tentativa =
-                new AlocacaoRequest(
-                        request.turma(),
-                        request.disciplina(),
-                        request.sala(),
-                        request.professor(),
-                        request.diaSemana(),
-                        request.horario(),
-                        request.quadroHorario(),
-                        null,
-                        null
-                );
+        AlocacaoRequest tentativa = new AlocacaoRequest(
+                request.turma().id(),
+                request.disciplina().id(),
+                request.sala().id(),
+                request.professor().id(),
+                request.diaSemana(),
+                request.horario().id(),
+                request.quadroHorario().id(),
+                null,
+                null);
 
-        /*
-         * Cria uma entidade temporária.
-         *
-         * Essa entidade não é salva no banco.
-         */
-        Alocacao entity =
-                AlocacaoMapper.toEntity(tentativa);
+        Alocacao entity = AlocacaoMapper.toEntity(tentativa);
 
-        /*
-         * Primeiro verifica se a combinação escolhida
-         * pelo usuário já é válida.
-         */
-        String motivo =
-                validarSugestaoAutomatica
-                        .identificarMotivo(entity);
+        String motivo = validarSugestaoAutomatica.identificarMotivo(entity);
 
-        /*
-         * Se não existe conflito, não há necessidade
-         * de gerar sugestões.
-         */
         if (motivo == null) {
 
             return new SugestaoResponse(
                     true,
                     "A combinação informada é válida.",
                     null,
-                    List.of()
-            );
+                    List.of());
         }
 
-        @Transactional(readOnly = true)
-        public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
-                BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Bloco horário não encontrado com ID: " + request.horario().id()));
+        List<AlocacaoRequest> sugestoes = validarSugestaoAutomatica
+                .executar(entity)
+                .stream()
+                .map(sugestao -> new AlocacaoRequest(
+                        sugestao.getTurma().getId(),
+                        sugestao.getDisciplina().getId(),
+                        sugestao.getSala().getId(),
+                        sugestao.getProfessor().getId(),
+                        sugestao.getDiaSemana(),
+                        sugestao.getBlocoHorario().getId(),
+                        sugestao.getQuadroHorario().getId(),
+                        null,
+                        null))
+                .toList();
 
-                Alocacao alocacaoSimulada = new Alocacao();
-                alocacaoSimulada.setProfessor(new Professor());
-                alocacaoSimulada.getProfessor().setId(request.professor().id());
-                alocacaoSimulada.setDiaSemana(request.diaSemana());
-                alocacaoSimulada.setBlocoHorario(blocoHorario);
+        return new SugestaoResponse(
+                false,
+                "Não é possível realizar a alocação.",
+                motivo,
+                sugestoes);
+    }
 
-                try {
-                        validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(), alocacaoSimulada);
-                        return new ValidarCargaHorariaResponse(true, "Carga horária válida para o professor no dia informado.");
-                } catch (BusinessException ex) {
-                        return new ValidarCargaHorariaResponse(false, ex.getMessage());
-                }
-        }
+    @Transactional(readOnly = true)
+    public PageResponse<AlocacaoResponse> listar(
+            Long turmaId, Long disciplinaId, Long salaId, Long usuarioId,
+            DiaSemana diaSemana, Long horarioId, Long quadroHorarioId, int pageNum,
+            int size) {
 
-        @Transactional
-        public void deletar(Long id) {
-                if (!repository.existsById(id)) {
-                        throw new EntityNotFoundException(
-                                        "Alocação não encontrada com ID: " + id);
-                }
-                repository.deleteById(id);
-        }
+        var pageRequest = PageRequest.of(pageNum, size);
+
+        var page = repository.buscarPorFiltros(
+                turmaId, disciplinaId, salaId, usuarioId,
+                diaSemana, horarioId, quadroHorarioId,
+                validarAutorizacaoCurso.cursoParaFiltro(null), pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(AlocacaoMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
+    }
+
+    @Transactional(readOnly = true)
+    public AlocacaoResponse buscarPorId(Long id) {
+        Alocacao entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Alocação não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
+        return AlocacaoMapper.toResponse(entity);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        Alocacao entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Alocação não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
         repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
+        BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Bloco horário não encontrado com ID: " + request.horario().id()));
+
+        Alocacao alocacaoSimulada = new Alocacao();
+        alocacaoSimulada.setProfessor(new Professor());
+        alocacaoSimulada.getProfessor().setId(request.professor().id());
+        alocacaoSimulada.setDiaSemana(request.diaSemana());
+        alocacaoSimulada.setBlocoHorario(blocoHorario);
+
+        try {
+            validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(),
+                    alocacaoSimulada);
+            return new ValidarCargaHorariaResponse(true,
+                    "Carga horária válida para o professor no dia informado.");
+        } catch (BusinessException ex) {
+            return new ValidarCargaHorariaResponse(false, ex.getMessage());
+        }
     }
 }

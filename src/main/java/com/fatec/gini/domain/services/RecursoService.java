@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +25,11 @@ public class RecursoService {
 
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
+
+        if (repository.existsByNomeIgnoreCase(request.nome())) {
+    throw new IllegalArgumentException("Esse recurso já possui cadastro");
+    }
+
         Recurso entity = RecursoMapper.toEntity(request);
 
         // ALTERAÇÃO: o payload agora envia diretamente o ID do tipo de recurso.
@@ -35,8 +38,6 @@ public class RecursoService {
                 "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }
@@ -80,7 +81,6 @@ public class RecursoService {
                 "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return RecursoMapper.toResponse(repository.save(entity));
     }

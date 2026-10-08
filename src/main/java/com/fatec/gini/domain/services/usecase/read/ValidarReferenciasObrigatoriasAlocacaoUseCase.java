@@ -56,6 +56,7 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
     private final UsuarioRepository usuarioRepository;
     private final BlocoHorarioRepository blocoHorarioRepository;
     private final QuadroHorarioRepository quadroHorarioRepository;
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @Transactional(readOnly = true)
     public Turma buscarTurmaPorId(Long id) {
@@ -139,6 +140,9 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
         entity.setDiaSemana(diaSemana);
         entity.setBlocoHorario(blocoHorario);
         entity.setQuadroHorario(quadroHorario);
+
+        validarAutorizacaoCurso.validarCursosIguais(quadroHorario.getCurso(), turma.getCurso());
+        validarAutorizacaoCurso.validarCursosIguais(quadroHorario.getCurso(), disciplina.getCurso());
 
         return entity;
     }

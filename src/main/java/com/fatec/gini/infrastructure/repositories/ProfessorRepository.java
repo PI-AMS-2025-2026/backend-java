@@ -31,12 +31,17 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
           AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
           AND (:cidade IS NULL OR LOWER(u.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
           AND (:status IS NULL OR u.status = :status)
+            AND (:cursoId IS NULL OR EXISTS (
+              SELECT pd.id FROM ProfessorDisciplina pd
+              WHERE pd.professor = u AND pd.disciplina.curso.id = :cursoId
+            ))
         """)
     Page<Professor> buscarPorFiltros(
         @Param("nome") String nome,
         @Param("email") String email,
         @Param("cidade") String cidade,
         @Param("status") Status status,
+        @Param("cursoId") Long cursoId,
         Pageable pageable);
 
 

@@ -1,7 +1,6 @@
 package com.fatec.gini.domain.services;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -32,12 +31,8 @@ public class BlocoHorarioService {
     @Transactional
     public BlocoHorarioResponse criar(BlocoHorarioRequest request) {
         validarBlocoHorarioUseCase.executar(request);
-        LocalDateTime agora = LocalDateTime.now();
-
         BlocoHorario entity = BlocoHorarioMapper.toEntity(request);
         entity.setDuracao(calcularDuracao(request.horaInicio(), request.horaFim()));
-        entity.setCreatedAt(agora);
-        entity.setUpdatedAt(agora);
         entity = repository.save(entity);
         return BlocoHorarioMapper.toResponse(entity);
     }
@@ -45,8 +40,6 @@ public class BlocoHorarioService {
     @Transactional
     public List<BlocoHorarioResponse> criarLote(
             List<BlocoHorarioRequest> requests) {
-        LocalDateTime agora = LocalDateTime.now();
-
         validarBlocoHorarioUseCase.validarDuplicidadesNoLote(requests);
 
         List<BlocoHorario> entities = requests.stream()
@@ -54,8 +47,6 @@ public class BlocoHorarioService {
                 .map(BlocoHorarioMapper::toEntity)
                 .peek(entity -> {
                     entity.setDuracao(calcularDuracao(entity.getHoraInicio(), entity.getHoraFim()));
-                    entity.setCreatedAt(agora);
-                    entity.setUpdatedAt(agora);
                 })
                 .toList();
 
@@ -99,7 +90,6 @@ public class BlocoHorarioService {
         entity.setHoraFim(request.horaFim());
         entity.setDuracao(calcularDuracao(request.horaInicio(), request.horaFim()));
 
-        entity.setUpdatedAt(LocalDateTime.now());
         entity = repository.save(entity);
         return BlocoHorarioMapper.toResponse(entity);
     }

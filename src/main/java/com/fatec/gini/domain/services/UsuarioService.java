@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +9,7 @@ import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
+import com.fatec.gini.domain.services.usecase.read.ValidarCursoObrigatorioUsuarioUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.usuario.UsuarioRequest;
 import com.fatec.gini.dto.usuario.UsuarioResponse;
@@ -30,10 +29,14 @@ public class UsuarioService {
 
     private final CursoRepository cursoRepository;
 
+    private final ValidarCursoObrigatorioUsuarioUseCase validarCursoObrigatorioUsuario;
+
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
         Usuario entity = UsuarioMapper.toEntity(request);
+
+        validarCursoObrigatorioUsuario.executar(request);
 
         if (request.curso() != null) {
 
@@ -102,6 +105,8 @@ public class UsuarioService {
             throw new BusinessException("Usuário já cadastrado");
         }
 
+        validarCursoObrigatorioUsuario.executar(request);
+
         entity.setNome(request.nome());
 
         entity.setEmail(request.email());
@@ -119,7 +124,6 @@ public class UsuarioService {
             entity.setCurso(curso);
         }
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(entity));
     }

@@ -3,6 +3,9 @@ package com.fatec.gini.domain.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,15 +33,17 @@ public class Sala {
     @Column(name = "id_sala")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String codigo;
 
     @Column(nullable = false)
     private Integer capacidade;
 
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -66,17 +71,22 @@ public class Sala {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
+
         if (obj == null)
             return false;
+
         if (getClass() != obj.getClass())
             return false;
+
         Sala other = (Sala) obj;
+
         if (id == null) {
             if (other.id != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!id.equals(other.id)) {
             return false;
+        }
+
         return true;
     }
-
 }

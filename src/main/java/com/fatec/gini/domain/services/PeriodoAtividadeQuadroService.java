@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +27,9 @@ public class PeriodoAtividadeQuadroService {
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
         atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
+        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo());
 
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
     }
 
@@ -69,6 +66,7 @@ public class PeriodoAtividadeQuadroService {
     public PeriodoAtividadeQuadroResponse atualizar(long id, PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
         atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
+        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo());
 
 
         PeriodoAtividadeQuadro entity = repository.findById(id)
@@ -80,7 +78,6 @@ public class PeriodoAtividadeQuadroService {
         entity.setDataInicio(request.dataInicio());
         entity.setDataFim(request.dataFim());
         entity.setStatus(request.status());
-        entity.setUpdatedAt(LocalDateTime.now());
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
     }
 
@@ -100,7 +97,6 @@ public class PeriodoAtividadeQuadroService {
                         () -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));
 
         entity.setStatus(Status.INATIVO);
-        entity.setUpdatedAt(LocalDateTime.now());
         repository.save(entity);
     }
 

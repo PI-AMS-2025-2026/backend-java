@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.Sala;
 
-
 public interface SalaRepository extends JpaRepository<Sala, Long> {
 
     @Query("""
@@ -20,4 +19,21 @@ public interface SalaRepository extends JpaRepository<Sala, Long> {
             @Param("idTipoSala") Long idTipoSala,
             @Param("capacidade") Integer capacidade,
             Pageable pageable);
+
+    /**
+     * Verifica se já existe uma sala com o mesmo código,
+     * ignorando diferença entre letras maiúsculas e minúsculas.
+     */
+    boolean existsByCodigoIgnoreCase(String codigo);
+
+    /**
+     * Verifica se já existe outra sala com o mesmo código,
+     * ignorando diferença entre letras maiúsculas e minúsculas.
+     *
+     * Utilizado durante a atualização para que a própria sala
+     * não seja considerada uma duplicidade.
+     */
+    boolean existsByCodigoIgnoreCaseAndIdNot(
+            String codigo,
+            Long id);
 }

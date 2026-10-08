@@ -15,10 +15,12 @@ public interface HistoricoVersaoAlocacaoRepository extends JpaRepository<Histori
 	    SELECT h
 	    FROM HistoricoVersaoAlocacao h
 	    WHERE (:alocacaoId IS NULL OR h.alocacao.id = :alocacaoId)
-	      AND (:usuarioId IS NULL OR h.usuario.id = :usuarioId)
+			  AND (:usuarioId IS NULL OR h.usuario.id = :usuarioId)
+			  AND (:cursoId IS NULL OR h.alocacao.quadroHorario.curso.id = :cursoId)
 	    """)
     Page<HistoricoVersaoAlocacao> buscarPorFiltros(
 	    @Param("alocacaoId") Long alocacaoId,
 	    @Param("usuarioId") Long usuarioId,
+	    @Param("cursoId") Long cursoId,
 	    Pageable pageable);
 }

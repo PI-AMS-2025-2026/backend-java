@@ -1,17 +1,17 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.professor.ProfessorRequest;
 import com.fatec.gini.dto.professor.ProfessorResponse;
 import com.fatec.gini.infrastructure.mappers.ProfessorMapper;
+import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -22,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 public class ProfessorService {
 
     private final ProfessorRepository repository;
+    private final ProfessorDisciplinaRepository professorDisciplinaRepository;
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @Transactional
     public ProfessorResponse criar(ProfessorRequest request) {
 
         Professor professor = ProfessorMapper.toEntity(request);
 
-        professor.setCreatedAt(LocalDateTime.now());
-        professor.setUpdatedAt(LocalDateTime.now());
 
         return ProfessorMapper.toResponse(repository.save(professor));
     }
@@ -50,6 +50,7 @@ public class ProfessorService {
                 email,
                 cidade,
                 status,
+                validarAutorizacaoCurso.cursoParaFiltro(null),
                 pageRequest);
 
         return new PageResponse<>(
@@ -72,12 +73,12 @@ public class ProfessorService {
 
         Professor professor = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
+            validarProfessor(professor);
 
         professor.setNome(request.nome());
         professor.setEmail(request.email());
         professor.setStatus(request.status());
 
-        professor.setUpdatedAt(LocalDateTime.now());
 
         return ProfessorMapper.toResponse(repository.save(professor));
     }
@@ -86,11 +87,20 @@ public class ProfessorService {
     public void inativar(Long id) {
         Professor professor = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
+            validarProfessor(professor);
 
         professor.setStatus(Status.INATIVO);
-        professor.setUpdatedAt(LocalDateTime.now());
 
         repository.save(professor);
+    }
+
+    private void validarProfessor(Professor professor) {
+        if (validarAutorizacaoCurso.cursoParaFiltro(null) != null
+                && !professorDisciplinaRepository.existsByProfessorIdAndDisciplinaCursoId(
+                        professor.getId(), validarAutorizacaoCurso.cursoParaFiltro(null))) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Professor não pertence ao curso do usuário");
+        }
     }
 
 }

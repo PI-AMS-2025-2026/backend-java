@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -57,9 +57,11 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private Status status;
 
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -118,7 +120,7 @@ public class Usuario implements UserDetails {
      * Retorna a senha desse usuário
      */
     @Override
-    public @Nullable String getPassword() {
+    public String getPassword() {
         return senha;
     }
 
@@ -137,7 +139,5 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return status.equals(Status.ATIVO);
     }
-
-
 
 }

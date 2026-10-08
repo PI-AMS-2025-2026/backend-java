@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarTurmaSemVinculosUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.turma.TurmaRequest;
@@ -31,15 +30,14 @@ public class TurmaService {
 
     private final ValidarTurmaSemVinculosUseCase validarTurmaSemVinculos;
 
+        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
     @Transactional
     public TurmaResponse criar(TurmaRequest request) {
 
         Curso curso = cursoRepository.findById(request.curso().id())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Curso não encontrado com ID: "
-                                        + request.curso().id()));
-
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+        validarAutorizacaoCurso.validarCurso(curso);
         // Regra: não permite turma em curso inativo.
         if (curso.getStatus() != Status.ATIVO) {
             throw new BusinessException(
@@ -70,10 +68,6 @@ public class TurmaService {
         entity.setCodigo(
                 request.periodo() + "/" + request.ano());
 
-        entity.setCreatedAt(LocalDateTime.now());
-
-        entity.setUpdatedAt(LocalDateTime.now());
-
         return TurmaMapper.toResponse(
                 repository.save(entity));
     }
@@ -82,10 +76,8 @@ public class TurmaService {
     public TurmaResponse buscarPorId(Long id) {
 
         Turma entity = repository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Turma não encontrada com ID: " + id));
-
+                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
         return TurmaMapper.toResponse(entity);
     }
 
@@ -99,13 +91,7 @@ public class TurmaService {
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-
-        var page = repository.buscarPorFiltros(
-                idCurso,
-                ano,
-                periodo,
-                codigo,
-                pageRequest);
+        var page = repository.buscarPorFiltros(validarAutorizacaoCurso.cursoParaFiltro(idCurso), ano, periodo, codigo, pageRequest);
 
         return new PageResponse<>(
                 page.getContent()
@@ -130,10 +116,9 @@ public class TurmaService {
                                 "Turma não encontrada com ID: " + id));
 
         Curso curso = cursoRepository.findById(request.curso().id())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Curso não encontrado com ID: "
-                                        + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+        validarAutorizacaoCurso.validarCurso(curso);
 
         // Regra: não permite vincular turma a curso inativo.
         if (curso.getStatus() != Status.ATIVO) {
@@ -171,7 +156,6 @@ public class TurmaService {
 
         entity.setCurso(curso);
 
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return TurmaMapper.toResponse(
                 repository.save(entity));
@@ -179,23 +163,19 @@ public class TurmaService {
 
     @Transactional
     public void deletar(Long id) {
-
-        Turma turma = repository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Turma não encontrada com ID: " + id));
-
+        Turma entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
         // Regra: não permite excluir turma
         // vinculada a curso ativo.
-        if (turma.getCurso() != null
-                && turma.getCurso().getStatus() == Status.ATIVO) {
+        if (entity.getCurso() != null
+                && entity.getCurso().getStatus() == Status.ATIVO) {
 
             throw new BusinessException(
                     "Não é possível excluir turma vinculada a curso ativo.");
         }
 
-        // Regra já existente:
-        // não permite excluir turma que possui alocações.
+        // Regra já existente: não permite excluir turma que possui alocações.
         validarTurmaSemVinculos.validar(id);
 
         repository.deleteById(id);

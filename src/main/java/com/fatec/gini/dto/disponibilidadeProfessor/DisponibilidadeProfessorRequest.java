@@ -1,5 +1,6 @@
 package com.fatec.gini.dto.disponibilidadeProfessor;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.dto.id.LongDTO;
 
@@ -10,7 +11,9 @@ public record DisponibilidadeProfessorRequest(
     @NotNull(message = "Professor é obrigatório")
     LongDTO professor,
 
-    // ALTERAÇÃO: DiaSemana é um enum, não uma referência por ID.
+    // CORREÇÃO: obriga o Jackson a aceitar diaSemana somente como string (ex: "SEGUNDA"),
+    // bloqueando o envio por número/ordinal (ex: 0), que antes era aceito silenciosamente
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "Dia da semana é obrigatório")
     DiaSemana diaSemana,
 

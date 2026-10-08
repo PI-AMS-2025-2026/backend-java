@@ -21,9 +21,9 @@ import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaSemVinculosUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.dto.disciplina.DisciplinaRequest;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
-import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
@@ -45,13 +45,16 @@ class DisciplinaServiceTest {
     @Mock
     private ValidarDisciplinaSemVinculosUseCase validarDisciplinaSemVinculos;
 
+    @Mock
+    private ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
     @InjectMocks
     private DisciplinaService disciplinaService;
 
     @Test
     void deveCriarDisciplinaComCursoETipoSalaValidos() {
-        LongDTO cursoId = new LongDTO(1L);
-        LongDTO tipoSalaId = new LongDTO(2L);
+        long cursoId = 1L;
+        long tipoSalaId = 2L;
 
         DisciplinaRequest request = new DisciplinaRequest(
                 "Programação Orientada a Objetos", 80, "Obrigatória", 3,
@@ -82,8 +85,8 @@ class DisciplinaServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoCursoNaoExisteAoCriarDisciplina() {
-        LongDTO cursoId = new LongDTO(99L);
-        LongDTO tipoSalaId = new LongDTO(2L);
+        long cursoId = 99L;
+        long tipoSalaId = 2L;
 
         DisciplinaRequest request = new DisciplinaRequest(
                 "Banco de Dados", 60, "Obrigatória", 2,
@@ -96,8 +99,8 @@ class DisciplinaServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoTipoSalaNaoExisteAoCriarDisciplina() {
-        LongDTO cursoId = new LongDTO(1L);
-        LongDTO tipoSalaId = new LongDTO(99L);
+        long cursoId = 1L;
+        long tipoSalaId = 99L;
 
         DisciplinaRequest request = new DisciplinaRequest(
                 "Estruturas de Dados", 60, "Obrigatória", 2,
@@ -145,8 +148,8 @@ class DisciplinaServiceTest {
         TipoSala novoTipoSala = new TipoSala("Laboratório");
         novoTipoSala.setId(3L);
 
-        LongDTO cursoId = new LongDTO(2L);
-        LongDTO tipoSalaId = new LongDTO(3L);
+        long cursoId = 2L;
+        long tipoSalaId = 3L;
 
         DisciplinaRequest requestAtualizado = new DisciplinaRequest(
                 "Banco de Dados Avançado", 80, "Optativa", 4,
@@ -167,7 +170,9 @@ class DisciplinaServiceTest {
 
     @Test
     void deveDeletarDisciplinaSemVinculos() {
-        when(repository.existsById(5L)).thenReturn(true);
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(5L);
+        when(repository.findById(5L)).thenReturn(Optional.of(disciplina));
 
         disciplinaService.deletar(5L);
 
@@ -176,7 +181,7 @@ class DisciplinaServiceTest {
 
     @Test
     void deveLancarExcecaoAoDeletarDisciplinaInexistente() {
-        when(repository.existsById(99L)).thenReturn(false);
+        when(repository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> disciplinaService.deletar(99L));
 
@@ -185,7 +190,9 @@ class DisciplinaServiceTest {
 
     @Test
     void deveBloquearExclusaoQuandoDisciplinaTemVinculos() {
-        when(repository.existsById(5L)).thenReturn(true);
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(5L);
+        when(repository.findById(5L)).thenReturn(Optional.of(disciplina));
 
         doThrow(new RuntimeException("Disciplina possui vínculos"))
                 .when(validarDisciplinaSemVinculos).validar(5L);
