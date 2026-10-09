@@ -46,8 +46,8 @@ public class RecursoSalaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<RecursoSalaResponse>> listar(
-            @RequestParam(name = "sala_id", required = false) Long salaId,
-            @RequestParam(name = "recurso_id", required = false) Long recursoId,
+            @RequestParam(name = "id_sala", required = false) Long salaId,
+            @RequestParam(name = "id_recurso", required = false) Long recursoId,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 

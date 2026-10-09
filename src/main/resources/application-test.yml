@@ -8,6 +8,8 @@ spring:
   sql:
     init:
       encoding: UTF-8
+      mode: always
+      data-locations: classpath:data.sql
   h2:
     console:
       enabled: true

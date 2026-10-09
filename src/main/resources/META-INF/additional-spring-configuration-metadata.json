@@ -2,36 +2,42 @@
   {
     "name": "api.security.token.secret",
     "type": "java.lang.String",
-    "description": "Chave unica para gerar JWT"
+    "description": "Chave secreta usada para assinar e validar os tokens JWT. Mantenha este valor protegido e altere-o entre ambientes."
   },
   {
     "name": "api.security.token.expirationMs",
     "type": "java.lang.Long",
-    "description": "Tempo de expiração do JWT access token em milissegundos"
+    "defaultValue": 86400000,
+    "description": "Tempo de validade do token JWT de acesso, em milissegundos. Após esse período, o usuário precisa se autenticar novamente."
   },
   {
     "name": "api.security.token.refreshExpirationMs",
     "type": "java.lang.Long",
-    "description": "Tempo de expiração do JWT refresh token em milissegundos"
+    "defaultValue": 604800000,
+    "description": "Tempo de validade do token de atualização, em milissegundos. Esse token é usado para obter uma nova credencial de acesso."
   },
   {
     "name": "app.security.authorization.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'app.security.authorization.enabled'"
-  },
-  {
-    "name": "app.frontend-url",
-    "type": "java.lang.String",
-    "description": "A description for 'app.frontend-url'"
+    "type": "java.lang.Boolean",
+    "defaultValue": true,
+    "description": "Ativa ou desativa a validação de autorização por perfil e por curso. Mantenha habilitada em ambientes de produção."
   },
   {
     "name": "app.password-reset.expiration-minutes",
-    "type": "java.lang.String",
-    "description": "A description for 'app.password-reset.expiration-minutes'"
+    "type": "java.lang.Long",
+    "defaultValue": 15,
+    "description": "Tempo de validade dos tokens de recuperação de senha, em minutos. O token só pode ser usado uma vez."
   },
   {
     "name": "app.mail.from",
     "type": "java.lang.String",
-    "description": "A description for 'app.mail.from'"
+    "defaultValue": "noreply@gini.local",
+    "description": "Endereço de e-mail usado como remetente nas mensagens enviadas pela aplicação."
+  },
+  {
+    "name": "app.frontend-url",
+    "type": "java.lang.String",
+    "defaultValue": "http://localhost:3000",
+    "description": "Endereço base da aplicação web usado para montar os links de recuperação de senha enviados por e-mail."
   }
 ]}

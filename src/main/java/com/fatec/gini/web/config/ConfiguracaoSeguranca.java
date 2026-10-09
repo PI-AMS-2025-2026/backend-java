@@ -33,21 +33,19 @@ public class ConfiguracaoSeguranca {
      * @return
      * @return
      */
-    @Bean
-    WebMvcConfigurer corsConfigurer() {
-
-        return new WebMvcConfigurer() {
-
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("*")
-                        .allowedHeaders("*");
-            }
-
-        };
-    }
+@Bean
+WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedOriginPatterns("*") // Permite qualquer origem em dev
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
+        }
+    };
+}
 
     /**
      * Configurações de segurança para a aplicação.

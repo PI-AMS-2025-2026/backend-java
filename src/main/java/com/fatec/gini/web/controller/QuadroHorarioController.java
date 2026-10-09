@@ -38,9 +38,9 @@ public class QuadroHorarioController {
 
         @GetMapping
         public ResponseEntity<PageResponse<QuadroHorarioResponse>> listar(
-                        @RequestParam(name = "curso", required = false) Long idCurso,
+                        @RequestParam(name = "id_curso", required = false) Long idCurso,
 
-                        @RequestParam(name = "periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
+                        @RequestParam(name = "id_periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
 
                         @RequestParam(name = "status", required = false) Status status,
 

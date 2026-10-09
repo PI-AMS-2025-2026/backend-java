@@ -31,7 +31,7 @@ public class SalaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<SalaResponse>> listar(
-            @RequestParam(name = "tipo_sala", required = false) Long idTipoSala,
+            @RequestParam(name = "id_tipo_sala", required = false) Long idTipoSala,
             @RequestParam(name = "capacidade", required = false) Integer capacidade,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {

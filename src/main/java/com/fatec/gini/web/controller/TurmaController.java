@@ -31,7 +31,7 @@ public class TurmaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<TurmaResponse>> listar(
-            @RequestParam(name = "curso", required = false) Long idCurso,
+            @RequestParam(name = "id_curso", required = false) Long idCurso,
             @RequestParam(name = "ano", required = false) Integer ano,
             @RequestParam(name = "periodo", required = false) Integer periodo,
             @RequestParam(name = "codigo", required = false) String codigo,

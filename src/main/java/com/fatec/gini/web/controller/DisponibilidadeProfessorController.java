@@ -45,9 +45,9 @@ public class DisponibilidadeProfessorController {
 
     @GetMapping
     public ResponseEntity<PageResponse<DisponibilidadeProfessorResponse>> listar(
-            @RequestParam(name = "professor", required = false) Long professor,
+            @RequestParam(name = "id_professor", required = false) Long professor,
             @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
-            @RequestParam(required = false, name = "bloco_horario") Long blocoHorario,
+            @RequestParam(required = false, name = "id_bloco_horario") Long blocoHorario,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 

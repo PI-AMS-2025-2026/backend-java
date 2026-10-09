@@ -1,5 +1,4 @@
-# Uso local: copie .env.exemple para .env e execute `docker compose up --build`.
-# Mailpit: http://localhost:8025 | SMTP: localhost:1025
+# Copie o arquivo .env para esta pasta antes de executar `docker compose up --build`.
 services:
 
   postgres:
@@ -7,9 +6,9 @@ services:
     container_name: gini-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-gini}
-      POSTGRES_USER: ${POSTGRES_USER:-gini}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gini}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -26,32 +25,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      mailpit:
-        condition: service_started
     ports:
       - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
     env_file:
       - .env
-    environment:
-      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-gini}
-      DB_USER: ${POSTGRES_USER:-gini}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-gini}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
-      SMTP_HOST: mailpit
-      SMTP_PORT: 1025
-      SMTP_AUTH: "false"
-      SMTP_STARTTLS: "false"
-      SMTP_FROM: ${SMTP_FROM:-noreply@gini.local}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
-      PASSWORD_RESET_EXPIRATION_MINUTES: ${PASSWORD_RESET_EXPIRATION_MINUTES:-15}
-
-  mailpit:
-    image: axllent/mailpit:v1.27
-    container_name: gini-mailpit
-    restart: unless-stopped
-    ports:
-      - "1025:1025"
-      - "8025:8025"
 
 volumes:
   postgres_data:

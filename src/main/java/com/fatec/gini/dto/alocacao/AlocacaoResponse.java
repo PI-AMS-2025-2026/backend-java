@@ -2,6 +2,7 @@ package com.fatec.gini.dto.alocacao;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
 import com.fatec.gini.dto.disciplina.DisciplinaResponse;
@@ -16,6 +17,7 @@ public record AlocacaoResponse(
         DisciplinaResponse disciplina,
         SalaResponse sala,
         ProfessorResponse professor,
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         DiaSemana diaSemana,
         BlocoHorarioResponse blocoHorario,
         QuadroHorarioResponse quadroHorario,

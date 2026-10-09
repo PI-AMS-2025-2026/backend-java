@@ -22,8 +22,8 @@ public class HistoricoAlteracaoController {
 
 	@GetMapping
 	public ResponseEntity<PageResponse<HistoricoVersaoAlocacaoResponse>> listar(
-			@RequestParam(required = false, name = "alocacao") Long idAlocacao,
-			@RequestParam(required = false, name = "usuario") Long idUsuario,
+			@RequestParam(required = false, name = "id_alocacao") Long idAlocacao,
+			@RequestParam(required = false, name = "id_usuario") Long idUsuario,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "10") int size) {
 

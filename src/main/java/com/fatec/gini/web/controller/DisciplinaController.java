@@ -32,10 +32,8 @@ public class DisciplinaController {
     @GetMapping
     public ResponseEntity<PageResponse<DisciplinaResponse>> listar(
             @RequestParam(name = "nome", required = false) String nome,
-            // Alteração: padroniza o filtro para camelCase.
-            @RequestParam(name = "curso_id", required = false) Long cursoId,
-            // Alteração: padroniza o filtro para camelCase.
-            @RequestParam(name = "tipo_sala_id", required = false) Long tipoSalaId,
+            @RequestParam(name = "id_curso", required = false) Long cursoId,
+            @RequestParam(name = "id_tipo_sala", required = false) Long tipoSalaId,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 

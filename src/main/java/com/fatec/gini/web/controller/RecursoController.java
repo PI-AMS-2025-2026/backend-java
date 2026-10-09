@@ -32,7 +32,7 @@ public class RecursoController {
     @GetMapping
     public ResponseEntity<PageResponse<RecursoResponse>> listar(
             @RequestParam(name = "nome", required = false) String nome,
-            @RequestParam(required = false, name = "tipo_recurso") Long idTipoRecurso,
+            @RequestParam(required = false, name = "id_tipo_recurso") Long idTipoRecurso,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 

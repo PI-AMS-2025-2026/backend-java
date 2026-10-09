@@ -99,19 +99,19 @@ public class AlocacaoController {
         @Operation(summary = "Listagem de alocações")
         public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
 
-                        @RequestParam(name = "turma", required = false) Long turma,
+                        @RequestParam(name = "id_turma", required = false) Long turma,
 
-                        @RequestParam(name = "disciplina", required = false) Long disciplina,
+                        @RequestParam(name = "id_disciplina", required = false) Long disciplina,
 
-                        @RequestParam(name = "sala", required = false) Long sala,
+                        @RequestParam(name = "id_sala", required = false) Long sala,
 
-                        @RequestParam(name = "usuario", required = false) Long usuario,
+                        @RequestParam(name = "id_usuario", required = false) Long usuario,
 
                         @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
 
-                        @RequestParam(required = false, name = "bloco_horario") Long blocoHorario,
+                        @RequestParam(required = false, name = "id_bloco_horario") Long blocoHorario,
 
-                        @RequestParam(required = false, name = "quadro_horario") Long quadroHorario,
+                        @RequestParam(required = false, name = "id_quadro_horario") Long quadroHorario,
 
                         @RequestParam(name = "page", defaultValue = "0") int page,
 

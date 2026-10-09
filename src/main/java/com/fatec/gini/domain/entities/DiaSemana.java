@@ -6,18 +6,18 @@ public enum DiaSemana {
     QUARTA,
     QUINTA,
     SEXTA,
-    SABADO,
+    SÁBADO,
     DOMINGO;
 
     public DiaSemana anterior() {
         return switch (this) {
-            case DOMINGO -> SABADO;
+            case DOMINGO -> SÁBADO;
             case SEGUNDA -> DOMINGO;
             case TERÇA -> SEGUNDA;
             case QUARTA -> TERÇA;
             case QUINTA -> QUARTA;
             case SEXTA -> QUINTA;
-            case SABADO -> SEXTA;
+            case SÁBADO -> SEXTA;
         };
     }
 
@@ -28,8 +28,8 @@ public enum DiaSemana {
             case TERÇA -> QUARTA;
             case QUARTA -> QUINTA;
             case QUINTA -> SEXTA;
-            case SEXTA -> SABADO;
-            case SABADO -> DOMINGO;
+            case SEXTA -> SÁBADO;
+            case SÁBADO -> DOMINGO;
         };
     }
 

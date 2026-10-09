@@ -58,7 +58,7 @@ final class MotorQuadroExportModel {
             case QUARTA -> "Quarta";
             case QUINTA -> "Quinta";
             case SEXTA -> "Sexta";
-            case SABADO -> "Sábado";
+            case SÁBADO -> "Sábado";
             case DOMINGO -> "Domingo";
         };
     }
