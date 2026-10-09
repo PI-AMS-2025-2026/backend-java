@@ -99,23 +99,23 @@ public class AlocacaoController {
         @Operation(summary = "Listagem de alocações")
         public ResponseEntity<PageResponse<AlocacaoResponse>> listar(
 
-                        @RequestParam(required = false) Long turma,
+                        @RequestParam(name = "id_turma", required = false) Long turma,
 
-                        @RequestParam(required = false) Long disciplina,
+                        @RequestParam(name = "id_disciplina", required = false) Long disciplina,
 
-                        @RequestParam(required = false) Long sala,
+                        @RequestParam(name = "id_sala", required = false) Long sala,
 
-                        @RequestParam(required = false) Long usuario,
+                        @RequestParam(name = "id_usuario", required = false) Long usuario,
 
                         @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
 
-                        @RequestParam(required = false) Long horario,
+                        @RequestParam(required = false, name = "id_bloco_horario") Long blocoHorario,
 
-                        @RequestParam(required = false, name = "quadro_horario") Long quadroHorario,
+                        @RequestParam(required = false, name = "id_quadro_horario") Long quadroHorario,
 
-                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(name = "page", defaultValue = "0") int page,
 
-                        @RequestParam(defaultValue = "10") int size) {
+                        @RequestParam(name = "size", defaultValue = "10") int size) {
 
                 return ResponseEntity.ok(
                                 service.listar(
@@ -124,7 +124,7 @@ public class AlocacaoController {
                                                 sala,
                                                 usuario,
                                                 diaSemana,
-                                                horario,
+                                                blocoHorario,
                                                 quadroHorario,
                                                 page,
                                                 size));

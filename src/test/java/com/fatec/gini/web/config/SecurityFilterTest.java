@@ -161,6 +161,23 @@ class SecurityFilterTest {
     }
 
     @Test
+    @DisplayName("Não deve autenticar quando a sessão do refresh token foi revogada")
+    void doFilterInternal_sessaoRevogada_naoDeveAutenticar() throws Exception {
+        String email = "admin@fatec.sp.gov.br";
+        request.addHeader("Authorization", "Bearer valid_jwt_token");
+
+        when(tokenService.validarToken("valid_jwt_token")).thenReturn(email);
+        when(tokenService.validarSessao("valid_jwt_token")).thenReturn("revoked-session");
+        when(refreshTokenRepository.findByToken("revoked-session")).thenReturn(java.util.Optional.empty());
+
+        securityFilter.doFilterInternal(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(usuarioRepository, never()).findByEmail(email);
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
     @DisplayName("Deve extrair corretamente o token contendo 'Bearer ' dentro do valor do token")
     void doFilterInternal_tokenComBearerInterno_deveExtrairCorretamente() throws Exception {
         String tokenComPalavraBearer = "xyz_Bearer_abc";

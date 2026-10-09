@@ -31,10 +31,10 @@ public class RecursoController {
 
     @GetMapping
     public ResponseEntity<PageResponse<RecursoResponse>> listar(
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false, name = "tipo_recurso") Long idTipoRecurso,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "nome", required = false) String nome,
+            @RequestParam(required = false, name = "id_tipo_recurso") Long idTipoRecurso,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(service.listar(nome, idTipoRecurso, page, size));
     }

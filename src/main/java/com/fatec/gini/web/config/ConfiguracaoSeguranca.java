@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,20 +33,19 @@ public class ConfiguracaoSeguranca {
      * @return
      * @return
      */
-    @Bean
-    WebMvcConfigurer corsConfigurer() {
-
-        return new WebMvcConfigurer() {
-
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("*");
-            }
-
-        };
-    }
+@Bean
+WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedOriginPatterns("*") // Permite qualquer origem em dev
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
+        }
+    };
+}
 
     /**
      * Configurações de segurança para a aplicação.
@@ -59,6 +59,7 @@ public class ConfiguracaoSeguranca {
 
         return http
                 .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
@@ -71,6 +72,15 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers(HttpMethod.POST, "/auth/logout")
                         .permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/auth/solicitar-recuperacao", "/auth/redefinir-senha")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/grades/**")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/motor-quadro/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
                         // Somente administrador
                         .requestMatchers("/usuarios/**")
                         .hasRole("ADMIN")
@@ -80,9 +90,6 @@ public class ConfiguracaoSeguranca {
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         .requestMatchers("/turmas/**")
-                        .hasAnyRole("ADMIN", "COORDENADOR")
-
-                        .requestMatchers("/grades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         .requestMatchers("/alocacoes/**")
@@ -103,19 +110,19 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers("/cursos/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())

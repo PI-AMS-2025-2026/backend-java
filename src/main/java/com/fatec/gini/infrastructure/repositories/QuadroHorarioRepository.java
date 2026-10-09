@@ -1,5 +1,6 @@
 package com.fatec.gini.infrastructure.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,35 +13,35 @@ import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.models.Status;
 
 public interface QuadroHorarioRepository
-        extends JpaRepository<QuadroHorario, Long> {
+                extends JpaRepository<QuadroHorario, Long> {
 
-    @Query("""
-            SELECT g FROM QuadroHorario g
-            WHERE (:idCurso IS NULL OR g.curso.id = :idCurso)
-            AND (:idPeriodoAtividadeQuadro IS NULL
-                 OR g.periodoAtividadeQuadro.id = :idPeriodoAtividadeQuadro)
-            AND (:status IS NULL OR g.status = :status)
-            """)
-    Page<QuadroHorario> buscarComFiltros(
-            @Param("idCurso") Long idCurso,
-            @Param("idPeriodoAtividadeQuadro")
-            Long idPeriodoAtividadeQuadro,
-            @Param("status") Status status,
-            Pageable pageable);
+        @Query("""
+                        SELECT g FROM QuadroHorario g
+                        WHERE (:idCurso IS NULL OR g.curso.id = :idCurso)
+                        AND (:idPeriodoAtividadeQuadro IS NULL
+                             OR g.periodoAtividadeQuadro.id = :idPeriodoAtividadeQuadro)
+                        AND (:status IS NULL OR g.status = :status)
+                        """)
+        Page<QuadroHorario> buscarComFiltros(
+                        @Param("idCurso") Long idCurso,
+                        @Param("idPeriodoAtividadeQuadro") Long idPeriodoAtividadeQuadro,
+                        @Param("status") Status status,
+                        Pageable pageable);
 
-    Optional<QuadroHorario>
-    findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
-            Long cursoId,
-            Long periodoAtividadeQuadroId);
+        Optional<QuadroHorario> findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
+                        Long cursoId,
+                        Long periodoAtividadeQuadroId);
 
-    boolean existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(
-            Long cursoId,
-            Long periodoAtividadeQuadroId,
-            Status status);
+        boolean existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(
+                        Long cursoId,
+                        Long periodoAtividadeQuadroId,
+                        Status status);
 
-    boolean existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(
-            Long cursoId,
-            Long periodoAtividadeQuadroId,
-            Status status,
-            Long id);
+        boolean existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(
+                        Long cursoId,
+                        Long periodoAtividadeQuadroId,
+                        Status status,
+                        Long id);
+
+        List<QuadroHorario> findByCursoIdAndStatus(Long cursoId, Status status);
 }

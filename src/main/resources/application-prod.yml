@@ -3,6 +3,9 @@ spring:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
   sql:
     init:
       encoding: UTF-8
@@ -12,6 +15,23 @@ spring:
       enabled: false
   flyway:
     enabled: true
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:true}
+          starttls:
+            enable: ${SMTP_STARTTLS:true}
+app:
+  frontend-url: ${FRONTEND_URL}
+  mail:
+    from: ${SMTP_FROM}
+  password-reset:
+    expiration-minutes: ${PASSWORD_RESET_EXPIRATION_MINUTES:15}
 api:
   security:
     token:

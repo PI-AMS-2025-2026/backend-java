@@ -21,14 +21,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ValidarPeriodoAtividadeQuadroAtivoUseCase {
 
-    private final  PeriodoAtividadeQuadroRepository periodoLetivoRepository;
+    private final  PeriodoAtividadeQuadroRepository periodoAtividadeQuadroRepository;
 
     public void executar(QuadroHorario quadroHorario) {
-        periodoLetivoAtivo(quadroHorario);
+        periodoAtividadeQuadroAtivo(quadroHorario);
     }
 
-    private void periodoLetivoAtivo(QuadroHorario quadroHorario) {
-        if (!periodoLetivoRepository.existsByIdAndStatus(quadroHorario.getPeriodoAtividadeQuadro().getId(),Status.ATIVO)) {
+    private void periodoAtividadeQuadroAtivo(QuadroHorario quadroHorario) {
+        if (!periodoAtividadeQuadroRepository.existsByIdAndStatus(quadroHorario.getPeriodoAtividadeQuadro().getId(),Status.ATIVO)) {
             throw new BusinessException("Não é permitido criar ou alterar quadro horário para um período atividade quadro inativo.");
         }
     }

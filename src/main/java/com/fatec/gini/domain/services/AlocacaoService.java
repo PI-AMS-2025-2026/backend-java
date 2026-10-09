@@ -98,7 +98,7 @@ public class AlocacaoService {
      * RF06 — Sugestão Automática de Ajuste.
      *
      * Recebe uma tentativa de posicionamento da disciplina
-     * na grade de horários.
+     * no quadro de horários.
      *
      * Caso a combinação seja inválida, retorna o motivo
      * e alternativas compatíveis.

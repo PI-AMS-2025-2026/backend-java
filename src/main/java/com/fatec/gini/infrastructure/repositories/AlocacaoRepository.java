@@ -142,4 +142,40 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("quadroHorarioId") Long quadroHorarioId,
             @Param("alocacaoId") Long alocacaoId);
 
+    @Query("""
+            SELECT a
+            FROM Alocacao a
+            JOIN FETCH a.quadroHorario q
+            JOIN FETCH q.curso c
+            JOIN FETCH a.turma t
+            JOIN FETCH a.disciplina d
+            JOIN FETCH a.sala s
+            JOIN FETCH a.blocoHorario b
+            WHERE c.id = :cursoId
+              AND q.id = :quadroId
+            ORDER BY t.ano ASC, t.periodo ASC, t.id ASC, a.diaSemana ASC, b.horaInicio ASC
+            """)
+    List<Alocacao> buscarAlocacoesGradeCurso(
+            @Param("cursoId") Long cursoId,
+            @Param("quadroId") Long quadroId);
+
+    @Query("""
+            SELECT a
+            FROM Alocacao a
+            JOIN FETCH a.quadroHorario q
+            JOIN FETCH q.curso c
+            JOIN FETCH a.turma t
+            JOIN FETCH a.disciplina d
+            JOIN FETCH a.sala s
+            JOIN FETCH a.blocoHorario b
+            WHERE c.id = :cursoId
+              AND t.id = :turmaId
+              AND q.id = :quadroId
+            ORDER BY a.diaSemana ASC, b.horaInicio ASC
+            """)
+    List<Alocacao> buscarAlocacoesGradeTurma(
+            @Param("cursoId") Long cursoId,
+            @Param("turmaId") Long turmaId,
+            @Param("quadroId") Long quadroId);
+
 }

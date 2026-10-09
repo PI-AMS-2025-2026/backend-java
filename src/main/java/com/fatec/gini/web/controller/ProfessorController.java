@@ -32,12 +32,12 @@ public class ProfessorController {
 
     @GetMapping
     public ResponseEntity<PageResponse<ProfessorResponse>> listar(
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String cidade,
-            @RequestParam(required = false) Status status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "nome", required = false) String nome,
+            @RequestParam(name = "email", required = false) String email,
+            @RequestParam(name = "cidade", required = false) String cidade,
+            @RequestParam(name = "status", required = false) Status status,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(service.listar(
                 nome,

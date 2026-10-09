@@ -1,92 +1,94 @@
-| Endpoint                                  | ADMIN | COORDENADOR |
-| ----------------------------------------- | ----- | ----------- |
-| GET /usuarios                             | ✅    | ❌         |
-| POST /usuarios                            | ✅    | ❌         |
-| GET /usuarios/{id}                        | ✅    | ❌         |
-| PUT /usuarios/{id}                        | ✅    | ❌         |
-| DELETE /usuarios/{id}                     | ✅    | ❌         |
-| GET /usuarios/tipos                       | ✅    | ❌         |
-| POST /auth/login                          | ✅    | ✅         |
-| GET /cursos                               | ✅    | ❌         |
-| POST /cursos                              | ✅    | ❌         |
-| GET /cursos/{id}                          | ✅    | ✅         |
-| PUT /cursos/{id}                          | ✅    | ❌         |
-| DELETE /cursos/{id}                       | ✅    | ❌         |
-| GET /turmas                               | ✅    | ✅         |
-| POST /turmas                              | ✅    | ✅         |
-| GET /turmas/{id}                          | ✅    | ✅         |
-| PUT /turmas/{id}                          | ✅    | ✅         |
-| DELETE /turmas/{id}                       | ✅    | ✅         |
-| GET /disciplinas                          | ✅    | ✅         |
-| POST /disciplinas                         | ✅    | ❌         |
-| GET /disciplinas/{id}                     | ✅    | ✅         |
-| PUT /disciplinas/{id}                     | ✅    | ❌         |
-| DELETE /disciplinas/{id}                  | ✅    | ❌         |
-| GET /professores                          | ✅    | ✅         |
-| POST /professores                         | ✅    | ❌         |
-| GET /professores/{id}                     | ✅    | ✅         |
-| PUT /professores/{id}                     | ✅    | ❌         |
-| DELETE /professores/{id}                  | ✅    | ❌         |
-| GET /professores-disciplinas              | ✅    | ✅         |
-| POST /professores-disciplinas             | ✅    | ❌         |
-| GET /professores-disciplinas/{id}         | ✅    | ✅         |
-| PUT /professores-disciplinas/{id}         | ✅    | ❌         |
-| DELETE /professores-disciplinas/{id}      | ✅    | ❌         |
-| GET /salas                                | ✅    | ✅         |
-| POST /salas                               | ✅    | ❌         |
-| GET /salas/{id}                           | ✅    | ✅         |
-| PUT /salas/{id}                           | ✅    | ❌         |
-| DELETE /salas/{id}                        | ✅    | ❌         |
-| GET /tipos-sala                           | ✅    | ✅         |
-| POST /tipos-sala                          | ✅    | ❌         |
-| GET /tipos-sala/{id}                      | ✅    | ✅         |
-| PUT /tipos-sala/{id}                      | ✅    | ❌         |
-| DELETE /tipos-sala/{id}                   | ✅    | ❌         |
-| GET /recursos                             | ✅    | ✅         |
-| POST /recursos                            | ✅    | ❌         |
-| GET /recursos/{id}                        | ✅    | ✅         |
-| PUT /recursos/{id}                        | ✅    | ❌         |
-| DELETE /recursos/{id}                     | ✅    | ❌         |
-| GET /tipos-recurso                        | ✅    | ✅         |
-| POST /tipos-recurso                       | ✅    | ❌         |
-| GET /tipos-recurso/{id}                   | ✅    | ✅         |
-| PUT /tipos-recurso/{id}                   | ✅    | ❌         |
-| DELETE /tipos-recurso/{id}                | ✅    | ❌         |
-| GET /recurso-sala                         | ✅    | ✅         |
-| POST /recurso-sala                        | ✅    | ❌         |
-| GET /recurso-sala/{id}                    | ✅    | ✅         |
-| PUT /recurso-sala/{id}                    | ✅    | ❌         |
-| DELETE /recurso-sala/{id}                 | ✅    | ❌         |
-| GET /quadro-horarios                      | ✅    | ✅         |
-| POST /quadro-horarios                     | ✅    | ✅         |
-| GET /quadro-horarios/{id}                 | ✅    | ✅         |
-| PUT /quadro-horarios/{id}                 | ✅    | ✅         |
-| DELETE /quadro-horarios/{id}              | ✅    | ✅         |
-| POST /quadro-horarios/{id}/copiar         | ✅    | ✅         |
-| GET /periodo_atividade_quadro             | ✅    | ✅         |
-| POST /periodo_atividade_quadro            | ✅    | ✅         |
-| GET /periodo_atividade_quadro/{id}        | ✅    | ✅         |
-| PUT /periodo_atividade_quadro/{id}        | ✅    | ✅         |
-| DELETE /periodo_atividade_quadro/{id}     | ✅    | ✅         |
-| GET /periodo_atividade_quadro/tipos       | ✅    | ✅         |
-| GET /bloco-horarios                       | ✅    | ✅         |
-| POST /bloco-horarios                      | ✅    | ❌         |
-| POST /bloco-horarios/lote                 | ✅    | ❌         |
-| GET /bloco-horarios/{id}                  | ✅    | ✅         |
-| PUT /bloco-horarios/{id}                  | ✅    | ❌         |
-| DELETE /bloco-horarios/{id}               | ✅    | ❌         |
-| GET /dias-semana                          | ✅    | ✅         |
-| POST /dias-semana                         | ✅    | ✅         |
-| GET /disponibilidades-professores         | ✅    | ❌         |
-| POST /disponibilidades-professores        | ✅    | ❌         |
-| GET /disponibilidades-professores/{id}    | ✅    | ✅         |
-| PUT /disponibilidades-professores/{id}    | ✅    | ❌         |
-| DELETE /disponibilidades-professores/{id} | ✅    | ❌         |
-| GET /alocacoes                            | ✅    | ✅         |
-| POST /alocacoes                           | ✅    | ✅         |
-| POST /alocacoes/lote                      | ✅    | ✅         |
-| GET /alocacoes/{id}                       | ✅    | ✅         |
-| PUT /alocacoes/{id}                       | ✅    | ✅         |
-| DELETE /alocacoes/{id}                    | ✅    | ✅         |
-| GET /historicos-alteracoes                | ✅    | ✅         |
-| GET /historicos-alteracoes/{id}           | ✅    | ✅         |
+| Endpoint                                      | ADMIN | COORDENADOR | PÚBLICO |
+| --------------------------------------------- | ----- | ----------- | ------- |
+| GET /usuarios                                 | ✅    | ❌          | ❌      |
+| POST /usuarios                                | ✅    | ❌          | ❌      |
+| GET /usuarios/{id}                            | ✅    | ❌          | ❌      |
+| PUT /usuarios/{id}                            | ✅    | ❌          | ❌      |
+| DELETE /usuarios/{id}                         | ✅    | ❌          | ❌      |
+| GET /usuarios/tipos                           | ✅    | ❌          | ❌      |
+| POST /auth/login                              | ✅    | ✅          | ✅      |
+| GET /cursos                                   | ✅    | ❌          | ❌      |
+| POST /cursos                                  | ✅    | ❌          | ❌      |
+| GET /cursos/{id}                              | ✅    | ✅          | ❌      |
+| PUT /cursos/{id}                              | ✅    | ❌          | ❌      |
+| DELETE /cursos/{id}                           | ✅    | ❌          | ❌      |
+| GET /turmas                                   | ✅    | ✅          | ❌      |
+| POST /turmas                                  | ✅    | ✅          | ❌      |
+| GET /turmas/{id}                              | ✅    | ✅          | ❌      |
+| PUT /turmas/{id}                              | ✅    | ✅          | ❌      |
+| DELETE /turmas/{id}                           | ✅    | ✅          | ❌      |
+| GET /disciplinas                              | ✅    | ✅          | ❌      |
+| POST /disciplinas                             | ✅    | ❌          | ❌      |
+| GET /disciplinas/{id}                         | ✅    | ✅          | ❌      |
+| PUT /disciplinas/{id}                         | ✅    | ❌          | ❌      |
+| DELETE /disciplinas/{id}                      | ✅    | ❌          | ❌      |
+| GET /professores                              | ✅    | ✅          | ❌      |
+| POST /professores                             | ✅    | ❌          | ❌      |
+| GET /professores/{id}                         | ✅    | ✅          | ❌      |
+| PUT /professores/{id}                         | ✅    | ❌          | ❌      |
+| DELETE /professores/{id}                      | ✅    | ❌          | ❌      |
+| GET /professores-disciplinas                  | ✅    | ✅          | ❌      |
+| POST /professores-disciplinas                 | ✅    | ❌          | ❌      |
+| GET /professores-disciplinas/{id}             | ✅    | ✅          | ❌      |
+| PUT /professores-disciplinas/{id}             | ✅    | ❌          | ❌      |
+| DELETE /professores-disciplinas/{id}          | ✅    | ❌          | ❌      |
+| GET /salas                                    | ✅    | ✅          | ❌      |
+| POST /salas                                   | ✅    | ❌          | ❌      |
+| GET /salas/{id}                               | ✅    | ✅          | ❌      |
+| PUT /salas/{id}                               | ✅    | ❌          | ❌      |
+| DELETE /salas/{id}                            | ✅    | ❌          | ❌      |
+| GET /tipos-salas                              | ✅    | ✅          | ❌      |
+| POST /tipos-salas                             | ✅    | ❌          | ❌      |
+| GET /tipos-salas/{id}                         | ✅    | ✅          | ❌      |
+| PUT /tipos-salas/{id}                         | ✅    | ❌          | ❌      |
+| DELETE /tipos-salas/{id}                      | ✅    | ❌          | ❌      |
+| GET /recursos                                 | ✅    | ✅          | ❌      |
+| POST /recursos                                | ✅    | ❌          | ❌      |
+| GET /recursos/{id}                            | ✅    | ✅          | ❌      |
+| PUT /recursos/{id}                            | ✅    | ❌          | ❌      |
+| DELETE /recursos/{id}                         | ✅    | ❌          | ❌      |
+| GET /tipos-recursos                           | ✅    | ✅          | ❌      |
+| POST /tipos-recursos                          | ✅    | ❌          | ❌      |
+| GET /tipos-recursos/{id}                      | ✅    | ✅          | ❌      |
+| PUT /tipos-recursos/{id}                      | ✅    | ❌          | ❌      |
+| DELETE /tipos-recursos/{id}                   | ✅    | ❌          | ❌      |
+| GET /recursos-salas                           | ✅    | ✅          | ❌      |
+| POST /recursos-salas                          | ✅    | ❌          | ❌      |
+| GET /recursos-salas/{id}                      | ✅    | ✅          | ❌      |
+| PUT /recursos-salas/{id}                      | ✅    | ❌          | ❌      |
+| DELETE /recursos-salas/{id}                   | ✅    | ❌          | ❌      |
+| GET /quadros-horarios                         | ✅    | ✅          | ❌      |
+| POST /quadros-horarios                        | ✅    | ✅          | ❌      |
+| GET /quadros-horarios/{id}                    | ✅    | ✅          | ❌      |
+| PUT /quadros-horarios/{id}                    | ✅    | ✅          | ❌      |
+| DELETE /quadros-horarios/{id}                 | ✅    | ✅          | ❌      |
+| POST /quadros-horarios/{id}/copiar            | ✅    | ✅          | ❌      |
+| GET /periodos-atividade-quadro                | ✅    | ✅          | ❌      |
+| POST /periodos-atividade-quadro               | ✅    | ✅          | ❌      |
+| GET /periodos-atividade-quadro/{id}           | ✅    | ✅          | ❌      |
+| PUT /periodos-atividade-quadro/{id}           | ✅    | ✅          | ❌      |
+| DELETE /periodos-atividade-quadro/{id}        | ✅    | ✅          | ❌      |
+| GET /periodos-atividade-quadro/tipos          | ✅    | ✅          | ❌      |
+| GET /bloco-horarios                           | ✅    | ✅          | ❌      |
+| POST /bloco-horarios                          | ✅    | ❌          | ❌      |
+| POST /bloco-horarios/lote                     | ✅    | ❌          | ❌      |
+| GET /bloco-horarios/{id}                      | ✅    | ✅          | ❌      |
+| PUT /bloco-horarios/{id}                      | ✅    | ❌          | ❌      |
+| DELETE /bloco-horarios/{id}                   | ✅    | ❌          | ❌      |
+| GET /dias-semana                              | ✅    | ✅          | ❌      |
+| POST /dias-semana                             | ✅    | ✅          | ❌      |
+| GET /disponibilidades-professores             | ✅    | ❌          | ❌      |
+| POST /disponibilidades-professores            | ✅    | ❌          | ❌      |
+| GET /disponibilidades-professores/{id}        | ✅    | ✅          | ❌      |
+| PUT /disponibilidades-professores/{id}        | ✅    | ❌          | ❌      |
+| DELETE /disponibilidades-professores/{id}     | ✅    | ❌          | ❌      |
+| GET /alocacoes                                | ✅    | ✅          | ❌      |
+| POST /alocacoes                               | ✅    | ✅          | ❌      |
+| POST /alocacoes/lote                          | ✅    | ✅          | ❌      |
+| GET /alocacoes/{id}                           | ✅    | ✅          | ❌      |
+| PUT /alocacoes/{id}                           | ✅    | ✅          | ❌      |
+| DELETE /alocacoes/{id}                        | ✅    | ✅          | ❌      |
+| GET /historicos-versoes-alocacoes             | ✅    | ✅          | ❌      |
+| GET /historicos-versoes-alocacoes/{id}        | ✅    | ✅          | ❌      |
+| GET /grades/cursos/{cursoId}                  | ✅    | ✅          | ✅      |
+| GET /grades/cursos/{cursoId}/turmas/{turmaId} | ✅    | ✅          | ✅      |

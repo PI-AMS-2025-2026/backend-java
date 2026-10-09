@@ -40,7 +40,7 @@ public class ConfiguracaoSegurancaTest {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("http://localhost:3000")
                         .allowedMethods("*");
             }
 
@@ -71,6 +71,9 @@ public class ConfiguracaoSegurancaTest {
 
                         .requestMatchers(HttpMethod.POST, "/auth/logout")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/grades/**")
+                        .permitAll()
                         
                         // Libera a interface, os arquivos estaticos e a especificacao do Swagger.
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
@@ -91,9 +94,6 @@ public class ConfiguracaoSegurancaTest {
                         .requestMatchers("/turmas/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/grades/**")
-                        .hasAnyRole("ADMIN", "COORDENADOR")
-
                         .requestMatchers("/alocacoes/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
@@ -112,19 +112,19 @@ public class ConfiguracaoSegurancaTest {
                         .requestMatchers("/cursos/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-sala/**", "/recursos/**",
-                            "/tipos-recurso/**", "/recurso-sala/**", "/bloco-horarios/**",
-                            "/disponibilidades-professores/**", "/periodo_atividade_quadro/**")
+                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
+                            "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
+                            "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())
