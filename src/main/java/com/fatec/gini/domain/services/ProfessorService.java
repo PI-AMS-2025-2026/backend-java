@@ -1,0 +1,106 @@
+package com.fatec.gini.domain.services;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
+import com.fatec.gini.dto.paginacao.PageResponse;
+import com.fatec.gini.dto.professor.ProfessorRequest;
+import com.fatec.gini.dto.professor.ProfessorResponse;
+import com.fatec.gini.infrastructure.mappers.ProfessorMapper;
+import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ProfessorService {
+
+    private final ProfessorRepository repository;
+    private final ProfessorDisciplinaRepository professorDisciplinaRepository;
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
+    @Transactional
+    public ProfessorResponse criar(ProfessorRequest request) {
+
+        Professor professor = ProfessorMapper.toEntity(request);
+
+
+        return ProfessorMapper.toResponse(repository.save(professor));
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ProfessorResponse> listar(
+            String nome,
+            String email,
+            String cidade,
+            Status status,
+            int pageNum,
+            int size
+
+    ) {
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(
+                nome,
+                email,
+                cidade,
+                status,
+                validarAutorizacaoCurso.cursoParaFiltro(null),
+                pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(ProfessorMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages());
+    }
+
+    @Transactional(readOnly = true)
+    public ProfessorResponse buscarPorId(Long id) {
+        return repository.findById(id)
+                .map(ProfessorMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
+    }
+
+    @Transactional
+    public ProfessorResponse atualizar(Long id, ProfessorRequest request) {
+
+        Professor professor = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
+            validarProfessor(professor);
+
+        professor.setNome(request.nome());
+        professor.setEmail(request.email());
+        professor.setStatus(request.status());
+
+
+        return ProfessorMapper.toResponse(repository.save(professor));
+    }
+
+    @Transactional
+    public void inativar(Long id) {
+        Professor professor = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
+            validarProfessor(professor);
+
+        professor.setStatus(Status.INATIVO);
+
+        repository.save(professor);
+    }
+
+    private void validarProfessor(Professor professor) {
+        if (validarAutorizacaoCurso.cursoParaFiltro(null) != null
+                && !professorDisciplinaRepository.existsByProfessorIdAndDisciplinaCursoId(
+                        professor.getId(), validarAutorizacaoCurso.cursoParaFiltro(null))) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Professor não pertence ao curso do usuário");
+        }
+    }
+
+}

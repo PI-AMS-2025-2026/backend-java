@@ -1,0 +1,45 @@
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @page { size: landscape; margin: 10mm; }
+    body { font-family: Arial, sans-serif; font-size: 10px; color: #202124; }
+    h1 { color: #1a365d; font-size: 20px; margin: 0 0 4px; }
+    h2 { color: #fff; background: #1a365d; font-size: 14px; margin: 18px 0 6px; padding: 5px; }
+    .subtitle { color: #718096; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 14px; }
+    th, td { border: 1px solid #7b8794; padding: 5px; text-align: center; vertical-align: middle; }
+    th { background: #d9e2ec; font-weight: bold; }
+    .time { width: 90px; font-weight: bold; white-space: nowrap; }
+    .subject { display: block; font-weight: bold; }
+    .room { display: block; color: #52606d; margin-top: 3px; }
+    .empty { color: #9aa5b1; }
+    .turma { page-break-inside: avoid; }
+  </style>
+</head>
+<body>
+  <h1>Quadro horário</h1>
+  <div class="subtitle" th:text="${modelo.grade().curso().nome()}">Curso</div>
+  <div class="turma" th:each="turma : ${modelo.turmas}">
+    <h2 th:text="|Turma ${turma.turma().codigo()} - ${turma.turma().ano()}º ano / ${turma.turma().periodo()}º período|">Turma</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="time">Horário</th>
+          <th th:each="dia : ${modelo.dias}" th:text="${dia.nome}">Dia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="linha : ${turma.linhas}">
+          <td class="time" th:text="${linha.bloco().rotulo()}">Horário</td>
+          <td th:each="celula : ${linha.celulas}" th:classappend="${!celula.preenchida()} ? ' empty'">
+            <span class="subject" th:if="${celula.preenchida()}" th:text="${celula.valor().disciplina().nome()}">Disciplina</span>
+            <span class="room" th:if="${celula.preenchida()}" th:text="${celula.valor().sala().codigo()}">Sala</span>
+            <span th:unless="${celula.preenchida()}">-</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

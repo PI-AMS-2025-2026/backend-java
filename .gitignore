@@ -4,6 +4,11 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 package-lock.json
+
+### Postman ###
+/postman/
+/.postman/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,3 +36,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Postman ###
+.postman/
+postman/
+
+.env
