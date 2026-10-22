@@ -2,6 +2,7 @@ package com.fatec.gini.domain.services.usecase.read;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 
 import org.springframework.stereotype.Service;
 
@@ -35,39 +36,37 @@ public class ValidarDataPeriodoAtividadeQuadroUseCase {
 
    public void periodoValido(LocalDate dataInicio, LocalDate dataFim, Integer periodo) {
 
-     long totalMeses = ChronoUnit.MONTHS.between(dataInicio, dataFim);
+    // Início deve ser dia 1 e fim deve ser o último dia do mês
+    boolean inicioPrimeiroDia = dataInicio.getDayOfMonth() == 1;
+    boolean fimUltimoDia = dataFim.equals(dataFim.with(TemporalAdjusters.lastDayOfMonth()));
 
-    // Garante que as datas representam meses completos
-    if (!dataInicio.plusMonths(totalMeses).equals(dataFim)) {
+    if (!inicioPrimeiroDia || !fimUltimoDia) {
         throw new ParameterException(
             "O intervalo entre as datas não corresponde a meses completos."
         );
     }
 
-    // Semestral
+    // Soma 1 dia ao fim (último dia do mês -> primeiro dia do mês seguinte)
+    // para o ChronoUnit contar os meses cheios corretamente
+    long totalMeses = ChronoUnit.MONTHS.between(dataInicio, dataFim.plusDays(1));
+
+    // Semestral: deve começar em janeiro ou julho
     if (totalMeses == 6) {
         if (dataInicio.getMonthValue() == 1 || dataInicio.getMonthValue() == 7) {
-        return; // Primeiro semestre
-        } else {
-            throw new ParameterException(
-                "O intervalo entre as datas deve corresponder a um período semestral."
-            );
-        
+            return;
         }
+        throw new ParameterException(
+            "O intervalo entre as datas deve corresponder a um período semestral."
+        );
+    }
 
-    } 
-    
-    if (totalMeses == 12) {
-     if(dataInicio.getMonthValue() == 1) {
+    // Anual: deve começar em janeiro
+    if (totalMeses == 12 && dataInicio.getMonthValue() == 1) {
         return;
-     } 
-     
     }
 
     throw new ParameterException(
         "O intervalo entre as datas deve corresponder a um período semestral ou anual."
     );
 }
-
-
 }
