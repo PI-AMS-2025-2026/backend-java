@@ -11,6 +11,7 @@ import com.fatec.gini.dto.recurso.RecursoRequest;
 import com.fatec.gini.dto.recurso.RecursoResponse;
 import com.fatec.gini.infrastructure.mappers.RecursoMapper;
 import com.fatec.gini.infrastructure.repositories.RecursoRepository;
+import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoRecursoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,7 @@ public class RecursoService {
 
     private final RecursoRepository repository;
     private final TipoRecursoRepository tipoRecursoRepository;
+    private final RecursoSalaRepository recursoSalaRepository;
 
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
@@ -35,7 +37,7 @@ public class RecursoService {
         // ALTERAÇÃO: o payload agora envia diretamente o ID do tipo de recurso.
         TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso())
                 .orElseThrow(() -> new EntityNotFoundException(
-                "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
+                "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
 
@@ -78,7 +80,7 @@ public class RecursoService {
         // ALTERAÇÃO: utiliza diretamente o ID recebido no payload.
         TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso())
                 .orElseThrow(() -> new EntityNotFoundException(
-                "Tipo de recurso não encontrado com ID: " + request.tipoRecurso()));
+                "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
 
         entity.setTipoRecurso(tipo);
 
@@ -89,6 +91,9 @@ public class RecursoService {
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Recurso não encontrado com ID: " + id);
+        }
+        if (recursoSalaRepository.existsById(id)) {
+            throw new IllegalArgumentException("Esse recurso está vinculado a um recurso_sala");
         }
         repository.deleteById(id);
     }
