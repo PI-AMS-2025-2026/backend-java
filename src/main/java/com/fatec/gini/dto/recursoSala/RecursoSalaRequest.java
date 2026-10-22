@@ -14,9 +14,8 @@ public record RecursoSalaRequest(
     // ALTERAÇÃO: recebe diretamente o ID do recurso, sem precisar de {"id": ...}.
     @NotNull(message = "Recurso é obrigatório.")
     LongDTO recurso,
-
-    @NotNull
-    @Min(value = 1, message = "O campo quantidade deve ser maior que zero.")
-    Integer quantidade
-
+   // ALTERAÇÃO: validação para garantir que a quantidade seja maior que zero.
+     @NotNull(message = "Quantidade é obrigatória.")
+     @Min(value = 1, message = "O campo quantidade deve ser maior que zero.")
+     Integer quantidade
 ) {}
