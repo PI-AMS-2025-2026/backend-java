@@ -1,3 +1,4 @@
+
 package com.fatec.gini.dto.turma;
 
 import com.fatec.gini.dto.id.LongDTO;
@@ -14,7 +15,7 @@ public record TurmaRequest(
     Integer periodo,
 
     @NotNull(message = "O ano é obrigatório")
-    @Min(value = 1000, message = "O ano deve possuir 4 dígitos")
+    @Min(value = 2009, message = "O ano da turma deve ser maior que 2008")
     @Max(value = 9999, message = "O ano deve possuir no máximo 4 dígitos")
     Integer ano,
 

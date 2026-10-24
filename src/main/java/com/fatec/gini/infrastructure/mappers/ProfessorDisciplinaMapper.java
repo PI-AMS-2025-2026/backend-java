@@ -1,3 +1,4 @@
+
 package com.fatec.gini.infrastructure.mappers;
 
 import com.fatec.gini.domain.entities.ProfessorDisciplina;
@@ -7,12 +8,24 @@ import com.fatec.gini.dto.professorDisciplina.ProfessorDisciplinaResponse;
 public class ProfessorDisciplinaMapper {
 
     public static ProfessorDisciplinaResponse toResponse(ProfessorDisciplina entity) {
+        if (entity == null) {
+            return null;
+        }
+
         return new ProfessorDisciplinaResponse(
                 entity.getId(),
-                // O payload retorna somente o ID do professor relacionado.
-                entity.getProfessor() != null ? entity.getProfessor().getId() : null,
-                // O payload retorna somente o ID da disciplina relacionada.
-                entity.getDisciplina() != null ? entity.getDisciplina().getId() : null
+                entity.getProfessor() != null
+                        ? entity.getProfessor().getId()
+                        : null,
+                entity.getDisciplina() != null
+                        ? entity.getDisciplina().getId()
+                        : null,
+                entity.getProfessor() != null
+                        ? ProfessorMapper.toResponse(entity.getProfessor())
+                        : null,
+                entity.getDisciplina() != null
+                        ? DisciplinaMapper.toResponse(entity.getDisciplina())
+                        : null
         );
     }
 
