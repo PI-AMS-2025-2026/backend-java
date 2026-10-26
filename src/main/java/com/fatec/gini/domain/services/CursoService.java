@@ -1,4 +1,3 @@
-
 package com.fatec.gini.domain.services;
 
 import org.springframework.data.domain.PageRequest;
@@ -100,12 +99,12 @@ public class CursoService {
         String periodicidade = normalizarPeriodicidade(request.periodicidade());
         validarDuracao(periodicidade, request.duracao());
 
-        boolean cursoDuplicado =
-                repository.existsByNomeIgnoreCaseAndPeriodicidadeIgnoreCaseAndDuracao(
+        boolean cursoDuplicado
+                = repository.existsByNomeIgnoreCaseAndPeriodicidadeIgnoreCaseAndDuracao(
                         request.nome(), periodicidade, request.duracao());
 
-        boolean mesmoCurso =
-                entity.getNome().equalsIgnoreCase(request.nome())
+        boolean mesmoCurso
+                = entity.getNome().equalsIgnoreCase(request.nome())
                 && entity.getPeriodicidade().equalsIgnoreCase(periodicidade)
                 && entity.getDuracao().equals(request.duracao());
 
@@ -144,17 +143,14 @@ public class CursoService {
 
     private void inativarTurmasDoCurso(Long cursoId) {
 
-        for (Turma turma : turmaRepository
-                .findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(cursoId)) {
+        var turmas = turmaRepository
+                .findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(cursoId);
 
-            if (turma.getStatus() != Status.INATIVO) {
-                turma.setStatus(Status.INATIVO);
-            }
+        for (Turma turma : turmas) {
+            turma.setStatus(Status.INATIVO);
         }
 
-        // Persiste as mudanças de status das turmas.
-        turmaRepository.saveAll(
-                turmaRepository.findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(cursoId));
+        turmaRepository.saveAll(turmas);
     }
 
     private String normalizarPeriodicidade(String periodicidade) {

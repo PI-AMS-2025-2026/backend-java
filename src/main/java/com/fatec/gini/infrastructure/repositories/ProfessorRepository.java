@@ -1,3 +1,4 @@
+
 package com.fatec.gini.infrastructure.repositories;
 
 import org.springframework.data.domain.Page;
@@ -9,18 +10,17 @@ import org.springframework.data.repository.query.Param;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.domain.models.Status;
 
-
-
 public interface ProfessorRepository extends JpaRepository<Professor, Long> {
 
     /**
-     * Retorna usuários aplicando filtros opcionais.
+     * Retorna professores aplicando filtros opcionais.
      *
      * Regras dos filtros:
      * - nome: busca parcial, ignorando maiúsculas/minúsculas.
      * - email: busca parcial, ignorando maiúsculas/minúsculas.
      * - cidade: busca parcial, ignorando maiúsculas/minúsculas.
-     * - status: comparação exata, respeitando maiúsculas/minúsculas.
+     * - status: comparação exata.
+     * - cursoId: filtra professores associados a disciplinas do curso.
      *
      * Quando um parâmetro é null, o filtro correspondente é ignorado.
      */
@@ -31,19 +31,30 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
           AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
           AND (:cidade IS NULL OR LOWER(u.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
           AND (:status IS NULL OR u.status = :status)
-            AND (:cursoId IS NULL OR EXISTS (
-              SELECT pd.id FROM ProfessorDisciplina pd
-              WHERE pd.professor = u AND pd.disciplina.curso.id = :cursoId
-            ))
+          AND (:cursoId IS NULL OR EXISTS (
+              SELECT pd.id
+              FROM ProfessorDisciplina pd
+              WHERE pd.professor = u
+                AND pd.disciplina.curso.id = :cursoId
+          ))
         """)
     Page<Professor> buscarPorFiltros(
-        @Param("nome") String nome,
-        @Param("email") String email,
-        @Param("cidade") String cidade,
-        @Param("status") Status status,
-        @Param("cursoId") Long cursoId,
-        Pageable pageable);
+            @Param("nome") String nome,
+            @Param("email") String email,
+            @Param("cidade") String cidade,
+            @Param("status") Status status,
+            @Param("cursoId") Long cursoId,
+            Pageable pageable);
 
+    /**
+     * Verifica se já existe um professor com o e-mail informado,
+     * ignorando diferenças entre maiúsculas e minúsculas.
+     */
+    boolean existsByEmailIgnoreCase(String email);
 
-
+    /**
+     * Verifica se outro professor possui o e-mail informado,
+     * ignorando o professor cujo ID foi informado.
+     */
+    boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
 }

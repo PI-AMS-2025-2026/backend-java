@@ -1,6 +1,6 @@
-
 package com.fatec.gini.dto.turma;
 
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.dto.id.LongDTO;
 
 import jakarta.validation.constraints.Max;
@@ -25,6 +25,8 @@ public record TurmaRequest(
     Integer numeroAlunos,
 
     @NotNull(message = "O curso é obrigatório")
-    LongDTO curso
+    LongDTO curso,
+
+    Status status
 
 ) {}

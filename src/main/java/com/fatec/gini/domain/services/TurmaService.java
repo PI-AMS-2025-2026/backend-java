@@ -1,4 +1,3 @@
-
 package com.fatec.gini.domain.services;
 
 import org.springframework.data.domain.PageRequest;
@@ -40,13 +39,13 @@ public class TurmaService {
                         "Curso não encontrado com ID: " + request.curso().id()));
 
         validarAutorizacaoCurso.validarCurso(curso);
-
-        if (curso.getStatus() != Status.ATIVO) {
-            throw new BusinessException(
-                    "Não é possível cadastrar turma em curso inativo.");
-        }
-
         validarPeriodo(request, curso);
+
+        Status status = request.status() == null
+                ? Status.ATIVO
+                : request.status();
+
+        validarStatusCurso(status, curso);
 
         if (repository.existsByCursoIdAndAnoAndPeriodo(
                 curso.getId(), request.ano(), request.periodo())) {
@@ -56,7 +55,7 @@ public class TurmaService {
 
         Turma entity = TurmaMapper.toEntity(request);
         entity.setCurso(curso);
-        entity.setStatus(Status.ATIVO);
+        entity.setStatus(status);
         entity.setCodigo(request.periodo() + "/" + request.ano());
 
         return TurmaMapper.toResponse(repository.save(entity));
@@ -117,13 +116,14 @@ public class TurmaService {
 
         validarAutorizacaoCurso.validarCurso(entity.getCurso());
         validarAutorizacaoCurso.validarCurso(curso);
-
-        if (curso.getStatus() != Status.ATIVO) {
-            throw new BusinessException(
-                    "Não é possível vincular a turma a um curso inativo.");
-        }
-
         validarPeriodo(request, curso);
+
+        // Se o status não for enviado, mantém o status atual.
+        Status status = request.status() == null
+                ? entity.getStatus()
+                : request.status();
+
+        validarStatusCurso(status, curso);
 
         if (repository.existsByCursoIdAndAnoAndPeriodoAndIdNot(
                 curso.getId(), request.ano(), request.periodo(), id)) {
@@ -136,6 +136,7 @@ public class TurmaService {
         entity.setPeriodo(request.periodo());
         entity.setNumeroAlunos(request.numeroAlunos());
         entity.setCurso(curso);
+        entity.setStatus(status);
 
         return TurmaMapper.toResponse(repository.save(entity));
     }
@@ -168,9 +169,22 @@ public class TurmaService {
                     "Não é possível excluir uma turma ativa. Inative a turma antes de excluí-la.");
         }
 
+        if (entity.getCurso().getStatus() != Status.INATIVO) {
+            throw new BusinessException(
+                    "Não é possível excluir uma turma enquanto o curso estiver ativo.");
+        }
+
         validarTurmaSemVinculos.validar(id);
 
         repository.delete(entity);
+    }
+
+    private void validarStatusCurso(Status status, Curso curso) {
+
+        if (status == Status.ATIVO && curso.getStatus() != Status.ATIVO) {
+            throw new BusinessException(
+                    "Não é possível manter ou ativar uma turma em um curso inativo.");
+        }
     }
 
     private void validarAno(Integer ano) {

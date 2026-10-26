@@ -30,10 +30,7 @@ public class ProfessorService {
     @Transactional
     public ProfessorResponse criar(ProfessorRequest request) {
 
-        // Impede cadastro duplicado pelo e-mail, ignorando maiúsculas e minúsculas.
-        if (repository.existsByEmailIgnoreCase(request.email())) {
-            throw new BusinessException("Esse professor já possui cadastro");
-        }
+        validarEmailDuplicado(request.email(), null);
 
         Professor professor = ProfessorMapper.toEntity(request);
 
@@ -50,6 +47,7 @@ public class ProfessorService {
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
+
         var page = repository.buscarPorFiltros(
                 nome,
                 email,
@@ -59,7 +57,10 @@ public class ProfessorService {
                 pageRequest);
 
         return new PageResponse<>(
-                page.getContent().stream().map(ProfessorMapper::toResponse).toList(),
+                page.getContent()
+                        .stream()
+                        .map(ProfessorMapper::toResponse)
+                        .toList(),
                 page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
@@ -68,6 +69,7 @@ public class ProfessorService {
 
     @Transactional(readOnly = true)
     public ProfessorResponse buscarPorId(Long id) {
+
         return repository.findById(id)
                 .map(ProfessorMapper::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -82,6 +84,8 @@ public class ProfessorService {
                         "Professor não encontrado com ID: " + id));
 
         validarProfessor(professor);
+
+        validarEmailDuplicado(request.email(), id);
 
         professor.setNome(request.nome());
         professor.setEmail(request.email());
@@ -104,11 +108,31 @@ public class ProfessorService {
         repository.save(professor);
     }
 
+    private void validarEmailDuplicado(String email, Long professorId) {
+
+        boolean emailExiste = repository.existsByEmailIgnoreCase(email);
+
+        if (emailExiste) {
+            boolean pertenceAoMesmoProfessor = professorId != null
+                    && repository.existsByEmailIgnoreCaseAndIdNot(email, professorId);
+
+            if (professorId == null || pertenceAoMesmoProfessor) {
+                throw new BusinessException(
+                        "Esse professor já possui cadastro");
+            }
+        }
+    }
+
     private void validarProfessor(Professor professor) {
-        if (validarAutorizacaoCurso.cursoParaFiltro(null) != null
-                && !professorDisciplinaRepository.existsByProfessorIdAndDisciplinaCursoId(
-                        professor.getId(),
-                        validarAutorizacaoCurso.cursoParaFiltro(null))) {
+
+        Long cursoId = validarAutorizacaoCurso.cursoParaFiltro(null);
+
+        if (cursoId != null
+                && !professorDisciplinaRepository
+                        .existsByProfessorIdAndDisciplinaCursoId(
+                                professor.getId(),
+                                cursoId)) {
+
             throw new org.springframework.security.access.AccessDeniedException(
                     "Professor não pertence ao curso do usuário");
         }
