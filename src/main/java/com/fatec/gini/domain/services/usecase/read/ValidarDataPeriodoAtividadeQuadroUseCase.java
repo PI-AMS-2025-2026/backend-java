@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services.usecase.read;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,56 @@ public class ValidarDataPeriodoAtividadeQuadroUseCase {
             throw new ParameterException("Data de fim deve ser posterior à data de início");
         }
 
+        //regra nova para que se a data de inicio for menor que 2008 vai exibir a mensagem de erro
+        if(dataInicio.isBefore(LocalDate.of(2008, 1, 1))) {
+            throw new ParameterException("Data de início deve ser a partir de 01/01/2008");
+        }
+
     }
 
     public void executarAno(Integer ano, LocalDate dataInicio) {
-       if(dataInicio.getYear() != ano){
-        throw new ParameterException("Ano informado não corresponde ao ano da data de início");
-       }
+    
+       if (ano < 2008) {
+        throw new ParameterException("O ano informado deve ser a partir de 2008");
     }
+    }
+
+
+   public void periodoValido(LocalDate dataInicio, LocalDate dataFim, Integer periodo) {
+
+     long totalMeses = ChronoUnit.MONTHS.between(dataInicio, dataFim);
+
+    // Garante que as datas representam meses completos
+    if (!dataInicio.plusMonths(totalMeses).equals(dataFim)) {
+        throw new ParameterException(
+            "O intervalo entre as datas não corresponde a meses completos."
+        );
+    }
+
+    // Semestral
+    if (totalMeses == 6) {
+        if (dataInicio.getMonthValue() == 1 || dataInicio.getMonthValue() == 7) {
+        return; // Primeiro semestre
+        } else {
+            throw new ParameterException(
+                "O intervalo entre as datas deve corresponder a um período semestral."
+            );
+        
+        }
+
+    } 
+    
+    if (totalMeses == 12) {
+     if(dataInicio.getMonthValue() == 1) {
+        return;
+     } 
+     
+    }
+
+    throw new ParameterException(
+        "O intervalo entre as datas deve corresponder a um período semestral ou anual."
+    );
+}
+
+
 }

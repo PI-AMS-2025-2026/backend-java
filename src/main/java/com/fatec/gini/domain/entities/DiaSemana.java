@@ -1,35 +1,37 @@
 package com.fatec.gini.domain.entities;
 
 public enum DiaSemana {
-    DOMINGO,
     SEGUNDA,
-    TERCA,
+    TERÇA,
     QUARTA,
     QUINTA,
     SEXTA,
-    SABADO;
+    SÁBADO,
+    DOMINGO;
 
     public DiaSemana anterior() {
         return switch (this) {
-            case DOMINGO -> SABADO;
+            case DOMINGO -> SÁBADO;
             case SEGUNDA -> DOMINGO;
-            case TERCA -> SEGUNDA;
-            case QUARTA -> TERCA;
+            case TERÇA -> SEGUNDA;
+            case QUARTA -> TERÇA;
             case QUINTA -> QUARTA;
             case SEXTA -> QUINTA;
-            case SABADO -> SEXTA;
+            case SÁBADO -> SEXTA;
         };
     }
 
     public DiaSemana posterior() {
         return switch (this) {
             case DOMINGO -> SEGUNDA;
-            case SEGUNDA -> TERCA;
-            case TERCA -> QUARTA;
+            case SEGUNDA -> TERÇA;
+            case TERÇA -> QUARTA;
             case QUARTA -> QUINTA;
             case QUINTA -> SEXTA;
-            case SEXTA -> SABADO;
-            case SABADO -> DOMINGO;
+            case SEXTA -> SÁBADO;
+            case SÁBADO -> DOMINGO;
         };
     }
+
+   
 }

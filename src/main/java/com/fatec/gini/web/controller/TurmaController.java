@@ -31,12 +31,12 @@ public class TurmaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<TurmaResponse>> listar(
-            @RequestParam(name = "curso", required = false) Long idCurso,
-            @RequestParam(required = false) Integer ano,
-            @RequestParam(required = false) Integer periodo,
-            @RequestParam(required = false) String codigo,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "id_curso", required = false) Long idCurso,
+            @RequestParam(name = "ano", required = false) Integer ano,
+            @RequestParam(name = "periodo", required = false) Integer periodo,
+            @RequestParam(name = "codigo", required = false) String codigo,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
                 service.listar(

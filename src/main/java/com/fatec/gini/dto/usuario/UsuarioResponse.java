@@ -13,6 +13,6 @@ public record UsuarioResponse(
         TipoUsuario tipoUsuario,
         Status status,
         CursoResponse curso,
-        LocalDateTime created_at,
-        LocalDateTime updated_at
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {}

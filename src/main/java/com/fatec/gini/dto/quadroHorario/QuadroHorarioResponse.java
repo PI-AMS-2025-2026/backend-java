@@ -13,7 +13,6 @@ public record QuadroHorarioResponse(
         Status status,
         CursoResponse curso,
         PeriodoAtividadeQuadroResponse periodoAtividadeQuadro,
-        // ALTERAÇÃO: padronização dos nomes de data para camelCase.
         LocalDateTime createdAt,
         LocalDateTime updatedAt
         ) {

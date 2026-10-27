@@ -20,7 +20,7 @@ public class EnumsController {
                 .toList();
     }
 
-    @GetMapping("/periodo_atividade_quadro/tipos")
+    @GetMapping("/periodos-atividade-quadro/tipos")
     public List<String> listarTiposPeriodo() {
         return Arrays.stream(TipoPeridoAtividadeQuadro.values())
                 .map(Enum::name)

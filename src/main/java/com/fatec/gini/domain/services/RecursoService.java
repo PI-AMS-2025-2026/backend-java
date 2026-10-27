@@ -13,6 +13,7 @@ import com.fatec.gini.infrastructure.mappers.RecursoMapper;
 import com.fatec.gini.infrastructure.repositories.RecursoRepository;
 import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoRecursoRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class RecursoService {
 
     private final RecursoRepository repository;
+    private final RecursoSalaRepository recursoSalaRepository;
     private final TipoRecursoRepository tipoRecursoRepository;
     private final RecursoSalaRepository recursoSalaRepository;
 
@@ -35,7 +37,7 @@ public class RecursoService {
         Recurso entity = RecursoMapper.toEntity(request);
 
         // ALTERAÇÃO: o payload agora envia diretamente o ID do tipo de recurso.
-        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso())
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
 
@@ -78,7 +80,7 @@ public class RecursoService {
         entity.setNome(request.nome());
 
         // ALTERAÇÃO: utiliza diretamente o ID recebido no payload.
-        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso())
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
 

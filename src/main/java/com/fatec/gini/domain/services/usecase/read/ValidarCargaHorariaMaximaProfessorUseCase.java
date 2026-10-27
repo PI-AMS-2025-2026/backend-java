@@ -26,7 +26,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
         private static final Duration LIMITE_CARGA_HORARIA_DIARIA = Duration.ofHours(8);
 
         // Intervalo mínimo obrigatório entre o fim de uma jornada e o início da próxima
-        private static final Duration DESCANSO_MINIMO_INTERJORNADA = Duration.ofHours(12);
+        private static final Duration DESCANSO_MINIMO_INTERJORNADA = Duration.ofHours(11);
 
         // Quantidade de minutos existentes em um dia completo
         private static final long MINUTOS_POR_DIA = Duration.ofDays(1).toMinutes();
@@ -42,8 +42,8 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
                 // Valida se o professor ultrapassou a carga horária diária permitida
                 validarCargaHorariaDiaria(professorId, diaSemana, alocacaoAtual);
 
-                // Valida se existe pelo menos 12h de descanso entre jornadas
-                validarDescansoMinimo12Horas(professorId, diaSemana, alocacaoAtual);
+                // Valida se existe pelo menos 11h de descanso entre jornadas
+                validarDescansoMinimo11Horas(professorId, diaSemana, alocacaoAtual);
         }
 
         /**
@@ -76,10 +76,10 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
         /**
          * Regra de negócio:
-         * Deve existir no mínimo 12 horas de descanso entre o término da última aula
+         * Deve existir no mínimo 11 horas de descanso entre o término da última aula
          * de um dia e o início da primeira aula do dia seguinte.
          */
-        private void validarDescansoMinimo12Horas(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
+        private void validarDescansoMinimo11Horas(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
                 DiaSemana diaAnterior = diaSemana.anterior();
 
@@ -118,7 +118,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
                 if (minutosDescanso < DESCANSO_MINIMO_INTERJORNADA.toMinutes()) {
                         throw new BusinessException(
-                                        "O intervalo mínimo de interjornada de 12h não foi respeitado.");
+                                        "O intervalo mínimo de interjornada de 11h não foi respeitado.");
                 }
         }
 

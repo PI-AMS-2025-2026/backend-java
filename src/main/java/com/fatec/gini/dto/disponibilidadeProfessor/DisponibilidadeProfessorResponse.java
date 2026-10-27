@@ -27,8 +27,8 @@ public record DisponibilidadeProfessorResponse(
         @JsonProperty("bloco_horario")
         BlocoHorarioResponse blocoHorario,
 
-        LocalDateTime created_at,
+        LocalDateTime createdAt,
 
-        LocalDateTime updated_at) {
+        LocalDateTime updatedAt) {
 
 }

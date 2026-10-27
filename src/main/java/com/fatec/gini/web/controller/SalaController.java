@@ -31,10 +31,10 @@ public class SalaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<SalaResponse>> listar(
-            @RequestParam(name = "tipo_sala", required = false) Long idTipoSala,
-            @RequestParam(required = false) Integer capacidade,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "id_tipo_sala", required = false) Long idTipoSala,
+            @RequestParam(name = "capacidade", required = false) Integer capacidade,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(service.listar(idTipoSala, capacidade, page, size));
     }

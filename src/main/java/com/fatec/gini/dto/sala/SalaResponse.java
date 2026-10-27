@@ -9,6 +9,6 @@ public record SalaResponse(
                 String codigo,
                 Integer capacidade,
                 TipoSalaResponse tipoSala,
-                LocalDateTime created_at,
-                LocalDateTime updated_at) {
+                LocalDateTime createdAt,
+                LocalDateTime updatedAt) {
 }

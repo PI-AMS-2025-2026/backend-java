@@ -8,8 +8,8 @@ public record RecursoResponse(
         Long id,
         String nome,
         TipoRecursoResponse tipo,
-        LocalDateTime created_at,
-        LocalDateTime updated_at
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
         ) {
 
 }

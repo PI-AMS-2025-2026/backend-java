@@ -53,7 +53,7 @@ O sistema tem como objetivo auxiliar coordenadores e administradores acadêmicos
 * Grade Horária
 * Alocação de aulas
 * Validação de conflitos
-* Regra de 12h entre jornadas
+* Regra de 11h entre jornadas
 * Controle de carga horária
 * Histórico de alterações
 * Cópia de grades anteriores
@@ -152,7 +152,7 @@ O sistema possui validações para:
 * Conflito de sala
 * Conflito de turma
 * Controle de carga horária diária
-* Intervalo mínimo de 12 horas
+* Intervalo mínimo de 11 horas
 * Compatibilidade de sala
 * Capacidade física da sala
 * Professor apto para disciplina

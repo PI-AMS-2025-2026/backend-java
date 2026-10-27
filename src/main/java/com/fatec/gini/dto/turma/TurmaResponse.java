@@ -11,6 +11,6 @@ public record TurmaResponse(
         Integer ano,
         Integer numeroAlunos,
         CursoResponse curso,
-        LocalDateTime created_at,
-        LocalDateTime updated_at) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

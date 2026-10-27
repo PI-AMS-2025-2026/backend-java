@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/tipos-recurso")
+@RequestMapping("/tipos-recursos")
 @RequiredArgsConstructor
 public class TipoRecursoController {
 
@@ -31,7 +31,7 @@ public class TipoRecursoController {
 
     @GetMapping
     public ResponseEntity<List<TipoRecursoResponse>> listar(
-            @RequestParam(required = false) String nome) {
+            @RequestParam(name = "nome", required = false) String nome) {
         return ResponseEntity.ok(service.listar(nome));
     }
 

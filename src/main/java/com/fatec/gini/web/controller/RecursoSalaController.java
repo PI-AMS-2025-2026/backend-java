@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/recurso-sala")
+@RequestMapping("/recursos-salas")
 @RequiredArgsConstructor
 public class RecursoSalaController {
 
@@ -46,10 +46,10 @@ public class RecursoSalaController {
 
     @GetMapping
     public ResponseEntity<PageResponse<RecursoSalaResponse>> listar(
-            @RequestParam(required = false) Long salaId,
-            @RequestParam(required = false) Long recursoId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "id_sala", required = false) Long salaId,
+            @RequestParam(name = "id_recurso", required = false) Long recursoId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(service.listar(salaId, recursoId, page, size));
     }

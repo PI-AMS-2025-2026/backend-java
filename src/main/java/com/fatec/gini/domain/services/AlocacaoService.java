@@ -26,6 +26,7 @@ import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -50,6 +51,8 @@ public class AlocacaoService {
     private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
     private final BlocoHorarioRepository blocoHorarioRepository;
+
+    private final ProfessorRepository professorRepository;
 
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
@@ -98,7 +101,7 @@ public class AlocacaoService {
      * RF06 — Sugestão Automática de Ajuste.
      *
      * Recebe uma tentativa de posicionamento da disciplina
-     * na grade de horários.
+     * no quadro de horários.
      *
      * Caso a combinação seja inválida, retorna o motivo
      * e alternativas compatíveis.
@@ -196,6 +199,11 @@ public class AlocacaoService {
 
     @Transactional(readOnly = true)
     public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
+        if (!professorRepository.existsById(request.professor().id())) {
+            throw new EntityNotFoundException(
+                    "Professor não encontrado com ID: " + request.professor().id());
+        }
+
         BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bloco horário não encontrado com ID: " + request.horario().id()));

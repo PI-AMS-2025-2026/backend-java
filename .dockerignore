@@ -1,0 +1,17 @@
+.git
+.github
+.vscode
+.idea
+.env
+.env.*
+target
+*.log
+docs
+postman
+Pi_doc
+README.md
+TASKS.md
+AGENTS.md
+ESCOPO.md
+FRONTEND_INTEGRATION.md
+motor-grade.md

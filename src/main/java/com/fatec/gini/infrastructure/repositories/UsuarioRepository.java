@@ -11,8 +11,6 @@ import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
 
-
-
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     /**
@@ -23,7 +21,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      * - email: busca parcial, ignorando maiúsculas/minúsculas.
      * - cidade: busca parcial, ignorando maiúsculas/minúsculas.
      * - status: comparação exata, respeitando maiúsculas/minúsculas.
-    * - tipoUsuario: comparação exata do enum.
+     * - tipoUsuario: comparação exata do enum.
      *
      * Quando um parâmetro é null, o filtro correspondente é ignorado.
      */
@@ -33,16 +31,16 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
         WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
           AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
           AND (:status IS NULL OR u.status = :status)
-                    AND (:tipoUsuario IS NULL OR u.tipoUsuario = :tipoUsuario)
+          AND (:tipoUsuario IS NULL OR u.tipoUsuario = :tipoUsuario)
         """)
     Page<Usuario> buscarPorFiltros(
         @Param("nome") String nome,
         @Param("email") String email,
         @Param("status") Status status,
-                @Param("tipoUsuario") TipoUsuario tipoUsuario,
+        @Param("tipoUsuario") TipoUsuario tipoUsuario,
         Pageable pageable);
-
 
     UserDetails findByEmail(String email);
 
+    boolean existsByEmailAndIdNot(String email, Long id);
 }

@@ -33,6 +33,23 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<StandardError> authenticationException(
+            AuthenticationException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Credenciais inválidas");
+        error.setMessage("E-mail ou senha inválidos");
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationError> validationException(
             MethodArgumentNotValidException exception,
@@ -64,8 +81,10 @@ public class ResourceExceptionHandler {
         StandardError error = new StandardError();
         error.setTimeStamp(Instant.now());
         error.setStatus(status.value());
-        error.setError("Erro de integridade no banco de dados");
-        error.setMessage(exception.getMessage());
+        error.setError("Operação não permitida");
+        error.setMessage(
+                "Não foi possível concluir a operação porque o registro possui vínculos com outros dados. "
+                        + "Remova esses vínculos antes de tentar novamente.");
         error.setPath(request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);

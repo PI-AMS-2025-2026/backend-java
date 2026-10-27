@@ -34,10 +34,8 @@ public class RefreshTokenService {
         Usuario usuario = repository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + userId));
 
-        refreshTokenRepository.findByUsuario(usuario)
-                .ifPresent(refreshTokenRepository::delete);
-
-        var token = new RefreshToken();
+        RefreshToken token = refreshTokenRepository.findByUsuario(usuario)
+                .orElseGet(RefreshToken::new);
         token.setUsuario(usuario);
         token.setExpiryDate(Instant.now().plusMillis(refreshTokenExpirationMs));
         token.setToken(UUID.randomUUID().toString());
@@ -61,8 +59,6 @@ public class RefreshTokenService {
             refreshTokenRepository.delete(current);
             throw new RefreshTokenException("Refresh token inválido ou expirado");
         }
-
-        refreshTokenRepository.delete(current);
 
         RefreshToken novoRefresh = createRefreshToken(usuario.getId());
 

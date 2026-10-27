@@ -6,7 +6,7 @@ public record TipoSalaResponse(
 
     Long id,
     String nome,
-    LocalDateTime created_at, // Alteração: inclui a data de criação no payload.
-    LocalDateTime updated_at  // Alteração: inclui a data da última atualização.
+    LocalDateTime createdAt, // Alteração: inclui a data de criação no payload.
+    LocalDateTime updatedAt  // Alteração: inclui a data da última atualização.
 
 ) {}

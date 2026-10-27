@@ -1,9 +1,0 @@
-$kind: http-request
-name: buscar 11
-url: "{{baseUrl}}/cursos"
-method: GET
-headers:
-  Accept: "*/*"
-settings: {}
-examples: ./.resources/buscar 11.resources/examples
-order: 1000

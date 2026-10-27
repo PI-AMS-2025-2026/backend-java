@@ -12,10 +12,8 @@ public record CursoResponse(
         Status status,
         Integer duracao,
 
-        // Alteração: padroniza o nome do campo para camelCase.
         LocalDateTime createdAt,
 
-        // Alteração: padroniza o nome do campo para camelCase.
         LocalDateTime updatedAt) {
 
 }

@@ -1,5 +1,8 @@
 package com.fatec.gini.infrastructure.repositories;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,4 +40,8 @@ public interface TurmaRepository extends JpaRepository<Turma, Long> {
             @Param("periodo") Integer periodo,
             @Param("codigo") String codigo,
             Pageable pageable);
+
+    List<Turma> findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(Long cursoId);
+
+    Optional<Turma> findByIdAndCursoId(Long id, Long cursoId);
 }

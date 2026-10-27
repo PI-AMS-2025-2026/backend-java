@@ -1,7 +1,5 @@
 package com.fatec.gini.domain.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,11 +47,7 @@ public class CursoService {
 
         Curso entity = CursoMapper.toEntity(dto);
 
-        // Alteração: salva a periodicidade padronizada.
         entity.setPeriodicidade(periodicidade);
-
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
 
         return CursoMapper.toResponse(repository.save(entity));
     }

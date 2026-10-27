@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/periodo_atividade_quadro")
+@RequestMapping("/periodos-atividade-quadro")
 @RequiredArgsConstructor
 public class PeriodoAtividadeQuadroController {
 
@@ -32,13 +32,13 @@ public class PeriodoAtividadeQuadroController {
 
     @GetMapping
     public ResponseEntity<PageResponse<PeriodoAtividadeQuadroResponse>> listar(
-            @RequestParam(required = false) Integer ano,
-            @RequestParam(required = false) Integer periodo,
-            @RequestParam(required = false) Status status,
-            @RequestParam(required = false) java.time.LocalDate dataInicio,
-            @RequestParam(required = false) java.time.LocalDate dataFim,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "ano", required = false) Integer ano,
+            @RequestParam(name = "periodo", required = false) Integer periodo,
+            @RequestParam(name = "status", required = false) Status status,
+            @RequestParam(name = "data_inicio", required = false) java.time.LocalDate dataInicio,
+            @RequestParam(name = "data_fim", required = false) java.time.LocalDate dataFim,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(service.listar(ano, periodo, status, dataInicio, dataFim, page, size));
     }

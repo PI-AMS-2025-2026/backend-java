@@ -14,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,6 +51,8 @@ public class Alocacao {
     @JoinColumn(name = "id_professor", nullable = false)
     private Professor professor;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "dia_semana", length = 20)
     private DiaSemana diaSemana;
 
     @ManyToOne
