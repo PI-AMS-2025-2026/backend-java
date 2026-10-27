@@ -12,6 +12,7 @@ import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.dto.auth.LoginResponse;
 import com.fatec.gini.infrastructure.repositories.RefreshTokenRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
+import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
 import com.fatec.gini.web.exception.RefreshTokenException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -66,7 +67,8 @@ public class RefreshTokenService {
 
         return new LoginResponse(
                 accessToken,
-                novoRefresh.getToken());
+                novoRefresh.getToken(),
+                UsuarioMapper.toResponse(usuario));
     }
 
     // Considera invalido o token ausente, sem validade ou ja expirado.

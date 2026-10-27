@@ -39,7 +39,6 @@ class ValidarConflitosAlocacaoUseCaseTest {
         BlocoHorario bloco = new BlocoHorario();
         bloco.setId(4L);
         alocacao = new Alocacao(turma, disciplina, sala, null, DiaSemana.SEGUNDA, bloco, null);
-        alocacao.setId(10L);
     }
 
     @Test
@@ -88,6 +87,7 @@ class ValidarConflitosAlocacaoUseCaseTest {
 
     @Test
     void deveIgnorarPropriaAlocacaoNaAtualizacaoQuandoNaoHouverOutraDuplicada() {
+        alocacao.setId(10L);
         when(repository.existsByTurmaIdAndDisciplinaIdAndSalaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
                 1L, 2L, 3L, DiaSemana.SEGUNDA, 4L, 10L)).thenReturn(false);
 

@@ -61,7 +61,8 @@ public class ValidarAlocacaoUseCase {
 
         validarCargaHorariaProfessor.validar(
                 entity.getProfessor().getId(),
-                entity.getDiaSemana()
+                entity.getDiaSemana(),
+                entity
         );
 
         validarQuadroHorario.executar(entity);

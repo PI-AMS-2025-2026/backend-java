@@ -9,6 +9,7 @@ import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaDisciplina
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCoerenciaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarConflitoTurmaBlocoHorarioUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarConflitoSalaBlocoHorarioUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisciplinaTipoSalaUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDisponibilidadeProfessorUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoUseCase;
@@ -51,6 +52,8 @@ public class AtualizarAlocacaoUseCase {
     private final  ValidarCargaHorariaDisciplinaUseCase validarCargaHorariaDisciplina;
 
     private final  ValidarConflitoTurmaBlocoHorarioUseCase validarConflitoTurmaHorario;
+
+    private final ValidarConflitoSalaBlocoHorarioUseCase validarConflitoSalaHorario;
 
     private final  ValidarDuplicidadeAlocacaoUseCase validarDuplicidade;
 
@@ -116,11 +119,17 @@ public class AtualizarAlocacaoUseCase {
         // validar conflito da turma
         validarConflitoTurmaHorario.executar(entity);
 
+        // validar ocupação da sala, ignorando a própria alocação em edição
+        validarConflitoSalaHorario.executar(entity);
+
         // validar capacidade da sala
         validarCapacidadeSala.executar(entity);
 
         // validar duplicidade
         validarDuplicidade.executarAtualizacao(entity);
+
+        // validar coerência entre o quadro horário, a turma e a disciplina
+        validarCoerenciaCurso.validar(entity);
 
         // salvar alocação
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
@@ -128,9 +137,6 @@ public class AtualizarAlocacaoUseCase {
         // registrar histórico de versão da atualização
         historicoVersaoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, alocacaoAntiga, professorAlteracaoEntity,
                 justificativaAlteracao);
-
-        // validar coerência entre curso da quadro horário, turma e disciplina
-        validarCoerenciaCurso.validar(entity);
 
         return alocacaoSalva;
     }

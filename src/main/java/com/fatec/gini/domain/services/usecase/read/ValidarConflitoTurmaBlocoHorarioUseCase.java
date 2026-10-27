@@ -23,10 +23,11 @@ public class ValidarConflitoTurmaBlocoHorarioUseCase {
     private final  AlocacaoRepository repository;
 
     public void executar(Alocacao entity) {
-        boolean conflito = repository.existsConflitoTurmaHorario(
-                entity.getTurma().getId(),
-                entity.getDiaSemana(),
-                entity.getBlocoHorario().getId());
+        boolean conflito = entity.getId() == null
+                ? repository.existsConflitoTurmaHorario(
+                        entity.getTurma().getId(), entity.getDiaSemana(), entity.getBlocoHorario().getId())
+                : repository.existsByTurmaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
+                        entity.getTurma().getId(), entity.getDiaSemana(), entity.getBlocoHorario().getId(), entity.getId());
 
         if (conflito) {
             throw new BusinessException("A turma já possui uma alocação neste dia/horário");
