@@ -9,6 +9,8 @@ import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.dto.tipoSala.TipoSalaRequest;
 import com.fatec.gini.dto.tipoSala.TipoSalaResponse;
 import com.fatec.gini.infrastructure.mappers.TipoSalaMapper;
+import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
+import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class TipoSalaService {
 
     private final TipoSalaRepository repository;
+    private final DisciplinaRepository disciplinaRepository;
+    private final SalaRepository salaRepository;
 
     // Lista todos ou filtra por nome
     @Transactional(readOnly = true)
@@ -63,11 +67,16 @@ public class TipoSalaService {
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 
-    // Remove um tipo de sala
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id);
+            throw new EntityNotFoundException("tipo_sala não encontrado com ID: " + id);
+        }
+        if (salaRepository.existsById(id)) {
+            throw new IllegalArgumentException("Esse tipo_sala está vinculado a uma sala.");
+        }
+        if (disciplinaRepository.existsById(id)) {
+            throw new IllegalArgumentException("Esse tipo_sala está vinculado a uma disciplina.");
         }
         repository.deleteById(id);
     }
