@@ -13,7 +13,6 @@ import com.fatec.gini.infrastructure.mappers.RecursoMapper;
 import com.fatec.gini.infrastructure.repositories.RecursoRepository;
 import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoRecursoRepository;
-import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,8 @@ public class RecursoService {
     private final RecursoRepository repository;
     private final RecursoSalaRepository recursoSalaRepository;
     private final TipoRecursoRepository tipoRecursoRepository;
-    private final RecursoSalaRepository recursoSalaRepository;
 
+    // Lista todos ou filtra por nome
     @Transactional
     public RecursoResponse criar(RecursoRequest request) {
 
@@ -36,7 +35,7 @@ public class RecursoService {
 
         Recurso entity = RecursoMapper.toEntity(request);
 
-        // ALTERAÇÃO: o payload agora envia diretamente o ID do tipo de recurso.
+        // O payload agora envia diretamente o ID do tipo de recurso.
         TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
@@ -71,6 +70,7 @@ public class RecursoService {
                 page.getTotalPages());
     }
 
+    // Atualiza um recurso existente
     @Transactional
     public RecursoResponse atualizar(Long id, RecursoRequest request) {
         Recurso entity = repository.findById(id)
@@ -79,7 +79,7 @@ public class RecursoService {
 
         entity.setNome(request.nome());
 
-        // ALTERAÇÃO: utiliza diretamente o ID recebido no payload.
+        // Utiliza diretamente o ID recebido no payload.
         TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                 "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
@@ -94,6 +94,7 @@ public class RecursoService {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Recurso não encontrado com ID: " + id);
         }
+        
         if (recursoSalaRepository.existsById(id)) {
             throw new IllegalArgumentException("Esse recurso está vinculado a um recurso_sala");
         }

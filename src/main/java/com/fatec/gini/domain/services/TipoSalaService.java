@@ -67,15 +67,6 @@ public class TipoSalaService {
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 
-    // Remove um tipo de sala
-   /*@Transactional
-    public void deletar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id);
-        }
-        repository.deleteById(id);
-    }*/
-
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
