@@ -18,6 +18,7 @@ import com.fatec.gini.dto.auth.LoginResponse;
 import com.fatec.gini.dto.auth.RedefinirSenhaRequest;
 import com.fatec.gini.dto.auth.RefreshTokenRequest;
 import com.fatec.gini.dto.auth.SolicitarRecuperacaoSenhaRequest;
+import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
 import com.fatec.gini.domain.services.PasswordResetService;
 import com.fatec.gini.web.exception.AuthenticationException;
 
@@ -73,7 +74,8 @@ public class AutenticacaoController {
                 return ResponseEntity.ok(
                                 new LoginResponse(
                                                 accessToken,
-                                                refreshToken.getToken()));
+                                                refreshToken.getToken(),
+                                                UsuarioMapper.toResponse(usuario)));
         }
 
         @Operation(summary = "Renovar tokens", description = "Valida o refresh token e gera um novo par de tokens.")

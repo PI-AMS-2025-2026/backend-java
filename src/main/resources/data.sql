@@ -125,12 +125,23 @@ INSERT INTO professor_disciplina (id_professor, id_disciplina) VALUES
 -- 9. SALAS
 INSERT INTO sala (codigo, capacidade, id_tipo_sala) VALUES
 ('LAB-01', 40, 1),
-('SALA-12', 45, 1),
-('AUD-01', 120, 2),
+('SALA-12', 45, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
+('AUD-01', 120, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Auditorio')),
 ('LAB-02', 35, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Laboratorio')),
 ('SALA-21', 50, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
 ('MAKER-01', 30, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala Maker')),
 ('REUN-01', 12, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala de Reuniao'));
+
+-- Horários livres para exemplos de cadastro de alocações.
+INSERT INTO disponibilidade_professor (id_professor, dia_semana, id_bloco_horario) VALUES
+((SELECT id_professor FROM professor WHERE email = 'felipe@cps.sp.gov.br'), 'SEGUNDA',
+ (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00')),
+((SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), 'TERÇA',
+ (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '18:50:00')),
+((SELECT id_professor FROM professor WHERE email = 'roberto@cps.sp.gov.br'), 'SEGUNDA',
+ (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '18:50:00')),
+((SELECT id_professor FROM professor WHERE email = 'felipe@cps.sp.gov.br'), 'TERÇA',
+ (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00'));
 
 -- 10. RECURSOS
 INSERT INTO tipo_recurso (nome) VALUES ('Equipamento'), ('Mobiliario'), ('Software'), ('Material Didatico');
@@ -174,8 +185,8 @@ INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor,
 ('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '14:10:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'IC001'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'SALA-12'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
 ('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ED001'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
 ('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '16:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ED001'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
-('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
-('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
+('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'SALA-12'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
+('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'SALA-12'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
 
 -- Terça
 ('TERÇA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'PI001'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
@@ -204,8 +215,8 @@ INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor,
 -- Sexta
 ('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ISW044'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
 ('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '14:10:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ISW044'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
-('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
-('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '16:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
+('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'SALA-12'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
+('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '16:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ES002'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'SALA-12'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
 ('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'TAP01'), (SELECT id_professor FROM professor WHERE email = 'roberto@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026')),
 ('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'TAP01'), (SELECT id_professor FROM professor WHERE email = 'roberto@cps.sp.gov.br'), 1, (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026'));
 

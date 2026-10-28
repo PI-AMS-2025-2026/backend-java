@@ -22,6 +22,9 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
      */
     boolean existsBySalaIdAndDiaSemanaAndBlocoHorarioId(Long salaId, DiaSemana diaSemana, Long blocoHorarioId);
 
+    boolean existsBySalaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(Long salaId, DiaSemana diaSemana,
+            Long blocoHorarioId, Long alocacaoId);
+
     /**
      * REGRA DE CONFLITO: "O professor já está dando aula?"
      * Mesma lógica: pergunta se o PROFESSOR (professor) já tem algo marcado para
@@ -29,6 +32,9 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
      */
     boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(Long professorId, DiaSemana diaSemana,
             Long blocoHorarioId);
+
+    boolean existsByProfessorIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(Long professorId, DiaSemana diaSemana,
+            Long blocoHorarioId, Long alocacaoId);
 
     /**
      * REGRA DE DUPLICIDADE: "A alocação já existe com os mesmos vínculos?"
@@ -87,6 +93,9 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("idTurma") Long idTurma,
             @Param("diaSemana") DiaSemana diaSemana,
             @Param("idBlocoHorario") Long idBlocoHorario);
+
+    boolean existsByTurmaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(Long turmaId, DiaSemana diaSemana,
+            Long blocoHorarioId, Long alocacaoId);
 
     /* existence checks used by delete validations */
     boolean existsByDisciplinaId(Long disciplinaId);

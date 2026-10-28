@@ -24,12 +24,11 @@ public class ValidarConflitoSalaBlocoHorarioUseCase {
     public void executar(Alocacao entity) {
 
         // Verifica no banco se a sala já está ocupada
-        boolean salaOcupada =
-                repository.existsBySalaIdAndDiaSemanaAndBlocoHorarioId(
-                        entity.getSala().getId(),
-                        entity.getDiaSemana(),
-                        entity.getBlocoHorario().getId()
-                );
+        boolean salaOcupada = entity.getId() == null
+                ? repository.existsBySalaIdAndDiaSemanaAndBlocoHorarioId(
+                        entity.getSala().getId(), entity.getDiaSemana(), entity.getBlocoHorario().getId())
+                : repository.existsBySalaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
+                        entity.getSala().getId(), entity.getDiaSemana(), entity.getBlocoHorario().getId(), entity.getId());
 
         // Lança exceção caso exista conflito de alocação
         if (salaOcupada) {
