@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      encoding: UTF-8
+      mode: never
+  h2:
+    console:
+      enabled: false
+  flyway:
+    enabled: true
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:true}
+          starttls:
+            enable: ${SMTP_STARTTLS:true}
+app:
+  frontend-url: ${FRONTEND_URL}
+  mail:
+    from: ${SMTP_FROM}
+  password-reset:
+    expiration-minutes: ${PASSWORD_RESET_EXPIRATION_MINUTES:15}
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET}
+      expirationMs: ${TOKEN_EXPIRATION_MS:86400000}
+      refreshExpirationMs: ${REFRESH_TOKEN_EXPIRATION_MS:604800000}
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
