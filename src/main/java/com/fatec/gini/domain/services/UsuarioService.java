@@ -1,3 +1,4 @@
+
 package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,10 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
+        if (repository.existsByEmail(request.email())) {
+            throw new BusinessException("Esse email já possui cadastro");
+        }
+
         Usuario entity = UsuarioMapper.toEntity(request);
 
         validarCursoObrigatorioUsuario.executar(request);
@@ -49,7 +54,8 @@ public class UsuarioService {
             entity.setCurso(curso);
         }
 
-        String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
+        String encrypSenha =
+                new BCryptPasswordEncoder().encode(request.senha());
 
         entity.setSenha(encrypSenha);
 
@@ -104,7 +110,7 @@ public class UsuarioService {
                         "Usuário não encontrado com ID: " + id));
 
         if (repository.existsByEmailAndIdNot(request.email(), id)) {
-            throw new BusinessException("Usuário já cadastrado");
+            throw new BusinessException("Esse email já possui cadastro");
         }
 
         validarCursoObrigatorioUsuario.executar(request);
@@ -126,7 +132,6 @@ public class UsuarioService {
             entity.setCurso(curso);
         }
 
-
         return UsuarioMapper.toResponse(repository.save(entity));
     }
 
@@ -144,9 +149,9 @@ public class UsuarioService {
         repository.save(entity);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean jaUsuarioExisteEmail(String email) {
 
-        return this.repository.findByEmail(email) != null;
+        return repository.existsByEmail(email);
     }
 }
