@@ -1,3 +1,4 @@
+
 package com.fatec.gini.domain.entities;
 
 import java.time.LocalDateTime;
@@ -6,8 +7,12 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fatec.gini.domain.models.Status;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,11 +36,7 @@ import lombok.Setter;
     uniqueConstraints = {
         @UniqueConstraint(
             name = "uk_turma_curso_ano_periodo",
-            columnNames = {
-                "id_curso",
-                "ano",
-                "periodo"
-            }
+            columnNames = {"id_curso", "ano", "periodo"}
         )
     }
 )
@@ -62,6 +63,10 @@ public class Turma {
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.ATIVO;
+
     @OneToMany(mappedBy = "turma")
     private List<Alocacao> alocacoes;
 
@@ -83,6 +88,7 @@ public class Turma {
         this.periodo = periodo;
         this.ano = ano;
         this.numeroAlunos = numeroAlunos;
+        this.status = Status.ATIVO;
     }
 
     @Override
@@ -95,24 +101,20 @@ public class Turma {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
+        }
 
-        if (obj == null)
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
-
-        if (getClass() != obj.getClass())
-            return false;
+        }
 
         Turma other = (Turma) obj;
 
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id)) {
-            return false;
+            return other.id == null;
         }
 
-        return true;
+        return id.equals(other.id);
     }
 }

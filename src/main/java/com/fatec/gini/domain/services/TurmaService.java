@@ -25,59 +25,51 @@ import lombok.RequiredArgsConstructor;
 public class TurmaService {
 
     private final TurmaRepository repository;
-
     private final CursoRepository cursoRepository;
-
     private final ValidarTurmaSemVinculosUseCase validarTurmaSemVinculos;
-
-        private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+    private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     @Transactional
     public TurmaResponse criar(TurmaRequest request) {
 
+        validarAno(request.ano());
+
         Curso curso = cursoRepository.findById(request.curso().id())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Curso não encontrado com ID: " + request.curso().id()));
+
         validarAutorizacaoCurso.validarCurso(curso);
-        // Regra: não permite turma em curso inativo.
-        if (curso.getStatus() != Status.ATIVO) {
-            throw new BusinessException(
-                    "Não é possível cadastrar turma em curso inativo.");
-        }
+        validarPeriodo(request, curso);
 
-        // Regra: período deve ser compatível com a duração do curso.
-        if (request.periodo() > curso.getDuracao()) {
-            throw new BusinessException(
-                    "O período da turma é incompatível com a duração do curso.");
-        }
+        Status status = request.status() == null
+                ? Status.ATIVO
+                : request.status();
 
-        // Regra: não permite duas turmas iguais
-        // no mesmo curso, ano e período.
+        validarStatusCurso(status, curso);
+
         if (repository.existsByCursoIdAndAnoAndPeriodo(
-                curso.getId(),
-                request.ano(),
-                request.periodo())) {
-
+                curso.getId(), request.ano(), request.periodo())) {
             throw new BusinessException(
                     "Já existe uma turma para este curso, ano e período.");
         }
 
         Turma entity = TurmaMapper.toEntity(request);
-
         entity.setCurso(curso);
+        entity.setStatus(status);
+        entity.setCodigo(request.periodo() + "/" + request.ano());
 
-        entity.setCodigo(
-                request.periodo() + "/" + request.ano());
-
-        return TurmaMapper.toResponse(
-                repository.save(entity));
+        return TurmaMapper.toResponse(repository.save(entity));
     }
 
     @Transactional(readOnly = true)
     public TurmaResponse buscarPorId(Long id) {
 
         Turma entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Turma não encontrada com ID: " + id));
+
         validarAutorizacaoCurso.validarCurso(entity.getCurso());
+
         return TurmaMapper.toResponse(entity);
     }
 
@@ -91,14 +83,18 @@ public class TurmaService {
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(validarAutorizacaoCurso.cursoParaFiltro(idCurso), ano, periodo, codigo, pageRequest);
+
+        var page = repository.buscarPorFiltros(
+                validarAutorizacaoCurso.cursoParaFiltro(idCurso),
+                ano,
+                periodo,
+                codigo,
+                pageRequest);
 
         return new PageResponse<>(
-                page.getContent()
-                        .stream()
+                page.getContent().stream()
                         .map(TurmaMapper::toResponse)
                         .toList(),
-
                 page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
@@ -106,78 +102,102 @@ public class TurmaService {
     }
 
     @Transactional
-    public TurmaResponse atualizar(
-            Long id,
-            TurmaRequest request) {
+    public TurmaResponse atualizar(Long id, TurmaRequest request) {
+
+        validarAno(request.ano());
 
         Turma entity = repository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Turma não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Turma não encontrada com ID: " + id));
 
         Curso curso = cursoRepository.findById(request.curso().id())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + request.curso().id()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Curso não encontrado com ID: " + request.curso().id()));
+
         validarAutorizacaoCurso.validarCurso(entity.getCurso());
         validarAutorizacaoCurso.validarCurso(curso);
+        validarPeriodo(request, curso);
 
-        // Regra: não permite vincular turma a curso inativo.
-        if (curso.getStatus() != Status.ATIVO) {
-            throw new BusinessException(
-                    "Não é possível vincular a turma a um curso inativo.");
-        }
+        // Se o status não for enviado, mantém o status atual.
+        Status status = request.status() == null
+                ? entity.getStatus()
+                : request.status();
 
-        // Regra: período deve ser compatível com a duração.
-        if (request.periodo() > curso.getDuracao()) {
-            throw new BusinessException(
-                    "O período da turma é incompatível com a duração do curso.");
-        }
+        validarStatusCurso(status, curso);
 
-        // Regra: impede duplicidade na atualização,
-        // ignorando a própria turma.
         if (repository.existsByCursoIdAndAnoAndPeriodoAndIdNot(
-                curso.getId(),
-                request.ano(),
-                request.periodo(),
-                id)) {
-
+                curso.getId(), request.ano(), request.periodo(), id)) {
             throw new BusinessException(
                     "Já existe uma turma para este curso, ano e período.");
         }
 
-        entity.setCodigo(
-                request.periodo() + "/" + request.ano());
-
+        entity.setCodigo(request.periodo() + "/" + request.ano());
         entity.setAno(request.ano());
-
         entity.setPeriodo(request.periodo());
-
-        entity.setNumeroAlunos(
-                request.numeroAlunos());
-
+        entity.setNumeroAlunos(request.numeroAlunos());
         entity.setCurso(curso);
+        entity.setStatus(status);
 
+        return TurmaMapper.toResponse(repository.save(entity));
+    }
 
-        return TurmaMapper.toResponse(
-                repository.save(entity));
+    @Transactional
+    public TurmaResponse inativar(Long id) {
+
+        Turma entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Turma não encontrada com ID: " + id));
+
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+
+        entity.setStatus(Status.INATIVO);
+
+        return TurmaMapper.toResponse(repository.save(entity));
     }
 
     @Transactional
     public void deletar(Long id) {
-        Turma entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com ID: " + id));
-        validarAutorizacaoCurso.validarCurso(entity.getCurso());
-        // Regra: não permite excluir turma
-        // vinculada a curso ativo.
-        if (entity.getCurso() != null
-                && entity.getCurso().getStatus() == Status.ATIVO) {
 
+        Turma entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Turma não encontrada com ID: " + id));
+
+        validarAutorizacaoCurso.validarCurso(entity.getCurso());
+
+        if (entity.getStatus() != Status.INATIVO) {
             throw new BusinessException(
-                    "Não é possível excluir turma vinculada a curso ativo.");
+                    "Não é possível excluir uma turma ativa. Inative a turma antes de excluí-la.");
         }
 
-        // Regra já existente: não permite excluir turma que possui alocações.
+        if (entity.getCurso().getStatus() != Status.INATIVO) {
+            throw new BusinessException(
+                    "Não é possível excluir uma turma enquanto o curso estiver ativo.");
+        }
+
         validarTurmaSemVinculos.validar(id);
 
-        repository.deleteById(id);
+        repository.delete(entity);
+    }
+
+    private void validarStatusCurso(Status status, Curso curso) {
+
+        if (status == Status.ATIVO && curso.getStatus() != Status.ATIVO) {
+            throw new BusinessException(
+                    "Não é possível manter ou ativar uma turma em um curso inativo.");
+        }
+    }
+
+    private void validarAno(Integer ano) {
+        if (ano == null || ano <= 2008 || ano > 9999) {
+            throw new BusinessException(
+                    "O ano da turma deve ser maior que 2008 e possuir no máximo 4 dígitos.");
+        }
+    }
+
+    private void validarPeriodo(TurmaRequest request, Curso curso) {
+        if (request.periodo() > curso.getDuracao()) {
+            throw new BusinessException(
+                    "O período da turma é incompatível com a duração do curso.");
+        }
     }
 }

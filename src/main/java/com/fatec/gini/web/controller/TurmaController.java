@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,21 +40,12 @@ public class TurmaController {
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(
-                        idCurso,
-                        ano,
-                        periodo,
-                        codigo,
-                        page,
-                        size));
+                service.listar(idCurso, ano, periodo, codigo, page, size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TurmaResponse> buscar(
-            @PathVariable Long id) {
-
-        return ResponseEntity.ok(
-                service.buscarPorId(id));
+    public ResponseEntity<TurmaResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
@@ -68,9 +60,7 @@ public class TurmaController {
                 .buildAndExpand(response.id())
                 .toUri();
 
-        return ResponseEntity
-                .created(location)
-                .body(response);
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
@@ -78,16 +68,17 @@ public class TurmaController {
             @PathVariable Long id,
             @Valid @RequestBody TurmaRequest request) {
 
-        return ResponseEntity.ok(
-                service.atualizar(id, request));
+        return ResponseEntity.ok(service.atualizar(id, request));
+    }
+
+    @PatchMapping("/{id}/inativar")
+    public ResponseEntity<TurmaResponse> inativar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.inativar(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(
-            @PathVariable Long id) {
-
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
-
         return ResponseEntity.noContent().build();
     }
 }
