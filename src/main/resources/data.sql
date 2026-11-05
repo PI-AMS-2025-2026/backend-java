@@ -77,12 +77,28 @@ INSERT INTO bloco_horario (duracao, hora_inicio, hora_fim) VALUES
 (50, '21:30:00', '22:20:00');
 
 -- 6. TURMAS
-INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso) VALUES
-('2/2026', 2, 2026, 25, 2),
-('1/2026', 1, 2026, 40, 1),
-('1/2026-LOG', 1, 2026, 32, (SELECT id_curso FROM curso WHERE nome = 'Logistica')),
-('2/2026-ADS', 2, 2026, 38, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas')),
-('1/2027-GTI', 1, 2027, 28, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'));
+-- 6. TURMAS
+INSERT INTO turma (
+    codigo,
+    periodo,
+    ano,
+    numero_alunos,
+    id_curso,
+    status
+) VALUES
+    ('2/2026', 2, 2026, 25, 2, 'ATIVO'),
+    ('1/2026', 1, 2026, 40, 1, 'ATIVO'),
+    ('1/2026-LOG', 1, 2026, 32,
+        (SELECT id_curso FROM curso WHERE nome = 'Logistica'),
+        'ATIVO'),
+    ('2/2026-ADS', 2, 2026, 38,
+        (SELECT id_curso FROM curso
+         WHERE nome = 'Analise e Desenvolvimento de Sistemas'),
+        'ATIVO'),
+    ('1/2027-GTI', 1, 2027, 28,
+        (SELECT id_curso FROM curso
+         WHERE nome = 'Gestão Tecnologia da Informação'),
+        'ATIVO');
 
 -- 7. DISCIPLINAS (Incluindo as novas da grade)
 INSERT INTO disciplina (nome, carga_horaria, tipo_disciplina, periodo, modalidade, cod_disciplina, cor, id_curso, id_tipo_sala) VALUES

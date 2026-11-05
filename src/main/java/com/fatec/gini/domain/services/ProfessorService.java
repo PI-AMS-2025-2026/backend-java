@@ -1,3 +1,4 @@
+
 package com.fatec.gini.domain.services;
 
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import com.fatec.gini.dto.professor.ProfessorResponse;
 import com.fatec.gini.infrastructure.mappers.ProfessorMapper;
 import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +30,9 @@ public class ProfessorService {
     @Transactional
     public ProfessorResponse criar(ProfessorRequest request) {
 
-        Professor professor = ProfessorMapper.toEntity(request);
+        validarEmailDuplicado(request.email(), null);
 
+        Professor professor = ProfessorMapper.toEntity(request);
 
         return ProfessorMapper.toResponse(repository.save(professor));
     }
@@ -41,10 +44,10 @@ public class ProfessorService {
             String cidade,
             Status status,
             int pageNum,
-            int size
+            int size) {
 
-    ) {
         var pageRequest = PageRequest.of(pageNum, size);
+
         var page = repository.buscarPorFiltros(
                 nome,
                 email,
@@ -54,7 +57,10 @@ public class ProfessorService {
                 pageRequest);
 
         return new PageResponse<>(
-                page.getContent().stream().map(ProfessorMapper::toResponse).toList(),
+                page.getContent()
+                        .stream()
+                        .map(ProfessorMapper::toResponse)
+                        .toList(),
                 page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
@@ -63,44 +69,72 @@ public class ProfessorService {
 
     @Transactional(readOnly = true)
     public ProfessorResponse buscarPorId(Long id) {
+
         return repository.findById(id)
                 .map(ProfessorMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Professor não encontrado com ID: " + id));
     }
 
     @Transactional
     public ProfessorResponse atualizar(Long id, ProfessorRequest request) {
 
         Professor professor = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
-            validarProfessor(professor);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Professor não encontrado com ID: " + id));
+
+        validarProfessor(professor);
+
+        validarEmailDuplicado(request.email(), id);
 
         professor.setNome(request.nome());
         professor.setEmail(request.email());
         professor.setStatus(request.status());
-
 
         return ProfessorMapper.toResponse(repository.save(professor));
     }
 
     @Transactional
     public void inativar(Long id) {
+
         Professor professor = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + id));
-            validarProfessor(professor);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Professor não encontrado com ID: " + id));
+
+        validarProfessor(professor);
 
         professor.setStatus(Status.INATIVO);
 
         repository.save(professor);
     }
 
+    private void validarEmailDuplicado(String email, Long professorId) {
+
+        boolean emailExiste = repository.existsByEmailIgnoreCase(email);
+
+        if (emailExiste) {
+            boolean pertenceAoMesmoProfessor = professorId != null
+                    && repository.existsByEmailIgnoreCaseAndIdNot(email, professorId);
+
+            if (professorId == null || pertenceAoMesmoProfessor) {
+                throw new BusinessException(
+                        "Esse professor já possui cadastro");
+            }
+        }
+    }
+
     private void validarProfessor(Professor professor) {
-        if (validarAutorizacaoCurso.cursoParaFiltro(null) != null
-                && !professorDisciplinaRepository.existsByProfessorIdAndDisciplinaCursoId(
-                        professor.getId(), validarAutorizacaoCurso.cursoParaFiltro(null))) {
+
+        Long cursoId = validarAutorizacaoCurso.cursoParaFiltro(null);
+
+        if (cursoId != null
+                && !professorDisciplinaRepository
+                        .existsByProfessorIdAndDisciplinaCursoId(
+                                professor.getId(),
+                                cursoId)) {
+
             throw new org.springframework.security.access.AccessDeniedException(
                     "Professor não pertence ao curso do usuário");
         }
     }
-
 }

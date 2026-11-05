@@ -1,3 +1,4 @@
+
 package com.fatec.gini.infrastructure.repositories;
 
 import java.util.List;
@@ -13,14 +14,11 @@ import com.fatec.gini.domain.entities.Turma;
 
 public interface TurmaRepository extends JpaRepository<Turma, Long> {
 
-    // Verifica duplicidade no cadastro
     boolean existsByCursoIdAndAnoAndPeriodo(
             Long cursoId,
             Integer ano,
             Integer periodo);
 
-    // Verifica duplicidade na atualização,
-    // ignorando a própria turma.
     boolean existsByCursoIdAndAnoAndPeriodoAndIdNot(
             Long cursoId,
             Integer ano,
