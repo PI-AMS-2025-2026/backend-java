@@ -28,6 +28,7 @@ import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -208,6 +209,8 @@ public class AlocacaoService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bloco horário não encontrado com ID: " + request.horario().id()));
 
+        validarBlocoHorario(blocoHorario);
+
         Alocacao alocacaoSimulada = new Alocacao();
         alocacaoSimulada.setProfessor(new Professor());
         alocacaoSimulada.getProfessor().setId(request.professor().id());
@@ -221,6 +224,19 @@ public class AlocacaoService {
                     "Carga horária válida para o professor no dia informado.");
         } catch (BusinessException ex) {
             return new ValidarCargaHorariaResponse(false, ex.getMessage());
+        }
+    }
+
+    private void validarBlocoHorario(BlocoHorario blocoHorario) {
+        if (blocoHorario.getHoraInicio() == null || blocoHorario.getHoraFim() == null
+                || blocoHorario.getDuracao() == null) {
+            throw new ParameterException(
+                    "O bloco de horário informado está incompleto: início, fim e duração são obrigatórios.");
+        }
+
+        if (!blocoHorario.getHoraFim().isAfter(blocoHorario.getHoraInicio())
+                || blocoHorario.getDuracao() <= 0) {
+            throw new ParameterException("O bloco de horário informado possui duração ou intervalo inválido.");
         }
     }
 }

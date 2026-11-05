@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,11 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
+import com.fatec.gini.domain.entities.ProfessorDisciplina;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
@@ -32,8 +37,15 @@ class AlocacaoFluxoIntegracaoTest {
     @Autowired private DisciplinaRepository disciplinas;
     @Autowired private SalaRepository salas;
     @Autowired private ProfessorRepository professores;
+    @Autowired private DisponibilidadeProfessorRepository disponibilidades;
+    @Autowired private ProfessorDisciplinaRepository professorDisciplinas;
     @Autowired private BlocoHorarioRepository blocos;
     @Autowired private QuadroHorarioRepository quadros;
+
+    @BeforeEach
+    void isolarCenarioDeAlocacoes() {
+        alocacoes.deleteAll();
+    }
 
     @Test
     void criaAlocacaoComTipoDeSalaCompativelNoFluxoCompleto() {
@@ -66,6 +78,16 @@ class AlocacaoFluxoIntegracaoTest {
 
     @Test
     void rejeitaTrocaParaSalaOcupadaMesmoComTipoCompativel() {
+        professorDisciplinas.save(new ProfessorDisciplina(
+                professores.findById(4L).orElseThrow(),
+                disciplinas.findById(4L).orElseThrow()));
+        disponibilidades.save(new DisponibilidadeProfessor(
+                professores.findById(4L).orElseThrow(),
+                DiaSemana.SEGUNDA,
+                blocos.findById(1L).orElseThrow()));
+        criarAlocacao.executar(
+                alocacao(5L, 4L, 2L, 4L, DiaSemana.SEGUNDA, 1L, 2L),
+                1L);
         Long id = criarAlocacao.executar(alocacao(5L), 1L).getId();
 
         assertThatThrownBy(() -> atualizarAlocacao.executar(id, alocacao(2L), 1L, "Troca de sala"))

@@ -38,7 +38,13 @@ final class MotorQuadroExportModel {
                 .collect(Collectors.toMap(celula -> chave(celula.diaSemana(), celula.blocoHorarioId()),
                         Function.identity(), (primeira, ignorada) -> primeira));
 
+        // O motor do quadro devolve uma matriz global, preenchendo combinações sem
+        // alocação com células vazias. No exportador, a linha deve representar um
+        // bloco realmente usado pela turma; caso contrário uma turma parcial ou de
+        // outro turno ganha horários que não existem em sua grade.
         List<LinhaData> linhas = blocos.stream()
+                .filter(bloco -> turma.celulas().stream()
+                        .anyMatch(celula -> mesmoBloco(celula, bloco) && celula.disciplina() != null))
                 .map(bloco -> new LinhaData(bloco, dias.stream()
                         .map(dia -> new CelulaData(celulas.get(chave(dia.valor(), bloco.id()))))
                         .toList()))
@@ -49,6 +55,10 @@ final class MotorQuadroExportModel {
 
     private static String chave(DiaSemana dia, Long blocoId) {
         return dia + ":" + blocoId;
+    }
+
+    private static boolean mesmoBloco(CelulaGradeResponse celula, BlocoQuadroResponse bloco) {
+        return celula.blocoHorarioId() != null && celula.blocoHorarioId().equals(bloco.id());
     }
 
     private static String formatarDia(DiaSemana dia) {
