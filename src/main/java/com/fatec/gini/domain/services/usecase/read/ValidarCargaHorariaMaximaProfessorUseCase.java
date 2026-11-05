@@ -13,6 +13,7 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,16 +63,28 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
                 // Soma a duração de todos os blocos de horário do dia
                 long totalMinutos = alocacoes.stream()
-                                .mapToLong(alocacao -> Duration.between(
-                                                alocacao.getBlocoHorario().getHoraInicio(),
-                                                alocacao.getBlocoHorario().getHoraFim())
-                                                .toMinutes())
+                                .mapToLong(this::duracaoEmMinutos)
                                 .sum();
 
                 if (totalMinutos > LIMITE_CARGA_HORARIA_DIARIA.toMinutes()) {
                         throw new BusinessException(
                                         "A carga horária máxima diária do professor foi excedida.");
                 }
+        }
+
+        private long duracaoEmMinutos(Alocacao alocacao) {
+                if (alocacao == null || alocacao.getBlocoHorario() == null
+                                || alocacao.getBlocoHorario().getHoraInicio() == null
+                                || alocacao.getBlocoHorario().getHoraFim() == null
+                                || !alocacao.getBlocoHorario().getHoraFim()
+                                                .isAfter(alocacao.getBlocoHorario().getHoraInicio())) {
+                        throw new ParameterException(
+                                        "Existe uma alocação do professor com bloco de horário inválido.");
+                }
+
+                return Duration.between(
+                                alocacao.getBlocoHorario().getHoraInicio(),
+                                alocacao.getBlocoHorario().getHoraFim()).toMinutes();
         }
 
         /**
@@ -105,9 +118,18 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
                         return;
                 }
 
-                LocalTime fimDiaAnterior = aulasDiaAnterior.getFirst()
-                                .getBlocoHorario()
-                                .getHoraFim();
+                Alocacao ultimaAulaDiaAnterior = aulasDiaAnterior.getFirst();
+                if (ultimaAulaDiaAnterior == null || ultimaAulaDiaAnterior.getBlocoHorario() == null) {
+                        throw new ParameterException(
+                                        "Existe uma alocação anterior do professor com bloco de horário inválido.");
+                }
+
+                LocalTime fimDiaAnterior = ultimaAulaDiaAnterior.getBlocoHorario().getHoraFim();
+
+                if (fimDiaAnterior == null) {
+                        throw new ParameterException(
+                                        "Existe uma alocação anterior do professor com horário inválido.");
+                }
 
                 LocalTime inicioDiaAtual = aulasDiaAtual.stream()
                                 .map(alocacao -> alocacao.getBlocoHorario().getHoraInicio())

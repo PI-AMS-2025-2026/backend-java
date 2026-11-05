@@ -42,6 +42,7 @@ import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -121,6 +122,9 @@ class AlocacaoServiceTest {
                 new LongDTO(5L), DiaSemana.SEGUNDA, new LongDTO(1L));
         BlocoHorario bloco = new BlocoHorario();
         bloco.setId(1L);
+        bloco.setHoraInicio(java.time.LocalTime.of(19, 0));
+        bloco.setHoraFim(java.time.LocalTime.of(19, 50));
+        bloco.setDuracao(50);
 
         when(professorRepository.existsById(5L)).thenReturn(true);
         when(blocoHorarioRepository.findById(1L)).thenReturn(Optional.of(bloco));
@@ -138,6 +142,9 @@ class AlocacaoServiceTest {
                 new LongDTO(5L), DiaSemana.SEGUNDA, new LongDTO(1L));
         BlocoHorario bloco = new BlocoHorario();
         bloco.setId(1L);
+        bloco.setHoraInicio(java.time.LocalTime.of(19, 0));
+        bloco.setHoraFim(java.time.LocalTime.of(19, 50));
+        bloco.setDuracao(50);
 
         when(professorRepository.existsById(5L)).thenReturn(true);
         when(blocoHorarioRepository.findById(1L)).thenReturn(Optional.of(bloco));
@@ -156,6 +163,9 @@ class AlocacaoServiceTest {
                 new LongDTO(5L), DiaSemana.SEGUNDA, new LongDTO(1L));
         BlocoHorario bloco = new BlocoHorario();
         bloco.setId(1L);
+        bloco.setHoraInicio(java.time.LocalTime.of(19, 0));
+        bloco.setHoraFim(java.time.LocalTime.of(19, 50));
+        bloco.setDuracao(50);
 
         when(professorRepository.existsById(5L)).thenReturn(true);
         when(blocoHorarioRepository.findById(1L)).thenReturn(Optional.of(bloco));
@@ -166,6 +176,21 @@ class AlocacaoServiceTest {
 
         assertThat(response.valido()).isFalse();
         assertThat(response.mensagem()).isEqualTo("O intervalo mínimo de interjornada de 11h não foi respeitado.");
+    }
+
+    @Test
+    void deveRejeitarBlocoInconsistenteComErroControlado() {
+        ValidarCargaHorariaRequest request = new ValidarCargaHorariaRequest(
+                new LongDTO(5L), DiaSemana.SEXTA, new LongDTO(11L));
+        BlocoHorario bloco = new BlocoHorario();
+        bloco.setId(11L);
+
+        when(professorRepository.existsById(5L)).thenReturn(true);
+        when(blocoHorarioRepository.findById(11L)).thenReturn(Optional.of(bloco));
+
+        assertThatThrownBy(() -> service.validarCargaHorariaSemPersistir(request))
+                .isInstanceOf(ParameterException.class)
+                .hasMessageContaining("bloco de horário informado está incompleto");
     }
 
     @Test
