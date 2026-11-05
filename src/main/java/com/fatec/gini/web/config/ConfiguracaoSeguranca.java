@@ -81,6 +81,9 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers(HttpMethod.GET, "/motor-quadro/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
+                        .requestMatchers("/historicos-versoes-alocacoes/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
                         // Somente administrador
                         .requestMatchers("/usuarios/**")
                         .hasRole("ADMIN")

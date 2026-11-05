@@ -33,7 +33,7 @@ public class HistoricoVersaoAlocacaoService {
 				page.getContent().stream().map(HistoricoVersaoAlocacaoMapper::toResponse).toList(),
 				page.getNumber(),
 				page.getSize(),
-				page.getNumberOfElements(),
+				page.getTotalElements(),
 				page.getTotalPages());
 	}
 

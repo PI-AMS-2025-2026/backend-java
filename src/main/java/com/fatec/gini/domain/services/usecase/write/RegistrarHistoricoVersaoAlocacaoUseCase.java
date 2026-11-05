@@ -60,40 +60,40 @@ public class RegistrarHistoricoVersaoAlocacaoUseCase {
             String justificativa) {
 
         // Turma
-        registrar("turma", alocacaoSalva.getTurma().getId().toString(), alocacaoAntiga.getTurma().getId().toString(),
+        registrar("turma", alocacaoAntiga.getTurma().getId().toString(), alocacaoSalva.getTurma().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
         // Disciplina
-        registrar("disciplina", alocacaoSalva.getDisciplina().getId().toString(),
-                alocacaoAntiga.getDisciplina().getId().toString(),
+        registrar("disciplina", alocacaoAntiga.getDisciplina().getId().toString(),
+                alocacaoSalva.getDisciplina().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Sala
-        registrar("sala", alocacaoSalva.getSala().getId().toString(), alocacaoAntiga.getSala().getId().toString(),
+        registrar("sala", alocacaoAntiga.getSala().getId().toString(), alocacaoSalva.getSala().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Professor
-        registrar("professor", alocacaoSalva.getProfessor().getId().toString(),
-                alocacaoAntiga.getProfessor().getId().toString(),
+        registrar("professor", alocacaoAntiga.getProfessor().getId().toString(),
+                alocacaoSalva.getProfessor().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Dia da semana
-        registrar("diaSemana", alocacaoSalva.getDiaSemana().toString(),
-                alocacaoAntiga.getDiaSemana().toString(),
+        registrar("diaSemana", alocacaoAntiga.getDiaSemana().toString(),
+                alocacaoSalva.getDiaSemana().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Bloco de horário
-        registrar("blocoHorario", alocacaoSalva.getBlocoHorario().getId().toString(),
-                alocacaoAntiga.getBlocoHorario().getId().toString(),
+        registrar("blocoHorario", alocacaoAntiga.getBlocoHorario().getId().toString(),
+                alocacaoSalva.getBlocoHorario().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
         // Quadro horário
-        registrar("quadroHorario", alocacaoSalva.getQuadroHorario().getId().toString(),
-                alocacaoAntiga.getQuadroHorario().getId().toString(),
+        registrar("quadroHorario", alocacaoAntiga.getQuadroHorario().getId().toString(),
+                alocacaoSalva.getQuadroHorario().getId().toString(),
                 alocacaoSalva, usuarioAlteracao, justificativa);
     }
 
