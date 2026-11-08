@@ -111,6 +111,8 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
         Long professorId,
         DiaSemana diaSemana);
 
+    List<Alocacao> findByProfessorId(Long professorId);
+
     @Query("""
                 SELECT a
                 FROM Alocacao a

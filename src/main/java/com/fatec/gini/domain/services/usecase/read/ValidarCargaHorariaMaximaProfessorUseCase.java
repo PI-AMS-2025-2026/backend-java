@@ -94,29 +94,36 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
          */
         private void validarDescansoMinimo11Horas(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
-                DiaSemana diaAnterior = diaSemana.anterior();
+                List<Alocacao> alocacoesProfessor = new ArrayList<>(
+                                alocacaoRepository.findByProfessorId(professorId));
 
-                List<Alocacao> aulasDiaAnterior = new ArrayList<>(
-                                alocacaoRepository.buscarUltimaAulaDoDia(professorId, diaAnterior));
-
-                List<Alocacao> aulasDiaAtual = new ArrayList<>(
-                                alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana));
+                List<Alocacao> aulasDiaAtual = alocacoesProfessor.stream()
+                                .filter(alocacao -> alocacao.getDiaSemana() == diaSemana)
+                                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
 
                 if (alocacaoAtual != null) {
-                        aulasDiaAnterior.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
+                        alocacoesProfessor.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
                         aulasDiaAtual.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
-
-                        if (alocacaoAtual.getDiaSemana() == diaAnterior) {
-                                aulasDiaAnterior.add(alocacaoAtual);
-                        }
                         if (alocacaoAtual.getDiaSemana() == diaSemana) {
                                 aulasDiaAtual.add(alocacaoAtual);
+                                alocacoesProfessor.add(alocacaoAtual);
                         }
                 }
 
-                if (aulasDiaAnterior.isEmpty() || aulasDiaAtual.isEmpty()) {
+                if (aulasDiaAtual.isEmpty()) {
                         return;
                 }
+
+                DiaSemana diaAnterior = encontrarUltimoDiaComAulaAntesDe(alocacoesProfessor, diaSemana);
+                if (diaAnterior == null) {
+                        return;
+                }
+
+                List<Alocacao> aulasDiaAnterior = alocacoesProfessor.stream()
+                                .filter(alocacao -> alocacao.getDiaSemana() == diaAnterior)
+                                .sorted((a, b) -> b.getBlocoHorario().getHoraFim()
+                                                .compareTo(a.getBlocoHorario().getHoraFim()))
+                                .toList();
 
                 Alocacao ultimaAulaDiaAnterior = aulasDiaAnterior.getFirst();
                 if (ultimaAulaDiaAnterior == null || ultimaAulaDiaAnterior.getBlocoHorario() == null) {
@@ -136,7 +143,8 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
                                 .min(LocalTime::compareTo)
                                 .orElseThrow(() -> new BusinessException("Nenhuma aula encontrada para o dia."));
 
-                long minutosDescanso = calcularMinutosDescansoInterjornada(fimDiaAnterior, inicioDiaAtual);
+                long minutosDescanso = calcularMinutosDescansoInterjornada(
+                                fimDiaAnterior, inicioDiaAtual, distanciaEmDias(diaAnterior, diaSemana));
 
                 if (minutosDescanso < DESCANSO_MINIMO_INTERJORNADA.toMinutes()) {
                         throw new BusinessException(
@@ -157,13 +165,27 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
          */
         private long calcularMinutosDescansoInterjornada(
                         LocalTime fimDiaAnterior,
-                        LocalTime inicioDiaAtual) {
+                        LocalTime inicioDiaAtual,
+                        int diasEntreJornadas) {
 
                 long minutosFimDiaAnterior = fimDiaAnterior.toSecondOfDay() / 60;
 
                 long minutosInicioDiaAtual = inicioDiaAtual.toSecondOfDay() / 60;
 
-                return (MINUTOS_POR_DIA - minutosFimDiaAnterior)
+                return ((long) diasEntreJornadas * MINUTOS_POR_DIA - minutosFimDiaAnterior)
                                 + minutosInicioDiaAtual;
+        }
+
+        private DiaSemana encontrarUltimoDiaComAulaAntesDe(List<Alocacao> alocacoes, DiaSemana diaAtual) {
+                return alocacoes.stream()
+                                .map(Alocacao::getDiaSemana)
+                                .filter(dia -> dia != diaAtual)
+                                .min((a, b) -> Integer.compare(distanciaEmDias(b, diaAtual), distanciaEmDias(a, diaAtual)))
+                                .orElse(null);
+        }
+
+        private int distanciaEmDias(DiaSemana anterior, DiaSemana atual) {
+                int distancia = atual.ordinal() - anterior.ordinal();
+                return distancia > 0 ? distancia : distancia + DiaSemana.values().length;
         }
 }
