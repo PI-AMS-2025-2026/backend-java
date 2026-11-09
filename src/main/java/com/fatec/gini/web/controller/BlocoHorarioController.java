@@ -35,14 +35,14 @@ public class BlocoHorarioController {
     @GetMapping
     public ResponseEntity<PageResponse<BlocoHorarioResponse>> listar(
             // Alteração: padroniza os parâmetros da API para camelCase.
-            @RequestParam(required = false)
+            @RequestParam(name = "hora_inicio", required = false)
             @DateTimeFormat(pattern = "HH:mm") LocalTime horaInicio,
             // Alteração: padroniza os parâmetros da API para camelCase.
-            @RequestParam(required = false)
+            @RequestParam(name = "hora_fim", required = false)
             @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
-            @RequestParam(required = false) Integer duracao,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "duracao", required = false) Integer duracao,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
                 service.listar(horaInicio, horaFim, duracao, page, size));

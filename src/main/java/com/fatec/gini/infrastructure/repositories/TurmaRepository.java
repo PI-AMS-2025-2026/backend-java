@@ -1,4 +1,8 @@
+
 package com.fatec.gini.infrastructure.repositories;
+
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,14 +14,11 @@ import com.fatec.gini.domain.entities.Turma;
 
 public interface TurmaRepository extends JpaRepository<Turma, Long> {
 
-    // Verifica duplicidade no cadastro
     boolean existsByCursoIdAndAnoAndPeriodo(
             Long cursoId,
             Integer ano,
             Integer periodo);
 
-    // Verifica duplicidade na atualização,
-    // ignorando a própria turma.
     boolean existsByCursoIdAndAnoAndPeriodoAndIdNot(
             Long cursoId,
             Integer ano,
@@ -37,4 +38,8 @@ public interface TurmaRepository extends JpaRepository<Turma, Long> {
             @Param("periodo") Integer periodo,
             @Param("codigo") String codigo,
             Pageable pageable);
+
+    List<Turma> findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(Long cursoId);
+
+    Optional<Turma> findByIdAndCursoId(Long id, Long cursoId);
 }

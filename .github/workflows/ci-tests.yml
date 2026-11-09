@@ -78,7 +78,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:17-alpine
         env:
           # Credenciais descartáveis, válidas apenas dentro deste job.
           POSTGRES_DB: gini_ci
@@ -112,6 +112,17 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/gini_ci
           SPRING_DATASOURCE_USERNAME: gini_ci
           SPRING_DATASOURCE_PASSWORD: gini_ci
+          # O perfil prod exige a configuração de SMTP e a URL do frontend
+          # (fluxo de recuperação de senha). Nenhum e-mail é enviado neste job:
+          # os valores apenas satisfazem a inicialização do contexto.
+          SMTP_HOST: localhost
+          SMTP_PORT: '1025'
+          SMTP_USERNAME: ''
+          SMTP_PASSWORD: ''
+          SMTP_AUTH: 'false'
+          SMTP_STARTTLS: 'false'
+          SMTP_FROM: noreply@gini.local
+          FRONTEND_URL: http://localhost:3000
         run: |
           set -euo pipefail
           # Segredo descartável, gerado e usado apenas nesta execução.

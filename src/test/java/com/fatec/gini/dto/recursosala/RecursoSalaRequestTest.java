@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.recursoSala.RecursoSalaRequest;
 
 import jakarta.validation.ConstraintViolation;
@@ -26,7 +27,7 @@ class RecursoSalaRequestTest {
     @Test
     void deveInformarQueQuantidadeDeveSerMaiorQueZero() {
         RecursoSalaRequest request =
-                new RecursoSalaRequest(1L, 1L, 0);
+                new RecursoSalaRequest(new LongDTO(1L), new LongDTO(1L), 0);
 
         Set<ConstraintViolation<RecursoSalaRequest>> violations =
                 validator.validate(request);
@@ -38,7 +39,7 @@ class RecursoSalaRequestTest {
     @Test
     void deveInformarQueSalaIdEObrigatorioQuandoNaoForInformado() {
         RecursoSalaRequest request =
-                new RecursoSalaRequest(null, 1L, 1);
+                new RecursoSalaRequest(null, new LongDTO(1L), 1);
 
         Set<ConstraintViolation<RecursoSalaRequest>> violations =
                 validator.validate(request);
@@ -50,7 +51,7 @@ class RecursoSalaRequestTest {
     @Test
     void deveAceitarRequestValido() {
         RecursoSalaRequest request =
-                new RecursoSalaRequest(1L, 1L, 1);
+                new RecursoSalaRequest(new LongDTO(1L), new LongDTO(1L), 1);
 
         assertThat(validator.validate(request))
                 .isEmpty();

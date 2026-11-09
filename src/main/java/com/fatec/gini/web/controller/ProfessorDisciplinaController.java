@@ -54,11 +54,10 @@ public class ProfessorDisciplinaController {
     // LIST + FILTROS + PAGINAÇÃO
     @GetMapping
     public ResponseEntity<PageResponse<ProfessorDisciplinaResponse>> listar(
-            // Usa o mesmo nome do relacionamento exposto pela API.
-            @RequestParam(required = false) Long professor,
-            @RequestParam(required = false) Long disciplina,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "id_professor", required = false) Long professor,
+            @RequestParam(name = "id_disciplina", required = false) Long disciplina,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
                 service.listar(professor, disciplina, page, size));

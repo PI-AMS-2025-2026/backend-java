@@ -2,6 +2,8 @@ package com.fatec.gini.dto.historicoVersaoAlocacao;
 
 import java.time.LocalDate;
 
+import com.fatec.gini.dto.id.LongDTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,8 +24,8 @@ public record HistoricoVersaoAlocacaoRequest(
         @NotBlank(message = "Valor novo não pode estar vazio")
         String valorNovo,
 
-        Long alocacaoId, // ID da alocação para facilitar o envio do payload
+        LongDTO alocacao, // ID da alocação para facilitar o envio do payload
 
-        Long usuarioId // ID do usuário responsável pela alteração
+        LongDTO usuario // ID do usuário responsável pela alteração
 ) {
 }

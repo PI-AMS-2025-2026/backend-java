@@ -1,11 +1,14 @@
+
 package com.fatec.gini.dto.professorDisciplina;
+
+import com.fatec.gini.dto.professor.ProfessorResponse;
+import com.fatec.gini.dto.disciplina.DisciplinaResponse;
 
 public record ProfessorDisciplinaResponse(
         Long id,
-        // Retorna apenas o ID do professor para simplificar o payload.
         Long professorId,
-        // Retorna apenas o ID da disciplina para simplificar o payload.
-        Long disciplinaId
-        ) {
-
+        Long disciplinaId,
+        ProfessorResponse professor,
+        DisciplinaResponse disciplina
+) {
 }

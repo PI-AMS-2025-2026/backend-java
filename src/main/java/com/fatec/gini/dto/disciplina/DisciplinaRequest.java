@@ -1,7 +1,11 @@
 package com.fatec.gini.dto.disciplina;
 
-import jakarta.validation.constraints.Max;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fatec.gini.dto.id.LongDTO;
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -29,10 +33,45 @@ public record DisciplinaRequest(
 
         String cor,
 
-        // Alteração: recebe diretamente o ID do curso para simplificar o payload.
-        @NotNull(message = "O curso é obrigatório") Long cursoId,
+    @NotNull(message = "O curso é obrigatório")
+    @Valid
+    LongDTO curso,
 
-        // Alteração: recebe diretamente o ID do tipo de sala para simplificar o
-        // payload.
-        @NotNull(message = "O tipo de sala é obrigatório") Long tipoSalaId) {
+    @NotNull(message = "O tipo de sala é obrigatório")
+    @Valid
+    LongDTO tipoSala
+) {
+
+    public DisciplinaRequest(
+            String nome,
+            Integer cargaHoraria,
+            String tipoDisciplina,
+            Integer periodo,
+            String modalidade,
+            String codDisciplina,
+            String cor,
+            Long cursoId,
+            Long tipoSalaId) {
+        this(
+                nome,
+                cargaHoraria,
+                tipoDisciplina,
+                periodo,
+                modalidade,
+                codDisciplina,
+                cor,
+                cursoId != null ? new LongDTO(cursoId) : null,
+                tipoSalaId != null ? new LongDTO(tipoSalaId) : null
+        );
+    }
+
+    @JsonIgnore
+    public Long cursoId() {
+        return curso != null ? curso.id() : null;
+    }
+
+    @JsonIgnore
+    public Long tipoSalaId() {
+        return tipoSala != null ? tipoSala.id() : null;
+    }
 }

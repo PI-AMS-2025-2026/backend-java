@@ -1,42 +1,108 @@
 package com.fatec.gini.dto.alocacao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fatec.gini.domain.entities.DiaSemana;
+import com.fatec.gini.dto.DiaSemanaDeserializer;
+import com.fatec.gini.dto.id.LongDTO;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 public record AlocacaoRequest(
 
-    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Turma é obrigatória")
-    Long turmaId,
+    @Valid
+    LongDTO turma,
 
-    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Disciplina é obrigatória")
-    Long disciplinaId,
+    @Valid
+    LongDTO disciplina,
 
-    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Sala é obrigatória")
-    Long salaId,
+    @Valid
+    LongDTO sala,
 
-    // Alteração: recebe diretamente o ID da entidade para simplificar o payload.
     @NotNull(message = "Professor é obrigatório")
-    Long professorId,
+    @Valid
+    LongDTO professor,
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonDeserialize(using = DiaSemanaDeserializer.class)
     @NotNull(message = "Dia da semana é obrigatório")
     DiaSemana diaSemana,
 
-    // Alteração: recebe diretamente o ID do bloco de horário.
-    @NotNull(message = "Horário é obrigatório")
-    Long horarioId,
+    @NotNull(message = "Bloco de horário é obrigatório")
+    @Valid
+    LongDTO blocoHorario,
 
-    // Alteração: recebe diretamente o ID do quadro horário.
     @NotNull(message = "Quadro horário é obrigatório")
-    Long quadroHorarioId,
+    @Valid
+    LongDTO quadroHorario,
 
     String justificativaAlteracao,
 
-    // Alteração: recebe diretamente o ID do usuário responsável pela alteração.
     @NotNull(message = "Usuário responsável pela alteração é obrigatório")
-    Long usuarioAlteracaoId
+    @Valid
+    LongDTO usuarioAlteracao
 ) {
+
+    public AlocacaoRequest(
+            Long turmaId,
+            Long disciplinaId,
+            Long salaId,
+            Long professorId,
+            DiaSemana diaSemana,
+            Long horarioId,
+            Long quadroHorarioId,
+            String justificativaAlteracao,
+            Long usuarioAlteracaoId) {
+        this(
+                turmaId != null ? new LongDTO(turmaId) : null,
+                disciplinaId != null ? new LongDTO(disciplinaId) : null,
+                salaId != null ? new LongDTO(salaId) : null,
+                professorId != null ? new LongDTO(professorId) : null,
+                diaSemana,
+                horarioId != null ? new LongDTO(horarioId) : null,
+                quadroHorarioId != null ? new LongDTO(quadroHorarioId) : null,
+                justificativaAlteracao,
+                usuarioAlteracaoId != null ? new LongDTO(usuarioAlteracaoId) : null
+        );
+    }
+
+    @JsonIgnore
+    public Long turmaId() {
+        return turma != null ? turma.id() : null;
+    }
+
+    @JsonIgnore
+    public Long disciplinaId() {
+        return disciplina != null ? disciplina.id() : null;
+    }
+
+    @JsonIgnore
+    public Long salaId() {
+        return sala != null ? sala.id() : null;
+    }
+
+    @JsonIgnore
+    public Long professorId() {
+        return professor != null ? professor.id() : null;
+    }
+
+    @JsonIgnore
+    public Long horarioId() {
+        return blocoHorario != null ? blocoHorario.id() : null;
+    }
+
+    @JsonIgnore
+    public Long quadroHorarioId() {
+        return quadroHorario != null ? quadroHorario.id() : null;
+    }
+
+    @JsonIgnore
+    public Long usuarioAlteracaoId() {
+        return usuarioAlteracao != null ? usuarioAlteracao.id() : null;
+    }
 }

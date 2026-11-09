@@ -1,8 +1,8 @@
 package com.fatec.gini.domain.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -13,78 +13,105 @@ import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
 
 /**
- * Garante o isolamento dos tokens entre ambientes.
+ * Cobre a geração e a verificação dos tokens JWT.
  *
- * Os ambientes hospedados compartilham o perfil prod, e o emissor do token é
- * derivado de APP_ENVIRONMENT. Como o emissor também é validado na verificação,
- * um token emitido em um ambiente não pode valer em outro — nem quando os dois
- * usam o mesmo segredo.
+ * Além dos casos básicos (assinatura e expiração), garante o isolamento entre
+ * ambientes: os três ambientes hospedados compartilham o perfil prod e o
+ * emissor do token é derivado de APP_ENVIRONMENT. Como o emissor também é
+ * validado na verificação, um token emitido em um ambiente não pode valer em
+ * outro — nem quando os dois usam o mesmo segredo.
  */
 class TokenServiceTest {
 
     private static final String SEGREDO_COMPARTILHADO = "0123456789abcdef0123456789abcdef";
+    private static final String EMISSOR_PADRAO = "fatec-gini-test";
 
+    private TokenService tokenService;
+    private Usuario usuario;
+
+    /**
+     * O emissor é sempre definido explicitamente: em produção ele vem de
+     * api.security.token.issuer, que não é resolvido em teste unitário.
+     */
     private TokenService tokenService(String emissor, String segredo) {
 
         TokenService service = new TokenService();
         ReflectionTestUtils.setField(service, "secret", segredo);
         ReflectionTestUtils.setField(service, "issuer", emissor);
-        ReflectionTestUtils.setField(service, "tokenExpirationMs", 86_400_000L);
+        ReflectionTestUtils.setField(service, "tokenExpirationMs", 60_000L);
         return service;
     }
 
-    private Usuario usuario() {
-        return new Usuario("Admin", "adm@gini.com", "123456", Status.ATIVO, TipoUsuario.ADMINISTRADOR);
+    @BeforeEach
+    void setUp() {
+        tokenService = tokenService(EMISSOR_PADRAO, "test-secret");
+        usuario = new Usuario("Admin", "admin@gini.local", "senha", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
     }
 
     @Test
-    @DisplayName("Token emitido no mesmo ambiente é válido")
-    void deveValidarTokenDoMesmoAmbiente() {
+    void deveGerarTokenComEmailESessao() {
+        String token = tokenService.gerarToken(usuario, "refresh-123");
 
-        TokenService serviceDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO);
+        assertThat(tokenService.validarToken(token)).isEqualTo("admin@gini.local");
+        assertThat(tokenService.validarSessao(token)).isEqualTo("refresh-123");
+    }
 
-        String token = serviceDev.gerarToken(usuario());
+    @Test
+    void deveRejeitarTokenComAssinaturaInvalida() {
+        String token = tokenService.gerarToken(usuario);
+        // Mesmo emissor e outro segredo: isola a assinatura como causa da recusa.
+        TokenService outroServico = tokenService(EMISSOR_PADRAO, "outro-secret");
 
-        assertEquals("adm@gini.com", serviceDev.validarToken(token));
+        assertThat(outroServico.validarToken(token)).isEmpty();
+        assertThat(outroServico.validarSessao(token)).isNull();
+    }
+
+    @Test
+    void deveRejeitarTokenExpirado() {
+        ReflectionTestUtils.setField(tokenService, "tokenExpirationMs", -1L);
+        String token = tokenService.gerarToken(usuario);
+
+        assertThat(tokenService.validarToken(token)).isEmpty();
     }
 
     @Test
     @DisplayName("Token do ambiente dev é recusado em produção, mesmo com o segredo idêntico")
     void naoDeveValidarTokenDeOutroAmbiente() {
 
-        TokenService serviceDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO);
-        TokenService serviceProducao = tokenService("fatec-gini-production", SEGREDO_COMPARTILHADO);
+        TokenService servicoDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO);
+        TokenService servicoProducao = tokenService("fatec-gini-production", SEGREDO_COMPARTILHADO);
 
-        String tokenDev = serviceDev.gerarToken(usuario());
+        String tokenDev = servicoDev.gerarToken(usuario);
 
+        assertThat(servicoDev.validarToken(tokenDev)).isEqualTo("admin@gini.local");
         // validarToken devolve string vazia quando a verificação falha.
-        assertEquals("", serviceProducao.validarToken(tokenDev));
-    }
-
-    @Test
-    @DisplayName("O emissor do token reflete o ambiente configurado")
-    void deveRegistrarAmbienteNoEmissor() {
-
-        String tokenDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO).gerarToken(usuario());
-        String tokenProducao = tokenService("fatec-gini-production", SEGREDO_COMPARTILHADO)
-                .gerarToken(usuario());
-
-        assertEquals("fatec-gini-dev", JWT.decode(tokenDev).getIssuer());
-        assertEquals("fatec-gini-production", JWT.decode(tokenProducao).getIssuer());
-        assertNotEquals(JWT.decode(tokenDev).getIssuer(), JWT.decode(tokenProducao).getIssuer());
+        assertThat(servicoProducao.validarToken(tokenDev)).isEmpty();
     }
 
     @Test
     @DisplayName("A sessão também é recusada quando o token vem de outro ambiente")
     void naoDeveValidarSessaoDeOutroAmbiente() {
 
-        TokenService serviceDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO);
-        TokenService serviceProducao = tokenService("fatec-gini-production", SEGREDO_COMPARTILHADO);
+        TokenService servicoDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO);
+        TokenService servicoProducao = tokenService("fatec-gini-production", SEGREDO_COMPARTILHADO);
 
-        String tokenDev = serviceDev.gerarToken(usuario(), "sessao-123");
+        String tokenDev = servicoDev.gerarToken(usuario, "sessao-123");
 
-        assertEquals("sessao-123", serviceDev.validarSessao(tokenDev));
+        assertThat(servicoDev.validarSessao(tokenDev)).isEqualTo("sessao-123");
         // validarSessao devolve null quando a verificação falha.
-        assertEquals(null, serviceProducao.validarSessao(tokenDev));
+        assertThat(servicoProducao.validarSessao(tokenDev)).isNull();
+    }
+
+    @Test
+    @DisplayName("O emissor do token reflete o ambiente configurado")
+    void deveRegistrarAmbienteNoEmissor() {
+
+        String tokenDev = tokenService("fatec-gini-dev", SEGREDO_COMPARTILHADO).gerarToken(usuario);
+        String tokenProducao = tokenService("fatec-gini-production", SEGREDO_COMPARTILHADO)
+                .gerarToken(usuario);
+
+        assertThat(JWT.decode(tokenDev).getIssuer()).isEqualTo("fatec-gini-dev");
+        assertThat(JWT.decode(tokenProducao).getIssuer()).isEqualTo("fatec-gini-production");
     }
 }

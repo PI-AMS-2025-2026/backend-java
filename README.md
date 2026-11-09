@@ -56,7 +56,7 @@ O sistema tem como objetivo auxiliar coordenadores e administradores acadêmicos
 * Grade Horária
 * Alocação de aulas
 * Validação de conflitos
-* Regra de 12h entre jornadas
+* Regra de 11h entre jornadas
 * Controle de carga horária
 * Histórico de alterações
 * Cópia de grades anteriores
@@ -158,7 +158,7 @@ O sistema possui validações para:
 * Conflito de sala
 * Conflito de turma
 * Controle de carga horária diária
-* Intervalo mínimo de 12 horas
+* Intervalo mínimo de 11 horas
 * Compatibilidade de sala
 * Capacidade física da sala
 * Professor apto para disciplina
@@ -309,7 +309,7 @@ Environments, no caso dos workflows).
 |---|---|---|---|
 | `dev` | H2 em memória | desabilitado | `data.sql` |
 | `test` | H2 em memória | desabilitado | `data.sql` |
-| `prod` | PostgreSQL 16 | habilitado | migrations `db/migration` |
+| `prod` | PostgreSQL 17 | habilitado | migrations `db/migration` |
 
 Os ambientes hospedados (desenvolvimento, homologação e produção) usam o perfil
 `prod` com PostgreSQL. O perfil `dev` com H2 existe apenas para a execução local
@@ -324,14 +324,18 @@ concorra com as migrations.
 ```text
 src/main/resources/db/migration/
 ├── V1_0_0__criacao_tabelas_iniciais.sql   -- estrutura (DDL PostgreSQL)
-└── V1_0_1__criacao_dados_iniciais.sql     -- usuário administrador inicial
+├── V1_0_1__criacao_dados_iniciais.sql     -- usuário administrador inicial
+└── V1_0_2__padronizacao_dia_semana.sql    -- dia_semana: smallint -> varchar
 ```
 
 ## Executando com Docker
 
 O `docker-compose.yml` deste repositório é destinado **apenas ao
-desenvolvimento local** (backend + PostgreSQL). O deploy dos ambientes
-hospedados é responsabilidade do repositório de infraestrutura.
+desenvolvimento local** (backend + PostgreSQL + Mailpit). O deploy dos
+ambientes hospedados é responsabilidade do repositório de infraestrutura.
+
+O **Mailpit** captura os e-mails do fluxo de recuperação de senha: nada sai da
+máquina e as mensagens ficam visíveis em <http://localhost:8025>.
 
 ### Pré-requisitos
 
@@ -341,9 +345,14 @@ hospedados é responsabilidade do repositório de infraestrutura.
 
 ```bash
 cp .env.example .env
-# edite o .env e substitua os valores CHANGE_ME
+# edite o .env e substitua os valores CHANGE_ME.
+# JWT_SECRET precisa de 32+ caracteres: openssl rand -hex 32
 docker compose up -d --build
 ```
+
+> O `JWT_SECRET` é validado na inicialização: valores vazios, com menos de 32
+> caracteres ou reconhecidamente de exemplo (como `CHANGE_ME`) impedem a
+> aplicação de subir. Ver [Isolamento entre ambientes](#isolamento-entre-ambientes).
 
 A primeira subida leva alguns minutos (compilação da aplicação na imagem).
 Acompanhe até os dois serviços ficarem `healthy`:
@@ -382,12 +391,27 @@ alguma estiver ausente.
 | `CORS_ALLOWED_ORIGINS` | Origens autorizadas (ver pendência abaixo) |
 | `SWAGGER_ENABLED` | Publica o Swagger UI e `/v3/api-docs` (default da aplicação: `false`) |
 | `APP_ENVIRONMENT` | Identifica o ambiente: `dev`, `staging` ou `production` (default: `production`) |
+| `SMTP_HOST` / `SMTP_PORT` | Servidor SMTP (no compose, aponta para o Mailpit) |
+| `SMTP_USERNAME` / `SMTP_PASSWORD` | Credenciais SMTP (vazias com o Mailpit) |
+| `SMTP_AUTH` / `SMTP_STARTTLS` | Flags de autenticação e TLS do SMTP |
+| `SMTP_FROM` | Remetente dos e-mails |
+| `FRONTEND_URL` | Base do link enviado no e-mail de recuperação de senha |
+| `PASSWORD_RESET_EXPIRATION_MINUTES` | Validade do token de recuperação (default `15`) |
+| `MAILPIT_SMTP_PORT` / `MAILPIT_WEB_PORT` | Portas publicadas pelo Mailpit (`1025` e `8025`) |
 
 Nos ambientes hospedados o backend recebe, conforme o contrato entre
 repositórios: `SPRING_PROFILES_ACTIVE=prod`, `SPRING_DATASOURCE_URL`,
 `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET` e
-`CORS_ALLOWED_ORIGINS`. Além dessas, o backend aceita duas variáveis
-opcionais: `SWAGGER_ENABLED` (default `false`) e `APP_ENVIRONMENT`
+`CORS_ALLOWED_ORIGINS`.
+
+O fluxo de recuperação de senha acrescenta variáveis **obrigatórias** no perfil
+`prod`, sem valor padrão: `SMTP_HOST`, `SMTP_USERNAME`, `SMTP_PASSWORD`,
+`SMTP_FROM` e `FRONTEND_URL`. Sem elas a aplicação não sobe. São opcionais
+`SMTP_PORT` (587), `SMTP_AUTH` (true), `SMTP_STARTTLS` (true) e
+`PASSWORD_RESET_EXPIRATION_MINUTES` (15).
+
+Além dessas, o backend aceita duas variáveis opcionais:
+`SWAGGER_ENABLED` (default `false`) e `APP_ENVIRONMENT`
 (default `production`) — ver
 [Documentação da API nos ambientes hospedados](#documentação-da-api-nos-ambientes-hospedados)
 e [Isolamento entre ambientes](#isolamento-entre-ambientes).
@@ -427,7 +451,7 @@ workflow de build via `workflow_call`.
 | Job | O que faz |
 |---|---|
 | `unit-tests` | `./mvnw -B verify`, publica o relatório JaCoCo e os relatórios do Surefire como artefatos e escreve um resumo de cobertura no sumário da execução |
-| `migrations-postgres` | Sobe um PostgreSQL 16 real, empacota e inicia o JAR com o perfil `prod`, aguarda `/actuator/health` responder `UP` e valida que o Flyway aplicou ao menos 2 migrations e que o seed populou a tabela `usuario` |
+| `migrations-postgres` | Sobe um PostgreSQL 17 real, empacota e inicia o JAR com o perfil `prod`, aguarda `/actuator/health` responder `UP` e valida que o Flyway aplicou ao menos 2 migrations e que o seed populou a tabela `usuario` |
 
 Para gerar o relatório de cobertura localmente:
 
@@ -441,7 +465,7 @@ Para gerar o relatório de cobertura localmente:
 1. Crie uma cópia inválida da migration:
    ```bash
    printf 'create table quebrada (id bigint, ;\n' \
-     > src/main/resources/db/migration/V1_0_2__teste_falha.sql
+     > src/main/resources/db/migration/V1_0_3__teste_falha.sql
    ```
 2. Abra um PR para `dev`. O job `migrations-postgres` deve falhar no passo
    "Aguardar health UP", e o log da aplicação (impresso no próprio passo e

@@ -14,7 +14,7 @@ import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoReposit
 import lombok.RequiredArgsConstructor;
 
 /**
- * Use case responsável por registrar o histórico de alocações.
+ * Use case responsável por registrar o histórico de versão das alocações.
  *
  * <p>
  * Responsabilidades:
@@ -30,17 +30,18 @@ import lombok.RequiredArgsConstructor;
  * <li>Não valida regras de negócio</li>
  * <li>Executa apenas após aceitação da operação principal</li>
  * </ul>
+ * </p>
  */
 @Service
 @RequiredArgsConstructor
-public class RegistrarHistoricoAlocacaoUseCase {
+public class RegistrarHistoricoVersaoAlocacaoUseCase {
 
-    private final HistoricoVersaoAlocacaoRepository historicoAlteracaoRepository;
+    private final HistoricoVersaoAlocacaoRepository historicoVersaoAlocacaoRepository;
 
     /*
-     * O usuraioAlteracao é o usuário que realizou a operação (criação ou
+     * O usuarioAlteracao é o usuário que realizou a operação (criação ou
      * atualização) na alocação. Ele é necessário para registrar quem fez a
-     * alteração no histórico, garantindo rastreabilidade e responsabilidade pelas
+     * alteração no histórico de versão, garantindo rastreabilidade e responsabilidade pelas
      * mudanças realizadas.
      */
     @Transactional
@@ -59,40 +60,40 @@ public class RegistrarHistoricoAlocacaoUseCase {
             String justificativa) {
 
         // Turma
-        registrar("turma", alocacaoSalva.getTurma().getId().toString(), alocacaoAntiga.getTurma().getId().toString(),
+        registrar("turma", alocacaoAntiga.getTurma().getId().toString(), alocacaoSalva.getTurma().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
         // Disciplina
-        registrar("disciplina", alocacaoSalva.getDisciplina().getId().toString(),
-                alocacaoAntiga.getDisciplina().getId().toString(),
+        registrar("disciplina", alocacaoAntiga.getDisciplina().getId().toString(),
+                alocacaoSalva.getDisciplina().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Sala
-        registrar("sala", alocacaoSalva.getSala().getId().toString(), alocacaoAntiga.getSala().getId().toString(),
+        registrar("sala", alocacaoAntiga.getSala().getId().toString(), alocacaoSalva.getSala().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Professor
-        registrar("professor", alocacaoSalva.getProfessor().getId().toString(),
-                alocacaoAntiga.getProfessor().getId().toString(),
+        registrar("professor", alocacaoAntiga.getProfessor().getId().toString(),
+                alocacaoSalva.getProfessor().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
         // Dia da semana
-        registrar("diaSemana", alocacaoSalva.getDiaSemana().toString(),
-                alocacaoAntiga.getDiaSemana().toString(),
+        registrar("diaSemana", alocacaoAntiga.getDiaSemana().toString(),
+                alocacaoSalva.getDiaSemana().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
 
-        // Horário
-        registrar("blocoHorario", alocacaoSalva.getBlocoHorario().getId().toString(),
-                alocacaoAntiga.getBlocoHorario().getId().toString(),
+        // Bloco de horário
+        registrar("blocoHorario", alocacaoAntiga.getBlocoHorario().getId().toString(),
+                alocacaoSalva.getBlocoHorario().getId().toString(),
                 alocacaoSalva,
                 usuarioAlteracao, justificativa);
         // Quadro horário
-        registrar("quadroHorario", alocacaoSalva.getQuadroHorario().getId().toString(),
-                alocacaoAntiga.getQuadroHorario().getId().toString(),
+        registrar("quadroHorario", alocacaoAntiga.getQuadroHorario().getId().toString(),
+                alocacaoSalva.getQuadroHorario().getId().toString(),
                 alocacaoSalva, usuarioAlteracao, justificativa);
     }
 
@@ -108,16 +109,16 @@ public class RegistrarHistoricoAlocacaoUseCase {
             return;
         }
 
-        HistoricoVersaoAlocacao historicoAlteracao = new HistoricoVersaoAlocacao();
-        historicoAlteracao.setDataAlteracao(LocalDate.now());
-        historicoAlteracao.setJustificativa(justificativa);
-        historicoAlteracao.setCampoAlterado(campoAlterado);
-        historicoAlteracao.setValorAntigo(valorAntigo != null ? valorAntigo.toString() : null);
-        historicoAlteracao.setValorNovo(valorNovo != null ? valorNovo.toString() : null);
-        historicoAlteracao.setAlocacao(alocacao);
-        historicoAlteracao.setUsuario(usuario);
+        HistoricoVersaoAlocacao historicoVersaoAlocacao = new HistoricoVersaoAlocacao();
+        historicoVersaoAlocacao.setDataAlteracao(LocalDate.now());
+        historicoVersaoAlocacao.setJustificativa(justificativa);
+        historicoVersaoAlocacao.setCampoAlterado(campoAlterado);
+        historicoVersaoAlocacao.setValorAntigo(valorAntigo != null ? valorAntigo.toString() : null);
+        historicoVersaoAlocacao.setValorNovo(valorNovo != null ? valorNovo.toString() : null);
+        historicoVersaoAlocacao.setAlocacao(alocacao);
+        historicoVersaoAlocacao.setUsuario(usuario);
 
-        historicoAlteracaoRepository.save(historicoAlteracao);
+        historicoVersaoAlocacaoRepository.save(historicoVersaoAlocacao);
     }
 
 }

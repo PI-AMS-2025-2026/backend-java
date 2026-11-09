@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,14 @@ import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
+import com.fatec.gini.infrastructure.repositories.ProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.SalaRepository;
+import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +58,18 @@ public class AlocacaoService {
     private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
     private final BlocoHorarioRepository blocoHorarioRepository;
+
+    private final ProfessorRepository professorRepository;
+
+    private final DisponibilidadeProfessorRepository disponibilidadeProfessorRepository;
+
+    private final TurmaRepository turmaRepository;
+
+    private final DisciplinaRepository disciplinaRepository;
+
+    private final SalaRepository salaRepository;
+
+    private final QuadroHorarioRepository quadroHorarioRepository;
 
     public AlocacaoResponse criar(AlocacaoRequest request) {
 
@@ -98,7 +118,7 @@ public class AlocacaoService {
      * RF06 — Sugestão Automática de Ajuste.
      *
      * Recebe uma tentativa de posicionamento da disciplina
-     * na grade de horários.
+     * no quadro de horários.
      *
      * Caso a combinação seja inválida, retorna o motivo
      * e alternativas compatíveis.
@@ -121,6 +141,34 @@ public class AlocacaoService {
                 null);
 
         Alocacao entity = AlocacaoMapper.toEntity(tentativa);
+
+        // AlocacaoMapper builds ID-only references for write requests. Suggestions
+        // need the related values (capacity, room type, course and period) to run
+        // the same validation rules as create/update.
+        entity.setTurma(turmaRepository.findById(request.turma().id())
+                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada.")));
+        entity.setDisciplina(disciplinaRepository.findById(request.disciplina().id())
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada.")));
+        entity.setSala(salaRepository.findById(request.sala().id())
+                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada.")));
+        entity.setProfessor(professorRepository.findById(request.professor().id())
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado.")));
+        entity.setBlocoHorario(blocoHorarioRepository.findById(request.horario().id())
+                .orElseThrow(() -> new EntityNotFoundException("Bloco de horário não encontrado.")));
+        entity.setQuadroHorario(quadroHorarioRepository.findById(request.quadroHorario().id())
+                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado.")));
+        if (request.alocacaoId() != null) {
+            Alocacao alocacaoAtual = repository.findById(request.alocacaoId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Alocação não encontrada com ID: " + request.alocacaoId()));
+            validarAutorizacaoCurso.validarCurso(alocacaoAtual.getQuadroHorario().getCurso());
+            if (!Objects.equals(alocacaoAtual.getTurma().getId(), request.turma().id())
+                    || !Objects.equals(alocacaoAtual.getQuadroHorario().getId(), request.quadroHorario().id())) {
+                throw new ParameterException(
+                        "A alocação informada não pertence à turma e ao quadro horário enviados.");
+            }
+            entity.setId(alocacaoAtual.getId());
+        }
 
         String motivo = validarSugestaoAutomatica.identificarMotivo(entity);
 
@@ -148,11 +196,12 @@ public class AlocacaoService {
                         null))
                 .toList();
 
-        return new SugestaoResponse(
-                false,
-                "Não é possível realizar a alocação.",
-                motivo,
-                sugestoes);
+        String motivoFormatado = motivo.endsWith(".") ? motivo : motivo + ".";
+        String mensagem = sugestoes.isEmpty()
+                ? motivoFormatado + " Não foram encontrados horários alternativos que atendam à disponibilidade, carga horária e demais regras atuais."
+                : motivoFormatado + " Foram encontradas alternativas compatíveis; selecione uma opção sugerida.";
+
+        return new SugestaoResponse(false, mensagem, motivo, sugestoes);
     }
 
     @Transactional(readOnly = true)
@@ -196,23 +245,49 @@ public class AlocacaoService {
 
     @Transactional(readOnly = true)
     public ValidarCargaHorariaResponse validarCargaHorariaSemPersistir(ValidarCargaHorariaRequest request) {
+        if (!professorRepository.existsById(request.professor().id())) {
+            throw new EntityNotFoundException(
+                    "Professor não encontrado com ID: " + request.professor().id());
+        }
+
         BlocoHorario blocoHorario = blocoHorarioRepository.findById(request.horario().id())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bloco horário não encontrado com ID: " + request.horario().id()));
 
+        validarBlocoHorario(blocoHorario);
+
         Alocacao alocacaoSimulada = new Alocacao();
+        alocacaoSimulada.setId(request.alocacaoId());
         alocacaoSimulada.setProfessor(new Professor());
         alocacaoSimulada.getProfessor().setId(request.professor().id());
         alocacaoSimulada.setDiaSemana(request.diaSemana());
         alocacaoSimulada.setBlocoHorario(blocoHorario);
 
         try {
+            if (!disponibilidadeProfessorRepository.verificarDisponibilidadeProfessor(
+                    request.professor().id(), request.diaSemana(), blocoHorario.getId())) {
+                return new ValidarCargaHorariaResponse(false,
+                        "Professor não possui disponibilidade para o dia e horário informado.");
+            }
             validarCargaHorariaUseCase.validar(request.professor().id(), request.diaSemana(),
                     alocacaoSimulada);
             return new ValidarCargaHorariaResponse(true,
                     "Carga horária válida para o professor no dia informado.");
         } catch (BusinessException ex) {
             return new ValidarCargaHorariaResponse(false, ex.getMessage());
+        }
+    }
+
+    private void validarBlocoHorario(BlocoHorario blocoHorario) {
+        if (blocoHorario.getHoraInicio() == null || blocoHorario.getHoraFim() == null
+                || blocoHorario.getDuracao() == null) {
+            throw new ParameterException(
+                    "O bloco de horário informado está incompleto: início, fim e duração são obrigatórios.");
+        }
+
+        if (!blocoHorario.getHoraFim().isAfter(blocoHorario.getHoraInicio())
+                || blocoHorario.getDuracao() <= 0) {
+            throw new ParameterException("O bloco de horário informado possui duração ou intervalo inválido.");
         }
     }
 }

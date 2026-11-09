@@ -1,6 +1,8 @@
+
 package com.fatec.gini.infrastructure.mappers;
 
 import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.dto.turma.TurmaRequest;
 import com.fatec.gini.dto.turma.TurmaResponse;
 
@@ -8,9 +10,12 @@ public class TurmaMapper {
 
     public static Turma toEntity(TurmaRequest request) {
         Turma entity = new Turma();
+
         entity.setPeriodo(request.periodo());
         entity.setAno(request.ano());
         entity.setNumeroAlunos(request.numeroAlunos());
+        entity.setStatus(Status.ATIVO);
+
         return entity;
     }
 
@@ -21,7 +26,10 @@ public class TurmaMapper {
                 entity.getPeriodo(),
                 entity.getAno(),
                 entity.getNumeroAlunos(),
-                entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
+                entity.getCurso() != null
+                        ? CursoMapper.toResponse(entity.getCurso())
+                        : null,
+                entity.getStatus(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
     }

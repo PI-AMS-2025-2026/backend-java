@@ -1,5 +1,7 @@
 package com.fatec.gini.dto.sala;
 
+import com.fatec.gini.dto.id.LongDTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +19,6 @@ public record SalaRequest(
 
         // ALTERAÇÃO: recebe somente o ID do tipo de sala para simplificar o payload.
         @NotNull(message = "O tipo de sala é obrigatório")
-        Long tipoSalaId
+        LongDTO tipoSala
 
 ) {}

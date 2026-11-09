@@ -12,6 +12,7 @@ import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.dto.auth.LoginResponse;
 import com.fatec.gini.infrastructure.repositories.RefreshTokenRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
+import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
 import com.fatec.gini.web.exception.RefreshTokenException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -34,10 +35,8 @@ public class RefreshTokenService {
         Usuario usuario = repository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + userId));
 
-        refreshTokenRepository.findByUsuario(usuario)
-                .ifPresent(refreshTokenRepository::delete);
-
-        var token = new RefreshToken();
+        RefreshToken token = refreshTokenRepository.findByUsuario(usuario)
+                .orElseGet(RefreshToken::new);
         token.setUsuario(usuario);
         token.setExpiryDate(Instant.now().plusMillis(refreshTokenExpirationMs));
         token.setToken(UUID.randomUUID().toString());
@@ -62,15 +61,14 @@ public class RefreshTokenService {
             throw new RefreshTokenException("Refresh token inválido ou expirado");
         }
 
-        refreshTokenRepository.delete(current);
-
         RefreshToken novoRefresh = createRefreshToken(usuario.getId());
 
         String accessToken = tokenService.gerarToken(usuario, novoRefresh.getToken());
 
         return new LoginResponse(
                 accessToken,
-                novoRefresh.getToken());
+                novoRefresh.getToken(),
+                UsuarioMapper.toResponse(usuario));
     }
 
     // Considera invalido o token ausente, sem validade ou ja expirado.

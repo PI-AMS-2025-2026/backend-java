@@ -32,7 +32,7 @@ public class RecursoSalaService {
     public RecursoSalaResponse criar(RecursoSalaRequest request) {
 
         // ALTERAÇÃO: utiliza diretamente o salaId recebido no payload.
-        if (repository.existsBySalaIdAndRecursoId(request.salaId(), request.recursoId())) {
+        if (repository.existsBySalaIdAndRecursoId(request.sala().id(), request.recurso().id())) {
             throw new IllegalArgumentException("Recurso já vinculado a essa sala");
         }
 
@@ -42,11 +42,11 @@ public class RecursoSalaService {
         }
 
         // ALTERAÇÃO: busca a sala diretamente pelo ID informado.
-        Sala sala = salaRepository.findById(request.salaId())
+        Sala sala = salaRepository.findById(request.sala().id())
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
 
         // ALTERAÇÃO: busca o recurso diretamente pelo ID informado.
-        Recurso recurso = recursoRepository.findById(request.recursoId())
+        Recurso recurso = recursoRepository.findById(request.recurso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
         RecursoSala entity = new RecursoSala();
@@ -93,11 +93,11 @@ public class RecursoSalaService {
         }
 
         // ALTERAÇÃO: permite atualizar a sala pelo ID recebido no payload.
-        Sala sala = salaRepository.findById(request.salaId())
+        Sala sala = salaRepository.findById(request.sala().id())
                 .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
 
         // ALTERAÇÃO: permite atualizar o recurso pelo ID recebido no payload.
-        Recurso recurso = recursoRepository.findById(request.recursoId())
+        Recurso recurso = recursoRepository.findById(request.recurso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
         // ALTERAÇÃO: atualiza os relacionamentos junto com a quantidade.

@@ -3,9 +3,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-# Coleções/ambientes do Postman não fazem parte da aplicação.
+# Coleções/ambientes do Postman e relatórios de teste de API.
 postman/
 .postman/
+*.pdf
 
 # Metadados de versionamento e automação.
 .git
@@ -27,6 +28,8 @@ postman/
 
 # Documentação (não é necessária em tempo de execução).
 *.md
+docs/
+Pi_doc/
 
 # Orquestração local e segredos.
 docker-compose*
@@ -37,4 +40,5 @@ Dockerfile*
 
 # Diversos
 .DS_Store
+*.log
 HELP.md

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperação de senha | GINI</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#17264d;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f4f7fb;padding:32px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#ffffff;border:1px solid #aac1c9;border-radius:15px;overflow:hidden;box-shadow:0 4px 4px rgba(0,0,0,.12);">
+          <tr>
+            <td style="background:#17264d;padding:28px 36px;text-align:left;">
+              <div style="font-size:26px;line-height:32px;font-weight:700;color:#ffffff;letter-spacing:.2px;">Gini</div>
+              <div style="font-size:13px;line-height:20px;color:#b1c9d1;margin-top:4px;">Gestão inteligente de grades acadêmicas</div>
+              <div style="height:4px;width:58px;background:#0099aa;border-radius:4px;margin-top:16px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:38px 36px 34px;">
+              <div style="display:inline-block;background:#e8f7f8;border-radius:999px;padding:7px 12px;color:#007f8d;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;">Segurança da conta</div>
+              <h1 style="margin:20px 0 12px;font-size:27px;line-height:34px;color:#17264d;">Redefina sua senha</h1>
+              <p style="margin:0 0 18px;font-size:16px;line-height:26px;color:#5f6f82;">Recebemos uma solicitação para criar uma nova senha para sua conta. Clique no botão abaixo para continuar.</p>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:26px 0 24px;">
+                <tr>
+                  <td style="border-radius:15px;background:#17264d;">
+                    <a th:href="${linkRecuperacao}" href="#" style="display:inline-block;padding:15px 24px;border:1px solid #aac1c9;border-radius:15px;background:#17264d;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;">Redefinir minha senha</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 8px;font-size:13px;line-height:20px;color:#7b8794;">Por segurança, este link expira em <strong style="color:#17264d;" th:text="|${expiracaoMinutos} minutos|">15 minutos</strong> e só pode ser usado uma vez.</p>
+              <p style="margin:24px 0 8px;font-size:13px;line-height:20px;color:#7b8794;">Se o botão não funcionar, copie e cole este endereço no navegador:</p>
+              <p th:text="${linkRecuperacao}" style="margin:0;word-break:break-all;font-size:12px;line-height:19px;color:#4471e6;">http://localhost:3000/redefinir-senha?token=...</p>
+              <div style="height:1px;background:#e5ebf0;margin:28px 0 22px;"></div>
+              <p style="margin:0;font-size:13px;line-height:21px;color:#7b8794;">Se você não solicitou esta alteração, ignore este e-mail. Sua senha atual continuará protegida.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 36px;background:#f8fafc;border-top:1px solid #e5ebf0;text-align:center;">
+              <p style="margin:0;font-size:12px;line-height:18px;color:#9aa5b1;">Mensagem automática do GINI. Por favor, não responda a este e-mail.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

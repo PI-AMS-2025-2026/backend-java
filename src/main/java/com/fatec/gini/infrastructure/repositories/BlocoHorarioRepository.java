@@ -1,6 +1,7 @@
 package com.fatec.gini.infrastructure.repositories;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,4 +46,6 @@ public interface BlocoHorarioRepository extends JpaRepository<BlocoHorario, Long
         boolean existsByHoraInicioAndHoraFim(
                         LocalTime horaInicio,
                         LocalTime horaFim);
+
+        List<BlocoHorario> findAllByOrderByHoraInicioAsc();
 }

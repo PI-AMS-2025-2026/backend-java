@@ -32,12 +32,12 @@ public class CursoController {
 
     @GetMapping
     public ResponseEntity<PageResponse<CursoResponse>> listar(
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false) String periodicidade,
-            @RequestParam(required = false) Status status,
-            @RequestParam(required = false) Integer duracao,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "nome", required = false) String nome,
+            @RequestParam(name = "periodicidade", required = false) String periodicidade,
+            @RequestParam(name = "status", required = false) Status status,
+            @RequestParam(name = "duracao", required = false) Integer duracao,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(service.listar(nome, periodicidade, status, duracao,page,size));
     }
 

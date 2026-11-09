@@ -1,4 +1,7 @@
+
 package com.fatec.gini.domain.services;
+
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +19,7 @@ import com.fatec.gini.dto.usuario.UsuarioResponse;
 import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,19 +37,31 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
+        if (repository.existsByEmail(request.email())) {
+            throw new BusinessException("Esse email já possui cadastro");
+        }
+
         Usuario entity = UsuarioMapper.toEntity(request);
 
         validarCursoObrigatorioUsuario.executar(request);
 
         if (request.curso() != null) {
+
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Curso não encontrado com ID: " + request.curso().id()));
+
             entity.setCurso(curso);
         }
-        String encrypSenha = new BCryptPasswordEncoder().encode(request.senha());
+
+        String encrypSenha =
+                new BCryptPasswordEncoder().encode(request.senha());
 
         entity.setSenha(encrypSenha);
+
+        entity.setCreatedAt(LocalDateTime.now());
+
+        entity.setUpdatedAt(LocalDateTime.now());
 
         return UsuarioMapper.toResponse(repository.save(entity));
     }
@@ -58,9 +74,10 @@ public class UsuarioService {
             TipoUsuario tipoUsuario,
             int pageNum,
             int size
-
     ) {
+
         var pageRequest = PageRequest.of(pageNum, size);
+
         var page = repository.buscarPorFiltros(
                 nome,
                 email,
@@ -78,47 +95,63 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public UsuarioResponse buscarPorId(Long id) {
+
         return repository.findById(id)
                 .map(UsuarioMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário não encontrado com ID: " + id));
     }
 
     @Transactional
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
 
         Usuario entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário não encontrado com ID: " + id));
+
+        if (repository.existsByEmailAndIdNot(request.email(), id)) {
+            throw new BusinessException("Esse email já possui cadastro");
+        }
 
         validarCursoObrigatorioUsuario.executar(request);
 
         entity.setNome(request.nome());
+
         entity.setEmail(request.email());
+
         entity.setStatus(request.status());
+
         entity.setTipoUsuario(request.tipoUsuario());
 
         if (request.curso() != null) {
+
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Curso não encontrado com ID: " + request.curso().id()));
+
             entity.setCurso(curso);
         }
-
 
         return UsuarioMapper.toResponse(repository.save(entity));
     }
 
     @Transactional
     public void inativar(Long id) {
+
         Usuario entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário não encontrado com ID: " + id));
 
         entity.setStatus(Status.INATIVO);
+
+        entity.setUpdatedAt(LocalDateTime.now());
 
         repository.save(entity);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean jaUsuarioExisteEmail(String email) {
-        return this.repository.findByEmail(email) != null;
+
+        return repository.existsByEmail(email);
     }
 }

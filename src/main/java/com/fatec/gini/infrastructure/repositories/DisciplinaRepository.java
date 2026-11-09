@@ -26,9 +26,10 @@ public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
 
     boolean existsByCodDisciplinaAndIdNot(String codDisciplina, Long id);
 
-    // CORREÇÃO: usado para impedir cadastro de disciplina duplicada (mesmo nome no
-    // mesmo curso)
-    boolean existsByNomeIgnoreCaseAndCursoId(String nome, Long cursoId);
+    // CORREÇÃO: duplicidade considera nome, período, tipo e curso (não apenas o nome)
+boolean existsByNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoId(
+        String nome, Integer periodo, String tipoDisciplina, Long cursoId);
 
-    boolean existsByNomeIgnoreCaseAndCursoIdAndIdNot(String nome, Long cursoId, Long id);
+boolean existsByNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoIdAndIdNot(
+        String nome, Integer periodo, String tipoDisciplina, Long cursoId, Long id);
 }

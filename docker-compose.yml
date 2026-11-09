@@ -1,14 +1,18 @@
-# Ambiente de DESENVOLVIMENTO local: backend + PostgreSQL.
+# Ambiente de DESENVOLVIMENTO local: backend + PostgreSQL + Mailpit.
 # O deploy dos ambientes hospedados é responsabilidade do repositório de
 # infraestrutura; este arquivo não deve ser usado em produção.
 #
 # Uso:
-#   cp .env.example .env   (e preencha os valores CHANGE_ME)
+#   cp .env.example .env
+#   # preencha os valores CHANGE_ME (JWT_SECRET precisa de 32+ caracteres:
+#   # openssl rand -hex 32)
 #   docker compose up -d --build
+#
+# Mailpit (caixa de entrada local): http://localhost:8025
 
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:17
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?defina POSTGRES_DB no .env}
       POSTGRES_USER: ${POSTGRES_USER:?defina POSTGRES_USER no .env}
@@ -29,6 +33,20 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  # Servidor SMTP local para o fluxo de recuperação de senha. Nenhum e-mail
+  # sai da máquina: tudo fica visível na interface web em :8025.
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_WEB_PORT:-8025}:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -37,12 +55,14 @@ services:
         # Só inicia o backend depois que o PostgreSQL aceita conexões,
         # evitando falha do Flyway na primeira subida.
         condition: service_healthy
+      mailpit:
+        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env (32+ caracteres)}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
       # Documentação liberada por padrão neste compose, que é local e só
       # escuta em localhost. Nos ambientes hospedados o default é FECHADO
@@ -52,6 +72,16 @@ services:
       # possa ser publicada e o emissor dos tokens fique isolado dos
       # ambientes hospedados.
       APP_ENVIRONMENT: ${APP_ENVIRONMENT:-dev}
+      # SMTP aponta para o Mailpit, não para um servidor real.
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_AUTH: ${SMTP_AUTH:-false}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-false}
+      SMTP_FROM: ${SMTP_FROM:-noreply@gini.local}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      PASSWORD_RESET_EXPIRATION_MINUTES: ${PASSWORD_RESET_EXPIRATION_MINUTES:-15}
     ports:
       - "8080:8080"
     healthcheck:

@@ -33,7 +33,9 @@ public class ValidarCargaHorariaDisciplinaUseCase {
                 disciplina.getId(), entity.getQuadroHorario().getId(), alocacaoId);
         int novaDuracao = entity.getBlocoHorario().getDuracao();
 
-        if (cargaHorariaAtual + novaDuracao > disciplina.getCargaHoraria()) {
+        // A carga horária da disciplina é cadastrada em horas; os blocos são somados em minutos.
+        long limiteEmMinutos = disciplina.getCargaHoraria() * 60L;
+        if ((long) cargaHorariaAtual + novaDuracao > limiteEmMinutos) {
             throw new BusinessException("A carga horária total da disciplina já foi preenchida no quadro horário.");
         }
     }

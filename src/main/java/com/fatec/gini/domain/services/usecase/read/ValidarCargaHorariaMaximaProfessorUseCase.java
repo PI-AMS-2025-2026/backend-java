@@ -13,6 +13,7 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,24 +27,24 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
         private static final Duration LIMITE_CARGA_HORARIA_DIARIA = Duration.ofHours(8);
 
         // Intervalo mínimo obrigatório entre o fim de uma jornada e o início da próxima
-        private static final Duration DESCANSO_MINIMO_INTERJORNADA = Duration.ofHours(12);
+        private static final Duration DESCANSO_MINIMO_INTERJORNADA = Duration.ofHours(11);
 
         // Quantidade de minutos existentes em um dia completo
         private static final long MINUTOS_POR_DIA = Duration.ofDays(1).toMinutes();
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, noRollbackFor = { BusinessException.class, ParameterException.class })
         public void validar(Long professorId, DiaSemana diaSemana) {
                 validar(professorId, diaSemana, null);
         }
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, noRollbackFor = { BusinessException.class, ParameterException.class })
         public void validar(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
                 // Valida se o professor ultrapassou a carga horária diária permitida
                 validarCargaHorariaDiaria(professorId, diaSemana, alocacaoAtual);
 
-                // Valida se existe pelo menos 12h de descanso entre jornadas
-                validarDescansoMinimo12Horas(professorId, diaSemana, alocacaoAtual);
+                // Valida se existe pelo menos 11h de descanso entre jornadas
+                validarDescansoMinimo11Horas(professorId, diaSemana, alocacaoAtual);
         }
 
         /**
@@ -62,10 +63,7 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
 
                 // Soma a duração de todos os blocos de horário do dia
                 long totalMinutos = alocacoes.stream()
-                                .mapToLong(alocacao -> Duration.between(
-                                                alocacao.getBlocoHorario().getHoraInicio(),
-                                                alocacao.getBlocoHorario().getHoraFim())
-                                                .toMinutes())
+                                .mapToLong(this::duracaoEmMinutos)
                                 .sum();
 
                 if (totalMinutos > LIMITE_CARGA_HORARIA_DIARIA.toMinutes()) {
@@ -74,51 +72,83 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
                 }
         }
 
+        private long duracaoEmMinutos(Alocacao alocacao) {
+                if (alocacao == null || alocacao.getBlocoHorario() == null
+                                || alocacao.getBlocoHorario().getHoraInicio() == null
+                                || alocacao.getBlocoHorario().getHoraFim() == null
+                                || !alocacao.getBlocoHorario().getHoraFim()
+                                                .isAfter(alocacao.getBlocoHorario().getHoraInicio())) {
+                        throw new ParameterException(
+                                        "Existe uma alocação do professor com bloco de horário inválido.");
+                }
+
+                return Duration.between(
+                                alocacao.getBlocoHorario().getHoraInicio(),
+                                alocacao.getBlocoHorario().getHoraFim()).toMinutes();
+        }
+
         /**
          * Regra de negócio:
-         * Deve existir no mínimo 12 horas de descanso entre o término da última aula
+         * Deve existir no mínimo 11 horas de descanso entre o término da última aula
          * de um dia e o início da primeira aula do dia seguinte.
          */
-        private void validarDescansoMinimo12Horas(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
+        private void validarDescansoMinimo11Horas(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
-                DiaSemana diaAnterior = diaSemana.anterior();
+                List<Alocacao> alocacoesProfessor = new ArrayList<>(
+                                alocacaoRepository.findByProfessorId(professorId));
 
-                List<Alocacao> aulasDiaAnterior = new ArrayList<>(
-                                alocacaoRepository.buscarUltimaAulaDoDia(professorId, diaAnterior));
-
-                List<Alocacao> aulasDiaAtual = new ArrayList<>(
-                                alocacaoRepository.findByProfessorIdAndDiaSemana(professorId, diaSemana));
+                List<Alocacao> aulasDiaAtual = alocacoesProfessor.stream()
+                                .filter(alocacao -> alocacao.getDiaSemana() == diaSemana)
+                                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
 
                 if (alocacaoAtual != null) {
-                        aulasDiaAnterior.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
+                        alocacoesProfessor.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
                         aulasDiaAtual.removeIf(alocacao -> Objects.equals(alocacao.getId(), alocacaoAtual.getId()));
-
-                        if (alocacaoAtual.getDiaSemana() == diaAnterior) {
-                                aulasDiaAnterior.add(alocacaoAtual);
-                        }
                         if (alocacaoAtual.getDiaSemana() == diaSemana) {
                                 aulasDiaAtual.add(alocacaoAtual);
+                                alocacoesProfessor.add(alocacaoAtual);
                         }
                 }
 
-                if (aulasDiaAnterior.isEmpty() || aulasDiaAtual.isEmpty()) {
+                if (aulasDiaAtual.isEmpty()) {
                         return;
                 }
 
-                LocalTime fimDiaAnterior = aulasDiaAnterior.getFirst()
-                                .getBlocoHorario()
-                                .getHoraFim();
+                DiaSemana diaAnterior = encontrarUltimoDiaComAulaAntesDe(alocacoesProfessor, diaSemana);
+                if (diaAnterior == null) {
+                        return;
+                }
+
+                List<Alocacao> aulasDiaAnterior = alocacoesProfessor.stream()
+                                .filter(alocacao -> alocacao.getDiaSemana() == diaAnterior)
+                                .sorted((a, b) -> b.getBlocoHorario().getHoraFim()
+                                                .compareTo(a.getBlocoHorario().getHoraFim()))
+                                .toList();
+
+                Alocacao ultimaAulaDiaAnterior = aulasDiaAnterior.getFirst();
+                if (ultimaAulaDiaAnterior == null || ultimaAulaDiaAnterior.getBlocoHorario() == null) {
+                        throw new ParameterException(
+                                        "Existe uma alocação anterior do professor com bloco de horário inválido.");
+                }
+
+                LocalTime fimDiaAnterior = ultimaAulaDiaAnterior.getBlocoHorario().getHoraFim();
+
+                if (fimDiaAnterior == null) {
+                        throw new ParameterException(
+                                        "Existe uma alocação anterior do professor com horário inválido.");
+                }
 
                 LocalTime inicioDiaAtual = aulasDiaAtual.stream()
                                 .map(alocacao -> alocacao.getBlocoHorario().getHoraInicio())
                                 .min(LocalTime::compareTo)
                                 .orElseThrow(() -> new BusinessException("Nenhuma aula encontrada para o dia."));
 
-                long minutosDescanso = calcularMinutosDescansoInterjornada(fimDiaAnterior, inicioDiaAtual);
+                long minutosDescanso = calcularMinutosDescansoInterjornada(
+                                fimDiaAnterior, inicioDiaAtual, distanciaEmDias(diaAnterior, diaSemana));
 
                 if (minutosDescanso < DESCANSO_MINIMO_INTERJORNADA.toMinutes()) {
                         throw new BusinessException(
-                                        "O intervalo mínimo de interjornada de 12h não foi respeitado.");
+                                        "O intervalo mínimo de interjornada de 11h não foi respeitado.");
                 }
         }
 
@@ -135,13 +165,27 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
          */
         private long calcularMinutosDescansoInterjornada(
                         LocalTime fimDiaAnterior,
-                        LocalTime inicioDiaAtual) {
+                        LocalTime inicioDiaAtual,
+                        int diasEntreJornadas) {
 
                 long minutosFimDiaAnterior = fimDiaAnterior.toSecondOfDay() / 60;
 
                 long minutosInicioDiaAtual = inicioDiaAtual.toSecondOfDay() / 60;
 
-                return (MINUTOS_POR_DIA - minutosFimDiaAnterior)
+                return ((long) diasEntreJornadas * MINUTOS_POR_DIA - minutosFimDiaAnterior)
                                 + minutosInicioDiaAtual;
+        }
+
+        private DiaSemana encontrarUltimoDiaComAulaAntesDe(List<Alocacao> alocacoes, DiaSemana diaAtual) {
+                return alocacoes.stream()
+                                .map(Alocacao::getDiaSemana)
+                                .filter(dia -> dia != diaAtual)
+                                .min((a, b) -> Integer.compare(distanciaEmDias(b, diaAtual), distanciaEmDias(a, diaAtual)))
+                                .orElse(null);
+        }
+
+        private int distanciaEmDias(DiaSemana anterior, DiaSemana atual) {
+                int distancia = atual.ordinal() - anterior.ordinal();
+                return distancia > 0 ? distancia : distancia + DiaSemana.values().length;
         }
 }

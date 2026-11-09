@@ -61,7 +61,8 @@ public class ValidarAlocacaoUseCase {
 
         validarCargaHorariaProfessor.validar(
                 entity.getProfessor().getId(),
-                entity.getDiaSemana()
+                entity.getDiaSemana(),
+                entity
         );
 
         validarQuadroHorario.executar(entity);
@@ -76,7 +77,11 @@ public class ValidarAlocacaoUseCase {
 
         validarCapacidadeSala.executar(entity);
 
-        validarDuplicidade.executarCriacao(entity);
+        if (entity.getId() == null) {
+            validarDuplicidade.executarCriacao(entity);
+        } else {
+            validarDuplicidade.executarAtualizacao(entity);
+        }
 
         validarCoerenciaCurso.validar(entity);
     }

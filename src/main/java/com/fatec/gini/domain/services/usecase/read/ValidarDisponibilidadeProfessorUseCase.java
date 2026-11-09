@@ -33,7 +33,7 @@ public class ValidarDisponibilidadeProfessorUseCase {
         var professorId = entity.getProfessor().getId();
 
         temDisponibilidadeDiaHorario(professorId, diaSemana, horario);
-        temSobreposicaoAtividades(professorId, diaSemana, horario);
+        temSobreposicaoAtividades(professorId, diaSemana, horario, entity.getId());
     }
 
     private void temDisponibilidadeDiaHorario(Long professorId, DiaSemana diaSemana, Long horarioId) {
@@ -45,10 +45,11 @@ public class ValidarDisponibilidadeProfessorUseCase {
         }
     }
 
-    private void temSobreposicaoAtividades(Long professorId, DiaSemana diaSemana, Long horarioId) {
-        boolean temSobreposicao = alocacaoRepository
-                .existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(
-                        professorId, diaSemana, horarioId);
+    private void temSobreposicaoAtividades(Long professorId, DiaSemana diaSemana, Long horarioId, Long alocacaoId) {
+        boolean temSobreposicao = alocacaoId == null
+                ? alocacaoRepository.existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(professorId, diaSemana, horarioId)
+                : alocacaoRepository.existsByProfessorIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
+                        professorId, diaSemana, horarioId, alocacaoId);
 
         if (temSobreposicao) {
             throw new BusinessException("Professor já está alocado em outra turma/disciplina neste dia e horário.");
