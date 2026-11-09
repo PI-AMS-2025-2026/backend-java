@@ -1,0 +1,40 @@
+# Artefatos de build do host: a imagem compila do zero no estágio "build".
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Coleções/ambientes do Postman não fazem parte da aplicação.
+postman/
+.postman/
+
+# Metadados de versionamento e automação.
+.git
+.gitignore
+.gitattributes
+.github
+
+# Configurações de IDE.
+.idea
+*.iml
+*.iws
+*.ipr
+.vscode
+.classpath
+.project
+.settings
+.factorypath
+.apt_generated
+
+# Documentação (não é necessária em tempo de execução).
+*.md
+
+# Orquestração local e segredos.
+docker-compose*
+Dockerfile*
+.dockerignore
+.env*
+!.env.example
+
+# Diversos
+.DS_Store
+HELP.md
