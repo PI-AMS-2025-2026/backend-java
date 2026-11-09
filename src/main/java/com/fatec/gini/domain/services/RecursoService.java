@@ -77,6 +77,10 @@ public class RecursoService {
                 .orElseThrow(() -> new EntityNotFoundException(
                 "Recurso não encontrado com ID: " + id));
 
+        if (repository.existsByNomeIgnoreCaseAndIdNot(request.nome(), id)) {
+    throw new IllegalArgumentException("Já existe outro recurso cadastrado com esse nome.");
+    }
+
         entity.setNome(request.nome());
 
         // Utiliza diretamente o ID recebido no payload.
@@ -95,8 +99,8 @@ public class RecursoService {
             throw new EntityNotFoundException("Recurso não encontrado com ID: " + id);
         }
         
-        if (recursoSalaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Esse recurso está vinculado a um recurso_sala");
+        if (recursoSalaRepository.existsByRecursoId(id)) {
+            throw new IllegalArgumentException("Esse recurso está vinculado a um recurso_sala e não pode ser excluido.");
         }
         repository.deleteById(id);
     }

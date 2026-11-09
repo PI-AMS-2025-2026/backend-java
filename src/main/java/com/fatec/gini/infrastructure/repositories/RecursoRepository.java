@@ -15,6 +15,8 @@ public interface RecursoRepository extends JpaRepository<Recurso, Long> {
   Verifica se já existe um recurso com o mesmo nome.
    */
   boolean existsByNomeIgnoreCase(String nome);
+
+  boolean existsByNomeIgnoreCaseAndIdNot(String nome, Long id);
     /**
      * Retorna recursos aplicando filtros opcionais.
      *
