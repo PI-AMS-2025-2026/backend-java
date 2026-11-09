@@ -28,6 +28,10 @@ spring:
           starttls:
             enable: ${SMTP_STARTTLS:false}
 app:
+  environment: test
+  swagger:
+    # Mantém o OpenApiConfig ativo no perfil de teste.
+    enabled: true
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
   mail:
     from: ${SMTP_FROM:noreply@gini.local}

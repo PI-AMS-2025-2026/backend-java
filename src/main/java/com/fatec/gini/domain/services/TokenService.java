@@ -20,7 +20,17 @@ public class TokenService {
     @Value("${api.security.token.expirationMs:86400000}")
     private Long tokenExpirationMs;
 
-    private final String issuer = "fatec-gini";
+    /**
+     * Emissor dos tokens, derivado do ambiente (ver api.security.token.issuer em
+     * application.properties).
+     *
+     * Como o emissor também é validado na verificação, um token emitido em um
+     * ambiente é recusado nos demais — mesmo que compartilhem o mesmo segredo.
+     * Isso evita que um token obtido no ambiente de desenvolvimento (onde a
+     * documentação da API fica acessível) seja reaproveitado em produção.
+     */
+    @Value("${api.security.token.issuer:fatec-gini}")
+    private String issuer;
 
     // Cria o JWT usado para autorizar as requisicoes do usuario autenticado.
     public String gerarToken(Usuario usuario) {

@@ -34,6 +34,12 @@ spring:
           timeout: 10000
           writetimeout: 10000
 app:
+  # Execução local individual: emissor de tokens próprio, isolado dos
+  # ambientes hospedados.
+  environment: local
+  swagger:
+    # Desenvolvimento local: documentação sempre disponível.
+    enabled: true
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
   mail:
     from: ${SMTP_FROM:noreply@gini.local}

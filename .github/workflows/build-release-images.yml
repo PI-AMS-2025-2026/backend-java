@@ -1,0 +1,152 @@
+name: build-release-images
+
+# Publica a imagem no ghcr.io somente após os testes passarem.
+# O deploy é responsabilidade do repositório de infraestrutura; aqui apenas
+# notificamos (a partir da branch dev) que uma nova imagem está disponível.
+on:
+  push:
+    branches: [dev, staging, main]
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: build-release-images-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  tests:
+    name: Testes
+    uses: ./.github/workflows/ci-tests.yml
+
+  build:
+    name: Build e publicação da imagem
+    needs: tests
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta_sha.outputs.tag }}
+      short_sha: ${{ steps.meta_sha.outputs.short_sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Configurar Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login no ghcr.io
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calcular SHA curto e nome da imagem
+        id: meta_sha
+        env:
+          REPOSITORIO: ${{ github.repository }}
+          SHA_COMPLETO: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${SHA_COMPLETO:0:7}"
+          # O ghcr.io exige o nome da imagem em minúsculas.
+          IMAGEM="ghcr.io/$(echo "$REPOSITORIO" | tr '[:upper:]' '[:lower:]')"
+          {
+            echo "short_sha=$SHORT_SHA"
+            echo "tag=sha-$SHORT_SHA"
+            echo "imagem=$IMAGEM"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Definir tags e labels
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ steps.meta_sha.outputs.imagem }}
+          tags: |
+            type=raw,value=sha-${{ steps.meta_sha.outputs.short_sha }}
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=Backend do Projeto Integrador (GINI) - grade horária acadêmica da Fatec Itu
+            org.opencontainers.image.licenses=NOASSERTION
+
+      - name: Build e push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Resumo da publicação
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          {
+            echo "## Imagem publicada"
+            echo ""
+            echo '```'
+            echo "$TAGS"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  notify-infra:
+    name: Notificar repositório de infraestrutura
+    needs: build
+    # Apenas a branch dev dispara deploy automático. staging e produção são
+    # acionados manualmente (workflow_dispatch) no repositório de infra.
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar repository_dispatch
+        env:
+          INFRA_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+          INFRA_REPOSITORY: ${{ vars.INFRA_REPOSITORY }}
+          TAG: ${{ needs.build.outputs.tag }}
+          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${INFRA_TOKEN:-}" ]; then
+            echo "::error::O secret INFRA_DISPATCH_TOKEN não está configurado neste repositório."
+            exit 1
+          fi
+          if [ -z "${INFRA_REPOSITORY:-}" ]; then
+            echo "::error::A variable INFRA_REPOSITORY (formato owner/repo) não está configurada."
+            exit 1
+          fi
+
+          # O JSON é montado com jq a partir de variáveis de ambiente (env:),
+          # nunca interpolando expressões do GitHub diretamente no script.
+          PAYLOAD="$(jq -n \
+            --arg service backend \
+            --arg tag "$TAG" \
+            --arg sha "$SHA" \
+            --arg branch "$BRANCH" \
+            '{event_type: "image-published",
+              client_payload: {service: $service, tag: $tag, sha: $sha, branch: $branch}}')"
+
+          echo "Notificando $INFRA_REPOSITORY com a tag $TAG"
+
+          CODIGO="$(curl -sS -o resposta.txt -w '%{http_code}' \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $INFRA_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$INFRA_REPOSITORY/dispatches" \
+            -d "$PAYLOAD")"
+
+          if [ "$CODIGO" != "204" ]; then
+            echo "::error::repository_dispatch falhou (HTTP $CODIGO)."
+            cat resposta.txt
+            exit 1
+          fi
+          echo "repository_dispatch enviado com sucesso (HTTP 204)."
