@@ -14,6 +14,11 @@ spring:
       path: /h2-console
   flyway:
     enabled: false
+app:
+  environment: test
+  swagger:
+    # Mantém o OpenApiConfig ativo no perfil de teste, como antes.
+    enabled: true
 api:
   security:
     token:

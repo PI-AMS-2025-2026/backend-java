@@ -15,9 +15,15 @@ spring:
   flyway:
     enabled: false
 app:
+  # Execução local individual: emissor de tokens próprio, isolado dos
+  # ambientes hospedados.
+  environment: local
   security:
     authorization:
       enabled: false
+  swagger:
+    # Desenvolvimento local: documentação sempre disponível.
+    enabled: true
 api:
   security:
     token:
