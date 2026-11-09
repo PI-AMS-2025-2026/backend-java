@@ -428,6 +428,19 @@ docker compose down -v
 docker compose up -d
 ```
 
+> **Vindo de uma versão anterior deste compose?** O serviço `db` usa
+> PostgreSQL 17. Um volume criado por uma versão anterior do PostgreSQL faz o
+> contêiner falhar na subida com:
+>
+> ```text
+> FATAL: database files are incompatible with server
+> DETAIL: The data directory was initialized by PostgreSQL version 16,
+>         which is not compatible with this version 17
+> ```
+>
+> A solução é recriar o volume com `docker compose down -v` (apaga os dados
+> locais do banco, que são apenas de desenvolvimento).
+
 ### Comandos úteis
 
 ```bash
