@@ -31,9 +31,6 @@ public class HistoricoVersaoAlocacao {
     @Column(name = "data_alteracao", nullable = false)
     private LocalDate dataAlteracao;
 
-    @Column(nullable = false)
-    private String justificativa;
-
     @Column(name = "campo_alterado", nullable = false)
     private String campoAlterado;
 
@@ -51,10 +48,9 @@ public class HistoricoVersaoAlocacao {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public HistoricoVersaoAlocacao(LocalDate dataAlteracao, String justificativa, String campoAlterado, String valorAntigo,
+    public HistoricoVersaoAlocacao(LocalDate dataAlteracao, String campoAlterado, String valorAntigo,
             String valorNovo) {
         this.dataAlteracao = dataAlteracao;
-        this.justificativa = justificativa;
         this.campoAlterado = campoAlterado;
         this.valorAntigo = valorAntigo;
         this.valorNovo = valorNovo;

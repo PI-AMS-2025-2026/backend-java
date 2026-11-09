@@ -12,7 +12,6 @@ public class HistoricoVersaoAlocacaoMapper {
         }
         return new HistoricoVersaoAlocacao(
                 request.dataAlteracao(),
-                request.justificativa(),
                 request.campoAlterado(),
                 request.valorAntigo(),
                 request.valorNovo());
@@ -22,7 +21,6 @@ public class HistoricoVersaoAlocacaoMapper {
         return new HistoricoVersaoAlocacaoResponse(
                 entity.getId(),
                 entity.getDataAlteracao(),
-                entity.getJustificativa(),
                 entity.getCampoAlterado(),
                 entity.getValorAntigo(),
                 entity.getValorNovo(),

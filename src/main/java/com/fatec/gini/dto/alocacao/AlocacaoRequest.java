@@ -41,8 +41,6 @@ public record AlocacaoRequest(
     @Valid
     LongDTO quadroHorario,
 
-    String justificativaAlteracao,
-
     @NotNull(message = "Usuário responsável pela alteração é obrigatório")
     @Valid
     LongDTO usuarioAlteracao
@@ -56,7 +54,6 @@ public record AlocacaoRequest(
             DiaSemana diaSemana,
             Long horarioId,
             Long quadroHorarioId,
-            String justificativaAlteracao,
             Long usuarioAlteracaoId) {
         this(
                 turmaId != null ? new LongDTO(turmaId) : null,
@@ -66,7 +63,6 @@ public record AlocacaoRequest(
                 diaSemana,
                 horarioId != null ? new LongDTO(horarioId) : null,
                 quadroHorarioId != null ? new LongDTO(quadroHorarioId) : null,
-                justificativaAlteracao,
                 usuarioAlteracaoId != null ? new LongDTO(usuarioAlteracaoId) : null
         );
     }

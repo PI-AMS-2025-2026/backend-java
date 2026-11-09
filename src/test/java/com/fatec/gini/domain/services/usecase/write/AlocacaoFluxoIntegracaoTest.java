@@ -71,7 +71,7 @@ class AlocacaoFluxoIntegracaoTest {
     void permiteEditarSemConfundirAPropriaAlocacaoComConflito() {
         Long id = criarAlocacao.executar(alocacao(5L), 1L).getId();
 
-        Alocacao atualizada = atualizarAlocacao.executar(id, alocacao(5L), 1L, "Ajuste de cadastro");
+        Alocacao atualizada = atualizarAlocacao.executar(id, alocacao(5L), 1L);
 
         assertThat(atualizada.getId()).isEqualTo(id);
     }
@@ -90,7 +90,7 @@ class AlocacaoFluxoIntegracaoTest {
                 1L);
         Long id = criarAlocacao.executar(alocacao(5L), 1L).getId();
 
-        assertThatThrownBy(() -> atualizarAlocacao.executar(id, alocacao(2L), 1L, "Troca de sala"))
+        assertThatThrownBy(() -> atualizarAlocacao.executar(id, alocacao(2L), 1L))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("já está ocupada");
     }

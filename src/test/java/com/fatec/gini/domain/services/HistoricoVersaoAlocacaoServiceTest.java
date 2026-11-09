@@ -38,7 +38,7 @@ class HistoricoVersaoAlocacaoServiceTest {
     @Test
     void deveListarHistoricoAplicandoFiltrosEMapeandoPaginacao() {
         HistoricoVersaoAlocacao historico = new HistoricoVersaoAlocacao(
-                LocalDate.of(2026, 10, 29), "Ajuste", "sala", "1", "2");
+                LocalDate.of(2026, 10, 29), "sala", "1", "2");
         when(validarAutorizacaoCurso.cursoParaFiltro(null)).thenReturn(7L);
         when(repository.buscarPorFiltros(42L, 9L, 7L, org.springframework.data.domain.PageRequest.of(1, 5)))
                 .thenReturn(new PageImpl<>(List.of(historico), org.springframework.data.domain.PageRequest.of(1, 5), 6));

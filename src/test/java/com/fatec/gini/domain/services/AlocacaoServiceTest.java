@@ -136,7 +136,7 @@ class AlocacaoServiceTest {
         assertThat(response.sugestoes().get(0))
                 .usingRecursiveComparison()
                 .isEqualTo(new com.fatec.gini.dto.alocacao.AlocacaoRequest(
-                        11L, 12L, 13L, 14L, DiaSemana.QUARTA, 16L, 17L, null, null));
+                        11L, 12L, 13L, 14L, DiaSemana.QUARTA, 16L, 17L, null));
     }
 
     @Test

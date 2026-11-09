@@ -8,7 +8,6 @@ import com.fatec.gini.dto.usuario.UsuarioResponse;
 public record HistoricoVersaoAlocacaoResponse(
         Long id,
         LocalDate dataAlteracao,
-        String justificativa,
         String campoAlterado,
         String valorAntigo,
         String valorNovo,

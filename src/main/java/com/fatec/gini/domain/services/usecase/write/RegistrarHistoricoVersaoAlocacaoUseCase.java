@@ -51,50 +51,48 @@ public class RegistrarHistoricoVersaoAlocacaoUseCase {
                 null,
                 alocacaoSalva.getId().toString(), // Registra apenas o ID da alocação no histórico.
                 alocacaoSalva,
-                usuarioAlteracao,
-                "Criação de alocação");
+                usuarioAlteracao);
     }
 
     @Transactional
-    public void registrarAtualizacao(Alocacao alocacaoSalva, Alocacao alocacaoAntiga, Usuario usuarioAlteracao,
-            String justificativa) {
+    public void registrarAtualizacao(Alocacao alocacaoSalva, Alocacao alocacaoAntiga, Usuario usuarioAlteracao) {
 
         // Turma
         registrar("turma", alocacaoAntiga.getTurma().getId().toString(), alocacaoSalva.getTurma().getId().toString(),
                 alocacaoSalva,
-                usuarioAlteracao, justificativa);
+                usuarioAlteracao);
         // Disciplina
         registrar("disciplina", alocacaoAntiga.getDisciplina().getId().toString(),
                 alocacaoSalva.getDisciplina().getId().toString(),
                 alocacaoSalva,
-                usuarioAlteracao, justificativa);
+                usuarioAlteracao);
 
         // Sala
         registrar("sala", alocacaoAntiga.getSala().getId().toString(), alocacaoSalva.getSala().getId().toString(),
                 alocacaoSalva,
-                usuarioAlteracao, justificativa);
+                usuarioAlteracao);
 
         // Professor
         registrar("professor", alocacaoAntiga.getProfessor().getId().toString(),
                 alocacaoSalva.getProfessor().getId().toString(),
                 alocacaoSalva,
-                usuarioAlteracao, justificativa);
+                usuarioAlteracao);
 
         // Dia da semana
         registrar("diaSemana", alocacaoAntiga.getDiaSemana().toString(),
                 alocacaoSalva.getDiaSemana().toString(),
                 alocacaoSalva,
-                usuarioAlteracao, justificativa);
+                usuarioAlteracao);
 
         // Bloco de horário
         registrar("blocoHorario", alocacaoAntiga.getBlocoHorario().getId().toString(),
                 alocacaoSalva.getBlocoHorario().getId().toString(),
                 alocacaoSalva,
-                usuarioAlteracao, justificativa);
+                usuarioAlteracao);
         // Quadro horário
         registrar("quadroHorario", alocacaoAntiga.getQuadroHorario().getId().toString(),
                 alocacaoSalva.getQuadroHorario().getId().toString(),
-                alocacaoSalva, usuarioAlteracao, justificativa);
+                alocacaoSalva, usuarioAlteracao);
     }
 
     private void registrar(
@@ -102,8 +100,7 @@ public class RegistrarHistoricoVersaoAlocacaoUseCase {
             String valorAntigo,
             String valorNovo,
             Alocacao alocacao,
-            Usuario usuario,
-            String justificativa) {
+            Usuario usuario) {
 
         if (Objects.equals(valorAntigo, valorNovo)) {
             return;
@@ -111,7 +108,6 @@ public class RegistrarHistoricoVersaoAlocacaoUseCase {
 
         HistoricoVersaoAlocacao historicoVersaoAlocacao = new HistoricoVersaoAlocacao();
         historicoVersaoAlocacao.setDataAlteracao(LocalDate.now());
-        historicoVersaoAlocacao.setJustificativa(justificativa);
         historicoVersaoAlocacao.setCampoAlterado(campoAlterado);
         historicoVersaoAlocacao.setValorAntigo(valorAntigo != null ? valorAntigo.toString() : null);
         historicoVersaoAlocacao.setValorNovo(valorNovo != null ? valorNovo.toString() : null);

@@ -53,7 +53,6 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         assertThat(historico.getCampoAlterado()).isEqualTo("alocacao");
         assertThat(historico.getValorAntigo()).isNull();
         assertThat(historico.getValorNovo()).isEqualTo("42");
-        assertThat(historico.getJustificativa()).isEqualTo("Criação de alocação");
         assertThat(historico.getDataAlteracao()).isNotNull();
         assertThat(historico.getAlocacao()).isSameAs(alocacao);
         assertThat(historico.getUsuario()).isSameAs(usuario);
@@ -65,7 +64,7 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         Alocacao nova = alocacao(11L, 21L, 31L, 41L, DiaSemana.TERÇA, 51L, 61L);
         Usuario usuario = mock(Usuario.class);
 
-        useCase.registrarAtualizacao(nova, antiga, usuario, "Ajuste de grade");
+        useCase.registrarAtualizacao(nova, antiga, usuario);
 
         ArgumentCaptor<HistoricoVersaoAlocacao> captor = ArgumentCaptor.forClass(HistoricoVersaoAlocacao.class);
         verify(repository, times(7)).save(captor.capture());
@@ -74,7 +73,6 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
 
         assertThat(porCampo).hasSize(7);
         porCampo.values().forEach(historico -> {
-            assertThat(historico.getJustificativa()).isEqualTo("Ajuste de grade");
             assertThat(historico.getAlocacao()).isSameAs(nova);
             assertThat(historico.getUsuario()).isSameAs(usuario);
         });
@@ -91,7 +89,7 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         Alocacao antiga = alocacao(10L, 20L, 30L, 40L, DiaSemana.SEGUNDA, 50L, 60L);
         Alocacao nova = alocacao(10L, 20L, 30L, 40L, DiaSemana.SEGUNDA, 50L, 60L);
 
-        useCase.registrarAtualizacao(nova, antiga, mock(Usuario.class), "Sem alterações");
+        useCase.registrarAtualizacao(nova, antiga, mock(Usuario.class));
 
         verify(repository, times(0)).save(any(HistoricoVersaoAlocacao.class));
     }
