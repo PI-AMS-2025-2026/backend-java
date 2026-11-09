@@ -24,6 +24,7 @@ import com.fatec.gini.dto.curso.CursoRequest;
 import com.fatec.gini.dto.curso.CursoResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
+import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -32,6 +33,11 @@ class CursoServiceTest {
 
     @Mock
     private CursoRepository repository;
+
+    // CursoService consulta as turmas do curso ao inativá-lo; sem este mock o
+    // @InjectMocks injeta null e o teste de inativação falha com NullPointer.
+    @Mock
+    private TurmaRepository turmaRepository;
 
     @Mock
     private ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
