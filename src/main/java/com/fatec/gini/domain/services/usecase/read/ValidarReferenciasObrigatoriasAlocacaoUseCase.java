@@ -2,7 +2,6 @@ package com.fatec.gini.domain.services.usecase.read;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
@@ -101,18 +100,6 @@ public class ValidarReferenciasObrigatoriasAlocacaoUseCase {
         }
         return quadroHorarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado com ID: " + id));
-    }
-
-    /**
-     * Verifica se a justificativa de alteração é válida (não nula e não vazia).
-     * 
-     * @param justificativaAlteracao
-     * @exception ParameterException se a justificativa for nula ou vazia
-     */
-    public void validarJustificativaAlteracao(String justificativaAlteracao) {
-        if (!StringUtils.hasText(justificativaAlteracao)) {
-            throw new ParameterException("A justificativa da alteração é obrigatória para atualizar a alocação.");
-        }
     }
 
     /**

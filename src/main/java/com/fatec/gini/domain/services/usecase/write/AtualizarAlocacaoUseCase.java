@@ -70,7 +70,7 @@ public class AtualizarAlocacaoUseCase {
     private final  AlocacaoRepository alocacaoRepository;
 
     @Transactional
-    public Alocacao executar(Long id, Alocacao entity, long professorAlteracao, String justificativaAlteracao) {
+    public Alocacao executar(Long id, Alocacao entity, long professorAlteracao) {
 
         Alocacao alocacaoAtual = alocacaoRepository.findById(id)
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
@@ -93,7 +93,6 @@ public class AtualizarAlocacaoUseCase {
         // Verifica se dados em entidade são válidos e existem
         validarRefObrigatorias.validar(entity);
         var professorAlteracaoEntity = validarRefObrigatorias.buscarUsuarioAlteracaoPorId(professorAlteracao);
-        // validarRefObrigatorias.validarJustificativaAlteracao(justificativaAlteracao);
 
         // valida a compatibilidade da disciplina com a sala alocada
          validarDisciplinaTipoSala.validarCompatibilidadeDisciplinaSala(
@@ -135,8 +134,7 @@ public class AtualizarAlocacaoUseCase {
         Alocacao alocacaoSalva = alocacaoRepository.save(entity);
 
         // registrar histórico de versão da atualização
-        historicoVersaoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, alocacaoAntiga, professorAlteracaoEntity,
-                justificativaAlteracao);
+        historicoVersaoAlocacaoUseCase.registrarAtualizacao(alocacaoSalva, alocacaoAntiga, professorAlteracaoEntity);
 
         return alocacaoSalva;
     }

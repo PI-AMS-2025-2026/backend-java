@@ -104,14 +104,11 @@ public class AlocacaoService {
 
         Alocacao entity = AlocacaoMapper.toEntity(request);
 
-        String justificativaAlteracao = request.justificativaAlteracao();
-
         return AlocacaoMapper.toResponse(
                 atualizarAlocacaoUseCase.executar(
                         id,
                         entity,
-                        validarAutorizacaoCurso.usuarioAutenticado().getId(),
-                        justificativaAlteracao));
+                        validarAutorizacaoCurso.usuarioAutenticado().getId()));
     }
 
     /*
@@ -137,7 +134,6 @@ public class AlocacaoService {
                 request.diaSemana(),
                 request.horario().id(),
                 request.quadroHorario().id(),
-                null,
                 null);
 
         Alocacao entity = AlocacaoMapper.toEntity(tentativa);
@@ -192,7 +188,6 @@ public class AlocacaoService {
                         sugestao.getDiaSemana(),
                         sugestao.getBlocoHorario().getId(),
                         sugestao.getQuadroHorario().getId(),
-                        null,
                         null))
                 .toList();
 
