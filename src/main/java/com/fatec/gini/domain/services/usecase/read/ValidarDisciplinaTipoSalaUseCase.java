@@ -1,7 +1,6 @@
 package com.fatec.gini.domain.services.usecase.read;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Disciplina;
 import com.fatec.gini.domain.entities.Sala;
@@ -10,7 +9,6 @@ import com.fatec.gini.web.exception.BusinessException;
 @Service 
 public class ValidarDisciplinaTipoSalaUseCase {
 
-    @Transactional(readOnly = true)
     public void validarCompatibilidadeDisciplinaSala(Disciplina disciplina, Sala sala) {
         
         // verifica se disciplina e sala não são nulas, se forem ai retorna uma exception

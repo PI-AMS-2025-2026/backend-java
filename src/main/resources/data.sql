@@ -682,3 +682,132 @@ INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor,
 ('SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '19:50:00' AND hora_fim = '20:40:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'GTI002'), (SELECT id_professor FROM professor WHERE email = 'roberto@cps.sp.gov.br'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-12'), (SELECT id_turma FROM turma WHERE codigo = '6/2026-GTI' AND id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'))),
 ('SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '20:50:00' AND hora_fim = '21:40:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'GTI003'), (SELECT id_professor FROM professor WHERE email = 'mariana@cps.sp.gov.br'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '6/2026-GTI' AND id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'))),
 ('SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '21:40:00' AND hora_fim = '22:30:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'GTI004'), (SELECT id_professor FROM professor WHERE email = 'felipe@cps.sp.gov.br'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '6/2026-GTI' AND id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação')));
+
+-- Os horários acima são exemplos visuais repetidos para várias turmas. Como o
+-- backend valida disponibilidade e carga do professor entre todas as turmas,
+-- mantém-se uma turma representativa por curso no seed, preservando as demais
+-- turmas cadastradas para seleção na interface.
+DELETE FROM alocacao
+WHERE id_turma IN (
+    SELECT t.id_turma
+    FROM turma t
+    JOIN curso c ON c.id_curso = t.id_curso
+    WHERE (c.nome = 'Analise e Desenvolvimento de Sistemas'
+           AND t.codigo IN ('2/2026-ADS', '3/2026-ADS', '4/2026-ADS', '5/2026-ADS', '6/2026-ADS'))
+       OR (c.nome = 'Gestão Tecnologia da Informação'
+           AND t.codigo <> '1/2026-GTI')
+       OR (c.nome = 'AMS Análise e Desenvolvimento de Sistemas'
+           AND t.codigo <> '1/2026-AMS')
+       OR c.nome = 'Logistica'
+);
+
+-- Ajusta as salas das disciplinas teóricas/práticas nos dois quadros mantidos.
+UPDATE alocacao
+SET id_sala = (SELECT id_sala FROM sala WHERE codigo = 'SALA-12')
+WHERE id_turma = (SELECT t.id_turma FROM turma t JOIN curso c ON c.id_curso = t.id_curso
+                  WHERE t.codigo = '1/2026-AMS' AND c.nome = 'AMS Análise e Desenvolvimento de Sistemas')
+  AND id_disciplina IN (SELECT id_disciplina FROM disciplina WHERE cod_disciplina IN ('AMS001', 'AMS004'));
+
+UPDATE alocacao
+SET id_sala = (SELECT id_sala FROM sala WHERE codigo = 'LAB-01')
+WHERE id_turma = (SELECT t.id_turma FROM turma t JOIN curso c ON c.id_curso = t.id_curso
+                  WHERE t.codigo = '1/2026-AMS' AND c.nome = 'AMS Análise e Desenvolvimento de Sistemas')
+  AND id_disciplina IN (SELECT id_disciplina FROM disciplina WHERE cod_disciplina IN ('AMS002', 'AMS003'));
+
+UPDATE alocacao
+SET id_sala = (SELECT id_sala FROM sala WHERE codigo = 'SALA-12')
+WHERE id_turma = (SELECT t.id_turma FROM turma t JOIN curso c ON c.id_curso = t.id_curso
+                  WHERE t.codigo = '1/2026-GTI' AND c.nome = 'Gestão Tecnologia da Informação')
+  AND id_disciplina IN (SELECT id_disciplina FROM disciplina WHERE cod_disciplina IN ('GTI001', 'GTI003'));
+
+UPDATE alocacao
+SET id_sala = (SELECT id_sala FROM sala WHERE codigo = 'LAB-01')
+WHERE id_turma = (SELECT t.id_turma FROM turma t JOIN curso c ON c.id_curso = t.id_curso
+                  WHERE t.codigo = '1/2026-GTI' AND c.nome = 'Gestão Tecnologia da Informação')
+  AND id_disciplina IN (SELECT id_disciplina FROM disciplina WHERE cod_disciplina IN ('GTI002', 'GTI004'));
+
+-- Para as grades demonstrativas preservadas, toda aula existente corresponde
+-- a uma disponibilidade explícita do professor. As células livres continuam
+-- sem disponibilidade e podem ser usadas para testar as sugestões.
+INSERT INTO disponibilidade_professor (id_professor, dia_semana, id_bloco_horario)
+SELECT DISTINCT a.id_professor, a.dia_semana, a.id_bloco_horario
+FROM alocacao a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM disponibilidade_professor dp
+    WHERE dp.id_professor = a.id_professor
+      AND dp.dia_semana = a.dia_semana
+      AND dp.id_bloco_horario = a.id_bloco_horario
+);
+
+-- CENÁRIO DEMO PARA TESTAR ALOCAÇÕES PELA TELA
+-- A turma tem uma grade semanal visível, um professor de referência e outro professor
+-- sem carga prévia. O professor de teste possui horários válidos e inválidos na grade
+-- para exercitar criação, validação de disponibilidade e sugestões.
+INSERT INTO curso (nome, periodicidade, status, duracao) VALUES
+('Curso Demo de Alocação', 'Semestral', 'ATIVO', 4);
+
+INSERT INTO professor (nome, email, cidade, status) VALUES
+('Professor Demo', 'professor.demo@gini.local', 'Sorocaba', 'ATIVO'),
+('Professor Base Demo', 'professor.base.demo@gini.local', 'Sorocaba', 'ATIVO');
+
+INSERT INTO sala (codigo, capacidade, id_tipo_sala) VALUES
+('SALA-DEMO-01', 40, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
+('LAB-DEMO-01', 40, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Laboratorio'));
+
+INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso) VALUES
+('1/2026-DEMO', 1, 2026, 30,
+ (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'));
+
+INSERT INTO disciplina (nome, carga_horaria, tipo_disciplina, periodo, modalidade, cod_disciplina, cor, id_curso, id_tipo_sala) VALUES
+('Disciplina Base Demo', 80, 'Teorica', 1, 'Presencial', 'DEMOBASE', '#7C3AED',
+ (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'),
+ (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
+('Prática de Alocação Demo', 80, 'Pratica', 1, 'Presencial', 'DEMOALLOC', '#0F766E',
+ (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'),
+ (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Laboratorio'));
+
+INSERT INTO professor_disciplina (id_professor, id_disciplina) VALUES
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'),
+ (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'),
+ (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOALLOC'));
+
+INSERT INTO quadro_horario (versao, data_criacao, status, id_curso, id_periodo_atividade_quadro) VALUES
+(1, '2026-01-15 11:00:00', 'ATIVO',
+ (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'),
+ (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 1));
+
+-- Horários do professor que ministra a disciplina de teste: 13:20 e 15:10,
+-- de segunda a sábado. A célula de segunda às 14:10 fica livre e indisponível,
+-- permitindo validar a mensagem e receber alternativas na própria tela.
+INSERT INTO disponibilidade_professor (id_professor, dia_semana, id_bloco_horario) VALUES
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'TERÇA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'TERÇA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'QUARTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'QUARTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'QUINTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'QUINTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.demo@gini.local'), 'SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00'));
+
+INSERT INTO disponibilidade_professor (id_professor, dia_semana, id_bloco_horario) VALUES
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), 'SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), 'TERÇA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '14:10:00' AND hora_fim = '15:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), 'QUARTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), 'QUINTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '16:00:00' AND hora_fim = '16:50:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), 'SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:00:00' AND hora_fim = '17:50:00')),
+((SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), 'SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:50:00' AND hora_fim = '18:40:00'));
+
+-- Grade-base com seis dias e seis blocos para oferecer células vazias na interface.
+INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor, id_quadro_horario, id_sala, id_turma) VALUES
+('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '13:20:00' AND hora_fim = '14:10:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
+('TERÇA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '14:10:00' AND hora_fim = '15:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
+('QUARTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '15:10:00' AND hora_fim = '16:00:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
+('QUINTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '16:00:00' AND hora_fim = '16:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
+('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:00:00' AND hora_fim = '17:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
+('SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:50:00' AND hora_fim = '18:40:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO'));

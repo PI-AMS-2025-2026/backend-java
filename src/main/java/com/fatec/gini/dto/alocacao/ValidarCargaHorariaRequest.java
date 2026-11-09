@@ -19,5 +19,11 @@ public record ValidarCargaHorariaRequest(
         DiaSemana diaSemana,
 
         @NotNull(message = "Bloco horário é obrigatório")
-        LongDTO horario) {
+        LongDTO horario,
+
+        Long alocacaoId) {
+
+    public ValidarCargaHorariaRequest(LongDTO professor, DiaSemana diaSemana, LongDTO horario) {
+        this(professor, diaSemana, horario, null);
+    }
 }

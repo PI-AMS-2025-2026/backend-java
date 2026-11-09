@@ -26,7 +26,20 @@ public record SugestaoRequest(
         LongDTO horario,
 
         @NotNull(message = "Quadro horário é obrigatório")
-        LongDTO quadroHorario
+        LongDTO quadroHorario,
+
+        Long alocacaoId
 
 ) {
+
+    public SugestaoRequest(
+            LongDTO turma,
+            LongDTO disciplina,
+            LongDTO sala,
+            LongDTO professor,
+            DiaSemana diaSemana,
+            LongDTO horario,
+            LongDTO quadroHorario) {
+        this(turma, disciplina, sala, professor, diaSemana, horario, quadroHorario, null);
+    }
 }

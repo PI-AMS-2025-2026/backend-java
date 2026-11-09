@@ -32,12 +32,12 @@ public class ValidarCargaHorariaMaximaProfessorUseCase {
         // Quantidade de minutos existentes em um dia completo
         private static final long MINUTOS_POR_DIA = Duration.ofDays(1).toMinutes();
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, noRollbackFor = { BusinessException.class, ParameterException.class })
         public void validar(Long professorId, DiaSemana diaSemana) {
                 validar(professorId, diaSemana, null);
         }
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, noRollbackFor = { BusinessException.class, ParameterException.class })
         public void validar(Long professorId, DiaSemana diaSemana, Alocacao alocacaoAtual) {
 
                 // Valida se o professor ultrapassou a carga horária diária permitida

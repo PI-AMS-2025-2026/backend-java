@@ -14,6 +14,7 @@ import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,7 +64,7 @@ public class ValidarSugestaoAutomatica {
 
             return null;
 
-        } catch (BusinessException e) {
+        } catch (BusinessException | ParameterException e) {
 
             return e.getMessage();
         }
@@ -153,6 +154,7 @@ public class ValidarSugestaoAutomatica {
                             blocoHorario,
                             entity.getQuadroHorario()
                     );
+                    sugestao.setId(entity.getId());
 
                     /*
                      * Executa todas as regras restantes
@@ -231,7 +233,7 @@ public class ValidarSugestaoAutomatica {
 
             return true;
 
-        } catch (BusinessException e) {
+        } catch (BusinessException | ParameterException e) {
 
             return false;
         }
@@ -273,13 +275,11 @@ public class ValidarSugestaoAutomatica {
          * Verifica se o professor já possui outra
          * alocação no mesmo dia e horário.
          */
-        boolean possuiSobreposicao =
-                alocacaoRepository
-                        .existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(
-                                professorId,
-                                diaSemana,
-                                horarioId
-                        );
+        boolean possuiSobreposicao = entity.getId() == null
+                ? alocacaoRepository.existsByProfessorIdAndDiaSemanaAndBlocoHorarioId(
+                        professorId, diaSemana, horarioId)
+                : alocacaoRepository.existsByProfessorIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
+                        professorId, diaSemana, horarioId, entity.getId());
 
         return !possuiSobreposicao;
     }
@@ -293,12 +293,11 @@ public class ValidarSugestaoAutomatica {
             DiaSemana diaSemana,
             BlocoHorario blocoHorario) {
 
-        return alocacaoRepository
-                .existsConflitoTurmaHorario(
-                        entity.getTurma().getId(),
-                        diaSemana,
-                        blocoHorario.getId()
-                );
+        return entity.getId() == null
+                ? alocacaoRepository.existsConflitoTurmaHorario(
+                        entity.getTurma().getId(), diaSemana, blocoHorario.getId())
+                : alocacaoRepository.existsByTurmaIdAndDiaSemanaAndBlocoHorarioIdAndIdNot(
+                        entity.getTurma().getId(), diaSemana, blocoHorario.getId(), entity.getId());
     }
 
     /**
@@ -347,7 +346,7 @@ public class ValidarSugestaoAutomatica {
 
             return true;
 
-        } catch (BusinessException e) {
+        } catch (BusinessException | ParameterException e) {
 
             return false;
         }
