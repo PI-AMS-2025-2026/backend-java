@@ -13,12 +13,18 @@ import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
 
 @Service
 @RequiredArgsConstructor
 public class TipoSalaService {
 
     private final TipoSalaRepository repository;
+    
+// O EntityManager permite executar consultas diretamente no banco de dados
+// por meio do JPA. Neste serviço, será utilizado para verificar se existem
+// salas ou disciplinas vinculadas a um tipo de sala antes de permitir sua exclusão.
+   private final EntityManager entityManager;
 
     // Lista todos ou filtra por nome
     @Transactional(readOnly = true)
@@ -58,17 +64,40 @@ public class TipoSalaService {
         TipoSala entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id));
 
+        if (repository.existsByNomeIgnoreCaseAndIdNot(request.nome(), id)) {
+    throw new IllegalArgumentException(
+        "Já existe outro tipo de sala cadastrado com esse nome.");
+    }
+
         entity.setNome(request.nome());
 
         return TipoSalaMapper.toResponse(repository.save(entity));
     }
 
-    // Remove um tipo de sala
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Tipo de sala não encontrado com ID: " + id);
+            throw new EntityNotFoundException("tipo_sala não encontrado com ID: " + id);
         }
-        repository.deleteById(id);
+
+    // Verifica se existem salas vinculadas ao tipo de sala.
+    Long salasVinculadas = entityManager.createQuery(
+        "SELECT COUNT(s) FROM Sala s WHERE s.tipoSala.id = :id", Long.class
+    ).setParameter("id", id).getSingleResult();
+ 
+    if (salasVinculadas > 0) {
+        throw new IllegalArgumentException("Esse tipo_sala está vinculado a uma sala.");
+    }
+ 
+    // Verifica se existem disciplinas vinculadas ao tipo de sala.
+    Long disciplinasVinculadas = entityManager.createQuery(
+        "SELECT COUNT(d) FROM Disciplina d WHERE d.tipoSala.id = :id", Long.class
+    ).setParameter("id", id).getSingleResult();
+ 
+    if (disciplinasVinculadas > 0) {
+        throw new IllegalArgumentException("Esse tipo_sala está vinculado a uma disciplina.");
+    }
+ 
+    repository.deleteById(id);
     }
 }
