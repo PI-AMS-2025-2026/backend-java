@@ -77,7 +77,11 @@ public class ValidarAlocacaoUseCase {
 
         validarCapacidadeSala.executar(entity);
 
-        validarDuplicidade.executarCriacao(entity);
+        if (entity.getId() == null) {
+            validarDuplicidade.executarCriacao(entity);
+        } else {
+            validarDuplicidade.executarAtualizacao(entity);
+        }
 
         validarCoerenciaCurso.validar(entity);
     }

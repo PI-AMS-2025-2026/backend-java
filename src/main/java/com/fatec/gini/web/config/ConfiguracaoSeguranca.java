@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,9 @@ import lombok.RequiredArgsConstructor;
 public class ConfiguracaoSeguranca {
 
     final SecurityFilter securityFilter;
+
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     /**
      * Configurações de CORS para permitir requisições do frontend.
@@ -39,7 +43,7 @@ public class ConfiguracaoSeguranca {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("*") // Permite qualquer origem em dev
+                        .allowedOrigins(frontendUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true);
@@ -79,6 +83,9 @@ public class ConfiguracaoSeguranca {
                         .permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/motor-quadro/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/historicos-versoes-alocacoes/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
                         // Somente administrador

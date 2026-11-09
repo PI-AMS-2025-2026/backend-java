@@ -40,6 +40,11 @@ public class ValidarCapacidadeSalaUseCase {
         Integer capacidadeSala = entity.getSala().getCapacidade();
         Integer numeroAlunos = entity.getTurma().getNumeroAlunos();
 
+        if (capacidadeSala == null || numeroAlunos == null) {
+            throw new BusinessException(
+                    "Não foi possível verificar a capacidade da sala ou o número de alunos da turma.");
+        }
+
         if (capacidadeSala < numeroAlunos) {
             throw new BusinessException(
                     "A sala selecionada não possui capacidade suficiente para comportar os alunos desta turma. "

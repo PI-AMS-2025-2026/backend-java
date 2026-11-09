@@ -195,4 +195,21 @@ public class ResourceExceptionHandler {
 
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardError> unexpectedException(
+            Exception exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Erro interno do servidor");
+        error.setMessage("Não foi possível concluir a operação. Tente novamente ou contate o suporte.");
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
 }
