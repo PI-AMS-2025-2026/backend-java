@@ -257,9 +257,10 @@ WHERE id_turma IN (
 INSERT INTO curso (nome, periodicidade, status, duracao) VALUES
 ('AMS Análise e Desenvolvimento de Sistemas', 'Semestral', 'ATIVO', 2);
 
-INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso) VALUES
+INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso, status) VALUES
 ('1/2026-AMS', 1, 2026, 30,
- (SELECT id_curso FROM curso WHERE nome = 'AMS Análise e Desenvolvimento de Sistemas'));
+ (SELECT id_curso FROM curso WHERE nome = 'AMS Análise e Desenvolvimento de Sistemas'),
+ 'ATIVO');
 
 INSERT INTO bloco_horario (duracao, hora_inicio, hora_fim) VALUES
 (50, '07:40:00', '08:30:00'),
@@ -406,16 +407,16 @@ SET ano = 2026, codigo = '1/2026-GTI'
 WHERE codigo = '1/2027-GTI'
   AND id_curso = (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação');
 
-INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso) VALUES
-('3/2026-ADS', 3, 2026, 35, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas')),
-('4/2026-ADS', 4, 2026, 34, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas')),
-('5/2026-ADS', 5, 2026, 32, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas')),
-('6/2026-ADS', 6, 2026, 30, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas')),
-('2/2027-AMS', 2, 2027, 30, (SELECT id_curso FROM curso WHERE nome = 'AMS Análise e Desenvolvimento de Sistemas')),
-('3/2026-GTI', 3, 2026, 28, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação')),
-('4/2026-GTI', 4, 2026, 27, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação')),
-('5/2026-GTI', 5, 2026, 26, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação')),
-('6/2026-GTI', 6, 2026, 25, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'));
+INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso, status) VALUES
+('3/2026-ADS', 3, 2026, 35, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), 'ATIVO'),
+('4/2026-ADS', 4, 2026, 34, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), 'ATIVO'),
+('5/2026-ADS', 5, 2026, 32, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), 'ATIVO'),
+('6/2026-ADS', 6, 2026, 30, (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), 'ATIVO'),
+('2/2027-AMS', 2, 2027, 30, (SELECT id_curso FROM curso WHERE nome = 'AMS Análise e Desenvolvimento de Sistemas'), 'ATIVO'),
+('3/2026-GTI', 3, 2026, 28, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), 'ATIVO'),
+('4/2026-GTI', 4, 2026, 27, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), 'ATIVO'),
+('5/2026-GTI', 5, 2026, 26, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), 'ATIVO'),
+('6/2026-GTI', 6, 2026, 25, (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), 'ATIVO');
 
 INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor, id_quadro_horario, id_sala, id_turma) VALUES
 ('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '07:40:00' AND hora_fim = '08:30:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ISW044'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '2/2026-ADS' AND id_curso = (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'))),
@@ -771,9 +772,10 @@ INSERT INTO sala (codigo, capacidade, id_tipo_sala) VALUES
 ('SALA-DEMO-01', 40, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
 ('LAB-DEMO-01', 40, (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Laboratorio'));
 
-INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso) VALUES
+INSERT INTO turma (codigo, periodo, ano, numero_alunos, id_curso, status) VALUES
 ('1/2026-DEMO', 1, 2026, 30,
- (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'));
+ (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'),
+ 'ATIVO');
 
 INSERT INTO disciplina (nome, carga_horaria, tipo_disciplina, periodo, modalidade, cod_disciplina, cor, id_curso, id_tipo_sala) VALUES
 ('Disciplina Base Demo', 80, 'Teorica', 1, 'Presencial', 'DEMOBASE', '#7C3AED',
