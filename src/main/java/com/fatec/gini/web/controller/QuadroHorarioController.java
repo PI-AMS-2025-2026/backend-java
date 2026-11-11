@@ -1,6 +1,7 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,6 +44,9 @@ public class QuadroHorarioController {
                         @RequestParam(name = "id_periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
 
                         @RequestParam(name = "status", required = false) Status status,
+                        @RequestParam(name = "versao", required = false) Integer versao,
+                        @RequestParam(name = "data_criacao", required = false) LocalDate dataCriacao,
+                        @RequestParam(name = "busca", required = false) String busca,
 
                         @RequestParam(name = "page", defaultValue = "0") int page,
 
@@ -53,6 +57,9 @@ public class QuadroHorarioController {
                                                 idCurso,
                                                 idPeriodoAtividadeQuadro,
                                                 status,
+                                                versao,
+                                                dataCriacao,
+                                                busca,
                                                 page,
                                                 size));
         }

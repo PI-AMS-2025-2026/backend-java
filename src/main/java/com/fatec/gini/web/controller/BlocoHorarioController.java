@@ -41,11 +41,12 @@ public class BlocoHorarioController {
             @RequestParam(name = "hora_fim", required = false)
             @DateTimeFormat(pattern = "HH:mm") LocalTime horaFim,
             @RequestParam(name = "duracao", required = false) Integer duracao,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(horaInicio, horaFim, duracao, page, size));
+                service.listar(horaInicio, horaFim, duracao, busca, page, size));
     }
 
     @GetMapping("/{id}")

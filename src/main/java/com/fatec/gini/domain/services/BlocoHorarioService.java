@@ -65,17 +65,17 @@ public class BlocoHorarioService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, int pageNum,
+    public PageResponse<BlocoHorarioResponse> listar(LocalTime horaInicio, LocalTime horaFim, Integer duracao, String busca, int pageNum,
             int size) {
         Pageable pageable = PageRequest.of(pageNum, size);
 
-        Page<BlocoHorario> page = repository.buscarPorFiltros(horaInicio, horaFim, duracao, pageable);
+        Page<BlocoHorario> page = repository.buscarPorFiltros(horaInicio, horaFim, duracao, busca, pageable);
 
        return new PageResponse<>(
             page.getContent().stream().map(BlocoHorarioMapper::toResponse).toList(),
             page.getNumber(),
             page.getSize(),
-            page.getNumberOfElements(),
+            page.getTotalElements(),
             page.getTotalPages());
     }
 

@@ -216,7 +216,7 @@ public class AlocacaoService {
                 page.getContent().stream().map(AlocacaoMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

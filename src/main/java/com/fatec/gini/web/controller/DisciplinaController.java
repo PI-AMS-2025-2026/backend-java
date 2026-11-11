@@ -34,11 +34,16 @@ public class DisciplinaController {
             @RequestParam(name = "nome", required = false) String nome,
             @RequestParam(name = "id_curso", required = false) Long cursoId,
             @RequestParam(name = "id_tipo_sala", required = false) Long tipoSalaId,
+            @RequestParam(name = "tipo_disciplina", required = false) String tipoDisciplina,
+            @RequestParam(name = "periodo", required = false) Integer periodo,
+            @RequestParam(name = "modalidade", required = false) String modalidade,
+            @RequestParam(name = "cor", required = false) String cor,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(nome, cursoId, tipoSalaId, page, size));
+                service.listar(nome, cursoId, tipoSalaId, tipoDisciplina, periodo, modalidade, cor, busca, page, size));
     }
 
     @GetMapping("/{id}")

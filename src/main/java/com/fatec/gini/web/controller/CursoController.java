@@ -36,9 +36,10 @@ public class CursoController {
             @RequestParam(name = "periodicidade", required = false) String periodicidade,
             @RequestParam(name = "status", required = false) Status status,
             @RequestParam(name = "duracao", required = false) Integer duracao,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.listar(nome, periodicidade, status, duracao,page,size));
+        return ResponseEntity.ok(service.listar(nome, periodicidade, status, duracao, busca, page, size));
     }
 
     @GetMapping("/{id}")

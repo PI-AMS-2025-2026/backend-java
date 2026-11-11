@@ -11,13 +11,25 @@ import com.fatec.gini.domain.entities.Disciplina;
 public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
 
     @Query("SELECT d FROM Disciplina d WHERE " +
-            "(:nome IS NULL OR LOWER(d.nome) LIKE LOWER(CONCAT('%', :nome, '%'))) AND " +
+            "(COALESCE(:nome, '') = '' OR LOWER(d.nome) LIKE LOWER(CONCAT('%', :nome, '%'))) AND " +
             "(:idCurso IS NULL OR d.curso.id = :idCurso) AND " +
-            "(:idTipoSala IS NULL OR d.tipoSala.id = :idTipoSala)")
+            "(:idTipoSala IS NULL OR d.tipoSala.id = :idTipoSala) AND " +
+            "(COALESCE(:tipoDisciplina, '') = '' OR LOWER(d.tipoDisciplina) = LOWER(:tipoDisciplina)) AND " +
+            "(:periodo IS NULL OR d.periodo = :periodo) AND " +
+            "(COALESCE(:modalidade, '') = '' OR LOWER(d.modalidade) = LOWER(:modalidade)) AND " +
+            "(COALESCE(:cor, '') = '' OR LOWER(d.cor) = LOWER(:cor)) AND " +
+            "(COALESCE(:busca, '') = '' OR LOWER(d.nome) LIKE LOWER(CONCAT('%', :busca, '%')) OR " +
+            "LOWER(d.curso.nome) LIKE LOWER(CONCAT('%', :busca, '%')) OR " +
+            "LOWER(d.codDisciplina) LIKE LOWER(CONCAT('%', :busca, '%')))")
     Page<Disciplina> findByFiltros(
             @Param("nome") String nome,
             @Param("idCurso") Long idCurso,
             @Param("idTipoSala") Long idTipoSala,
+            @Param("tipoDisciplina") String tipoDisciplina,
+            @Param("periodo") Integer periodo,
+            @Param("modalidade") String modalidade,
+            @Param("cor") String cor,
+            @Param("busca") String busca,
             Pageable pageable);
 
     // CORREÇÃO: usados no service para bloquear codDisciplina duplicado com

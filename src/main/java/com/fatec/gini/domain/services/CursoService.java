@@ -64,6 +64,7 @@ public class CursoService {
             String periodicidade,
             Status status,
             Integer duracao,
+            String busca,
             int pageNum,
             int size) {
 
@@ -74,6 +75,7 @@ public class CursoService {
                 periodicidade,
                 status,
                 duracao,
+                busca,
                 validarAutorizacaoCurso.cursoParaFiltro(null),
                 pageRequest);
 
@@ -83,7 +85,7 @@ public class CursoService {
                         .toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

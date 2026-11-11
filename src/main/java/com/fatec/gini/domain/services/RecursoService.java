@@ -56,17 +56,18 @@ public class RecursoService {
     public PageResponse<RecursoResponse> listar(
             String nome,
             Long idTipoRecurso,
+            String busca,
             int pageNum,
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(nome, idTipoRecurso, pageRequest);
+        var page = repository.buscarPorFiltros(nome, idTipoRecurso, busca, pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(RecursoMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

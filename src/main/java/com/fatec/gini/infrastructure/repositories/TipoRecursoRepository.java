@@ -21,7 +21,7 @@ public interface TipoRecursoRepository  extends JpaRepository<TipoRecurso, Long>
     @Query("""
             SELECT t
             FROM TipoRecurso t
-            WHERE (:nome IS NULL OR LOWER(t.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+            WHERE (COALESCE(:nome, '') = '' OR LOWER(t.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
             """)
     List<TipoRecurso> buscarPorFiltro(@Param("nome") String nome);
 }

@@ -33,10 +33,11 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
     @Query("""
             SELECT c
             FROM Curso c
-            WHERE (:nome IS NULL OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-              AND (:periodicidade IS NULL OR LOWER(c.periodicidade) = LOWER(:periodicidade))
+            WHERE (COALESCE(:nome, '') = '' OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+              AND (COALESCE(:periodicidade, '') = '' OR LOWER(c.periodicidade) = LOWER(:periodicidade))
                                                         AND (:status IS NULL OR c.status = :status)
                                                               AND (:duracao IS NULL OR c.duracao = :duracao)
+                                                              AND (COALESCE(:busca, '') = '' OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :busca, '%')))
                                                               AND (:cursoId IS NULL OR c.id = :cursoId)
             """)
     Page<Curso> buscarPorFiltros(
@@ -44,6 +45,7 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
             @Param("periodicidade") String periodicidade,
             @Param("status") Status status,
             @Param("duracao") Integer duracao,
+            @Param("busca") String busca,
             @Param("cursoId") Long cursoId,
             Pageable pageable);
 }

@@ -33,10 +33,12 @@ public class SalaController {
     public ResponseEntity<PageResponse<SalaResponse>> listar(
             @RequestParam(name = "id_tipo_sala", required = false) Long idTipoSala,
             @RequestParam(name = "capacidade", required = false) Integer capacidade,
+            @RequestParam(name = "codigo", required = false) String codigo,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(service.listar(idTipoSala, capacidade, page, size));
+        return ResponseEntity.ok(service.listar(idTipoSala, capacidade, codigo, busca, page, size));
     }
 
     @GetMapping("/{id}")

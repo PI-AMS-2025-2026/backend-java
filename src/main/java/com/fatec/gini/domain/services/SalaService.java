@@ -71,6 +71,8 @@ public class SalaService {
     public PageResponse<SalaResponse> listar(
             Long idTipoSala,
             Integer capacidade,
+            String codigo,
+            String busca,
             int pageNum,
             int size) {
 
@@ -81,6 +83,8 @@ public class SalaService {
         var page = repository.buscarPorFiltros(
                 idTipoSala,
                 capacidade,
+                codigo,
+                busca,
                 pageRequest);
 
         return new PageResponse<>(
@@ -90,7 +94,7 @@ public class SalaService {
                         .toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

@@ -43,6 +43,7 @@ public class ProfessorService {
             String email,
             String cidade,
             Status status,
+            String busca,
             int pageNum,
             int size) {
 
@@ -53,6 +54,7 @@ public class ProfessorService {
                 email,
                 cidade,
                 status,
+                busca,
                 validarAutorizacaoCurso.cursoParaFiltro(null),
                 pageRequest);
 
@@ -63,7 +65,7 @@ public class ProfessorService {
                         .toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

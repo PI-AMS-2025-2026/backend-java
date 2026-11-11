@@ -82,6 +82,31 @@ class UsuarioServiceTest {
         assertThat(response.curso().id()).isEqualTo(7L);
     }
 
+    @Test
+    void deveAtualizarUsuarioSemAlterarSenhaQuandoSenhaNaoInformada() {
+        Usuario existente = new Usuario("Nome antigo", "admin@teste.com", "hash-da-senha", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
+        existente.setId(4L);
+        UsuarioRequest request = new UsuarioRequest(
+                "Nome novo", "admin@teste.com", null, Status.ATIVO, TipoUsuario.ADMINISTRADOR, null);
+
+        when(repository.findById(4L)).thenReturn(Optional.of(existente));
+        when(repository.save(any(Usuario.class))).thenAnswer(invocacao -> invocacao.getArgument(0));
+
+        UsuarioResponse response = usuarioService.atualizar(4L, request);
+
+        assertThat(response.nome()).isEqualTo("Nome novo");
+        assertThat(existente.getSenha()).isEqualTo("hash-da-senha");
+    }
+
+    @Test
+    void deveRejeitarCriacaoSemSenha() {
+        UsuarioRequest request = new UsuarioRequest(
+                "Usuário Teste", "novo@teste.com", null, Status.ATIVO, TipoUsuario.ADMINISTRADOR, null);
+
+        assertThrows(IllegalArgumentException.class, () -> usuarioService.criar(request));
+    }
+
     private UsuarioRequest request(TipoUsuario tipoUsuario, LongDTO curso) {
         return new UsuarioRequest(
                 "Usuário Teste",

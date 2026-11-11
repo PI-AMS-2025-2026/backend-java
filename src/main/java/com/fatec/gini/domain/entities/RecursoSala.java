@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "recurso_sala")
+@Table(
+        name = "recurso_sala",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_recurso_sala_sala_recurso",
+                columnNames = { "id_sala", "id_recurso" }))
 public class RecursoSala {
 
     @Id

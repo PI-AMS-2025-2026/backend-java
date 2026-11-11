@@ -78,7 +78,7 @@ public class RecursoSalaService {
                 page.getContent().stream().map(RecursoSalaMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 
@@ -99,6 +99,10 @@ public class RecursoSalaService {
         // ALTERAÇÃO: permite atualizar o recurso pelo ID recebido no payload.
         Recurso recurso = recursoRepository.findById(request.recurso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
+
+        if (repository.existsBySalaIdAndRecursoIdAndIdNot(sala.getId(), recurso.getId(), id)) {
+            throw new IllegalArgumentException("Recurso já vinculado a essa sala");
+        }
 
         // ALTERAÇÃO: atualiza os relacionamentos junto com a quantidade.
         entity.setSala(sala);

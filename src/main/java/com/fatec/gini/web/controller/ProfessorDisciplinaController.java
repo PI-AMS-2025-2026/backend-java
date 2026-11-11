@@ -56,11 +56,14 @@ public class ProfessorDisciplinaController {
     public ResponseEntity<PageResponse<ProfessorDisciplinaResponse>> listar(
             @RequestParam(name = "id_professor", required = false) Long professor,
             @RequestParam(name = "id_disciplina", required = false) Long disciplina,
+            @RequestParam(name = "professor_nome", required = false) String professorNome,
+            @RequestParam(name = "disciplina_nome", required = false) String disciplinaNome,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(professor, disciplina, page, size));
+                service.listar(professor, disciplina, professorNome, disciplinaNome, busca, page, size));
     }
 
     // UPDATE
