@@ -124,11 +124,11 @@ class CursoServiceTest {
         // é só o retorno do SERVICE que virou PageResponse, não o do repositório.
         Page<Curso> paginaSimulada = new PageImpl<>(List.of(curso1, curso2));
 
-        when(repository.buscarPorFiltros(any(), any(), any(), any(), any(), any(PageRequest.class)))
+        when(repository.buscarPorFiltros(any(), any(), any(), any(), any(), any(), any(PageRequest.class)))
                 .thenReturn(paginaSimulada);
 
         // ---------- Act ----------
-        PageResponse<CursoResponse> resultado = cursoService.listar(null, null, null, null, 0, 10);
+        PageResponse<CursoResponse> resultado = cursoService.listar(null, null, null, null, null, 0, 10);
 
         // ---------- Assert ----------
         // PageResponse é um record, então os campos são acessados como métodos:
