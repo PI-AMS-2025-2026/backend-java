@@ -37,6 +37,10 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse criar(UsuarioRequest request) {
 
+        if (request.senha() == null || request.senha().isBlank()) {
+            throw new IllegalArgumentException("Senha é obrigatória");
+        }
+
         if (repository.existsByEmail(request.email())) {
             throw new BusinessException("Esse email já possui cadastro");
         }
@@ -89,7 +93,7 @@ public class UsuarioService {
                 page.getContent().stream().map(UsuarioMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 
@@ -122,6 +126,10 @@ public class UsuarioService {
         entity.setStatus(request.status());
 
         entity.setTipoUsuario(request.tipoUsuario());
+
+        if (request.senha() != null && !request.senha().isBlank()) {
+            entity.setSenha(new BCryptPasswordEncoder().encode(request.senha()));
+        }
 
         if (request.curso() != null) {
 

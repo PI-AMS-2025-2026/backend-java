@@ -95,7 +95,7 @@ public class DisponibilidadeProfessorService {
                 page.getContent().stream().map(DisponibilidadeProfessorMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

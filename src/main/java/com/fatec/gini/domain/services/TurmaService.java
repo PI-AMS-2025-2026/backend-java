@@ -79,6 +79,8 @@ public class TurmaService {
             Integer ano,
             Integer periodo,
             String codigo,
+            String busca,
+            Status status,
             int pageNum,
             int size) {
 
@@ -89,6 +91,8 @@ public class TurmaService {
                 ano,
                 periodo,
                 codigo,
+                busca,
+                status,
                 pageRequest);
 
         return new PageResponse<>(
@@ -97,7 +101,7 @@ public class TurmaService {
                         .toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

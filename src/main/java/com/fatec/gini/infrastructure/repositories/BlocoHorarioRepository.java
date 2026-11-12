@@ -29,12 +29,15 @@ public interface BlocoHorarioRepository extends JpaRepository<BlocoHorario, Long
                         WHERE (:horaInicio IS NULL OR h.horaInicio = :horaInicio)
                           AND (:horaFim IS NULL OR h.horaFim = :horaFim)
                           AND (:duracao IS NULL OR h.duracao = :duracao)
+                          AND (COALESCE(:busca, '') = '' OR CAST(h.horaInicio AS string) LIKE CONCAT('%', :busca, '%')
+                               OR CAST(h.horaFim AS string) LIKE CONCAT('%', :busca, '%'))
                         ORDER BY h.horaInicio
                         """)
         Page<BlocoHorario> buscarPorFiltros(
                         @Param("horaInicio") LocalTime horaInicio,
                         @Param("horaFim") LocalTime horaFim,
                         @Param("duracao") Integer duracao,
+                        @Param("busca") String busca,
                         Pageable pageable);
 
         /**

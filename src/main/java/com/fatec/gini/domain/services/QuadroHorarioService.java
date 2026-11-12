@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -158,6 +159,9 @@ public class QuadroHorarioService {
                         Long idCurso,
                         Long idPeriodoAtividadeQuadro,
                         Status status,
+                        Integer versao,
+                        LocalDate dataCriacao,
+                        String busca,
                         int pageNum,
                         int size) {
 
@@ -169,6 +173,10 @@ public class QuadroHorarioService {
                                 validarAutorizacaoCurso.cursoParaFiltro(idCurso),
                                 idPeriodoAtividadeQuadro,
                                 status,
+                                versao,
+                                dataCriacao == null ? null : dataCriacao.atStartOfDay(),
+                                dataCriacao == null ? null : dataCriacao.plusDays(1).atStartOfDay(),
+                                busca,
                                 pageRequest);
 
                 return new PageResponse<>(
@@ -178,7 +186,7 @@ public class QuadroHorarioService {
                                                 .toList(),
                                 page.getNumber(),
                                 page.getSize(),
-                                page.getNumberOfElements(),
+                                page.getTotalElements(),
                                 page.getTotalPages());
         }
 

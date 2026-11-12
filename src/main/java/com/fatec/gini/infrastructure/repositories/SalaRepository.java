@@ -14,10 +14,15 @@ public interface SalaRepository extends JpaRepository<Sala, Long> {
             SELECT s FROM Sala s
             WHERE (:idTipoSala IS NULL OR s.tipoSala.id = :idTipoSala)
               AND (:capacidade IS NULL OR s.capacidade >= :capacidade)
+              AND (COALESCE(:codigo, '') = '' OR LOWER(s.codigo) LIKE LOWER(CONCAT('%', :codigo, '%')))
+              AND (COALESCE(:busca, '') = '' OR LOWER(s.codigo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(s.tipoSala.nome) LIKE LOWER(CONCAT('%', :busca, '%')))
             """)
     Page<Sala> buscarPorFiltros(
             @Param("idTipoSala") Long idTipoSala,
             @Param("capacidade") Integer capacidade,
+            @Param("codigo") String codigo,
+            @Param("busca") String busca,
             Pageable pageable);
 
     /**

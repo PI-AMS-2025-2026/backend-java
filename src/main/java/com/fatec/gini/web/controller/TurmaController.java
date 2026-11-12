@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.fatec.gini.domain.models.Status;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fatec.gini.domain.services.TurmaService;
@@ -36,11 +37,13 @@ public class TurmaController {
             @RequestParam(name = "ano", required = false) Integer ano,
             @RequestParam(name = "periodo", required = false) Integer periodo,
             @RequestParam(name = "codigo", required = false) String codigo,
+            @RequestParam(name = "busca", required = false) String busca,
+            @RequestParam(name = "status", required = false) Status status,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.ok(
-                service.listar(idCurso, ano, periodo, codigo, page, size));
+                service.listar(idCurso, ano, periodo, codigo, busca, status, page, size));
     }
 
     @GetMapping("/{id}")

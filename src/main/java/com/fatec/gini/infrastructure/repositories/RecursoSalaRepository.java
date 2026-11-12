@@ -13,6 +13,8 @@ public interface RecursoSalaRepository extends JpaRepository<RecursoSala, Long> 
 
     boolean existsBySalaIdAndRecursoId(Long salaId, Long recursoId);
 
+    boolean existsBySalaIdAndRecursoIdAndIdNot(Long salaId, Long recursoId, Long id);
+
     boolean existsByRecursoId(Long recursoId);
 
     @Query("""

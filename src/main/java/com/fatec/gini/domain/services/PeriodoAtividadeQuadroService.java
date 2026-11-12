@@ -58,7 +58,7 @@ public class PeriodoAtividadeQuadroService {
                 page.getContent().stream().map(PeriodoAtividadeQuadroMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

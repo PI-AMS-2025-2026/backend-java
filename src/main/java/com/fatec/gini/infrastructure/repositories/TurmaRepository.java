@@ -30,13 +30,20 @@ public interface TurmaRepository extends JpaRepository<Turma, Long> {
            WHERE (:idCurso IS NULL OR t.curso.id = :idCurso)
              AND (:ano IS NULL OR t.ano = :ano)
              AND (:periodo IS NULL OR t.periodo = :periodo)
-             AND (:codigo IS NULL OR LOWER(t.codigo) = LOWER(:codigo))
+             AND (COALESCE(:codigo, '') = '' OR LOWER(t.codigo) = LOWER(:codigo))
+             AND (:status IS NULL OR t.status = :status)
+             AND (COALESCE(:busca, '') = '' OR LOWER(t.codigo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                  OR LOWER(t.curso.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
+                  OR CAST(t.ano AS string) LIKE CONCAT('%', :busca, '%')
+                  OR CAST(t.periodo AS string) LIKE CONCAT('%', :busca, '%'))
            """)
     Page<Turma> buscarPorFiltros(
             @Param("idCurso") Long idCurso,
             @Param("ano") Integer ano,
             @Param("periodo") Integer periodo,
             @Param("codigo") String codigo,
+            @Param("busca") String busca,
+            @Param("status") com.fatec.gini.domain.models.Status status,
             Pageable pageable);
 
     List<Turma> findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(Long cursoId);

@@ -95,6 +95,11 @@ public class DisciplinaService {
                         String nome,
                         Long cursoId,
                         Long tipoSalaId,
+                        String tipoDisciplina,
+                        Integer periodo,
+                        String modalidade,
+                        String cor,
+                        String busca,
                         int pageNum,
                         int size) {
 
@@ -104,13 +109,18 @@ public class DisciplinaService {
                                 nome,
                                 validarAutorizacaoCurso.cursoParaFiltro(cursoId),
                                 tipoSalaId,
+                                tipoDisciplina,
+                                periodo,
+                                modalidade,
+                                cor,
+                                busca,
                                 pageRequest);
 
                 return new PageResponse<>(
                                 page.getContent().stream().map(DisciplinaMapper::toResponse).toList(),
                                 page.getNumber(),
                                 page.getSize(),
-                                page.getNumberOfElements(),
+                                page.getTotalElements(),
                                 page.getTotalPages());
         }
 

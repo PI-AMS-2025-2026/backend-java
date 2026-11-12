@@ -29,7 +29,7 @@ public interface TipoSalaRepository extends JpaRepository<TipoSala, Long> {
     @Query("""
             SELECT t
             FROM TipoSala t
-            WHERE (:nome IS NULL OR LOWER(t.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+            WHERE (COALESCE(:nome, '') = '' OR LOWER(t.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
             """)
     List<TipoSala> buscarPorFiltro(@Param("nome") String nome);
 }

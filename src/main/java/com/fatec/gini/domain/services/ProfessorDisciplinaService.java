@@ -65,18 +65,21 @@ public class ProfessorDisciplinaService {
     public PageResponse<ProfessorDisciplinaResponse> listar(
             Long professorId,
             Long disciplinaId,
+            String professorNome,
+            String disciplinaNome,
+            String busca,
             int pageNum,
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(professorId, disciplinaId,
+        var page = repository.buscarPorFiltros(professorId, disciplinaId, professorNome, disciplinaNome, busca,
                 validarAutorizacaoCurso.cursoParaFiltro(null), pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(ProfessorDisciplinaMapper::toResponse).toList(),
                 page.getNumber(),
                 page.getSize(),
-                page.getNumberOfElements(),
+                page.getTotalElements(),
                 page.getTotalPages());
     }
 

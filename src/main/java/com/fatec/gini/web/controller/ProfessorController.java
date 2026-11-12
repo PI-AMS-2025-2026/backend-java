@@ -36,6 +36,7 @@ public class ProfessorController {
             @RequestParam(name = "email", required = false) String email,
             @RequestParam(name = "cidade", required = false) String cidade,
             @RequestParam(name = "status", required = false) Status status,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
@@ -44,6 +45,7 @@ public class ProfessorController {
                 email,
                 cidade,
                 status,
+                busca,
                 page,
                 size));
     }

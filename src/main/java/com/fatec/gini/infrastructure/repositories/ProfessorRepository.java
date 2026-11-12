@@ -27,9 +27,11 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
     @Query("""
         SELECT u
         FROM Professor u
-        WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-          AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
-          AND (:cidade IS NULL OR LOWER(u.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
+        WHERE (COALESCE(:nome, '') = '' OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+          AND (COALESCE(:email, '') = '' OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
+          AND (COALESCE(:cidade, '') = '' OR LOWER(u.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
+          AND (COALESCE(:busca, '') = '' OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
+               OR LOWER(u.email) LIKE LOWER(CONCAT('%', :busca, '%')))
           AND (:status IS NULL OR u.status = :status)
           AND (:cursoId IS NULL OR EXISTS (
               SELECT pd.id
@@ -43,6 +45,7 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
             @Param("email") String email,
             @Param("cidade") String cidade,
             @Param("status") Status status,
+            @Param("busca") String busca,
             @Param("cursoId") Long cursoId,
             Pageable pageable);
 

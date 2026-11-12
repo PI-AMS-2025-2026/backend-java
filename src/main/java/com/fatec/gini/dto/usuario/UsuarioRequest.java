@@ -17,7 +17,6 @@ public record UsuarioRequest(
                 @Email(message = "E-mail deve ter um formato válido")
                 @NotBlank(message = "E-mail é obrigatório") String email,
 
-                @NotBlank(message = "Senha é obrigatória") 
                 @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres") String senha,
 
                 @NotNull(message = "Status é obrigatório") 

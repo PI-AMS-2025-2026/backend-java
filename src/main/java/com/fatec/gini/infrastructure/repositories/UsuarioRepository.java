@@ -28,8 +28,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("""
         SELECT u
         FROM Usuario u
-        WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-          AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
+        WHERE (COALESCE(:nome, '') = '' OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+          AND (COALESCE(:email, '') = '' OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
           AND (:status IS NULL OR u.status = :status)
           AND (:tipoUsuario IS NULL OR u.tipoUsuario = :tipoUsuario)
         """)
