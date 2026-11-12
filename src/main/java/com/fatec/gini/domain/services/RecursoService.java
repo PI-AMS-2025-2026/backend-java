@@ -1,0 +1,108 @@
+package com.fatec.gini.domain.services;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fatec.gini.domain.entities.Recurso;
+import com.fatec.gini.domain.entities.TipoRecurso;
+import com.fatec.gini.dto.paginacao.PageResponse;
+import com.fatec.gini.dto.recurso.RecursoRequest;
+import com.fatec.gini.dto.recurso.RecursoResponse;
+import com.fatec.gini.infrastructure.mappers.RecursoMapper;
+import com.fatec.gini.infrastructure.repositories.RecursoRepository;
+import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;
+import com.fatec.gini.infrastructure.repositories.TipoRecursoRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class RecursoService {
+
+    private final RecursoRepository repository;
+    private final RecursoSalaRepository recursoSalaRepository;
+    private final TipoRecursoRepository tipoRecursoRepository;
+
+    // Lista todos ou filtra por nome
+    @Transactional
+    public RecursoResponse criar(RecursoRequest request) {
+
+        if (repository.existsByNomeIgnoreCase(request.nome())) {
+    throw new IllegalArgumentException("Esse recurso já possui cadastro");
+    }
+
+        Recurso entity = RecursoMapper.toEntity(request);
+
+        // O payload agora envia diretamente o ID do tipo de recurso.
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
+
+        entity.setTipoRecurso(tipo);
+
+        return RecursoMapper.toResponse(repository.save(entity));
+    }
+
+    @Transactional(readOnly = true)
+    public RecursoResponse buscarPorId(Long id) {
+        Recurso entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado com ID: " + id));
+        return RecursoMapper.toResponse(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<RecursoResponse> listar(
+            String nome,
+            Long idTipoRecurso,
+            String busca,
+            int pageNum,
+            int size) {
+
+        var pageRequest = PageRequest.of(pageNum, size);
+        var page = repository.buscarPorFiltros(nome, idTipoRecurso, busca, pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(RecursoMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages());
+    }
+
+    // Atualiza um recurso existente
+    @Transactional
+    public RecursoResponse atualizar(Long id, RecursoRequest request) {
+        Recurso entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Recurso não encontrado com ID: " + id));
+
+        if (repository.existsByNomeIgnoreCaseAndIdNot(request.nome(), id)) {
+    throw new IllegalArgumentException("Já existe outro recurso cadastrado com esse nome.");
+    }
+
+        entity.setNome(request.nome());
+
+        // Utiliza diretamente o ID recebido no payload.
+        TipoRecurso tipo = tipoRecursoRepository.findById(request.tipoRecurso().id())
+                .orElseThrow(() -> new EntityNotFoundException(
+                "tipo_recurso não encontrado com ID: " + request.tipoRecurso()));
+
+        entity.setTipoRecurso(tipo);
+
+        return RecursoMapper.toResponse(repository.save(entity));
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        if (!repository.existsById(id)) {
+            throw new EntityNotFoundException("Recurso não encontrado com ID: " + id);
+        }
+        
+        if (recursoSalaRepository.existsByRecursoId(id)) {
+            throw new IllegalArgumentException("Esse recurso está vinculado a um recurso_sala e não pode ser excluido.");
+        }
+        repository.deleteById(id);
+    }
+}

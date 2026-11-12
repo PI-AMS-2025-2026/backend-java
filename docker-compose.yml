@@ -1,0 +1,100 @@
+# Ambiente de DESENVOLVIMENTO local: backend + PostgreSQL + Mailpit.
+# O deploy dos ambientes hospedados é responsabilidade do repositório de
+# infraestrutura; este arquivo não deve ser usado em produção.
+#
+# Uso:
+#   cp .env.example .env
+#   # preencha os valores CHANGE_ME (JWT_SECRET precisa de 32+ caracteres:
+#   # openssl rand -hex 32)
+#   docker compose up -d --build
+#
+# Mailpit (caixa de entrada local): http://localhost:8025
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?defina POSTGRES_DB no .env}
+      POSTGRES_USER: ${POSTGRES_USER:?defina POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+    ports:
+      # Porta publicada apenas neste compose de desenvolvimento, para permitir
+      # inspecionar o banco com um cliente local (DBeaver, psql).
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      # O $$ escapa a interpolação do Compose: a variável é resolvida dentro
+      # do contêiner, não pelo arquivo .env.
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # Servidor SMTP local para o fluxo de recuperação de senha. Nenhum e-mail
+  # sai da máquina: tudo fica visível na interface web em :8025.
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_WEB_PORT:-8025}:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+    depends_on:
+      db:
+        # Só inicia o backend depois que o PostgreSQL aceita conexões,
+        # evitando falha do Flyway na primeira subida.
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env (32+ caracteres)}
+      # Documentação liberada por padrão neste compose, que é local e só
+      # escuta em localhost. Nos ambientes hospedados o default é FECHADO
+      # e apenas o ambiente de desenvolvimento deve ligar esta variável.
+      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-true}
+      # Identifica o ambiente. Local usa "dev" para que a documentação
+      # possa ser publicada e o emissor dos tokens fique isolado dos
+      # ambientes hospedados.
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:-dev}
+      # SMTP aponta para o Mailpit, não para um servidor real.
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_AUTH: ${SMTP_AUTH:-false}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-false}
+      SMTP_FROM: ${SMTP_FROM:-noreply@gini.local}
+      # Origem do frontend: no perfil prod é usada no CORS (allowedOrigins) e
+      # na base do link do e-mail de recuperação de senha. Uma única origem,
+      # sem barra final.
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      PASSWORD_RESET_EXPIRATION_MINUTES: ${PASSWORD_RESET_EXPIRATION_MINUTES:-15}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      # Readiness: a aplicação só é considerada pronta quando o Actuator
+      # reporta UP (contexto Spring carregado e migrations aplicadas).
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+
+volumes:
+  db_data:
