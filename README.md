@@ -388,21 +388,20 @@ alguma estiver ausente.
 | `POSTGRES_PASSWORD` | Senha do banco |
 | `DB_PORT` | Porta publicada no host (padrão `5432`) |
 | `JWT_SECRET` | Segredo de assinatura dos tokens JWT |
-| `CORS_ALLOWED_ORIGINS` | Origens autorizadas (ver pendência abaixo) |
 | `SWAGGER_ENABLED` | Publica o Swagger UI e `/v3/api-docs` (default da aplicação: `false`) |
 | `APP_ENVIRONMENT` | Identifica o ambiente: `dev`, `staging` ou `production` (default: `production`) |
 | `SMTP_HOST` / `SMTP_PORT` | Servidor SMTP (no compose, aponta para o Mailpit) |
 | `SMTP_USERNAME` / `SMTP_PASSWORD` | Credenciais SMTP (vazias com o Mailpit) |
 | `SMTP_AUTH` / `SMTP_STARTTLS` | Flags de autenticação e TLS do SMTP |
 | `SMTP_FROM` | Remetente dos e-mails |
-| `FRONTEND_URL` | Base do link enviado no e-mail de recuperação de senha |
+| `FRONTEND_URL` | Origem do frontend (uma só, sem barra final): origem permitida no CORS e base do link do e-mail de recuperação de senha |
 | `PASSWORD_RESET_EXPIRATION_MINUTES` | Validade do token de recuperação (default `15`) |
 | `MAILPIT_SMTP_PORT` / `MAILPIT_WEB_PORT` | Portas publicadas pelo Mailpit (`1025` e `8025`) |
 
 Nos ambientes hospedados o backend recebe, conforme o contrato entre
 repositórios: `SPRING_PROFILES_ACTIVE=prod`, `SPRING_DATASOURCE_URL`,
-`SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET` e
-`CORS_ALLOWED_ORIGINS`.
+`SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` e `JWT_SECRET`.
+O CORS não tem variável própria: a origem permitida é `FRONTEND_URL`.
 
 O fluxo de recuperação de senha acrescenta variáveis **obrigatórias** no perfil
 `prod`, sem valor padrão: `SMTP_HOST`, `SMTP_USERNAME`, `SMTP_PASSWORD`,
@@ -416,10 +415,11 @@ Além dessas, o backend aceita duas variáveis opcionais:
 [Documentação da API nos ambientes hospedados](#documentação-da-api-nos-ambientes-hospedados)
 e [Isolamento entre ambientes](#isolamento-entre-ambientes).
 
-> **Pendência conhecida:** a configuração de CORS em
-> `ConfiguracaoSeguranca.java` ainda usa a origem fixa `http://localhost:4200` e
-> **não lê** a variável `CORS_ALLOWED_ORIGINS`. Enquanto isso não for ajustado,
-> o frontend hospedado será bloqueado pelo navegador.
+> **CORS:** no perfil `prod`, `ConfiguracaoSeguranca` permite apenas a origem
+> definida em `FRONTEND_URL`; não existe `CORS_ALLOWED_ORIGINS`. Como o valor é
+> comparado de forma exata com o cabeçalho `Origin`, use esquema + host + porta,
+> sem barra final (ex.: `http://localhost:3000`). Os perfis `dev` e `test`
+> mantêm as origens fixas no código.
 
 ### Recriando o banco do zero
 
