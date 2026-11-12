@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
+import com.fatec.gini.dto.grade.BlocoGradeSimplesResponse;
 import com.fatec.gini.dto.grade.CursoGradeResumoResponse;
 import com.fatec.gini.dto.grade.DisciplinaGradeResumoResponse;
 import com.fatec.gini.dto.grade.GradeCursoResponse;
@@ -26,7 +28,6 @@ import com.fatec.gini.dto.grade.HorarioTurmaGradeResponse;
 import com.fatec.gini.dto.grade.QuadroHorarioGradeResumoResponse;
 import com.fatec.gini.dto.grade.SalaGradeResumoResponse;
 import com.fatec.gini.dto.grade.TurmaGradeResumoResponse;
-import com.fatec.gini.dto.grade.BlocoGradeSimplesResponse;
 import com.fatec.gini.dto.quadroHorario.BlocoQuadroResponse;
 import com.fatec.gini.dto.quadroHorario.CelulaGradeResponse;
 import com.fatec.gini.dto.quadroHorario.TurmaQuadroResponse;
@@ -60,10 +61,17 @@ public class MotorQuadroHorario {
 
                 QuadroHorario quadroAtivo = buscarQuadroAtivo(cursoId);
 
-                // 1. Busca todas as alocações da grade
-                List<Alocacao> alocacoes = alocacaoRepository.buscarAlocacoesGradeCurso(cursoId, quadroAtivo.getId());
+                List<Turma> turmas = turmaRepository.findByCursoIdAndStatusOrderByAnoAscPeriodoAscCodigoAsc(
+                                cursoId, Status.ATIVO);
+                Set<Long> idsTurmasAtivas = turmas.stream().map(Turma::getId).collect(Collectors.toSet());
 
-                // 2. Extrai os Blocos Horários (Linhas da tabela)
+                // As turmas inativas não participam da grade exportada nem de seus eixos.
+                List<Alocacao> alocacoes = alocacaoRepository.buscarAlocacoesGradeCurso(cursoId, quadroAtivo.getId())
+                                .stream()
+                                .filter(alocacao -> idsTurmasAtivas.contains(alocacao.getTurma().getId()))
+                                .toList();
+
+                // Extrai os blocos de horário usados pelas turmas ativas.
                 List<BlocoHorario> blocosUnicos = alocacoes.stream()
                                 .map(Alocacao::getBlocoHorario)
                                 .filter(Objects::nonNull)
@@ -75,7 +83,7 @@ public class MotorQuadroHorario {
                                 .map(this::converterBlocoGradeResponse)
                                 .toList();
 
-                // 3. Extrai os Dias da Semana ativos neste curso (Colunas da tabela)
+                // Extrai os dias usados pelas turmas ativas.
                 var diasAtivos = alocacoes.stream()
                                 .map(Alocacao::getDiaSemana)
                                 .filter(Objects::nonNull)
@@ -83,13 +91,12 @@ public class MotorQuadroHorario {
                                 .sorted() // O Enum de dias já deve respeitar a ordem cronológica
                                 .toList();
 
-                List<Turma> turmas = turmaRepository.findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(cursoId);
                 // percorre as alocações e agrupa pelo id da turma. Chave: o id da turma, valor:
                 // lista de alocações
                 Map<Long, List<Alocacao>> alocacoesPorTurma = alocacoes.stream()
                                 .collect(Collectors.groupingBy(a -> a.getTurma().getId()));
 
-                // 4. Monta as turmas gerando a matriz completa (Dias x Blocos)
+                // Monta uma grade para cada turma ativa, mesmo sem alocações.
                 List<TurmaQuadroResponse> turmasResponse = turmas.stream().map(
                                 turma -> {
                                         List<Alocacao> alocacoesDaTurma = alocacoesPorTurma.getOrDefault(turma.getId(),
@@ -131,7 +138,7 @@ public class MotorQuadroHorario {
                                 }).toList();
 
                 return new GradeCursoResponse(
-                                new CursoGradeResumoResponse(curso.getId(), curso.getNome()),
+                                new CursoGradeResumoResponse(curso.getId(), curso.getNome(), curso.getPeriodicidade()),
                                 new QuadroHorarioGradeResumoResponse(quadroAtivo.getId(), quadroAtivo.getVersao(),
                                                 quadroAtivo.getStatus()),
                                 blocosResponse,
@@ -154,7 +161,7 @@ public class MotorQuadroHorario {
                                 .toList();
 
                 return new GradeTurmaResponse(
-                                new CursoGradeResumoResponse(curso.getId(), curso.getNome()),
+                                new CursoGradeResumoResponse(curso.getId(), curso.getNome(), curso.getPeriodicidade()),
                                 new TurmaGradeResumoResponse(turma.getId(), turma.getCodigo(), turma.getAno(),
                                                 turma.getPeriodo()),
                                 new QuadroHorarioGradeResumoResponse(quadroAtivo.getId(), quadroAtivo.getVersao(),
@@ -174,8 +181,8 @@ public class MotorQuadroHorario {
 
      
         private QuadroHorario buscarQuadroAtivo(Long cursoId) {
-                List<QuadroHorario> quadrosAtivos = quadroHorarioRepository.findByCursoIdAndStatus(cursoId,
-                                Status.ATIVO);
+                List<QuadroHorario> quadrosAtivos = quadroHorarioRepository.findByCursoIdAndStatus(
+                                cursoId, Status.ATIVO);
 
                 if (quadrosAtivos.isEmpty()) {
                         throw new EntityNotFoundException("Quadro horário ativo não encontrado para o curso");

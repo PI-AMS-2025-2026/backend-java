@@ -53,4 +53,5 @@ public interface QuadroHorarioRepository
                         Long id);
 
         List<QuadroHorario> findByCursoIdAndStatus(Long cursoId, Status status);
+
 }

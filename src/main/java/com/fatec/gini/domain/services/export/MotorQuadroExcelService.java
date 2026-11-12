@@ -40,7 +40,7 @@ public class MotorQuadroExcelService {
 
             for (MotorQuadroExportModel.TurmaData turmaData : modelo.turmas()) {
                 Row turmaRow = sheet.createRow(rowIndex++);
-                turmaRow.createCell(0).setCellValue(formatarTurma(turmaData));
+                turmaRow.createCell(0).setCellValue(turmaData.titulo());
                 turmaRow.getCell(0).setCellStyle(titleStyle);
 
                 Row header = sheet.createRow(rowIndex++);
@@ -94,11 +94,6 @@ public class MotorQuadroExcelService {
         Cell cell = row.createCell(index);
         cell.setCellValue(value);
         cell.setCellStyle(style);
-    }
-
-    private String formatarTurma(MotorQuadroExportModel.TurmaData turmaData) {
-        var turma = turmaData.turma();
-        return "Turma " + turma.codigo() + " - " + turma.ano() + "º ano / " + turma.periodo() + "º período";
     }
 
     private String formatarCelula(MotorQuadroExportModel.CelulaData celula) {

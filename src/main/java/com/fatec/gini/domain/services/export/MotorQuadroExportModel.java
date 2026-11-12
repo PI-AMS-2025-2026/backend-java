@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.dto.grade.GradeCursoResponse;
+import com.fatec.gini.dto.grade.CursoGradeResumoResponse;
 import com.fatec.gini.dto.quadroHorario.BlocoQuadroResponse;
 import com.fatec.gini.dto.quadroHorario.CelulaGradeResponse;
 import com.fatec.gini.dto.quadroHorario.TurmaQuadroResponse;
@@ -26,14 +27,14 @@ final class MotorQuadroExportModel {
                 .toList();
 
         List<TurmaData> turmas = grade.turmas().stream()
-                .map(turma -> criarTurma(turma, grade.blocos(), dias))
+                .map(turma -> criarTurma(turma, grade.blocos(), dias, grade.curso()))
                 .toList();
 
         return new GradeData(grade, dias, turmas);
     }
 
     private static TurmaData criarTurma(TurmaQuadroResponse turma, List<BlocoQuadroResponse> blocos,
-            List<DiaData> dias) {
+            List<DiaData> dias, CursoGradeResumoResponse curso) {
         Map<String, CelulaGradeResponse> celulas = turma.celulas().stream()
                 .collect(Collectors.toMap(celula -> chave(celula.diaSemana(), celula.blocoHorarioId()),
                         Function.identity(), (primeira, ignorada) -> primeira));
@@ -50,7 +51,23 @@ final class MotorQuadroExportModel {
                         .toList()))
                 .toList();
 
-        return new TurmaData(turma, linhas);
+        return new TurmaData(turma, linhas, formatarTituloTurma(turma, curso));
+    }
+
+    private static String formatarTituloTurma(TurmaQuadroResponse turma, CursoGradeResumoResponse curso) {
+        String unidadeEtapa = "período";
+        if (curso.periodicidade() != null && curso.periodicidade().equalsIgnoreCase("Anual")) {
+            unidadeEtapa = "ano";
+        } else if (curso.periodicidade() != null && curso.periodicidade().equalsIgnoreCase("Semestral")) {
+            unidadeEtapa = "semestre";
+        }
+        String identificacaoTurma = turma.codigo() == null ? String.valueOf(turma.id()) : turma.codigo();
+        int separadorCodigo = identificacaoTurma.indexOf('/');
+        if (separadorCodigo > 0) {
+            identificacaoTurma = identificacaoTurma.substring(0, separadorCodigo);
+        }
+        return "Turma " + identificacaoTurma + " - " + turma.ano() + " / "
+                + turma.periodo() + "º " + unidadeEtapa;
     }
 
     private static String chave(DiaSemana dia, Long blocoId) {
@@ -79,7 +96,7 @@ final class MotorQuadroExportModel {
     record DiaData(DiaSemana valor, String nome) {
     }
 
-    record TurmaData(TurmaQuadroResponse turma, List<LinhaData> linhas) {
+    record TurmaData(TurmaQuadroResponse turma, List<LinhaData> linhas, String titulo) {
     }
 
     record LinhaData(BlocoQuadroResponse bloco, List<CelulaData> celulas) {

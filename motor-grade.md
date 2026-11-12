@@ -85,9 +85,11 @@ quadro_horario.curso_id = cursoId
 AND quadro_horario.status = ATIVO
 ```
 
-Se houver mais de um quadro ativo para o mesmo curso e período, a operação deve falhar como inconsistência de dados ou a restrição de unicidade já existente deve ser reforçada. Não se deve escolher arbitrariamente o primeiro registro.
+Se houver mais de um quadro ativo para o mesmo curso, a operação deve falhar como inconsistência de dados. Não se deve escolher arbitrariamente o primeiro registro.
 
-O período de atividade do quadro também deve ser considerado quando o domínio exigir uma grade ativa no período letivo corrente. O contrato deve documentar se a seleção usa apenas `status` ou `status` mais vigência de `periodo_atividade_quadro`.
+O quadro exportado é selecionado pelo seu status `ATIVO`, mesmo que as datas de vigência de `periodo_atividade_quadro` estejam no passado ou no futuro. A vigência continua sendo informação do período associado ao quadro, mas não filtra a exportação.
+
+A grade completa inclui todas as turmas ativas do curso, mesmo as que ainda não têm alocações. O título de cada seção usa o prefixo de `turma.codigo` antes de `/`, `turma.ano`, `turma.periodo` e `curso.periodicidade`. A periodicidade `Anual` produz o sufixo `ano`; `Semestral` produz `semestre`. O período de vigência do quadro não define a etapa curricular de cada turma.
 
 ## 4. Contratos recomendados
 
