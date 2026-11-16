@@ -177,14 +177,14 @@ INSERT INTO recurso_sala (quantidade, id_recurso, id_sala) VALUES
 (10, (SELECT id_recurso FROM recurso WHERE nome = 'Kit Arduino'), (SELECT id_sala FROM sala WHERE codigo = 'MAKER-01'));
 
 -- 11. QUADROS DE HORÁRIO
-INSERT INTO periodo_atividade_quadro (ano, data_inicio, data_fim, periodo, status) VALUES
-(2026, '2026-02-02', '2026-06-30', 1, 'ATIVO'),
-(2026, '2026-08-03', '2026-12-18', 2, 'ATIVO'),
-(2025, '2025-08-04', '2025-12-19', 2, 'INATIVO');
+INSERT INTO periodo_atividade_quadro (ano, data_inicio, data_fim, periodo, tipo_periodo_atividade_quadro, status) VALUES
+(2026, '2026-02-02', '2026-06-30', 1, 0, 'ATIVO'),
+(2026, '2026-08-03', '2026-12-18', 2, 0, 'ATIVO'),
+(2025, '2025-08-04', '2025-12-19', 2, 0, 'INATIVO');
 
 INSERT INTO quadro_horario (versao, data_criacao, status, id_curso, id_periodo_atividade_quadro) VALUES
-(1, '2026-01-15 09:00:00', 'ATIVO', (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 1)),
-(1, '2026-01-15 09:30:00', 'ATIVO', (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 1)),
+(1, '2026-01-15 09:00:00', 'ATIVO', (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 2)),
+(1, '2026-01-15 09:30:00', 'ATIVO', (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 2)),
 (2, '2026-07-15 10:00:00', 'INATIVO', (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2025 AND periodo = 2));
 
 -- 12. ALOCAÇÕES ANTIGAS
@@ -297,7 +297,7 @@ INSERT INTO professor_disciplina (id_professor, id_disciplina) VALUES
 INSERT INTO quadro_horario (versao, data_criacao, status, id_curso, id_periodo_atividade_quadro) VALUES
 (1, '2026-01-15 10:00:00', 'ATIVO',
  (SELECT id_curso FROM curso WHERE nome = 'AMS Análise e Desenvolvimento de Sistemas'),
- (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 1));
+ (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 2));
 
 INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor, id_quadro_horario, id_sala, id_turma) VALUES
 ('SEGUNDA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '07:40:00' AND hora_fim = '08:30:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'ISW044'), (SELECT id_professor FROM professor WHERE email = 'carlos@cps.sp.gov.br'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'LAB-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026' AND id_curso = (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'))),
@@ -794,7 +794,7 @@ INSERT INTO professor_disciplina (id_professor, id_disciplina) VALUES
 INSERT INTO quadro_horario (versao, data_criacao, status, id_curso, id_periodo_atividade_quadro) VALUES
 (1, '2026-01-15 11:00:00', 'ATIVO',
  (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação'),
- (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 1));
+ (SELECT id_periodo_atividade_quadro FROM periodo_atividade_quadro WHERE ano = 2026 AND periodo = 2));
 
 -- Horários do professor que ministra a disciplina de teste: 13:20 e 15:10,
 -- de segunda a sábado. A célula de segunda às 14:10 fica livre e indisponível,

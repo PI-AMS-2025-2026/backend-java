@@ -124,12 +124,12 @@ class MotorQuadroExportTest {
 
     private GradeCursoResponse grade(List<BlocoQuadroResponse> blocos, List<TurmaQuadroResponse> turmas) {
         return new GradeCursoResponse(
-                new CursoGradeResumoResponse(1L, "Sistemas de Informação"),
+                new CursoGradeResumoResponse(1L, "Sistemas de Informação", "Anual"),
                 new QuadroHorarioGradeResumoResponse(1L, 1, Status.ATIVO), blocos, turmas);
     }
 
     private TurmaQuadroResponse turma(Long id, List<CelulaGradeResponse> celulas) {
-        return new TurmaQuadroResponse(id, "T" + id, 1, 1, celulas);
+        return new TurmaQuadroResponse(id, id + "/2026", 2026, id.intValue(), celulas);
     }
 
     private CelulaGradeResponse celula(DiaSemana dia, Long blocoId, String disciplina, String sala) {

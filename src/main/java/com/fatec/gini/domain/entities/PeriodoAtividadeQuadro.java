@@ -37,7 +37,10 @@ public class PeriodoAtividadeQuadro {
     @Column(name = "id_periodo_atividade_quadro")
     private Long id;
 
+    // Ano letivo em que a vigência da grade ocorre.
     private Integer ano;
+
+    // Posição no ano letivo: 1 ou 2 para período semestral; 1 para anual.
     private Integer periodo;
 
     @Column(name = "data_inicio")
@@ -50,6 +53,8 @@ public class PeriodoAtividadeQuadro {
     @Column(nullable = false)
     private Status status;
 
+    // Define como interpretar periodo; o banco armazena o ordinal do enum.
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo_periodo_atividade_quadro")
     private TipoPeridoAtividadeQuadro tipoPeridoAtividadeQuadro;
 

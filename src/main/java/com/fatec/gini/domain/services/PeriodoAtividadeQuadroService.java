@@ -12,6 +12,7 @@ import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest;
 import com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroResponse;
 import com.fatec.gini.infrastructure.mappers.PeriodoAtividadeQuadroMapper;
 import com.fatec.gini.infrastructure.repositories.PeriodoAtividadeQuadroRepository;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,10 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public PeriodoAtividadeQuadroResponse criar(PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
-        atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
-        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo());
+        atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio(), request.dataFim());
+        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo(),
+                request.tipoPeridoAtividadeQuadro());
+        validarPeriodoDuplicado(request, null);
 
         PeriodoAtividadeQuadro entity = PeriodoAtividadeQuadroMapper.toEntity(request);
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
@@ -65,20 +68,37 @@ public class PeriodoAtividadeQuadroService {
     @Transactional
     public PeriodoAtividadeQuadroResponse atualizar(long id, PeriodoAtividadeQuadroRequest request) {
         atividadeQuadroUseCase.executar(request.dataInicio(), request.dataFim());
-        atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio());
-        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo());
+        atividadeQuadroUseCase.executarAno(request.ano(), request.dataInicio(), request.dataFim());
+        atividadeQuadroUseCase.periodoValido(request.dataInicio(), request.dataFim(), request.periodo(),
+                request.tipoPeridoAtividadeQuadro());
 
 
         PeriodoAtividadeQuadro entity = repository.findById(id)
                 .orElseThrow(
                         () -> new EntityNotFoundException("Período Atividade Quadro não encontrado com ID:  " + id));
 
+        validarPeriodoDuplicado(request, id);
+
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
+        entity.setTipoPeridoAtividadeQuadro(request.tipoPeridoAtividadeQuadro());
         entity.setDataInicio(request.dataInicio());
         entity.setDataFim(request.dataFim());
         entity.setStatus(request.status());
         return PeriodoAtividadeQuadroMapper.toResponse(repository.save(entity));
+    }
+
+    private void validarPeriodoDuplicado(PeriodoAtividadeQuadroRequest request, Long idIgnorado) {
+        boolean existe = idIgnorado == null
+                ? repository.existsByAnoAndPeriodoAndTipoPeridoAtividadeQuadro(
+                        request.ano(), request.periodo(), request.tipoPeridoAtividadeQuadro())
+                : repository.existsByAnoAndPeriodoAndTipoPeridoAtividadeQuadroAndIdNot(
+                        request.ano(), request.periodo(), request.tipoPeridoAtividadeQuadro(), idIgnorado);
+
+        if (existe) {
+            throw new BusinessException(
+                    "Já existe um período atividade quadro para o ano, período e tipo informados.");
+        }
     }
 
     /**

@@ -76,6 +76,18 @@ public class ResourceExceptionHandler {
             DataIntegrityViolationException exception,
             HttpServletRequest request) {
 
+        String causa = exception.getMostSpecificCause().getMessage();
+        if (causa != null && causa.contains("uk_periodo_atividade_quadro_ano_periodo_tipo")) {
+            HttpStatus status = HttpStatus.CONFLICT;
+            StandardError error = new StandardError();
+            error.setTimeStamp(Instant.now());
+            error.setStatus(status.value());
+            error.setError("Erro de regra de negócio");
+            error.setMessage("Já existe um período atividade quadro para o ano, período e tipo informados.");
+            error.setPath(request.getRequestURI());
+            return ResponseEntity.status(status).body(error);
+        }
+
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         StandardError error = new StandardError();

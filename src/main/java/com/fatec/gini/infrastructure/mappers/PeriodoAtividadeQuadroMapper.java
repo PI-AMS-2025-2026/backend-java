@@ -10,6 +10,7 @@ public class PeriodoAtividadeQuadroMapper {
         PeriodoAtividadeQuadro entity = new PeriodoAtividadeQuadro();
         entity.setAno(request.ano());
         entity.setPeriodo(request.periodo());
+        entity.setTipoPeridoAtividadeQuadro(request.tipoPeridoAtividadeQuadro());
         entity.setDataInicio(request.dataInicio());
         entity.setDataFim(request.dataFim());
         entity.setStatus(request.status());
@@ -22,6 +23,7 @@ public class PeriodoAtividadeQuadroMapper {
                 entity.getId(),
                 entity.getAno(),
                 entity.getPeriodo(),
+                entity.getTipoPeridoAtividadeQuadro(),
                 entity.getDataInicio(),
                 entity.getDataFim(),
                 entity.getStatus(),

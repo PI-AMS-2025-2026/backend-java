@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoPeridoAtividadeQuadro;
 
 
 public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoAtividadeQuadro, Long> {
@@ -45,5 +46,16 @@ public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoA
         boolean existsByIdAndStatus(
                         Long id,
                         Status status);
+
+        boolean existsByAnoAndPeriodoAndTipoPeridoAtividadeQuadro(
+                        Integer ano,
+                        Integer periodo,
+                        TipoPeridoAtividadeQuadro tipoPeridoAtividadeQuadro);
+
+        boolean existsByAnoAndPeriodoAndTipoPeridoAtividadeQuadroAndIdNot(
+                        Integer ano,
+                        Integer periodo,
+                        TipoPeridoAtividadeQuadro tipoPeridoAtividadeQuadro,
+                        Long id);
 
 }

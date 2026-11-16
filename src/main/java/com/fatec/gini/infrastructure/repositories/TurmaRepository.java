@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.models.Status;
 
 public interface TurmaRepository extends JpaRepository<Turma, Long> {
 
@@ -47,6 +48,8 @@ public interface TurmaRepository extends JpaRepository<Turma, Long> {
             Pageable pageable);
 
     List<Turma> findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(Long cursoId);
+
+    List<Turma> findByCursoIdAndStatusOrderByAnoAscPeriodoAscCodigoAsc(Long cursoId, Status status);
 
     Optional<Turma> findByIdAndCursoId(Long id, Long cursoId);
 }

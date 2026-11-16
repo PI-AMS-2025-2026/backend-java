@@ -21,7 +21,7 @@
   <h1>Quadro horário</h1>
   <div class="subtitle" th:text="${modelo.grade().curso().nome()}">Curso</div>
   <div class="turma" th:each="turma : ${modelo.turmas}">
-    <h2 th:text="|Turma ${turma.turma().codigo()} - ${turma.turma().ano()}º ano / ${turma.turma().periodo()}º período|">Turma</h2>
+    <h2 th:text="${turma.titulo()}">Turma</h2>
     <table>
       <thead>
         <tr>

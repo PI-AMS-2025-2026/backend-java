@@ -156,6 +156,7 @@ class MotorQuadroHorarioTest {
         when(cursoRepository.findById(1L)).thenReturn(Optional.of(curso));
         when(quadroHorarioRepository.findByCursoIdAndStatus(1L, Status.ATIVO)).thenReturn(List.of(quadro));
         when(alocacaoRepository.buscarAlocacoesGradeCurso(1L, 10L)).thenReturn(List.of(alocacao));
-        when(turmaRepository.findByCursoIdOrderByAnoAscPeriodoAscCodigoAsc(1L)).thenReturn(List.of(turma));
+        when(turmaRepository.findByCursoIdAndStatusOrderByAnoAscPeriodoAscCodigoAsc(1L, Status.ATIVO))
+                .thenReturn(List.of(turma));
     }
 }
