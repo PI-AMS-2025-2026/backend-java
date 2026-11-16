@@ -38,10 +38,18 @@ public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
 
     boolean existsByCodDisciplinaAndIdNot(String codDisciplina, Long id);
 
-    // CORREÇÃO: duplicidade considera nome, período, tipo e curso (não apenas o nome)
-boolean existsByNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoId(
-        String nome, Integer periodo, String tipoDisciplina, Long cursoId);
+ boolean existsByCodDisciplinaAndNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoId(
+        String codDisciplina,
+        String nome,
+        Integer periodo,
+        String tipoDisciplina,
+        Long cursoId);
 
-boolean existsByNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoIdAndIdNot(
-        String nome, Integer periodo, String tipoDisciplina, Long cursoId, Long id);
+boolean existsByCodDisciplinaAndNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoIdAndIdNot(
+        String codDisciplina,
+        String nome,
+        Integer periodo,
+        String tipoDisciplina,
+        Long cursoId,
+        Long id);
 }

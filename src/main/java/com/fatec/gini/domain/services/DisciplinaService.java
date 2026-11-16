@@ -55,10 +55,15 @@ public class DisciplinaService {
                                                         + request.codDisciplina());
                 }
 
-                // CORREÇÃO: só considera duplicada se nome, período, tipo e curso forem iguais
-                if (repository.existsByNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoId(
-                                request.nome(), request.periodo(), request.tipoDisciplina(), curso.getId())) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT,
+                if (repository.existsByCodDisciplinaAndNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoId(
+                                request.codDisciplina(),
+                                request.nome(),
+                                request.periodo(),
+                                request.tipoDisciplina(),
+                                curso.getId())) {
+
+                        throw new ResponseStatusException(
+                                        HttpStatus.CONFLICT,
                                         "Essa disciplina já possui cadastro");
                 }
 
@@ -149,10 +154,16 @@ public class DisciplinaService {
                                                         + request.codDisciplina());
                 }
 
-                // CORREÇÃO: mesma regra na atualização, ignorando a própria disciplina (IdNot)
-                if (repository.existsByNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoIdAndIdNot(
-                                request.nome(), request.periodo(), request.tipoDisciplina(), curso.getId(), id)) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT,
+                if (repository.existsByCodDisciplinaAndNomeIgnoreCaseAndPeriodoAndTipoDisciplinaIgnoreCaseAndCursoIdAndIdNot(
+                                request.codDisciplina(),
+                                request.nome(),
+                                request.periodo(),
+                                request.tipoDisciplina(),
+                                curso.getId(),
+                                id)) {
+
+                        throw new ResponseStatusException(
+                                        HttpStatus.CONFLICT,
                                         "Essa disciplina já possui cadastro");
                 }
 
