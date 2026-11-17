@@ -19,7 +19,7 @@
 </head>
 <body>
   <h1>Quadro horário</h1>
-  <div class="subtitle" th:text="${modelo.grade().curso().nome()}">Curso</div>
+  <div class="subtitle" th:text="${modelo.grade().curso().nome() + ' · Versão ' + modelo.grade().quadroHorario().versao()}">Curso</div>
   <div class="turma" th:each="turma : ${modelo.turmas}">
     <h2 th:text="${turma.titulo()}">Turma</h2>
     <table>
@@ -34,6 +34,7 @@
           <td class="time" th:text="${linha.bloco().rotulo()}">Horário</td>
           <td th:each="celula : ${linha.celulas}" th:classappend="${!celula.preenchida()} ? ' empty'">
             <span class="subject" th:if="${celula.preenchida()}" th:text="${celula.valor().disciplina().nome()}">Disciplina</span>
+            <span class="room" th:if="${celula.preenchida() and celula.valor().professor() != null}" th:text="${celula.valor().professor()}">Professor</span>
             <span class="room" th:if="${celula.preenchida()}" th:text="${celula.valor().sala().codigo()}">Sala</span>
             <span th:unless="${celula.preenchida()}">-</span>
           </td>

@@ -1,0 +1,47 @@
+package com.fatec.gini.web.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import com.fatec.gini.domain.services.usecase.write.MotorQuadroHorario;
+import com.fatec.gini.dto.grade.GradeCursoResponse;
+import com.fatec.gini.domain.services.export.MotorQuadroPdfService;
+import com.fatec.gini.domain.services.export.MotorQuadroExcelService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/motor-quadro/quadros")
+@RequiredArgsConstructor
+public class MotorQuadroPorQuadroController {
+    private final MotorQuadroHorario motor;
+    private final MotorQuadroPdfService pdfService;
+    private final MotorQuadroExcelService excelService;
+
+    @GetMapping("/{id}")
+    public GradeCursoResponse obter(@PathVariable Long id) {
+        return motor.construirPorQuadro(id);
+    }
+
+    @GetMapping(value = "/{id}/exportar/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> exportarPdf(@PathVariable Long id) {
+        byte[] arquivo = pdfService.exportar(motor.construirPorQuadro(id));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=quadro-horario-" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF).body(arquivo);
+    }
+
+    @GetMapping(value = "/{id}/exportar/planilha", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> exportarPlanilha(@PathVariable Long id) {
+        byte[] arquivo = excelService.exportar(motor.construirPorQuadro(id));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=quadro-horario-" + id + ".xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(arquivo);
+    }
+}

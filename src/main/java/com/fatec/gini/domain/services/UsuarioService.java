@@ -55,6 +55,10 @@ public class UsuarioService {
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Curso não encontrado com ID: " + request.curso().id()));
 
+            if (request.tipoUsuario() == TipoUsuario.COORDENADOR && curso.getStatus() != Status.ATIVO) {
+                throw new BusinessException("O curso do coordenador deve estar ativo.");
+            }
+
             entity.setCurso(curso);
         }
 
@@ -119,6 +123,10 @@ public class UsuarioService {
 
         validarCursoObrigatorioUsuario.executar(request);
 
+        boolean preservaCurso = entity.getTipoUsuario() == TipoUsuario.COORDENADOR
+                && entity.getCurso() != null && request.curso() != null
+                && entity.getCurso().getId().equals(request.curso().id());
+
         entity.setNome(request.nome());
 
         entity.setEmail(request.email());
@@ -136,6 +144,10 @@ public class UsuarioService {
             Curso curso = cursoRepository.findById(request.curso().id())
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Curso não encontrado com ID: " + request.curso().id()));
+
+            if (request.tipoUsuario() == TipoUsuario.COORDENADOR && !preservaCurso && curso.getStatus() != Status.ATIVO) {
+                throw new BusinessException("O curso do coordenador deve estar ativo.");
+            }
 
             entity.setCurso(curso);
         }

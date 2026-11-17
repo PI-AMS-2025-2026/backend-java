@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +69,7 @@ public class CursoService {
             int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(pageNum, size);
+        var pageRequest = PageRequest.of(pageNum, size, Sort.by("id"));
 
         var page = repository.buscarPorFiltros(
                 nome,

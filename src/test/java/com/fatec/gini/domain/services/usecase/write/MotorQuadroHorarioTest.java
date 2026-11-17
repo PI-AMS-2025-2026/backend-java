@@ -30,6 +30,7 @@ import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCas
 import com.fatec.gini.dto.grade.GradeCursoResponse;
 import com.fatec.gini.dto.grade.GradeTurmaResponse;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
@@ -53,6 +54,9 @@ class MotorQuadroHorarioTest {
     private AlocacaoRepository alocacaoRepository;
 
     @Mock
+    private BlocoHorarioRepository blocoHorarioRepository;
+
+    @Mock
     private ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
     private MotorQuadroHorario motor;
@@ -68,6 +72,7 @@ class MotorQuadroHorarioTest {
                 quadroHorarioRepository,
                 turmaRepository,
                 alocacaoRepository,
+                blocoHorarioRepository,
                 validarAutorizacaoCurso);
 
         curso = new Curso("Análise e Desenvolvimento de Sistemas", "Semestral", Status.ATIVO, 6);
@@ -92,6 +97,49 @@ class MotorQuadroHorarioTest {
 
         alocacao = new Alocacao(turma, disciplina, sala, null, DiaSemana.SEGUNDA, bloco, quadro);
         alocacao.setId(60L);
+    }
+
+    @Test
+    void quadroVazioExibeCatalogoEDiasDaTurma() {
+        quadro.setCurso(curso);
+        quadro.setTurma(turma);
+        BlocoHorario bloco = new BlocoHorario(LocalTime.of(7, 0), LocalTime.of(8, 0), 60);
+        bloco.setId(30L);
+        when(quadroHorarioRepository.findById(10L)).thenReturn(Optional.of(quadro));
+        when(blocoHorarioRepository.findAllByOrderByHoraInicioAsc()).thenReturn(List.of(bloco));
+        when(alocacaoRepository.findByQuadroHorarioId(10L)).thenReturn(List.of());
+
+        var grade = motor.construirPorQuadro(10L);
+        assertThat(grade.turmas()).hasSize(1);
+        assertThat(grade.turmas().get(0).id()).isEqualTo(20L);
+        assertThat(grade.blocos()).hasSize(1);
+        assertThat(grade.dias()).hasSize(6);
+        assertThat(grade.turmas().get(0).celulas()).hasSize(6);
+        assertThat(grade.turmas().get(0).celulas()).extracting(c -> c.diaSemana())
+                .containsExactly(DiaSemana.SEGUNDA, DiaSemana.TERÇA, DiaSemana.QUARTA,
+                        DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SÁBADO);
+        verify(validarAutorizacaoCurso).validarCurso(curso);
+    }
+
+    @Test
+    void rejeitaAcessoAoQuadroDeCursoNaoAutorizado() {
+        quadro.setCurso(curso); quadro.setTurma(turma);
+        when(quadroHorarioRepository.findById(10L)).thenReturn(Optional.of(quadro));
+        org.mockito.Mockito.doThrow(new org.springframework.security.access.AccessDeniedException("sem acesso"))
+                .when(validarAutorizacaoCurso).validarCurso(curso);
+        assertThrows(org.springframework.security.access.AccessDeniedException.class,
+                () -> motor.construirPorQuadro(10L));
+        verify(alocacaoRepository, never()).findByQuadroHorarioId(any());
+    }
+
+    @Test
+    void rejeitaQuadroComTurmaDeOutroCurso() {
+        var outroCurso = new Curso(); outroCurso.setId(2L);
+        turma.setCurso(outroCurso);
+        quadro.setCurso(curso); quadro.setTurma(turma);
+        when(quadroHorarioRepository.findById(10L)).thenReturn(Optional.of(quadro));
+        assertThrows(BusinessException.class, () -> motor.construirPorQuadro(10L));
+        verify(alocacaoRepository, never()).findByQuadroHorarioId(any());
     }
 
     @Test

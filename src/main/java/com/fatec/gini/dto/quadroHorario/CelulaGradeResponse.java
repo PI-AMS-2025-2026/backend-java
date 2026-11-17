@@ -9,6 +9,11 @@ public record CelulaGradeResponse(
         Long blocoHorarioId,
         DisciplinaGradeResumoResponse disciplina,
         SalaGradeResumoResponse sala,
-        Long alocacaoId
+        Long alocacaoId,
+        String professor
 ) {
+    public CelulaGradeResponse(DiaSemana diaSemana, Long blocoHorarioId,
+            DisciplinaGradeResumoResponse disciplina, SalaGradeResumoResponse sala, Long alocacaoId) {
+        this(diaSemana, blocoHorarioId, disciplina, sala, alocacaoId, null);
+    }
 }

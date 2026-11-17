@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -40,6 +41,35 @@ class UsuarioServiceTest {
 
     @InjectMocks
     private UsuarioService usuarioService;
+
+    @Test
+    void rejeitaNovoVinculoComCursoInativo() {
+        Curso inativo = new Curso("ADS", "Semestral", Status.INATIVO, 6);
+        inativo.setId(7L);
+        when(cursoRepository.findById(7L)).thenReturn(Optional.of(inativo));
+        assertThrows(BusinessException.class,
+                () -> usuarioService.criar(request(TipoUsuario.COORDENADOR, new LongDTO(7L))));
+
+        Usuario existente = new Usuario("Nome", "coord@teste.com", "hash", Status.ATIVO, TipoUsuario.COORDENADOR);
+        existente.setId(4L);
+        Curso ativo = new Curso("Outro", "Semestral", Status.ATIVO, 6);
+        ativo.setId(8L); existente.setCurso(ativo);
+        when(repository.findById(4L)).thenReturn(Optional.of(existente));
+        assertThrows(BusinessException.class,
+                () -> usuarioService.atualizar(4L, request(TipoUsuario.COORDENADOR, new LongDTO(7L))));
+    }
+
+    @Test
+    void permiteAtualizarCoordenadorMantendoVinculoInativoExistente() {
+        Curso inativo = new Curso("ADS", "Semestral", Status.INATIVO, 6); inativo.setId(7L);
+        Usuario existente = new Usuario("Nome", "coord@teste.com", "hash", Status.ATIVO, TipoUsuario.COORDENADOR);
+        existente.setId(4L); existente.setCurso(inativo);
+        when(repository.findById(4L)).thenReturn(Optional.of(existente));
+        when(cursoRepository.findById(7L)).thenReturn(Optional.of(inativo));
+        when(repository.save(any(Usuario.class))).thenAnswer(i -> i.getArgument(0));
+        var response = usuarioService.atualizar(4L, request(TipoUsuario.COORDENADOR, new LongDTO(7L)));
+        assertThat(response.curso().id()).isEqualTo(7L);
+    }
 
     @Test
     void devePermitirAdministradorSemCurso() {
@@ -105,6 +135,20 @@ class UsuarioServiceTest {
                 "Usuário Teste", "novo@teste.com", null, Status.ATIVO, TipoUsuario.ADMINISTRADOR, null);
 
         assertThrows(IllegalArgumentException.class, () -> usuarioService.criar(request));
+    }
+
+    @Test
+    void deveInativarUsuarioSemExcluirRegistro() {
+        Usuario existente = new Usuario("Usuário Teste", "teste@teste.com", "hash", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
+        existente.setId(12L);
+        when(repository.findById(12L)).thenReturn(Optional.of(existente));
+        when(repository.save(any(Usuario.class))).thenAnswer(invocacao -> invocacao.getArgument(0));
+
+        usuarioService.inativar(12L);
+
+        assertThat(existente.getStatus()).isEqualTo(Status.INATIVO);
+        verify(repository).save(existente);
     }
 
     private UsuarioRequest request(TipoUsuario tipoUsuario, LongDTO curso) {

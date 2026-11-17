@@ -20,31 +20,30 @@ final class MotorQuadroExportModel {
 
     static GradeData from(GradeCursoResponse grade) {
         List<DiaData> dias = Arrays.stream(DiaSemana.values())
+                .filter(dia -> grade.dias().isEmpty() || grade.dias().contains(dia))
                 .filter(dia -> grade.turmas().stream()
                         .flatMap(turma -> turma.celulas().stream())
-                        .anyMatch(celula -> celula.diaSemana() == dia))
+                        .anyMatch(celula -> celula.diaSemana() == dia) || grade.dias().contains(dia))
                 .map(dia -> new DiaData(dia, formatarDia(dia)))
                 .toList();
 
         List<TurmaData> turmas = grade.turmas().stream()
-                .map(turma -> criarTurma(turma, grade.blocos(), dias, grade.curso()))
+                .map(turma -> criarTurma(turma, grade.blocos(), dias, grade.curso(), !grade.dias().isEmpty()))
                 .toList();
 
         return new GradeData(grade, dias, turmas);
     }
 
     private static TurmaData criarTurma(TurmaQuadroResponse turma, List<BlocoQuadroResponse> blocos,
-            List<DiaData> dias, CursoGradeResumoResponse curso) {
+            List<DiaData> dias, CursoGradeResumoResponse curso, boolean gradePorQuadro) {
         Map<String, CelulaGradeResponse> celulas = turma.celulas().stream()
                 .collect(Collectors.toMap(celula -> chave(celula.diaSemana(), celula.blocoHorarioId()),
                         Function.identity(), (primeira, ignorada) -> primeira));
 
-        // O motor do quadro devolve uma matriz global, preenchendo combinações sem
-        // alocação com células vazias. No exportador, a linha deve representar um
-        // bloco realmente usado pela turma; caso contrário uma turma parcial ou de
-        // outro turno ganha horários que não existem em sua grade.
+        // Quadros individuais representam todos os blocos exibidos na grade.
+        // Para a rota legada por curso, preserva-se o filtro de blocos usados.
         List<LinhaData> linhas = blocos.stream()
-                .filter(bloco -> turma.celulas().stream()
+                .filter(bloco -> gradePorQuadro || turma.celulas().stream()
                         .anyMatch(celula -> mesmoBloco(celula, bloco) && celula.disciplina() != null))
                 .map(bloco -> new LinhaData(bloco, dias.stream()
                         .map(dia -> new CelulaData(celulas.get(chave(dia.valor(), bloco.id()))))

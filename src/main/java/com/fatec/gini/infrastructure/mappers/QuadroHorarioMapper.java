@@ -1,6 +1,7 @@
 package com.fatec.gini.infrastructure.mappers;
 
 import com.fatec.gini.domain.entities.QuadroHorario;
+import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 
@@ -24,6 +25,7 @@ public class QuadroHorarioMapper {
                 entity.getDataCriacao(),
                 entity.getStatus(),
                 entity.getCurso() != null ? CursoMapper.toResponse(entity.getCurso()) : null,
+                entity.getTurma() != null ? new LongDTO(entity.getTurma().getId()) : null,
                 entity.getPeriodoAtividadeQuadro() != null
                 ? PeriodoAtividadeQuadroMapper.toResponse(entity.getPeriodoAtividadeQuadro())
                 : null,

@@ -30,6 +30,10 @@ public class ValidarQuadroHorarioUseCase {
     public void executar(Alocacao entity) {
         var quadroHorario = entity.getQuadroHorario();
         quadroHorarioAtiva(quadroHorario);
+        if (quadroHorario.getTurma() != null && (entity.getTurma() == null
+                || !quadroHorario.getTurma().getId().equals(entity.getTurma().getId()))) {
+            throw new BusinessException("A turma da alocação deve ser a turma do quadro horário.");
+        }
         quadroHorarioUltimaVersao(quadroHorario);
 
     }
@@ -41,12 +45,12 @@ public class ValidarQuadroHorarioUseCase {
     }
 
     private void quadroHorarioUltimaVersao(QuadroHorario quadroHorario) {
-        QuadroHorario ultimaquadroHorario = quadroHorarioRepository
-                .findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
-                        quadroHorario.getCurso().getId(),
-                        quadroHorario.getPeriodoAtividadeQuadro().getId())
-                .orElseThrow(
-                        () -> new BusinessException("Não foi possível validar a última versão da quadro horário."));
+        QuadroHorario ultimaquadroHorario = (quadroHorario.getTurma() == null
+                ? quadroHorarioRepository.findTopByCursoIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
+                        quadroHorario.getCurso().getId(), quadroHorario.getPeriodoAtividadeQuadro().getId())
+                : quadroHorarioRepository.findTopByTurmaIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
+                        quadroHorario.getTurma().getId(), quadroHorario.getPeriodoAtividadeQuadro().getId()))
+                .orElseThrow(() -> new BusinessException("Não foi possível validar a última versão do quadro horário."));
 
         if (!quadroHorario.getId().equals(ultimaquadroHorario.getId())) {
             throw new BusinessException("O quadro horário informado não é a última versão disponível.");

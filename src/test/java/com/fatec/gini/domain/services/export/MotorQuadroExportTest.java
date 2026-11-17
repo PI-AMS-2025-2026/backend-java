@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.Test;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -26,6 +28,33 @@ import com.fatec.gini.dto.quadroHorario.CelulaGradeResponse;
 import com.fatec.gini.dto.quadroHorario.TurmaQuadroResponse;
 
 class MotorQuadroExportTest {
+
+    @Test
+    void exportaQuadroSelecionadoComProfessorEBlocosVazios() throws IOException {
+        var preenchida = new CelulaGradeResponse(DiaSemana.SEGUNDA, 1L,
+                new DisciplinaGradeResumoResponse(1L, "Banco de Dados"),
+                new SalaGradeResumoResponse(1L, "Sala A"), 1L, "Professora Ana");
+        var vazia = new CelulaGradeResponse(DiaSemana.SEGUNDA, 2L, null, null, null);
+        var grade = new GradeCursoResponse(new CursoGradeResumoResponse(1L, "ADS", "Semestral"),
+                new QuadroHorarioGradeResumoResponse(10L, 2, Status.ATIVO),
+                List.of(bloco(1L, "07h00-08h00", 7, 0, 8, 0), bloco(2L, "08h00-09h00", 8, 0, 9, 0)),
+                List.of(turma(1L, List.of(preenchida, vazia))), List.of(DiaSemana.SEGUNDA, DiaSemana.TERÇA));
+        byte[] pdf = new MotorQuadroPdfService(templateEngine()).exportar(grade);
+        try (var document = PDDocument.load(pdf)) {
+            String texto = new PDFTextStripper().getText(document);
+            assertTrue(texto.contains("Banco de Dados"));
+            assertTrue(texto.contains("Professora Ana"));
+            assertTrue(texto.contains("Sala A"));
+            assertTrue(texto.contains("08h00-09h00"));
+            assertTrue(texto.contains("Versão 2"));
+        }
+        byte[] xlsx = new MotorQuadroExcelService().exportar(grade);
+        try (var workbook = WorkbookFactory.create(new ByteArrayInputStream(xlsx))) {
+            var sheet = workbook.getSheetAt(0);
+            assertTrue(sheet.getRow(4).getCell(1).getStringCellValue().contains("Professora Ana"));
+            assertEquals("08h00-09h00", sheet.getRow(5).getCell(0).getStringCellValue());
+        }
+    }
 
     @Test
     void deveExportarSomenteBlocosReaisDeCadaTurma() {
