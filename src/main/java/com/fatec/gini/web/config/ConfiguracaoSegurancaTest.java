@@ -109,6 +109,9 @@ public class ConfiguracaoSegurancaTest {
                         .requestMatchers("/disponibilidades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
+                        .requestMatchers("/periodos-atividade-quadro/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
                         .requestMatchers(HttpMethod.GET, "/cursos/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
@@ -117,17 +120,17 @@ public class ConfiguracaoSegurancaTest {
 
                         .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())

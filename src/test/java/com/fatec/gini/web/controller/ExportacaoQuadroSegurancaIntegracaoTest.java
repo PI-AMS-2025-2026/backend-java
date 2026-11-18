@@ -63,6 +63,34 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
     }
 
     @Test
+    void coordenadorEAdministradorPodemCriarPeriodo() throws Exception {
+        var curso = cursos.findAll().get(0);
+        var coordenador = new Usuario("Coordenador de períodos", "periodo-coord@teste.local", "senha",
+                Status.ATIVO, TipoUsuario.COORDENADOR);
+        coordenador.setCurso(curso);
+        usuarios.saveAndFlush(coordenador);
+
+        String corpo = "{\"ano\":2027,\"periodo\":1,\"tipo_perido_atividade_quadro\":\"SEMESTRAL\"," +
+                "\"data_inicio\":\"2027-02-01\",\"data_fim\":\"2027-06-30\",\"status\":\"ATIVO\"}";
+        mvc.perform(post("/periodos-atividade-quadro")
+                .header("Authorization", "Bearer " + token(coordenador, "sessao-periodo-coord"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(corpo))
+                .andExpect(status().isCreated());
+
+        var administrador = new Usuario("Administrador", "periodo-admin@teste.local", "senha", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
+        usuarios.saveAndFlush(administrador);
+        String segundoPeriodo = "{\"ano\":2027,\"periodo\":2,\"tipo_perido_atividade_quadro\":\"SEMESTRAL\"," +
+                "\"data_inicio\":\"2027-08-01\",\"data_fim\":\"2027-12-20\",\"status\":\"ATIVO\"}";
+        mvc.perform(post("/periodos-atividade-quadro")
+                .header("Authorization", "Bearer " + token(administrador, "sessao-periodo-admin"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(segundoPeriodo))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void coordenadorCriaQuadroDoSeuCursoERecusaTurmaDeOutroCurso() throws Exception {
         var turma = turmas.findAll().get(0);
         var periodo = quadros.findAll().stream().filter(q -> q.getCurso().getId().equals(turma.getCurso().getId()))
