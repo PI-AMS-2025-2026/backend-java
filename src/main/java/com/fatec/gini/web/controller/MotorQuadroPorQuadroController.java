@@ -16,19 +16,19 @@ import com.fatec.gini.domain.services.export.MotorQuadroExcelService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/motor-quadro/quadros")
+@RequestMapping("/motor-quadro/quadros/{id}")
 @RequiredArgsConstructor
 public class MotorQuadroPorQuadroController {
     private final MotorQuadroHorario motor;
     private final MotorQuadroPdfService pdfService;
     private final MotorQuadroExcelService excelService;
 
-    @GetMapping("/{id}")
+    @GetMapping
     public GradeCursoResponse obter(@PathVariable Long id) {
         return motor.construirPorQuadro(id);
     }
 
-    @GetMapping(value = "/{id}/exportar/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/exportar/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> exportarPdf(@PathVariable Long id) {
         byte[] arquivo = pdfService.exportar(motor.construirPorQuadro(id));
         return ResponseEntity.ok()
@@ -36,7 +36,7 @@ public class MotorQuadroPorQuadroController {
                 .contentType(MediaType.APPLICATION_PDF).body(arquivo);
     }
 
-    @GetMapping(value = "/{id}/exportar/planilha", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @GetMapping(value = "/exportar/planilha", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> exportarPlanilha(@PathVariable Long id) {
         byte[] arquivo = excelService.exportar(motor.construirPorQuadro(id));
         return ResponseEntity.ok()

@@ -69,7 +69,7 @@ public class CursoService {
             int pageNum,
             int size) {
 
-        var pageRequest = PageRequest.of(pageNum, size, Sort.by("id"));
+        var pageRequest = PageRequest.of(pageNum, size, Sort.by(Curso::getId));
 
         var page = repository.buscarPorFiltros(
                 nome,

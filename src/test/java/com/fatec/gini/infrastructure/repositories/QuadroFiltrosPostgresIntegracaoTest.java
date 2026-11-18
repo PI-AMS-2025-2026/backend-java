@@ -8,6 +8,7 @@ import com.fatec.gini.domain.entities.BlocoHorario;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import com.fatec.gini.domain.entities.Curso;
+import com.fatec.gini.domain.entities.TipoSala;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.models.Status;
@@ -40,6 +41,40 @@ class QuadroFiltrosPostgresIntegracaoTest {
     BlocoHorarioRepository blocos;
     @Autowired
     org.springframework.test.web.servlet.MockMvc mvc;
+
+    @Test
+    void disciplinaCrudComPostgresEValidacoes() throws Exception {
+        var curso = new Curso("Curso integração disciplina", "Semestral", Status.ATIVO, 6);
+        entityManager.persist(curso);
+        var tipo = new TipoSala("Tipo integração disciplina");
+        entityManager.persist(tipo);
+        entityManager.flush();
+        var payload = """
+                {"nome":"Disciplina integração","carga_horaria":40,"tipo_disciplina":"Teórica","periodo":4,
+                 "modalidade":"Presencial","cod_disciplina":"BD02-INT","cor":"#f5a623",
+                 "curso":{"id":%d},"tipo_sala":{"id":%d}}
+                """.formatted(curso.getId(), tipo.getId());
+        var get = org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/disciplinas").param("page", "0").param("size", "100");
+        mvc.perform(get).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+        var created = mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/disciplinas")
+                .contentType("application/json").content(payload))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isCreated())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.cod_disciplina").value("BD02-INT"))
+                .andReturn();
+        var id = new com.fasterxml.jackson.databind.ObjectMapper().readTree(created.getResponse().getContentAsString()).get("id").asLong();
+        mvc.perform(get).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.content[0].periodo").value(4));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/disciplinas/{id}", id)
+                .contentType("application/json").content(payload.replace("Disciplina integração", "Disciplina editada")))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.nome").value("Disciplina editada"));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/disciplinas")
+                .contentType("application/json").content(payload))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isConflict());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/disciplinas")
+                .contentType("application/json").content(payload.replace("BD02-INT", "BD03-INT").replace("\"carga_horaria\":40", "\"carga_horaria\":19")))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnprocessableContent());
+    }
 
     @Test
     void endpointBlocosListaSemFiltrosNoPostgres() throws Exception {

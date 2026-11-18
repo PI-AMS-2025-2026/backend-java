@@ -6,10 +6,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.io.ByteArrayInputStream;
 import java.time.Instant;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -35,6 +38,29 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
     @Autowired UsuarioRepository usuarios;
     @Autowired RefreshTokenRepository sessoes;
     @Autowired TokenService tokens;
+    @Value("${api.security.token.secret}") String jwtSecret;
+    @Value("${api.security.token.issuer}") String jwtIssuer;
+
+    @Test
+    void tokenAusenteOuExpiradoRetorna401EMantem403ParaFaltaDePermissao() throws Exception {
+        mvc.perform(get("/cursos")).andExpect(status().isUnauthorized());
+
+        String tokenExpirado = JWT.create()
+                .withIssuer(jwtIssuer)
+                .withSubject("expirado@teste.local")
+                .withExpiresAt(Instant.now().minusSeconds(60))
+                .sign(Algorithm.HMAC256(jwtSecret));
+        mvc.perform(get("/cursos").header("Authorization", "Bearer " + tokenExpirado))
+                .andExpect(status().isUnauthorized());
+
+        var curso = cursos.findAll().get(0);
+        var coordenador = new Usuario("Coordenador", "permissao@teste.local", "senha", Status.ATIVO,
+                TipoUsuario.COORDENADOR);
+        coordenador.setCurso(curso);
+        usuarios.saveAndFlush(coordenador);
+        mvc.perform(get("/usuarios").header("Authorization", "Bearer " + token(coordenador, "sessao-permissao")))
+                .andExpect(status().isForbidden());
+    }
 
     @Test
     void coordenadorCriaQuadroDoSeuCursoERecusaTurmaDeOutroCurso() throws Exception {
