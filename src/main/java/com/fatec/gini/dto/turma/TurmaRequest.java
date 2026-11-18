@@ -10,21 +10,21 @@ import jakarta.validation.constraints.Positive;
 
 public record TurmaRequest(
 
-    @NotNull(message = "O período é obrigatório")
-    @Positive(message = "O período deve ser positivo")
+    @NotNull(message = "Período é obrigatório.")
+    @Positive(message = "Período deve ser maior que zero.")
     Integer periodo,
 
-    @NotNull(message = "O ano é obrigatório")
-    @Min(value = 2009, message = "O ano da turma deve ser maior que 2008")
-    @Max(value = 9999, message = "O ano deve possuir no máximo 4 dígitos")
+    @NotNull(message = "Ano é obrigatório.")
+    @Min(value = 2009, message = "Ano da turma deve ser maior que 2008.")
+    @Max(value = 9999, message = "Ano deve possuir no máximo 4 dígitos.")
     Integer ano,
 
-    @NotNull(message = "O número de alunos é obrigatório")
-    @Positive(message = "O número de alunos deve ser positivo")
-    @Max(value = 50, message = "O número de alunos não pode ser superior a 50")
+    @NotNull(message = "Número de alunos é obrigatório.")
+    @Positive(message = "Número de alunos deve ser maior que zero.")
+    @Max(value = 50, message = "Número de alunos não pode ser superior a 50.")
     Integer numeroAlunos,
 
-    @NotNull(message = "O curso é obrigatório")
+    @NotNull(message = "Curso é obrigatório.")
     LongDTO curso,
 
     Status status

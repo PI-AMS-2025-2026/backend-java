@@ -150,7 +150,7 @@ public class DisponibilidadeProfessorService {
                 if (cursoId != null && !professorDisciplinaRepository
                                 .existsByProfessorIdAndDisciplinaCursoId(professorId, cursoId)) {
                         throw new AccessDeniedException(
-                                        "Professor não pertence ao curso do usuário");
+                                        "Professor não pertence ao curso do usuário.");
                 }
         }
 }

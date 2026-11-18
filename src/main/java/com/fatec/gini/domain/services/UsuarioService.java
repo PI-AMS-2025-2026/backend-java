@@ -38,11 +38,11 @@ public class UsuarioService {
     public UsuarioResponse criar(UsuarioRequest request) {
 
         if (request.senha() == null || request.senha().isBlank()) {
-            throw new IllegalArgumentException("Senha é obrigatória");
+            throw new IllegalArgumentException("Senha é obrigatória.");
         }
 
         if (repository.existsByEmail(request.email())) {
-            throw new BusinessException("Esse email já possui cadastro");
+            throw new BusinessException("Esse email já possui cadastro.");
         }
 
         Usuario entity = UsuarioMapper.toEntity(request);
@@ -114,7 +114,7 @@ public class UsuarioService {
                         "Usuário não encontrado com ID: " + id));
 
         if (repository.existsByEmailAndIdNot(request.email(), id)) {
-            throw new BusinessException("Esse email já possui cadastro");
+            throw new BusinessException("Esse email já possui cadastro.");
         }
 
         validarCursoObrigatorioUsuario.executar(request);

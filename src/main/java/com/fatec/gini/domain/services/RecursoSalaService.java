@@ -33,21 +33,21 @@ public class RecursoSalaService {
 
         // ALTERAÇÃO: utiliza diretamente o salaId recebido no payload.
         if (repository.existsBySalaIdAndRecursoId(request.sala().id(), request.recurso().id())) {
-            throw new IllegalArgumentException("Recurso já vinculado a essa sala");
+            throw new IllegalArgumentException("Recurso já vinculado a essa sala.");
         }
 
         // Validação mantida para garantir quantidade positiva.
         if (request.quantidade() <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser positiva");
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
         }
 
         // ALTERAÇÃO: busca a sala diretamente pelo ID informado.
         Sala sala = salaRepository.findById(request.sala().id())
-                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada."));
 
         // ALTERAÇÃO: busca o recurso diretamente pelo ID informado.
         Recurso recurso = recursoRepository.findById(request.recurso().id())
-                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado."));
 
         RecursoSala entity = new RecursoSala();
         entity.setQuantidade(request.quantidade());
@@ -86,22 +86,22 @@ public class RecursoSalaService {
     public RecursoSalaResponse atualizar(Long id, RecursoSalaRequest request) {
 
         RecursoSala entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Recurso da Sala não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Recurso da Sala não encontrado."));
 
         if (request.quantidade() <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser positiva");
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
         }
 
         // ALTERAÇÃO: permite atualizar a sala pelo ID recebido no payload.
         Sala sala = salaRepository.findById(request.sala().id())
-                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada."));
 
         // ALTERAÇÃO: permite atualizar o recurso pelo ID recebido no payload.
         Recurso recurso = recursoRepository.findById(request.recurso().id())
                 .orElseThrow(() -> new EntityNotFoundException("Recurso não encontrado"));
 
         if (repository.existsBySalaIdAndRecursoIdAndIdNot(sala.getId(), recurso.getId(), id)) {
-            throw new IllegalArgumentException("Recurso já vinculado a essa sala");
+            throw new IllegalArgumentException("Recurso já vinculado a essa sala.");
         }
 
         // ALTERAÇÃO: atualiza os relacionamentos junto com a quantidade.
@@ -115,7 +115,7 @@ public class RecursoSalaService {
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Recurso da Sala não encontrado");
+            throw new EntityNotFoundException("Recurso da Sala não encontrado.");
         }
         repository.deleteById(id);
     }

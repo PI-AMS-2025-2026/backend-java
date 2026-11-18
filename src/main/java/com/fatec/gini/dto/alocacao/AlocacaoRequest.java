@@ -12,36 +12,36 @@ import jakarta.validation.constraints.NotNull;
 
 public record AlocacaoRequest(
 
-    @NotNull(message = "Turma é obrigatória")
+    @NotNull(message = "Turma é obrigatória.")
     @Valid
     LongDTO turma,
 
-    @NotNull(message = "Disciplina é obrigatória")
+    @NotNull(message = "Disciplina é obrigatória.")
     @Valid
     LongDTO disciplina,
 
-    @NotNull(message = "Sala é obrigatória")
+    @NotNull(message = "Sala é obrigatória.")
     @Valid
     LongDTO sala,
 
-    @NotNull(message = "Professor é obrigatório")
+    @NotNull(message = "Professor é obrigatório.")
     @Valid
     LongDTO professor,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = DiaSemanaDeserializer.class)
-    @NotNull(message = "Dia da semana é obrigatório")
+    @NotNull(message = "Dia da semana é obrigatório.")
     DiaSemana diaSemana,
 
-    @NotNull(message = "Bloco de horário é obrigatório")
+    @NotNull(message = "Bloco de horário é obrigatório.")
     @Valid
     LongDTO blocoHorario,
 
-    @NotNull(message = "Quadro horário é obrigatório")
+    @NotNull(message = "Quadro de horários é obrigatório.")
     @Valid
     LongDTO quadroHorario,
 
-    @NotNull(message = "Usuário responsável pela alteração é obrigatório")
+    @NotNull(message = "Usuário responsável pela alteração é obrigatório.")
     @Valid
     LongDTO usuarioAlteracao
 ) {

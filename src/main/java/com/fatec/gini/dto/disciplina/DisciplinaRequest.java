@@ -12,32 +12,32 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record DisciplinaRequest(
-        @NotBlank(message = "O nome é obrigatório") String nome,
+        @NotBlank(message = "Nome é obrigatório.") String nome,
 
-        @NotNull(message = "A carga horária é obrigatória")
-        @Min(value = 20, message = "A carga horária deve ser no mínimo 20 horas") 
-        @Max(value = 160, message = "A carga horária deve ser no máximo 160 horas") 
+        @NotNull(message = "Carga horária é obrigatória.")
+        @Min(value = 20, message = "Carga horária deve ser no mínimo 20 horas.") 
+        @Max(value = 160, message = "Carga horária deve ser no máximo 160 horas.") 
         Integer cargaHoraria,
 
-        @NotBlank(message = "O tipo da disciplina é obrigatório") String tipoDisciplina,
+        @NotBlank(message = "Tipo da disciplina é obrigatório.") String tipoDisciplina,
 
-        @NotNull(message = "O período é obrigatório")
+        @NotNull(message = "Período é obrigatório.")
         // CORREÇÃO: impede cadastro com período zero ou negativo
-        @Positive(message = "O período deve ser maior que zero") Integer periodo,
+        @Positive(message = "Período deve ser maior que zero.") Integer periodo,
 
-        @NotBlank(message = "A modalidade é obrigatória") String modalidade,
+        @NotBlank(message = "Modalidade é obrigatória.") String modalidade,
 
         // CORREÇÃO: mensagem customizada para indicar explicitamente que o erro é do
         // campo codDisciplina
-        @NotBlank(message = "O código da disciplina é obrigatório") @Size(min = 3, max = 20, message = "O código da disciplina (codDisciplina) deve ter entre 3 e 20 caracteres") String codDisciplina,
+        @NotBlank(message = "Código da disciplina é obrigatório.") @Size(min = 3, max = 20, message = "Código da disciplina deve ter entre 3 e 20 caracteres.") String codDisciplina,
 
         String cor,
 
-    @NotNull(message = "O curso é obrigatório")
+    @NotNull(message = "Curso é obrigatório.")
     @Valid
     LongDTO curso,
 
-    @NotNull(message = "O tipo de sala é obrigatório")
+    @NotNull(message = "Tipo de sala é obrigatório.")
     @Valid
     LongDTO tipoSala
 ) {
