@@ -70,6 +70,9 @@ public class Turma {
     @OneToMany(mappedBy = "turma")
     private List<Alocacao> alocacoes;
 
+    @OneToMany(mappedBy = "turma")
+    private List<QuadroHorario> quadrosHorarios;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

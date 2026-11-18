@@ -41,6 +41,8 @@ public class QuadroHorarioController {
         public ResponseEntity<PageResponse<QuadroHorarioResponse>> listar(
                         @RequestParam(name = "id_curso", required = false) Long idCurso,
 
+                        @RequestParam(name = "id_turma", required = false) Long idTurma,
+
                         @RequestParam(name = "id_periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
 
                         @RequestParam(name = "status", required = false) Status status,
@@ -55,6 +57,7 @@ public class QuadroHorarioController {
                 return ResponseEntity.ok(
                                 service.listar(
                                                 idCurso,
+                                                idTurma,
                                                 idPeriodoAtividadeQuadro,
                                                 status,
                                                 versao,

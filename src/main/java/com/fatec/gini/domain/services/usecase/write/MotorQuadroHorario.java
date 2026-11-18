@@ -32,6 +32,7 @@ import com.fatec.gini.dto.quadroHorario.BlocoQuadroResponse;
 import com.fatec.gini.dto.quadroHorario.CelulaGradeResponse;
 import com.fatec.gini.dto.quadroHorario.TurmaQuadroResponse;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
@@ -48,7 +49,39 @@ public class MotorQuadroHorario {
         private final QuadroHorarioRepository quadroHorarioRepository;
         private final TurmaRepository turmaRepository;
         private final AlocacaoRepository alocacaoRepository;
+        private final BlocoHorarioRepository blocoHorarioRepository;
         private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
+
+        public GradeCursoResponse construirPorQuadro(Long quadroId) {
+                QuadroHorario quadro = quadroHorarioRepository.findById(quadroId)
+                                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado"));
+                Curso curso = quadro.getCurso();
+                validarAutorizacaoCurso.validarCurso(curso);
+                Turma turma = quadro.getTurma();
+                if (turma == null || !turma.getCurso().getId().equals(curso.getId())) {
+                        throw new BusinessException("O quadro não possui turma válida para este curso.");
+                }
+                List<BlocoHorario> blocos = blocoHorarioRepository.findAllByOrderByHoraInicioAsc();
+                List<Alocacao> alocacoes = alocacaoRepository.findByQuadroHorarioId(quadroId).stream()
+                                .filter(a -> a.getTurma().getId().equals(turma.getId())).toList();
+                List<CelulaGradeResponse> celulas = new ArrayList<>();
+                List<DiaSemana> dias = List.of(DiaSemana.SEGUNDA, DiaSemana.TERÇA, DiaSemana.QUARTA,
+                                DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SÁBADO);
+                for (DiaSemana dia : dias) {
+                        for (BlocoHorario bloco : blocos) {
+                                alocacoes.stream().filter(a -> a.getDiaSemana() == dia
+                                                && a.getBlocoHorario().getId().equals(bloco.getId())).findFirst()
+                                                .ifPresentOrElse(a -> celulas.add(converterCelulaGradeResponse(a)),
+                                                                () -> celulas.add(criarCelulaVazia(dia, bloco.getId())));
+                        }
+                }
+                return new GradeCursoResponse(
+                                new CursoGradeResumoResponse(curso.getId(), curso.getNome(), curso.getPeriodicidade()),
+                                new QuadroHorarioGradeResumoResponse(quadro.getId(), quadro.getVersao(), quadro.getStatus()),
+                                blocos.stream().map(this::converterBlocoGradeResponse).toList(),
+                                List.of(new TurmaQuadroResponse(turma.getId(), turma.getCodigo(), turma.getAno(),
+                                                turma.getPeriodo(), celulas)), dias);
+        }
 
         public GradeCursoResponse contruir(Long cursoId) {
                 return construir(cursoId);
@@ -214,7 +247,8 @@ public class MotorQuadroHorario {
                                 new SalaGradeResumoResponse(
                                                 alocacao.getSala().getId(),
                                                 alocacao.getSala().getCodigo()),
-                                alocacao.getId());
+                                alocacao.getId(),
+                                alocacao.getProfessor() == null ? null : alocacao.getProfessor().getNome());
         }
 
         private HorarioTurmaGradeResponse converterHorarioTurmaResponse(Alocacao alocacao) {

@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.beans.factory.annotation.Value;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -109,6 +110,8 @@ public class ConfiguracaoSeguranca {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(
+                        (request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
 
                         // Healthcheck do contêiner/orquestrador: precisa responder
@@ -162,6 +165,11 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers("/disponibilidades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
+                        // A gestão dos períodos de atividade dos quadros é compartilhada
+                        // entre administradores e coordenadores.
+                        .requestMatchers("/periodos-atividade-quadro/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
                         .requestMatchers(HttpMethod.GET, "/cursos/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
@@ -170,17 +178,17 @@ public class ConfiguracaoSeguranca {
 
                         .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())

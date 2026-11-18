@@ -80,10 +80,10 @@ public class CopiarQuadroHorarioUseCase {
          * A nova versão será baseada na versão informada
          * para a nova grade.
          */
-        novoQuadro.setVersao(
-                dadosNovaGrade.getVersao() != null
-                        ? dadosNovaGrade.getVersao() + 1
-                        : gradeAnterior.getVersao() + 1);
+        novoQuadro.setVersao(gradeHorariaRepository
+                .findTopByTurmaIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(
+                        gradeAnterior.getTurma().getId(), gradeAnterior.getPeriodoAtividadeQuadro().getId())
+                .map(quadro -> quadro.getVersao() + 1).orElse(1));
 
         LocalDateTime agora =
                 LocalDateTime.now();
@@ -102,6 +102,7 @@ public class CopiarQuadroHorarioUseCase {
          */
         novoQuadro.setCurso(
                 gradeAnterior.getCurso());
+        novoQuadro.setTurma(gradeAnterior.getTurma());
 
         /*
          * O período é o informado para a nova grade.

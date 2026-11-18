@@ -55,6 +55,10 @@ public class UsuarioService {
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Curso não encontrado com ID: " + request.curso().id()));
 
+            if (request.tipoUsuario() == TipoUsuario.COORDENADOR && curso.getStatus() != Status.ATIVO) {
+                throw new BusinessException("O curso do coordenador deve estar ativo.");
+            }
+
             entity.setCurso(curso);
         }
 
@@ -108,6 +112,9 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
+        if (request.status() != Status.ATIVO || request.tipoUsuario() != TipoUsuario.ADMINISTRADOR) {
+            validarQueRestaAdministradorAtivo(id);
+        }
 
         Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -118,6 +125,10 @@ public class UsuarioService {
         }
 
         validarCursoObrigatorioUsuario.executar(request);
+
+        boolean preservaCurso = entity.getTipoUsuario() == TipoUsuario.COORDENADOR
+                && entity.getCurso() != null && request.curso() != null
+                && entity.getCurso().getId().equals(request.curso().id());
 
         entity.setNome(request.nome());
 
@@ -137,6 +148,10 @@ public class UsuarioService {
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Curso não encontrado com ID: " + request.curso().id()));
 
+            if (request.tipoUsuario() == TipoUsuario.COORDENADOR && !preservaCurso && curso.getStatus() != Status.ATIVO) {
+                throw new BusinessException("O curso do coordenador deve estar ativo.");
+            }
+
             entity.setCurso(curso);
         }
 
@@ -145,6 +160,7 @@ public class UsuarioService {
 
     @Transactional
     public void inativar(Long id) {
+        validarQueRestaAdministradorAtivo(id);
 
         Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -155,6 +171,15 @@ public class UsuarioService {
         entity.setUpdatedAt(LocalDateTime.now());
 
         repository.save(entity);
+    }
+
+    private void validarQueRestaAdministradorAtivo(Long id) {
+        // Mantém a verificação e a alteração na mesma transação, inclusive
+        // quando duas requisições tentam remover administradores ao mesmo tempo.
+        var administradores = repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR);
+        if (administradores.size() == 1 && id.equals(administradores.get(0).getId())) {
+            throw new BusinessException("O sistema deve manter pelo menos um administrador ativo.");
+        }
     }
 
     @Transactional(readOnly = true)

@@ -31,8 +31,8 @@ public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoA
                         WHERE (:ano IS NULL OR p.ano = :ano)
                           AND (:periodo IS NULL OR p.periodo = :periodo)
                                                                     AND (:status IS NULL OR p.status = :status)
-                          AND (:dataInicio IS NULL OR p.dataInicio = :dataInicio)
-                          AND (:dataFim IS NULL OR p.dataFim = :dataFim)
+                          AND (CAST(:dataInicio AS date) IS NULL OR p.dataInicio = :dataInicio)
+                          AND (CAST(:dataFim AS date) IS NULL OR p.dataFim = :dataFim)
                         """)
         Page<PeriodoAtividadeQuadro> buscarPorFiltros(
                         @Param("ano") Integer ano,

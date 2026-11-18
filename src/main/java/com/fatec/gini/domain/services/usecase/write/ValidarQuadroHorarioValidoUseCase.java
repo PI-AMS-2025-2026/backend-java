@@ -29,48 +29,19 @@ public class ValidarQuadroHorarioValidoUseCase {
             return;
         }
 
+        Long periodoId = quadroHorario.getPeriodoAtividadeQuadro().getId();
+        Long id = quadroHorario.getId();
         boolean existeConflito;
-
-        /*
-         * Criação:
-         * como o ID ainda é null, verifica qualquer quadro
-         * ativo com o mesmo curso e período.
-         */
-        if (quadroHorario.getId() == null) {
-
-            existeConflito =
-                    quadroHorarioRepository
-                            .existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(
-                                    quadroHorario
-                                            .getCurso()
-                                            .getId(),
-
-                                    quadroHorario
-                                            .getPeriodoAtividadeQuadro()
-                                            .getId(),
-
-                                    Status.ATIVO);
+        if (quadroHorario.getTurma() != null) {
+            Long turmaId = quadroHorario.getTurma().getId();
+            existeConflito = id == null
+                    ? quadroHorarioRepository.existsByTurmaIdAndPeriodoAtividadeQuadroIdAndStatus(turmaId, periodoId, Status.ATIVO)
+                    : quadroHorarioRepository.existsByTurmaIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(turmaId, periodoId, Status.ATIVO, id);
         } else {
-
-            /*
-             * Atualização:
-             * procura outro quadro, ignorando o próprio ID.
-             */
-            existeConflito =
-                    quadroHorarioRepository
-                            .existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(
-                                    quadroHorario
-                                            .getCurso()
-                                            .getId(),
-
-                                    quadroHorario
-                                            .getPeriodoAtividadeQuadro()
-                                            .getId(),
-
-                                    Status.ATIVO,
-
-                                    quadroHorario
-                                            .getId());
+            Long cursoId = quadroHorario.getCurso().getId();
+            existeConflito = id == null
+                    ? quadroHorarioRepository.existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatus(cursoId, periodoId, Status.ATIVO)
+                    : quadroHorarioRepository.existsByCursoIdAndPeriodoAtividadeQuadroIdAndStatusAndIdNot(cursoId, periodoId, Status.ATIVO, id);
         }
 
         if (existeConflito) {

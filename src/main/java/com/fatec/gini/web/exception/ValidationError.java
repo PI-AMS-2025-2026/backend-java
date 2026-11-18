@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ValidationError extends StandardError {
     private List<String> errors = new ArrayList<>();
+    private List<FieldError> fieldErrors = new ArrayList<>();
 
     public void addError(String error) {
         this.errors.add(error);
@@ -13,4 +14,14 @@ public class ValidationError extends StandardError {
     public List<String> getErrors() {
         return errors;
     }
+
+    public void addFieldError(String field, String message) {
+        this.fieldErrors.add(new FieldError(field, message));
+    }
+
+    public List<FieldError> getFieldErrors() {
+        return fieldErrors;
+    }
+
+    public record FieldError(String field, String message) {}
 }
