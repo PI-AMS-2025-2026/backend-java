@@ -2,6 +2,7 @@ package com.fatec.gini.web.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.io.ByteArrayInputStream;
 import java.time.Instant;
@@ -34,6 +35,29 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
     @Autowired UsuarioRepository usuarios;
     @Autowired RefreshTokenRepository sessoes;
     @Autowired TokenService tokens;
+
+    @Test
+    void coordenadorCriaQuadroDoSeuCursoERecusaTurmaDeOutroCurso() throws Exception {
+        var turma = turmas.findAll().get(0);
+        var periodo = quadros.findAll().stream().filter(q -> q.getCurso().getId().equals(turma.getCurso().getId()))
+                .findFirst().orElseThrow().getPeriodoAtividadeQuadro();
+        var outra = turmas.findAll().stream().filter(t -> !t.getCurso().getId().equals(turma.getCurso().getId()))
+                .findFirst().orElseThrow();
+        var coordenador = new Usuario("Coordenação", "jornada@teste.local", "senha", Status.ATIVO, TipoUsuario.COORDENADOR);
+        coordenador.setCurso(turma.getCurso());
+        usuarios.saveAndFlush(coordenador);
+        String credencial = token(coordenador, "sessao-jornada");
+        String corpo = "{\"versao\":1,\"status\":\"ATIVO\",\"curso\":{\"id\":" + turma.getCurso().getId()
+                + "},\"turma\":{\"id\":" + turma.getId() + "},\"periodo_atividade_quadro\":{\"id\":" + periodo.getId() + "}}";
+        mvc.perform(post("/quadros-horarios").header("Authorization", "Bearer " + credencial)
+                .contentType(MediaType.APPLICATION_JSON).content(corpo))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.turma.id").value(turma.getId()))
+                .andExpect(jsonPath("$.versao").value(1));
+        String corpoOutro = "{\"versao\":1,\"status\":\"ATIVO\",\"curso\":{\"id\":" + turma.getCurso().getId()
+                + "},\"turma\":{\"id\":" + outra.getId() + "},\"periodo_atividade_quadro\":{\"id\":" + periodo.getId() + "}}";
+        mvc.perform(post("/quadros-horarios").header("Authorization", "Bearer " + credencial)
+                .contentType(MediaType.APPLICATION_JSON).content(corpoOutro)).andExpect(status().isForbidden());
+    }
 
     @Test
     void autenticaEAutorizaCursoAntesDeGerarPdfLegivel() throws Exception {

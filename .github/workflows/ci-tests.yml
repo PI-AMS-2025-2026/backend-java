@@ -169,6 +169,13 @@ jobs:
             exit 1
           fi
 
+      - name: Validar migração de quadros legados por turma
+        env:
+          PGPASSWORD: gini_ci
+          PGUSER: gini_ci
+          PGHOST: localhost
+        run: bash scripts/test-quadro-horario-por-turma-migration.sh
+
       - name: Verificar que o health não exige autenticação
         run: |
           set -euo pipefail
