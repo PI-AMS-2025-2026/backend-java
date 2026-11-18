@@ -4,13 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -139,9 +143,9 @@ class UsuarioServiceTest {
 
     @Test
     void deveInativarUsuarioSemExcluirRegistro() {
-        Usuario existente = new Usuario("Usuário Teste", "teste@teste.com", "hash", Status.ATIVO,
-                TipoUsuario.ADMINISTRADOR);
-        existente.setId(12L);
+        Usuario existente = administradorAtivo(12L);
+        when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
+                .thenReturn(List.of(existente, administradorAtivo(13L)));
         when(repository.findById(12L)).thenReturn(Optional.of(existente));
         when(repository.save(any(Usuario.class))).thenAnswer(invocacao -> invocacao.getArgument(0));
 
@@ -149,6 +153,43 @@ class UsuarioServiceTest {
 
         assertThat(existente.getStatus()).isEqualTo(Status.INATIVO);
         verify(repository).save(existente);
+    }
+
+    @Test
+    void deveImpedirInativacaoDoUltimoAdministradorAtivo() {
+        Usuario administrador = administradorAtivo(12L);
+        when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
+                .thenReturn(List.of(administrador));
+
+        var erro = assertThrows(BusinessException.class, () -> usuarioService.inativar(12L));
+
+        assertThat(erro).hasMessage("O sistema deve manter pelo menos um administrador ativo.");
+        assertThat(administrador.getStatus()).isEqualTo(Status.ATIVO);
+        verify(repository, never()).save(any(Usuario.class));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"INATIVO, ADMINISTRADOR", "ATIVO, COORDENADOR"})
+    void deveImpedirEdicaoQueRemoveUltimoAdministradorAtivo(Status status, TipoUsuario tipo) {
+        Usuario administrador = administradorAtivo(12L);
+        when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
+                .thenReturn(List.of(administrador));
+        UsuarioRequest request = new UsuarioRequest("Administrador", administrador.getEmail(),
+                null, status, tipo, null);
+
+        var erro = assertThrows(BusinessException.class, () -> usuarioService.atualizar(12L, request));
+
+        assertThat(erro).hasMessage("O sistema deve manter pelo menos um administrador ativo.");
+        assertThat(administrador.getStatus()).isEqualTo(Status.ATIVO);
+        assertThat(administrador.getTipoUsuario()).isEqualTo(TipoUsuario.ADMINISTRADOR);
+        verify(repository, never()).save(any(Usuario.class));
+    }
+
+    private Usuario administradorAtivo(long id) {
+        Usuario usuario = new Usuario("Administrador", "admin" + id + "@teste.com", "hash", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
+        usuario.setId(id);
+        return usuario;
     }
 
     private UsuarioRequest request(TipoUsuario tipoUsuario, LongDTO curso) {

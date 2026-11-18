@@ -112,6 +112,9 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
+        if (request.status() != Status.ATIVO || request.tipoUsuario() != TipoUsuario.ADMINISTRADOR) {
+            validarQueRestaAdministradorAtivo(id);
+        }
 
         Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -157,6 +160,7 @@ public class UsuarioService {
 
     @Transactional
     public void inativar(Long id) {
+        validarQueRestaAdministradorAtivo(id);
 
         Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -167,6 +171,15 @@ public class UsuarioService {
         entity.setUpdatedAt(LocalDateTime.now());
 
         repository.save(entity);
+    }
+
+    private void validarQueRestaAdministradorAtivo(Long id) {
+        // Mantém a verificação e a alteração na mesma transação, inclusive
+        // quando duas requisições tentam remover administradores ao mesmo tempo.
+        var administradores = repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR);
+        if (administradores.size() == 1 && id.equals(administradores.get(0).getId())) {
+            throw new BusinessException("O sistema deve manter pelo menos um administrador ativo.");
+        }
     }
 
     @Transactional(readOnly = true)
