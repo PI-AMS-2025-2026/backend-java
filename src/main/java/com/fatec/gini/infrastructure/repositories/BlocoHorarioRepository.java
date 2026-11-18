@@ -26,8 +26,8 @@ public interface BlocoHorarioRepository extends JpaRepository<BlocoHorario, Long
         @Query("""
                         SELECT h
                         FROM BlocoHorario h
-                        WHERE (:horaInicio IS NULL OR h.horaInicio = :horaInicio)
-                          AND (:horaFim IS NULL OR h.horaFim = :horaFim)
+                        WHERE (CAST(:horaInicio AS time) IS NULL OR h.horaInicio = :horaInicio)
+                          AND (CAST(:horaFim AS time) IS NULL OR h.horaFim = :horaFim)
                           AND (:duracao IS NULL OR h.duracao = :duracao)
                           AND (COALESCE(:busca, '') = '' OR CAST(h.horaInicio AS string) LIKE CONCAT('%', :busca, '%')
                                OR CAST(h.horaFim AS string) LIKE CONCAT('%', :busca, '%'))

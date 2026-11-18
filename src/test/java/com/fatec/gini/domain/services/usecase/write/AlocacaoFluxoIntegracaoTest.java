@@ -17,6 +17,7 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 import com.fatec.gini.domain.entities.ProfessorDisciplina;
 import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.services.QuadroHorarioService;
 import com.fatec.gini.dto.id.LongDTO;
@@ -82,8 +83,16 @@ class AlocacaoFluxoIntegracaoTest {
         var primeira = turmas.findAll().stream()
                 .filter(t -> t.getCurso().getNome().equals("Analise e Desenvolvimento de Sistemas"))
                 .findFirst().orElseThrow();
+        var curso = primeira.getCurso();
+        primeira = new Turma();
+        primeira.setCurso(curso);
+        primeira.setAno(9998);
+        primeira.setPeriodo(1);
+        primeira.setCodigo("teste-9998");
+        primeira.setNumeroAlunos(20);
+        primeira = turmas.saveAndFlush(primeira);
         var periodo = quadros.findAll().stream()
-                .filter(q -> q.getCurso().getId().equals(primeira.getCurso().getId()))
+                .filter(q -> q.getCurso().getId().equals(curso.getId()))
                 .filter(q -> q.getPeriodoAtividadeQuadro().getStatus() == Status.ATIVO)
                 .findFirst().orElseThrow().getPeriodoAtividadeQuadro();
         var segunda = new Turma();
@@ -190,19 +199,44 @@ class AlocacaoFluxoIntegracaoTest {
         }
     }
 
+    @Test
+    void persisteProfessorSelecionadoEntreVinculados() {
+        var professor = professores.findById(4L).orElseThrow();
+        professorDisciplinas.save(new ProfessorDisciplina(professor, disciplinas.findById(4L).orElseThrow()));
+        disponibilidades.save(new DisponibilidadeProfessor(professor, DiaSemana.SEGUNDA, blocos.findById(1L).orElseThrow()));
+        var salva = criarAlocacao.executar(alocacao(1L, 4L, 5L, 4L, DiaSemana.SEGUNDA, 1L, 2L), 1L);
+        entityManager.flush();
+        entityManager.clear();
+        assertThat(alocacoes.findById(salva.getId()).orElseThrow().getProfessor().getId()).isEqualTo(4L);
+    }
+
     private Alocacao alocacao(Long salaId) {
         return alocacao(1L, 4L, salaId, 5L, DiaSemana.SEGUNDA, 1L, 2L);
     }
 
     private Alocacao alocacao(Long turmaId, Long disciplinaId, Long salaId, Long professorId,
             DiaSemana dia, Long blocoId, Long quadroId) {
+        var turma = turmas.findById(turmaId).orElseThrow();
+        var original = quadros.findById(quadroId).orElseThrow();
+        var quadro = quadros.findAll().stream()
+                .filter(q -> q.getStatus() == Status.ATIVO && q.getTurma() != null)
+                .filter(q -> q.getTurma().getId().equals(turmaId))
+                .filter(q -> q.getPeriodoAtividadeQuadro().getId().equals(original.getPeriodoAtividadeQuadro().getId()))
+                .findFirst().orElseGet(() -> {
+                    var criado = new QuadroHorario(1, Status.ATIVO);
+                    criado.setTurma(turma);
+                    criado.setCurso(turma.getCurso());
+                    criado.setPeriodoAtividadeQuadro(original.getPeriodoAtividadeQuadro());
+                    criado.setDataCriacao(java.time.LocalDateTime.now());
+                    return quadros.saveAndFlush(criado);
+                });
         return new Alocacao(
-                turmas.findById(turmaId).orElseThrow(),
+                turma,
                 disciplinas.findById(disciplinaId).orElseThrow(),
                 salas.findById(salaId).orElseThrow(),
                 professores.findById(professorId).orElseThrow(),
                 dia,
                 blocos.findById(blocoId).orElseThrow(),
-                quadros.findById(quadroId).orElseThrow());
+                quadro);
     }
 }

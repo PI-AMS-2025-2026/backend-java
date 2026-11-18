@@ -24,7 +24,7 @@ public interface QuadroHorarioRepository
                              OR g.periodoAtividadeQuadro.id = :idPeriodoAtividadeQuadro)
                         AND (:status IS NULL OR g.status = :status)
                         AND (:versao IS NULL OR g.versao = :versao)
-                        AND (:dataInicio IS NULL OR (g.dataCriacao >= :dataInicio AND g.dataCriacao < :dataFim))
+                        AND (CAST(:dataInicio AS timestamp) IS NULL OR (g.dataCriacao >= :dataInicio AND g.dataCriacao < :dataFim))
                         AND (COALESCE(:busca, '') = '' OR LOWER(g.curso.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
                              OR CAST(g.versao AS string) LIKE CONCAT('%', :busca, '%'))
                         """)
