@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,6 +62,8 @@ public class ConfiguracaoSegurancaTest {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(
+                        (request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(HttpMethod.POST, "/auth/login")
@@ -106,6 +109,9 @@ public class ConfiguracaoSegurancaTest {
                         .requestMatchers("/disponibilidades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
+                        .requestMatchers("/periodos-atividade-quadro/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
                         .requestMatchers(HttpMethod.GET, "/cursos/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
@@ -114,17 +120,17 @@ public class ConfiguracaoSegurancaTest {
 
                         .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
                                 "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**", "/periodos-atividade-quadro/**")
+                                "/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())

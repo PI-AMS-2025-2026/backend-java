@@ -23,6 +23,8 @@ import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioResponse;
 import com.fatec.gini.infrastructure.mappers.QuadroHorarioMapper;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
+import com.fatec.gini.infrastructure.repositories.TurmaRepository;
+import com.fatec.gini.web.exception.BusinessException;
 import com.fatec.gini.infrastructure.repositories.PeriodoAtividadeQuadroRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 
@@ -36,6 +38,8 @@ public class QuadroHorarioService {
         private final QuadroHorarioRepository repository;
 
         private final CursoRepository cursoRepository;
+
+        private final TurmaRepository turmaRepository;
 
         private final PeriodoAtividadeQuadroRepository periodoRepository;
 
@@ -61,6 +65,12 @@ public class QuadroHorarioService {
                 QuadroHorario origem = repository.findById(id).orElseThrow(
                                 () -> new EntityNotFoundException("Quadro horário não encontrada com ID: " + id));
                 validarAutorizacaoCurso.validarCurso(origem.getCurso());
+
+                if (origem.getTurma() == null || request.turma() == null
+                                || !origem.getTurma().getId().equals(request.turma().id())
+                                || !origem.getPeriodoAtividadeQuadro().getId().equals(request.periodoAtividadeQuadro().id())) {
+                        throw new BusinessException("A cópia deve pertencer à mesma turma e período do quadro de origem.");
+                }
 
                 QuadroHorario dadosNovaGrade = QuadroHorarioMapper.toEntity(request);
 
@@ -109,6 +119,12 @@ public class QuadroHorarioService {
                                                 "Período Atividade Quadro não encontrado com ID:  "
                                                                 + request.periodoAtividadeQuadro().id()));
 
+                var turma = turmaRepository.findById(request.turma().id())
+                                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada."));
+                validarAutorizacaoCurso.validarCursosIguais(curso, turma.getCurso());
+                entity.setTurma(turma);
+                entity.setVersao(repository.findTopByTurmaIdAndPeriodoAtividadeQuadroIdOrderByVersaoDesc(turma.getId(), periodo.getId())
+                                .map(quadro -> quadro.getVersao() + 1).orElse(1));
                 entity.setCurso(curso);
                 entity.setPeriodoAtividadeQuadro(periodo);
 
@@ -157,6 +173,7 @@ public class QuadroHorarioService {
         @Transactional(readOnly = true)
         public PageResponse<QuadroHorarioResponse> listar(
                         Long idCurso,
+                        Long idTurma,
                         Long idPeriodoAtividadeQuadro,
                         Status status,
                         Integer versao,
@@ -171,6 +188,7 @@ public class QuadroHorarioService {
 
                 var page = repository.buscarComFiltros(
                                 validarAutorizacaoCurso.cursoParaFiltro(idCurso),
+                                idTurma,
                                 idPeriodoAtividadeQuadro,
                                 status,
                                 versao,
@@ -225,8 +243,15 @@ public class QuadroHorarioService {
                                                 "Período Atividade Quadro não encontrado com ID:  "
                                                                 + request.periodoAtividadeQuadro().id()));
 
-                entity.setVersao(
-                                request.versao());
+                if (entity.getTurma() == null || request.turma() == null
+                                || !entity.getTurma().getId().equals(request.turma().id())
+                                || !entity.getCurso().getId().equals(curso.getId())
+                                || !entity.getPeriodoAtividadeQuadro().getId().equals(periodo.getId())) {
+                        throw new BusinessException("Não é permitido alterar turma, curso ou período do quadro.");
+                }
+                if (!entity.getVersao().equals(request.versao())) {
+                        throw new BusinessException("Não é permitido alterar a versão do quadro.");
+                }
 
                 entity.setStatus(
                                 request.status());

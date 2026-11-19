@@ -4,12 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,6 +45,35 @@ class UsuarioServiceTest {
 
     @InjectMocks
     private UsuarioService usuarioService;
+
+    @Test
+    void rejeitaNovoVinculoComCursoInativo() {
+        Curso inativo = new Curso("ADS", "Semestral", Status.INATIVO, 6);
+        inativo.setId(7L);
+        when(cursoRepository.findById(7L)).thenReturn(Optional.of(inativo));
+        assertThrows(BusinessException.class,
+                () -> usuarioService.criar(request(TipoUsuario.COORDENADOR, new LongDTO(7L))));
+
+        Usuario existente = new Usuario("Nome", "coord@teste.com", "hash", Status.ATIVO, TipoUsuario.COORDENADOR);
+        existente.setId(4L);
+        Curso ativo = new Curso("Outro", "Semestral", Status.ATIVO, 6);
+        ativo.setId(8L); existente.setCurso(ativo);
+        when(repository.findById(4L)).thenReturn(Optional.of(existente));
+        assertThrows(BusinessException.class,
+                () -> usuarioService.atualizar(4L, request(TipoUsuario.COORDENADOR, new LongDTO(7L))));
+    }
+
+    @Test
+    void permiteAtualizarCoordenadorMantendoVinculoInativoExistente() {
+        Curso inativo = new Curso("ADS", "Semestral", Status.INATIVO, 6); inativo.setId(7L);
+        Usuario existente = new Usuario("Nome", "coord@teste.com", "hash", Status.ATIVO, TipoUsuario.COORDENADOR);
+        existente.setId(4L); existente.setCurso(inativo);
+        when(repository.findById(4L)).thenReturn(Optional.of(existente));
+        when(cursoRepository.findById(7L)).thenReturn(Optional.of(inativo));
+        when(repository.save(any(Usuario.class))).thenAnswer(i -> i.getArgument(0));
+        var response = usuarioService.atualizar(4L, request(TipoUsuario.COORDENADOR, new LongDTO(7L)));
+        assertThat(response.curso().id()).isEqualTo(7L);
+    }
 
     @Test
     void devePermitirAdministradorSemCurso() {
@@ -105,6 +139,57 @@ class UsuarioServiceTest {
                 "Usuário Teste", "novo@teste.com", null, Status.ATIVO, TipoUsuario.ADMINISTRADOR, null);
 
         assertThrows(IllegalArgumentException.class, () -> usuarioService.criar(request));
+    }
+
+    @Test
+    void deveInativarUsuarioSemExcluirRegistro() {
+        Usuario existente = administradorAtivo(12L);
+        when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
+                .thenReturn(List.of(existente, administradorAtivo(13L)));
+        when(repository.findById(12L)).thenReturn(Optional.of(existente));
+        when(repository.save(any(Usuario.class))).thenAnswer(invocacao -> invocacao.getArgument(0));
+
+        usuarioService.inativar(12L);
+
+        assertThat(existente.getStatus()).isEqualTo(Status.INATIVO);
+        verify(repository).save(existente);
+    }
+
+    @Test
+    void deveImpedirInativacaoDoUltimoAdministradorAtivo() {
+        Usuario administrador = administradorAtivo(12L);
+        when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
+                .thenReturn(List.of(administrador));
+
+        var erro = assertThrows(BusinessException.class, () -> usuarioService.inativar(12L));
+
+        assertThat(erro).hasMessage("O sistema deve manter pelo menos um administrador ativo.");
+        assertThat(administrador.getStatus()).isEqualTo(Status.ATIVO);
+        verify(repository, never()).save(any(Usuario.class));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"INATIVO, ADMINISTRADOR", "ATIVO, COORDENADOR"})
+    void deveImpedirEdicaoQueRemoveUltimoAdministradorAtivo(Status status, TipoUsuario tipo) {
+        Usuario administrador = administradorAtivo(12L);
+        when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
+                .thenReturn(List.of(administrador));
+        UsuarioRequest request = new UsuarioRequest("Administrador", administrador.getEmail(),
+                null, status, tipo, null);
+
+        var erro = assertThrows(BusinessException.class, () -> usuarioService.atualizar(12L, request));
+
+        assertThat(erro).hasMessage("O sistema deve manter pelo menos um administrador ativo.");
+        assertThat(administrador.getStatus()).isEqualTo(Status.ATIVO);
+        assertThat(administrador.getTipoUsuario()).isEqualTo(TipoUsuario.ADMINISTRADOR);
+        verify(repository, never()).save(any(Usuario.class));
+    }
+
+    private Usuario administradorAtivo(long id) {
+        Usuario usuario = new Usuario("Administrador", "admin" + id + "@teste.com", "hash", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
+        usuario.setId(id);
+        return usuario;
     }
 
     private UsuarioRequest request(TipoUsuario tipoUsuario, LongDTO curso) {

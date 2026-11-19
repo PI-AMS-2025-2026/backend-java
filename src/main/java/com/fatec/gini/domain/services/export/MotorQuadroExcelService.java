@@ -32,7 +32,8 @@ public class MotorQuadroExcelService {
 
             Row title = sheet.createRow(rowIndex++);
             Cell titleCell = title.createCell(0);
-            titleCell.setCellValue("Quadro horário - " + modelo.grade().curso().nome());
+            titleCell.setCellValue("Quadro horário - " + modelo.grade().curso().nome()
+                    + " - Versão " + modelo.grade().quadroHorario().versao());
             titleCell.setCellStyle(titleStyle);
             sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(0, 0,
                     0, modelo.dias().size() + 1));
@@ -101,6 +102,7 @@ public class MotorQuadroExcelService {
             return "-";
         }
         var valor = celula.valor();
-        return valor.disciplina().nome() + "\n" + valor.sala().codigo();
+        return valor.disciplina().nome() + (valor.professor() == null ? "" : "\n" + valor.professor())
+                + "\n" + valor.sala().codigo();
     }
 }

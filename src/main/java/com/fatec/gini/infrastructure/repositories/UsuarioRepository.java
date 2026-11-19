@@ -1,8 +1,11 @@
 package com.fatec.gini.infrastructure.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
+
+import jakarta.persistence.LockModeType;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
@@ -45,4 +50,14 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByEmailAndIdNot(String email, Long id);
 
     boolean existsByEmail(String email);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        SELECT u
+        FROM Usuario u
+        WHERE u.status = :status AND u.tipoUsuario = :tipo
+        ORDER BY u.id
+        """)
+    List<Usuario> buscarPorStatusETipoComBloqueio(
+        @Param("status") Status status, @Param("tipo") TipoUsuario tipo);
 }

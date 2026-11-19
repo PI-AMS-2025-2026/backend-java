@@ -42,7 +42,7 @@ public class ValidarDataPeriodoAtividadeQuadroUseCase {
             throw new ParameterException("O tipo e o número do período são obrigatórios.");
         }
 
-        if (tipoPeriodo == TipoPeridoAtividadeQuadro.SEMENSTRAL) {
+        if (tipoPeriodo == TipoPeridoAtividadeQuadro.SEMESTRAL) {
             if (periodo < 1 || periodo > 2) {
                 throw new ParameterException("O período semestral deve ser 1 ou 2.");
             }

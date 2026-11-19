@@ -8,13 +8,13 @@
     "name": "api.security.token.expirationMs",
     "type": "java.lang.Long",
     "defaultValue": 86400000,
-    "description": "Tempo de validade do token JWT de acesso, em milissegundos. Após esse período, o usuário precisa se autenticar novamente."
+    "description": "Tempo de validade do token JWT de acesso, em milissegundos. Após esse período, o frontend pode solicitar um novo token usando o refresh token."
   },
   {
     "name": "api.security.token.refreshExpirationMs",
     "type": "java.lang.Long",
     "defaultValue": 604800000,
-    "description": "Tempo de validade do token de atualização, em milissegundos. Esse token é usado para obter uma nova credencial de acesso."
+    "description": "Tempo de validade do token de atualização, em milissegundos. Esse token permite renovar a sessão; após sua expiração, o usuário precisa entrar novamente."
   },
   {
     "name": "app.security.authorization.enabled",
@@ -39,5 +39,10 @@
     "type": "java.lang.String",
     "defaultValue": "http://localhost:3000",
     "description": "Endereço base da aplicação web usado para montar os links de recuperação de senha enviados por e-mail."
+  },
+  {
+    "name": "api.security.token.issuer",
+    "type": "java.lang.String",
+    "description": "Identificador do emissor (claim iss) dos tokens JWT. Por padrão, é derivado de app.environment e validado nas requisições para impedir o uso de tokens emitidos em outro ambiente."
   }
 ]}

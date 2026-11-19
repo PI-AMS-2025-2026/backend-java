@@ -104,7 +104,7 @@ INSERT INTO turma (
 INSERT INTO disciplina (nome, carga_horaria, tipo_disciplina, periodo, modalidade, cod_disciplina, cor, id_curso, id_tipo_sala) VALUES
 ('Programação Multiplataforma', 80, 'Pratica', 1, 'Presencial', 'ISW044', '#2E86AB', 1, 1),
 ('Banco de Dados', 80, 'Teorica', 1, 'Presencial', 'BD001', '#F18F01', (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Laboratorio')),
-('Engenharia de Software', 80, 'Teorica', 2, 'Presencial', 'ES002', '#C73E1D', (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
+('Engenharia de Software', 80, 'Teorica', 1, 'Presencial', 'ES002', '#C73E1D', (SELECT id_curso FROM curso WHERE nome = 'Analise e Desenvolvimento de Sistemas'), (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
 ('Gestão de Projetos', 40, 'Teorica', 1, 'Hibrida', 'GP101', '#6A994E', (SELECT id_curso FROM curso WHERE nome = 'Gestão Tecnologia da Informação'), (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
 ('Fundamentos de Logistica', 60, 'Teorica', 1, 'Presencial', 'LOG010', '#8338EC', (SELECT id_curso FROM curso WHERE nome = 'Logistica'), (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala')),
 ('Automacao Industrial', 80, 'Pratica', 2, 'Presencial', 'AUT020', '#3A86FF', (SELECT id_curso FROM curso WHERE nome = 'Eletronica Automotiva'), (SELECT id_tipo_sala FROM tipo_sala WHERE nome = 'Sala Maker')),
@@ -829,3 +829,34 @@ INSERT INTO alocacao (dia_semana, id_bloco_horario, id_disciplina, id_professor,
 ('QUINTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '16:00:00' AND hora_fim = '16:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
 ('SEXTA', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:00:00' AND hora_fim = '17:50:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO')),
 ('SÁBADO', (SELECT id_bloco_horario FROM bloco_horario WHERE hora_inicio = '17:50:00' AND hora_fim = '18:40:00'), (SELECT id_disciplina FROM disciplina WHERE cod_disciplina = 'DEMOBASE'), (SELECT id_professor FROM professor WHERE email = 'professor.base.demo@gini.local'), (SELECT id_quadro_horario FROM quadro_horario WHERE id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação') AND status = 'ATIVO'), (SELECT id_sala FROM sala WHERE codigo = 'SALA-DEMO-01'), (SELECT id_turma FROM turma WHERE codigo = '1/2026-DEMO'));
+
+-- Adapta os quadros demonstrativos ao modelo por turma. Preserva o ID original
+-- para a primeira turma e cria versões adicionais quando houver outras turmas.
+UPDATE quadro_horario q
+SET id_turma = (SELECT MIN(a.id_turma) FROM alocacao a
+                JOIN turma t ON t.id_turma = a.id_turma
+                WHERE a.id_quadro_horario = q.id_quadro_horario AND t.id_curso = q.id_curso)
+WHERE EXISTS (SELECT 1 FROM alocacao a JOIN turma t ON t.id_turma = a.id_turma
+              WHERE a.id_quadro_horario = q.id_quadro_horario AND t.id_curso = q.id_curso);
+
+INSERT INTO quadro_horario (versao, data_criacao, status, id_curso, id_periodo_atividade_quadro, id_turma, created_at, updated_at)
+SELECT DISTINCT q.versao, q.data_criacao, q.status, q.id_curso, q.id_periodo_atividade_quadro, a.id_turma, q.created_at, q.updated_at
+FROM quadro_horario q JOIN alocacao a ON a.id_quadro_horario = q.id_quadro_horario
+JOIN turma t ON t.id_turma = a.id_turma AND t.id_curso = q.id_curso
+WHERE q.id_turma IS NOT NULL AND q.id_turma <> a.id_turma;
+
+UPDATE alocacao a
+SET id_quadro_horario = (SELECT q2.id_quadro_horario FROM quadro_horario q2
+                         JOIN quadro_horario original ON original.id_quadro_horario = a.id_quadro_horario
+                         WHERE q2.id_turma = a.id_turma AND q2.id_curso = original.id_curso
+                           AND q2.id_periodo_atividade_quadro = original.id_periodo_atividade_quadro
+                           AND q2.versao = original.versao)
+WHERE EXISTS (SELECT 1 FROM quadro_horario q WHERE q.id_quadro_horario = a.id_quadro_horario
+              AND q.id_turma IS NOT NULL AND q.id_turma <> a.id_turma);
+
+-- Quadros vazios que não comprovam associação permanecem como legado inativo.
+UPDATE quadro_horario SET status = 'INATIVO' WHERE id_turma IS NULL;
+
+-- O coordenador de demonstração precisa de curso para acessar seus quadros.
+UPDATE usuario SET id_curso = (SELECT id_curso FROM curso WHERE nome = 'Curso Demo de Alocação')
+WHERE email = 'coordenador@gini.com';

@@ -16,6 +16,9 @@ public record QuadroHorarioRequest(
     @NotNull(message = "Curso é obrigatório")
     LongDTO curso,
 
+    @NotNull(message = "Turma é obrigatória")
+    LongDTO turma,
+
     // ALTERAÇÃO: nome padronizado para camelCase no payload.
     @NotNull(message = "Período Atividade Quadro é obrigatório")
     LongDTO periodoAtividadeQuadro

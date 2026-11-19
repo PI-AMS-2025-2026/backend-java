@@ -59,6 +59,14 @@ public class QuadroHorario {
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso curso;
 
+    /**
+     * Turma à qual esta versão do quadro pertence. Quadros antigos sem
+     * alocações permanecem sem turma para preservar o registro legado.
+     */
+    @ManyToOne
+    @JoinColumn(name = "id_turma")
+    private Turma turma;
+
     @ManyToOne
     @JoinColumn(name = "id_periodo_atividade_quadro", nullable = false)
     private PeriodoAtividadeQuadro periodoAtividadeQuadro;

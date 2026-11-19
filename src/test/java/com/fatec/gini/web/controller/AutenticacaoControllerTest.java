@@ -22,6 +22,8 @@ import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.domain.services.PasswordResetService;
 import com.fatec.gini.domain.services.RefreshTokenService;
 import com.fatec.gini.domain.services.TokenService;
+import com.fatec.gini.dto.auth.LoginResponse;
+import com.fatec.gini.web.exception.RefreshTokenException;
 import com.fatec.gini.web.config.SecurityFilter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -70,6 +72,32 @@ class AutenticacaoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.access_token").value("access-123"))
                 .andExpect(jsonPath("$.refresh_token").value("refresh-123"));
+    }
+
+    @Test
+    void deveRenovarTokensEmSnakeCase() throws Exception {
+        when(refreshTokenService.refresh("refresh-123"))
+                .thenReturn(new LoginResponse("access-456", "refresh-789", null));
+
+        mockMvc.perform(post("/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"refresh_token\":\"refresh-123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.access_token").value("access-456"))
+                .andExpect(jsonPath("$.refresh_token").value("refresh-789"));
+
+        verify(refreshTokenService).refresh("refresh-123");
+    }
+
+    @Test
+    void deveDevolver401QuandoRefreshTokenExpirar() throws Exception {
+        when(refreshTokenService.refresh("refresh-expirado"))
+                .thenThrow(new RefreshTokenException("Refresh token inválido ou expirado"));
+
+        mockMvc.perform(post("/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"refresh_token\":\"refresh-expirado\"}"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

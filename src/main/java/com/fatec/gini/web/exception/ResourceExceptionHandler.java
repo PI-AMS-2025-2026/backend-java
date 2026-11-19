@@ -6,9 +6,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -206,6 +208,40 @@ public class ResourceExceptionHandler {
         error.setStatus(status.value());
         error.setError("Requisição inválida");
         error.setMessage(message);
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<StandardError> responseStatusException(
+            ResponseStatusException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.resolve(exception.getStatusCode().value());
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(exception.getStatusCode().value());
+        error.setError(status != null ? status.getReasonPhrase() : "Erro na requisição");
+        error.setMessage(exception.getReason() != null
+                ? exception.getReason()
+                : "Não foi possível concluir a operação.");
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(exception.getStatusCode()).body(error);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<StandardError> accessDeniedException(
+            AccessDeniedException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Acesso negado");
+        error.setMessage(exception.getMessage());
         error.setPath(request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);
