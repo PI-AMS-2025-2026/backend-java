@@ -66,7 +66,10 @@ public class ResourceExceptionHandler {
 
         exception.getBindingResult()
                 .getFieldErrors()
-                .forEach(e -> error.addError(e.getDefaultMessage()));
+                .forEach(e -> {
+                    error.addError(e.getDefaultMessage());
+                    error.addFieldError(e.getField(), e.getDefaultMessage());
+                });
 
         return ResponseEntity.status(status).body(error);
     }
