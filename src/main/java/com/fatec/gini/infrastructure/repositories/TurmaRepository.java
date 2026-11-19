@@ -51,5 +51,7 @@ public interface TurmaRepository extends JpaRepository<Turma, Long> {
 
     List<Turma> findByCursoIdAndStatusOrderByAnoAscPeriodoAscCodigoAsc(Long cursoId, Status status);
 
+    List<Turma> findByCursoIdAndAnoAndStatusOrderByPeriodoAscCodigoAsc(Long cursoId, Integer ano, Status status);
+
     Optional<Turma> findByIdAndCursoId(Long id, Long cursoId);
 }

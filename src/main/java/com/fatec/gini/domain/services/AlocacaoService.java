@@ -1,5 +1,6 @@
 package com.fatec.gini.domain.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.AlocacaoLoteException;
 import com.fatec.gini.web.exception.ParameterException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -84,20 +86,17 @@ public class AlocacaoService {
 
     @Transactional
     public List<AlocacaoResponse> criarLote(List<AlocacaoRequest> requests) {
-        // 1. Validar duplicidades cruzadas dentro do próprio lote recebido
         alocacaoLoteUseCase.validarDuplicidadesNoLote(requests);
 
-        // 2. Processar cada requisição usando o CriarAlocacaoUseCase existente
-        return requests.stream()
-                .map(request -> {
-                    Alocacao entity = AlocacaoMapper.toEntity(request);
-
-                    Alocacao alocacaoSalva = criarAlocacaoUseCase.executar(
-                            entity,
-                            validarAutorizacaoCurso.usuarioAutenticado().getId());
-                    return AlocacaoMapper.toResponse(alocacaoSalva);
-                })
-                .toList();
+        List<AlocacaoResponse> respostas = new ArrayList<>();
+        for (int indice = 0; indice < requests.size(); indice++) {
+            try {
+                respostas.add(criar(requests.get(indice)));
+            } catch (BusinessException | ParameterException | EntityNotFoundException exception) {
+                throw new AlocacaoLoteException(indice, exception);
+            }
+        }
+        return respostas;
     }
 
     public AlocacaoResponse atualizar(Long id, AlocacaoRequest request) {

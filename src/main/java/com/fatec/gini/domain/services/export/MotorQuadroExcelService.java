@@ -22,7 +22,7 @@ import com.fatec.gini.dto.grade.GradeCursoResponse;
 public class MotorQuadroExcelService {
 
     public byte[] exportar(GradeCursoResponse grade) {
-        GradeData modelo = MotorQuadroExportModel.from(grade);
+        GradeData modelo = MotorQuadroExportModel.paraPlanilha(grade);
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Quadro horário");

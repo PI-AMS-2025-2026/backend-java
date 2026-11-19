@@ -2,12 +2,24 @@ package com.fatec.gini.web.exception;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class StandardError {
     private Instant timeStamp;
     private Integer status;
     private String error;
     private String message;
     private String path;
+    private Integer alocacaoIndice;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Integer getAlocacaoIndice() {
+        return alocacaoIndice;
+    }
+
+    public void setAlocacaoIndice(Integer alocacaoIndice) {
+        this.alocacaoIndice = alocacaoIndice;
+    }
 
     public Instant getTimeStamp() {
         return timeStamp;

@@ -3,6 +3,8 @@ package com.fatec.gini.domain.services.usecase.write;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.entities.PeriodoAtividadeQuadro;
 import com.fatec.gini.domain.services.QuadroHorarioService;
+import com.fatec.gini.domain.services.AlocacaoService;
+import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.quadroHorario.QuadroHorarioRequest;
 import com.fatec.gini.domain.models.Status;
@@ -33,6 +37,7 @@ import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.AlocacaoLoteException;
 
 @SpringBootTest(properties = "app.security.authorization.enabled=false")
 @ActiveProfiles("test")
@@ -52,6 +57,7 @@ class AlocacaoFluxoIntegracaoTest {
     @Autowired private QuadroHorarioRepository quadros;
     @Autowired private EntityManager entityManager;
     @Autowired private QuadroHorarioService quadroService;
+    @Autowired private AlocacaoService alocacaoService;
 
     @BeforeEach
     void isolarCenarioDeAlocacoes() {
@@ -152,6 +158,20 @@ class AlocacaoFluxoIntegracaoTest {
         assertThatThrownBy(() -> criarAlocacao.executar(alocacao(1L), 1L))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("incompatível com o tipo de sala");
+    }
+
+    @Test
+    void identificaSegundaAulaDoLoteQuandoSalaForIncompativel() {
+        long quadroId = alocacao(5L).getQuadroHorario().getId();
+        var valida = new AlocacaoRequest(1L, 4L, 5L, 5L, DiaSemana.SEGUNDA, 1L, quadroId, 1L);
+        var invalida = new AlocacaoRequest(1L, 4L, 1L, 5L, DiaSemana.QUARTA, 1L, quadroId, 1L);
+
+        assertThatThrownBy(() -> alocacaoService.criarLote(List.of(valida, invalida)))
+                .isInstanceOfSatisfying(AlocacaoLoteException.class, erro -> {
+                    assertThat(erro.getIndice()).isEqualTo(1);
+                    assertThat(erro.getCause()).isInstanceOf(BusinessException.class)
+                            .hasMessageContaining("incompatível com o tipo de sala");
+                });
     }
 
     @Test

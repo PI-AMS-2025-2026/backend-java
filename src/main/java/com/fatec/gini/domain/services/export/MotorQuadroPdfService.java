@@ -8,6 +8,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.fatec.gini.dto.grade.GradeCursoResponse;
+import com.fatec.gini.dto.grade.QuadroAnualPdf;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,14 @@ public class MotorQuadroPdfService {
     private final SpringTemplateEngine templateEngine;
 
     public byte[] exportar(GradeCursoResponse grade) {
-        MotorQuadroExportModel.GradeData modelo = MotorQuadroExportModel.from(grade);
+        return renderizar(MotorQuadroExportModel.documentoPdf(grade));
+    }
+
+    public byte[] exportarAnual(QuadroAnualPdf grade) {
+        return renderizar(MotorQuadroExportModel.documentoPdf(grade));
+    }
+
+    private byte[] renderizar(MotorQuadroExportModel.PdfData modelo) {
         Context contexto = new Context();
         contexto.setVariable("modelo", modelo);
         String html = templateEngine.process("QuadroHorario", contexto);

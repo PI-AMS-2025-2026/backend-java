@@ -62,4 +62,13 @@ public interface QuadroHorarioRepository
 
         List<QuadroHorario> findByCursoIdAndStatus(Long cursoId, Status status);
 
+        @Query("""
+                SELECT q FROM QuadroHorario q
+                JOIN FETCH q.periodoAtividadeQuadro p
+                WHERE q.curso.id = :cursoId AND q.turma.id IN :turmaIds AND q.status = :status
+                ORDER BY p.ano, p.dataInicio, p.id, q.id
+                """)
+        List<QuadroHorario> buscarParaPdfAnual(@Param("cursoId") Long cursoId,
+                @Param("turmaIds") List<Long> turmaIds, @Param("status") Status status);
+
 }

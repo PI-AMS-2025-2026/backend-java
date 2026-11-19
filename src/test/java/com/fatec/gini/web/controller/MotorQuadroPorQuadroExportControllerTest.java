@@ -18,6 +18,7 @@ import com.fatec.gini.domain.services.export.MotorQuadroExcelService;
 import com.fatec.gini.domain.services.export.MotorQuadroPdfService;
 import com.fatec.gini.domain.services.usecase.write.MotorQuadroHorario;
 import com.fatec.gini.dto.grade.GradeCursoResponse;
+import com.fatec.gini.dto.grade.QuadroAnualPdf;
 import com.fatec.gini.web.config.SecurityFilter;
 
 @WebMvcTest(controllers = MotorQuadroPorQuadroController.class)
@@ -32,15 +33,15 @@ class MotorQuadroPorQuadroExportControllerTest {
     @MockitoBean AuthenticationManager authenticationManager;
 
     @Test
-    void exportaPdfDoQuadroSelecionado() throws Exception {
-        GradeCursoResponse grade = mock(GradeCursoResponse.class);
-        when(motor.construirPorQuadro(42L)).thenReturn(grade);
-        when(pdf.exportar(grade)).thenReturn(new byte[]{37, 80, 68, 70});
+    void exportaPdfAnualUsandoOQuadroSelecionadoComoOrigem() throws Exception {
+        QuadroAnualPdf grade = mock(QuadroAnualPdf.class);
+        when(motor.construirPdfAnual(42L)).thenReturn(grade);
+        when(pdf.exportarAnual(grade)).thenReturn(new byte[]{37, 80, 68, 70});
         mvc.perform(get("/motor-quadro/quadros/42/exportar/pdf"))
             .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_PDF))
             .andExpect(header().string("Content-Disposition", "attachment; filename=quadro-horario-42.pdf"))
             .andExpect(content().bytes(new byte[]{37, 80, 68, 70}));
-        verify(motor).construirPorQuadro(42L);
+        verify(motor).construirPdfAnual(42L);
     }
 
     @Test
@@ -56,7 +57,7 @@ class MotorQuadroPorQuadroExportControllerTest {
 
     @Test
     void recusaQuadroDeOutroCursoSemGerarArquivo() throws Exception {
-        when(motor.construirPorQuadro(44L)).thenThrow(new AccessDeniedException("Sem acesso"));
+        when(motor.construirPdfAnual(44L)).thenThrow(new AccessDeniedException("Sem acesso"));
         mvc.perform(get("/motor-quadro/quadros/44/exportar/pdf")).andExpect(status().isForbidden());
         verifyNoInteractions(pdf);
     }
