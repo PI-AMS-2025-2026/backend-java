@@ -74,7 +74,7 @@ class AlocacaoControllerTest {
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.alocacao_indice").value(1))
                 .andExpect(jsonPath("$.field_errors[0].field").value("professor"))
-                .andExpect(jsonPath("$.field_errors[0].message").value("Professor é obrigatório"));
+                .andExpect(jsonPath("$.field_errors[0].message").value("Professor é obrigatório."));
         verifyNoInteractions(service);
     }
 
