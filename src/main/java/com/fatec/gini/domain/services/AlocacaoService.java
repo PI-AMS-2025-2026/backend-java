@@ -151,7 +151,7 @@ public class AlocacaoService {
         entity.setBlocoHorario(blocoHorarioRepository.findById(request.horario().id())
                 .orElseThrow(() -> new EntityNotFoundException("Bloco de horário não encontrado.")));
         entity.setQuadroHorario(quadroHorarioRepository.findById(request.quadroHorario().id())
-                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado.")));
+                .orElseThrow(() -> new EntityNotFoundException("Quadro de horários não encontrado.")));
         if (request.alocacaoId() != null) {
             Alocacao alocacaoAtual = repository.findById(request.alocacaoId())
                     .orElseThrow(() -> new EntityNotFoundException(

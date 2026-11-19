@@ -9,13 +9,13 @@ import jakarta.validation.constraints.NotNull;
 
 public record DisponibilidadeProfessorRequest(
 
-    @NotNull(message = "Professor é obrigatório")
+    @NotNull(message = "Professor é obrigatório.")
     LongDTO professor,
 
-    @NotNull(message = "Dia da semana é obrigatório")
+    @NotNull(message = "Dia da semana é obrigatório.")
     @JsonDeserialize(using = DiaSemanaDeserializer.class)
     DiaSemana diaSemana,
 
-    @NotNull(message = "Bloco Horário é obrigatório")
+    @NotNull(message = "Bloco Horário é obrigatório.")
     LongDTO blocoHorario
 ) {}

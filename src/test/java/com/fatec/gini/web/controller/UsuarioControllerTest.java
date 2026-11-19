@@ -14,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.domain.services.UsuarioService;
 import com.fatec.gini.web.config.SecurityFilter;
-import com.fatec.gini.domain.services.TokenService;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -49,10 +49,10 @@ class UsuarioControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isUnprocessableContent())
-                .andExpect(jsonPath("$.field_errors[?(@.field == 'nome')].message").value("Nome é obrigatório"))
-                .andExpect(jsonPath("$.field_errors[?(@.field == 'email')].message").value("E-mail é obrigatório"))
-                .andExpect(jsonPath("$.field_errors[?(@.field == 'status')].message").value("Status é obrigatório"))
-                .andExpect(jsonPath("$.field_errors[?(@.field == 'tipoUsuario')].message").value("Tipo de usuário é obrigatório"));
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'nome')].message").value("Nome é obrigatório."))
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'email')].message").value("E-mail é obrigatório."))
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'status')].message").value("Status é obrigatório."))
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'tipoUsuario')].message").value("Tipo de usuário é obrigatório."));
     }
 
     @Test

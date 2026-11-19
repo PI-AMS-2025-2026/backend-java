@@ -7,25 +7,25 @@ import jakarta.validation.constraints.NotNull;
 
 public record SugestaoRequest(
 
-        @NotNull(message = "Turma é obrigatória")
+        @NotNull(message = "Turma é obrigatória.")
         LongDTO turma,
 
-        @NotNull(message = "Disciplina é obrigatória")
+        @NotNull(message = "Disciplina é obrigatória.")
         LongDTO disciplina,
 
-        @NotNull(message = "Sala é obrigatória")
+        @NotNull(message = "Sala é obrigatória.")
         LongDTO sala,
 
-        @NotNull(message = "Professor é obrigatório")
+        @NotNull(message = "Professor é obrigatório.")
         LongDTO professor,
 
-        @NotNull(message = "Dia da semana é obrigatório")
+        @NotNull(message = "Dia da semana é obrigatório.")
         DiaSemana diaSemana,
 
-        @NotNull(message = "Horário é obrigatório")
+        @NotNull(message = "Horário é obrigatório.")
         LongDTO horario,
 
-        @NotNull(message = "Quadro horário é obrigatório")
+        @NotNull(message = "Quadro de horários é obrigatório.")
         LongDTO quadroHorario,
 
         Long alocacaoId

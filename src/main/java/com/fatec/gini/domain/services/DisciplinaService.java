@@ -51,7 +51,7 @@ public class DisciplinaService {
                 // do campo
                 if (repository.existsByCodDisciplina(request.codDisciplina())) {
                         throw new ResponseStatusException(HttpStatus.CONFLICT,
-                                        "Já existe uma disciplina cadastrada com o código (codDisciplina): "
+                                        "Já existe uma disciplina cadastrada com o código: "
                                                         + request.codDisciplina());
                 }
 
@@ -64,7 +64,7 @@ public class DisciplinaService {
 
                         throw new ResponseStatusException(
                                         HttpStatus.CONFLICT,
-                                        "Essa disciplina já possui cadastro");
+                                        "Já existe uma disciplina cadastrada com os mesmos dados informados.");
                 }
 
                 Disciplina entity = DisciplinaMapper.toEntity(request);
@@ -150,7 +150,7 @@ public class DisciplinaService {
 
                 if (repository.existsByCodDisciplinaAndIdNot(request.codDisciplina(), id)) {
                         throw new ResponseStatusException(HttpStatus.CONFLICT,
-                                        "Já existe outra disciplina cadastrada com o código (codDisciplina): "
+                                        "Já existe outra disciplina cadastrada com o código: "
                                                         + request.codDisciplina());
                 }
 
@@ -164,7 +164,7 @@ public class DisciplinaService {
 
                         throw new ResponseStatusException(
                                         HttpStatus.CONFLICT,
-                                        "Essa disciplina já possui cadastro");
+                                        "Já existe uma disciplina cadastrada com os mesmos dados informados.");
                 }
 
                 entity.setNome(request.nome());

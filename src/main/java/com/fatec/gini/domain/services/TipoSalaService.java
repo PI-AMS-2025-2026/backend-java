@@ -42,7 +42,7 @@ public class TipoSalaService {
     public TipoSalaResponse criar(TipoSalaRequest request) {
 
         if (repository.existsByNomeIgnoreCase(request.nome())) {
-    throw new IllegalArgumentException("Esse tipo_sala já possui cadastro");
+    throw new IllegalArgumentException("Já existe um tipo de sala cadastrado com este nome.");
     }
 
         TipoSala entity = TipoSalaMapper.toEntity(request);
@@ -86,7 +86,7 @@ public class TipoSalaService {
     ).setParameter("id", id).getSingleResult();
  
     if (salasVinculadas > 0) {
-        throw new IllegalArgumentException("Esse tipo_sala está vinculado a uma sala.");
+        throw new IllegalArgumentException("Não é possível excluir tipo de sala vinculado a salas.");
     }
  
     // Verifica se existem disciplinas vinculadas ao tipo de sala.
@@ -95,7 +95,7 @@ public class TipoSalaService {
     ).setParameter("id", id).getSingleResult();
  
     if (disciplinasVinculadas > 0) {
-        throw new IllegalArgumentException("Esse tipo_sala está vinculado a uma disciplina.");
+        throw new IllegalArgumentException("Não é possível excluir tipo de sala vinculado a disciplinas.");
     }
  
     repository.deleteById(id);
