@@ -55,7 +55,8 @@ public class MotorQuadroController {
     }
 
         @GetMapping(value = "/exportar/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-        @Operation(summary = "Exportar o quadro horário do curso em PDF")
+        @Operation(summary = "Exportar o quadro horário do curso em PDF (rota legada)",
+            description = "Para exportar todas as turmas ativas de um curso e ano, use GET /motor-quadro/quadros/{id}/exportar/pdf.")
         @ApiResponses({
             @ApiResponse(responseCode = "200", description = "PDF gerado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Curso ou quadro horário ativo não encontrado"),

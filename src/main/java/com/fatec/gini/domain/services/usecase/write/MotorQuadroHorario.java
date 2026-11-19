@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
@@ -26,6 +27,7 @@ import com.fatec.gini.dto.grade.GradeCursoResponse;
 import com.fatec.gini.dto.grade.GradeTurmaResponse;
 import com.fatec.gini.dto.grade.HorarioTurmaGradeResponse;
 import com.fatec.gini.dto.grade.QuadroHorarioGradeResumoResponse;
+import com.fatec.gini.dto.grade.QuadroAnualPdf;
 import com.fatec.gini.dto.grade.SalaGradeResumoResponse;
 import com.fatec.gini.dto.grade.TurmaGradeResumoResponse;
 import com.fatec.gini.dto.quadroHorario.BlocoQuadroResponse;
@@ -36,6 +38,7 @@ import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.CursoRepository;
 import com.fatec.gini.infrastructure.repositories.QuadroHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.TurmaRepository;
+import com.fatec.gini.infrastructure.mappers.PeriodoAtividadeQuadroMapper;
 import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -45,6 +48,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MotorQuadroHorario {
 
+        private static final List<DiaSemana> DIAS_DO_QUADRO = List.of(DiaSemana.SEGUNDA, DiaSemana.TERÇA,
+                        DiaSemana.QUARTA, DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SÁBADO);
+
         private final CursoRepository cursoRepository;
         private final QuadroHorarioRepository quadroHorarioRepository;
         private final TurmaRepository turmaRepository;
@@ -53,20 +59,14 @@ public class MotorQuadroHorario {
         private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
         public GradeCursoResponse construirPorQuadro(Long quadroId) {
-                QuadroHorario quadro = quadroHorarioRepository.findById(quadroId)
-                                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado"));
+                QuadroHorario quadro = buscarQuadroComTurmaAutorizada(quadroId);
                 Curso curso = quadro.getCurso();
-                validarAutorizacaoCurso.validarCurso(curso);
                 Turma turma = quadro.getTurma();
-                if (turma == null || !turma.getCurso().getId().equals(curso.getId())) {
-                        throw new BusinessException("O quadro não possui turma válida para este curso.");
-                }
                 List<BlocoHorario> blocos = blocoHorarioRepository.findAllByOrderByHoraInicioAsc();
                 List<Alocacao> alocacoes = alocacaoRepository.findByQuadroHorarioId(quadroId).stream()
                                 .filter(a -> a.getTurma().getId().equals(turma.getId())).toList();
                 List<CelulaGradeResponse> celulas = new ArrayList<>();
-                List<DiaSemana> dias = List.of(DiaSemana.SEGUNDA, DiaSemana.TERÇA, DiaSemana.QUARTA,
-                                DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SÁBADO);
+                List<DiaSemana> dias = DIAS_DO_QUADRO;
                 for (DiaSemana dia : dias) {
                         for (BlocoHorario bloco : blocos) {
                                 alocacoes.stream().filter(a -> a.getDiaSemana() == dia
@@ -81,6 +81,57 @@ public class MotorQuadroHorario {
                                 blocos.stream().map(this::converterBlocoGradeResponse).toList(),
                                 List.of(new TurmaQuadroResponse(turma.getId(), turma.getCodigo(), turma.getAno(),
                                                 turma.getPeriodo(), celulas)), dias);
+        }
+
+        @Transactional(readOnly = true)
+        public QuadroAnualPdf construirPdfAnual(Long quadroId) {
+                QuadroHorario origem = buscarQuadroComTurmaAutorizada(quadroId);
+                Curso curso = origem.getCurso();
+                int ano = origem.getTurma().getAno();
+                List<Turma> turmas = turmaRepository.findByCursoIdAndAnoAndStatusOrderByPeriodoAscCodigoAsc(
+                                curso.getId(), ano, Status.ATIVO);
+                List<QuadroHorario> quadros = turmas.isEmpty() ? List.of() : quadroHorarioRepository.buscarParaPdfAnual(
+                                curso.getId(), turmas.stream().map(Turma::getId).toList(), Status.ATIVO);
+                Map<Long, List<QuadroHorario>> quadrosPorTurma = quadros.stream()
+                                .collect(Collectors.groupingBy(q -> q.getTurma().getId()));
+                Map<Long, List<Alocacao>> alocacoesPorQuadro = quadros.isEmpty() ? Map.of()
+                                : alocacaoRepository.buscarParaPdfAnual(quadros.stream().map(QuadroHorario::getId).toList()).stream()
+                                                .collect(Collectors.groupingBy(a -> a.getQuadroHorario().getId()));
+
+                List<QuadroAnualPdf.Turma> secoes = turmas.stream()
+                                .map(turma -> new QuadroAnualPdf.Turma(
+                                                turma.getCodigo(),
+                                                quadrosPorTurma.getOrDefault(turma.getId(), List.of()).stream()
+                                                                .map(quadro -> periodoDoPdf(quadro,
+                                                                                alocacoesPorQuadro.getOrDefault(quadro.getId(), List.of())))
+                                                                .toList()))
+                                .toList();
+                return new QuadroAnualPdf(new CursoGradeResumoResponse(curso.getId(), curso.getNome(),
+                                curso.getPeriodicidade()), ano, DIAS_DO_QUADRO, secoes);
+        }
+
+        private QuadroAnualPdf.Periodo periodoDoPdf(QuadroHorario quadro, List<Alocacao> alocacoes) {
+                List<Alocacao> aulas = alocacoes.stream()
+                                .filter(a -> quadro.getTurma().getId().equals(a.getTurma().getId())
+                                                && DIAS_DO_QUADRO.contains(a.getDiaSemana()))
+                                .toList();
+                var blocos = aulas.stream().map(Alocacao::getBlocoHorario).distinct()
+                                .sorted(Comparator.comparing(BlocoHorario::getHoraInicio).thenComparing(BlocoHorario::getId))
+                                .map(this::converterBlocoGradeResponse).toList();
+                return new QuadroAnualPdf.Periodo(PeriodoAtividadeQuadroMapper.toResponse(quadro.getPeriodoAtividadeQuadro()),
+                                quadro.getVersao(), blocos, aulas.stream().map(this::converterCelulaGradeResponse).toList());
+        }
+
+        private QuadroHorario buscarQuadroComTurmaAutorizada(Long quadroId) {
+                QuadroHorario quadro = quadroHorarioRepository.findById(quadroId)
+                                .orElseThrow(() -> new EntityNotFoundException("Quadro horário não encontrado"));
+                Curso curso = quadro.getCurso();
+                validarAutorizacaoCurso.validarCurso(curso);
+                Turma turma = quadro.getTurma();
+                if (turma == null || !turma.getCurso().getId().equals(curso.getId())) {
+                        throw new BusinessException("O quadro não possui turma válida para este curso.");
+                }
+                return quadro;
         }
 
         public GradeCursoResponse contruir(Long cursoId) {

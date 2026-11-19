@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
+import com.fatec.gini.web.exception.AlocacaoLoteException;
 import com.fatec.gini.web.exception.ParameterException;
 
 @Service
@@ -19,7 +20,8 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
         Set<String> chavesProfessorHorario = new HashSet<>();
         Set<String> chavesSalaHorario = new HashSet<>();
 
-        for (AlocacaoRequest req : requests) {
+        for (int indice = 0; indice < requests.size(); indice++) {
+            AlocacaoRequest req = requests.get(indice);
             if (req.diaSemana() == null || req.horarioId() == null) {
                 continue;
             }
@@ -33,8 +35,8 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
                 String chaveTurma = req.turmaId() + "-" + diaEHorario;
 
                 if (!chavesTurmaHorario.add(chaveTurma)) {
-                    throw new ParameterException(
-                            "Existem alocações duplicadas para a mesma turma no mesmo horário dentro do lote.");
+                    throw new AlocacaoLoteException(indice, new ParameterException(
+                            "Existem alocações duplicadas para a mesma turma no mesmo horário dentro do lote."));
                 }
             }
 
@@ -44,8 +46,8 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
                 String chaveProf = req.professorId() + "-" + diaEHorario;
 
                 if (!chavesProfessorHorario.add(chaveProf)) {
-                    throw new ParameterException(
-                            "Existem alocações duplicadas para o mesmo professor no mesmo horário dentro do lote.");
+                    throw new AlocacaoLoteException(indice, new ParameterException(
+                            "Existem alocações duplicadas para o mesmo professor no mesmo horário dentro do lote."));
                 }
             }
 
@@ -55,8 +57,8 @@ public class ValidarDuplicidadeAlocacaoLoteUseCase {
                 String chaveSala = req.salaId() + "-" + diaEHorario;
 
                 if (!chavesSalaHorario.add(chaveSala)) {
-                    throw new ParameterException(
-                            "Existem alocações duplicadas para a mesma sala no mesmo horário dentro do lote.");
+                    throw new AlocacaoLoteException(indice, new ParameterException(
+                            "Existem alocações duplicadas para a mesma sala no mesmo horário dentro do lote."));
                 }
             }
         }

@@ -1,8 +1,11 @@
 package com.fatec.gini.web.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,12 +23,22 @@ import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.web.config.SecurityFilter;
+import com.fatec.gini.web.exception.AlocacaoLoteException;
+import com.fatec.gini.web.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @WebMvcTest(controllers = AlocacaoController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class AlocacaoControllerTest {
+
+    private static final String AULA = """
+            {
+                "turma": {"id": 1}, "disciplina": {"id": 2}, "sala": {"id": 3},
+                "professor": {"id": 4}, "dia_semana": "SEGUNDA", "bloco_horario": {"id": 5},
+                "quadro_horario": {"id": 6}, "usuario_alteracao": {"id": 7}
+            }
+            """;
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,6 +54,39 @@ class AlocacaoControllerTest {
 
     @MockitoBean
     private AuthenticationManager authenticationManager;
+
+    @Test
+    void identificaItemDoLoteQueFalhouNaRegraDeSala() throws Exception {
+        when(service.criarLote(anyList())).thenThrow(new AlocacaoLoteException(1,
+                new BusinessException("A sala informada é incompatível com o tipo de sala exigido pela disciplina.")));
+        mockMvc.perform(post("/alocacoes/lote").contentType(MediaType.APPLICATION_JSON)
+                .content("[" + AULA + "," + AULA.replace("SEGUNDA", "QUARTA") + "]"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.alocacao_indice").value(1))
+                .andExpect(jsonPath("$.message").value(
+                        "A sala informada é incompatível com o tipo de sala exigido pela disciplina."));
+    }
+
+    @Test
+    void identificaCampoInvalidoNoSegundoItemDoLote() throws Exception {
+        mockMvc.perform(post("/alocacoes/lote").contentType(MediaType.APPLICATION_JSON)
+                .content("[" + AULA + "," + AULA.replace("{\"id\": 4}", "null") + "]"))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.alocacao_indice").value(1))
+                .andExpect(jsonPath("$.field_errors[0].field").value("professor"))
+                .andExpect(jsonPath("$.field_errors[0].message").value("Professor é obrigatório."));
+        verifyNoInteractions(service);
+    }
+
+    @Test
+    void preservaDetalhesDeCampoNaAtualizacaoIndividual() throws Exception {
+        mockMvc.perform(put("/alocacoes/10").contentType(MediaType.APPLICATION_JSON)
+                .content(AULA.replace("{\"id\": 3}", "null")))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.field_errors[0].field").value("sala"))
+                .andExpect(jsonPath("$.alocacao_indice").doesNotExist());
+        verifyNoInteractions(service);
+    }
 
     @Test
     void deveRetornar200ComValidoTrueQuandoCargaHorariaForValida() throws Exception {

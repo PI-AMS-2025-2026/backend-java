@@ -127,6 +127,16 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
     List<Alocacao> findByQuadroHorarioId(
             Long quadroHorarioId);
 
+    @Query("""
+            SELECT a FROM Alocacao a
+            JOIN FETCH a.blocoHorario
+            JOIN FETCH a.disciplina
+            JOIN FETCH a.sala
+            LEFT JOIN FETCH a.professor
+            WHERE a.quadroHorario.id IN :quadroIds
+            """)
+    List<Alocacao> buscarParaPdfAnual(@Param("quadroIds") List<Long> quadroIds);
+
     // Para validar a carga horária total da disciplina no quadro horário,
     // precisamos
     // somar a duração de todas as alocações daquela disciplina e quadro horário:

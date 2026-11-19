@@ -29,23 +29,34 @@ import com.fatec.gini.dto.quadroHorario.TurmaQuadroResponse;
 
 class MotorQuadroExportTest {
 
+    private static final List<DiaSemana> DIAS_DO_QUADRO = List.of(DiaSemana.SEGUNDA, DiaSemana.TERÇA,
+            DiaSemana.QUARTA, DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SÁBADO);
+
     @Test
-    void exportaQuadroSelecionadoComProfessorEBlocosVazios() throws IOException {
+    void exportaPdfSomenteComBlocosAlocadosEPlanilhaComCatalogoCompleto() throws IOException {
         var preenchida = new CelulaGradeResponse(DiaSemana.SEGUNDA, 1L,
                 new DisciplinaGradeResumoResponse(1L, "Banco de Dados"),
                 new SalaGradeResumoResponse(1L, "Sala A"), 1L, "Professora Ana");
         var vazia = new CelulaGradeResponse(DiaSemana.SEGUNDA, 2L, null, null, null);
+        var segundaAula = celula(DiaSemana.SEXTA, 3L, "Engenharia de Software", "Sala B");
         var grade = new GradeCursoResponse(new CursoGradeResumoResponse(1L, "ADS", "Semestral"),
                 new QuadroHorarioGradeResumoResponse(10L, 2, Status.ATIVO),
-                List.of(bloco(1L, "07h00-08h00", 7, 0, 8, 0), bloco(2L, "08h00-09h00", 8, 0, 9, 0)),
-                List.of(turma(1L, List.of(preenchida, vazia))), List.of(DiaSemana.SEGUNDA, DiaSemana.TERÇA));
+                List.of(bloco(1L, "07h00-08h00", 7, 0, 8, 0), bloco(2L, "08h00-09h00", 8, 0, 9, 0),
+                        bloco(3L, "09h00-10h00", 9, 0, 10, 0)),
+                List.of(turma(1L, List.of(preenchida, vazia, segundaAula))), DIAS_DO_QUADRO);
         byte[] pdf = new MotorQuadroPdfService(templateEngine()).exportar(grade);
         try (var document = PDDocument.load(pdf)) {
             String texto = new PDFTextStripper().getText(document);
             assertTrue(texto.contains("Banco de Dados"));
             assertTrue(texto.contains("Professora Ana"));
             assertTrue(texto.contains("Sala A"));
-            assertTrue(texto.contains("08h00-09h00"));
+            assertTrue(texto.contains("Engenharia de Software"));
+            assertTrue(texto.contains("Sala B"));
+            assertTrue(texto.contains("07h00-08h00"));
+            assertTrue(texto.contains("09h00-10h00"));
+            assertFalse(texto.contains("08h00-09h00"));
+            assertTrue(texto.indexOf("07h00-08h00") < texto.indexOf("09h00-10h00"));
+            assertTrue(texto.replaceAll("\\s+", " ").contains("Segunda Terça Quarta Quinta Sexta Sábado"));
             assertTrue(texto.contains("Versão 2"));
         }
         byte[] xlsx = new MotorQuadroExcelService().exportar(grade);
@@ -57,10 +68,29 @@ class MotorQuadroExportTest {
     }
 
     @Test
+    void exportaPdfDeQuadroVazioComDiasESemLinhasDeHorario() throws IOException {
+        var blocoVazio = bloco(1L, "07h00-08h00", 7, 0, 8, 0);
+        var grade = new GradeCursoResponse(new CursoGradeResumoResponse(1L, "ADS", "Semestral"),
+                new QuadroHorarioGradeResumoResponse(10L, 2, Status.ATIVO), List.of(blocoVazio),
+                List.of(turma(1L, List.of(new CelulaGradeResponse(DiaSemana.SEGUNDA, 1L, null, null, null)))),
+                DIAS_DO_QUADRO);
+
+        byte[] pdf = new MotorQuadroPdfService(templateEngine()).exportar(grade);
+
+        try (var document = PDDocument.load(pdf)) {
+            assertEquals(1, document.getNumberOfPages());
+            String texto = new PDFTextStripper().getText(document);
+            assertTrue(texto.replaceAll("\\s+", " ").contains("Segunda Terça Quarta Quinta Sexta Sábado"));
+            assertFalse(texto.contains(blocoVazio.rotulo()));
+            assertTrue(texto.contains("Nenhuma alocação neste quadro."));
+        }
+    }
+
+    @Test
     void deveExportarSomenteBlocosReaisDeCadaTurma() {
         GradeCursoResponse grade = gradeComTurnoNoturnoECargaParcial();
 
-        MotorQuadroExportModel.GradeData modelo = MotorQuadroExportModel.from(grade);
+        MotorQuadroExportModel.GradeData modelo = MotorQuadroExportModel.paraPdf(grade);
 
         assertEquals(List.of("19h00-20h40", "20h50-22h30"),
                 modelo.turmas().get(0).linhas().stream()
@@ -76,7 +106,7 @@ class MotorQuadroExportTest {
     void deveManterLacunaSemCriarLinhaDeHorario() {
         GradeCursoResponse grade = gradeComTurnoNoturnoECargaParcial();
 
-        MotorQuadroExportModel.TurmaData turma = MotorQuadroExportModel.from(grade).turmas().get(0);
+        MotorQuadroExportModel.TurmaData turma = MotorQuadroExportModel.paraPdf(grade).turmas().get(0);
 
         assertEquals(List.of("19h00-20h40", "20h50-22h30"),
                 turma.linhas().stream().map(linha -> linha.bloco().rotulo()).toList());

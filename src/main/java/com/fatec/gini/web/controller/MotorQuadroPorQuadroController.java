@@ -13,6 +13,10 @@ import com.fatec.gini.dto.grade.GradeCursoResponse;
 import com.fatec.gini.domain.services.export.MotorQuadroPdfService;
 import com.fatec.gini.domain.services.export.MotorQuadroExcelService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,8 +33,12 @@ public class MotorQuadroPorQuadroController {
     }
 
     @GetMapping(value = "/exportar/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @Operation(summary = "Exportar PDF das turmas do curso e ano do quadro",
+            description = "Usa o ID do quadro para identificar o curso e o ano da turma. Reúne as turmas ativas e seus quadros ativos, separados por período letivo.")
+    @ApiResponse(responseCode = "200", description = "PDF gerado com sucesso", content = @Content(
+            mediaType = MediaType.APPLICATION_PDF_VALUE, schema = @Schema(type = "string", format = "binary")))
     public ResponseEntity<byte[]> exportarPdf(@PathVariable Long id) {
-        byte[] arquivo = pdfService.exportar(motor.construirPorQuadro(id));
+        byte[] arquivo = pdfService.exportarAnual(motor.construirPdfAnual(id));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=quadro-horario-" + id + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF).body(arquivo);

@@ -14,9 +14,31 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
+
+    @ExceptionHandler(AlocacaoLoteException.class)
+    public ResponseEntity<? extends StandardError> alocacaoLoteException(
+            AlocacaoLoteException exception, HttpServletRequest request) {
+        var response = switch (exception.getCause()) {
+            case BusinessException cause -> businessException(cause, request);
+            case ParameterException cause -> parameterException(cause, request);
+            case EntityNotFoundException cause -> entityNotFoundException(cause, request);
+            case ConstraintViolationException cause -> {
+                var error = criarErroValidacao(request);
+                cause.getConstraintViolations().forEach(violation ->
+                        adicionarErroCampo(error, violation.getPropertyPath().toString(), violation.getMessage()));
+                yield ResponseEntity.unprocessableContent().body(error);
+            }
+            default -> unexpectedException(exception, request);
+        };
+        if (response.getBody() != null) {
+            response.getBody().setAlocacaoIndice(exception.getIndice());
+        }
+        return response;
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<StandardError> entityNotFoundException(
@@ -57,23 +79,25 @@ public class ResourceExceptionHandler {
             MethodArgumentNotValidException exception,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.UNPROCESSABLE_CONTENT;
+        ValidationError error = criarErroValidacao(request);
+        exception.getBindingResult().getFieldErrors()
+                .forEach(e -> adicionarErroCampo(error, e.getField(), e.getDefaultMessage()));
+        return ResponseEntity.unprocessableContent().body(error);
+    }
 
+    private ValidationError criarErroValidacao(HttpServletRequest request) {
         ValidationError error = new ValidationError();
         error.setTimeStamp(Instant.now());
-        error.setStatus(status.value());
+        error.setStatus(HttpStatus.UNPROCESSABLE_CONTENT.value());
         error.setError("Erro de validação");
         error.setMessage("Erro de validação nos campos enviados");
         error.setPath(request.getRequestURI());
+        return error;
+    }
 
-        exception.getBindingResult()
-                .getFieldErrors()
-                .forEach(e -> {
-                    error.addError(e.getDefaultMessage());
-                    error.addFieldError(e.getField(), e.getDefaultMessage());
-                });
-
-        return ResponseEntity.status(status).body(error);
+    private void adicionarErroCampo(ValidationError error, String field, String message) {
+        error.addError(message);
+        error.addFieldError(field, message);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

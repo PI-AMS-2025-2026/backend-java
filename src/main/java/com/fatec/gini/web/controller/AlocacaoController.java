@@ -26,10 +26,14 @@ import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
+import com.fatec.gini.web.exception.AlocacaoLoteException;
+import com.fatec.gini.web.exception.ParameterException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -44,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 public class AlocacaoController {
 
         private final AlocacaoService service;
+        private final Validator validator;
 
         /**
          * Cria uma nova alocação.
@@ -64,9 +69,21 @@ public class AlocacaoController {
          * Cria alocações em lote.
          */
         @PostMapping("/lote")
-        @Operation(summary = "Criar alocações em lote")
+        @Operation(summary = "Criar alocações em lote",
+                description = "Erros associados a uma aula identificam sua posição no lote (alocacao_indice, a partir de zero).")
         public ResponseEntity<List<AlocacaoResponse>> criarLote(
-                        @RequestBody @Valid List<@Valid AlocacaoRequest> requests) {
+                        @RequestBody List<AlocacaoRequest> requests) {
+
+                for (int indice = 0; indice < requests.size(); indice++) {
+                        var aula = requests.get(indice);
+                        if (aula == null) {
+                                throw new AlocacaoLoteException(indice, new ParameterException("A aula é obrigatória."));
+                        }
+                        var erros = validator.validate(aula);
+                        if (!erros.isEmpty()) {
+                                throw new AlocacaoLoteException(indice, new ConstraintViolationException(erros));
+                        }
+                }
 
                 List<AlocacaoResponse> response = service.criarLote(requests);
 
