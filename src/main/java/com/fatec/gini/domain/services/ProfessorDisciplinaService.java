@@ -35,14 +35,14 @@ public class ProfessorDisciplinaService {
 
         if (repository.existsByProfessorIdAndDisciplinaId(
                 request.professor().id(), request.disciplina().id())) {
-            throw new BusinessException("Relação já existe");
+            throw new BusinessException("Este professor já está vinculado a esta disciplina.");
         }
 
         Professor professor = professorRepository.findById(request.professor().id())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado."));
 
         Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
-                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada."));
         validarAutorizacaoCurso.validarCurso(disciplina.getCurso());
 
         ProfessorDisciplina entity = ProfessorDisciplinaMapper.toEntity(request);
@@ -55,7 +55,7 @@ public class ProfessorDisciplinaService {
     @Transactional(readOnly = true)
     public ProfessorDisciplinaResponse buscarPorId(Long id) {
         ProfessorDisciplina entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Vínculo entre professor e disciplina não encontrado."));
         validarAutorizacaoCurso.validarCurso(entity.getDisciplina().getCurso());
 
         return ProfessorDisciplinaMapper.toResponse(entity);
@@ -87,13 +87,13 @@ public class ProfessorDisciplinaService {
     public ProfessorDisciplinaResponse atualizar(Long id, ProfessorDisciplinaRequest request) {
 
         ProfessorDisciplina entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Vínculo entre professor e disciplina não encontrado."));
 
         Professor professor = professorRepository.findById(request.professor().id())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado."));
 
         Disciplina disciplina = disciplinaRepository.findById(request.disciplina().id())
-                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada."));
         validarAutorizacaoCurso.validarCurso(entity.getDisciplina().getCurso());
         validarAutorizacaoCurso.validarCurso(disciplina.getCurso());
 
@@ -106,7 +106,7 @@ public class ProfessorDisciplinaService {
     @Transactional
     public void deletar(Long id) {
         ProfessorDisciplina entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Relação professor-disciplina não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Vínculo entre professor e disciplina não encontrado."));
         validarAutorizacaoCurso.validarCurso(entity.getDisciplina().getCurso());
 
         repository.delete(entity);

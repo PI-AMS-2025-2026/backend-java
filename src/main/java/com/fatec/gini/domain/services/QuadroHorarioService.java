@@ -165,7 +165,7 @@ public class QuadroHorarioService {
 
                 QuadroHorario entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Quadro horário não encontrada com ID: " + id));
+                                                "Quadro de horários não encontrado com ID: " + id));
                 validarAutorizacaoCurso.validarCurso(entity.getCurso());
                 return QuadroHorarioMapper.toResponse(entity);
         }
@@ -215,7 +215,7 @@ public class QuadroHorarioService {
 
                 QuadroHorario entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Quadro horário não encontrada com ID: " + id));
+                                                "Quadro de horários não encontrado com ID: " + id));
                 validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
                 /*
@@ -287,7 +287,7 @@ public class QuadroHorarioService {
 
                 QuadroHorario entity = repository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Quadro horário não encontrada com ID: " + id));
+                                                "Quadro de horários não encontrado com ID: " + id));
                 validarAutorizacaoCurso.validarCurso(entity.getCurso());
 
                 entity.setStatus(Status.INATIVO);

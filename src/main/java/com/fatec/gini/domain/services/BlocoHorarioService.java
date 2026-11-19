@@ -60,7 +60,7 @@ public class BlocoHorarioService {
     @Transactional(readOnly = true)
     public BlocoHorarioResponse buscarPorId(Long id) {
         BlocoHorario entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Bloco de horário não encontrado com ID: " + id));
         return BlocoHorarioMapper.toResponse(entity);
     }
 
@@ -84,7 +84,7 @@ public class BlocoHorarioService {
         validarBlocoHorarioUseCase.executar(request);
 
         BlocoHorario entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Horário não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Bloco de horário não encontrado com ID: " + id));
 
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());
@@ -97,7 +97,7 @@ public class BlocoHorarioService {
     @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Horário não encontrado com ID: " + id);
+            throw new EntityNotFoundException("Bloco de horário não encontrado com ID: " + id);
         }
         repository.deleteById(id);
     }

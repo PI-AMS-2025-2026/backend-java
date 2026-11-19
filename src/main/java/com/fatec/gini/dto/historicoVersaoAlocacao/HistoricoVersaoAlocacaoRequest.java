@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record HistoricoVersaoAlocacaoRequest(
 
-        @NotNull(message = "Data de alteração não pode ser nula")
+        @NotNull(message = "Data de alteração é obrigatória.")
         LocalDate dataAlteracao,
 
         String campoAlterado,

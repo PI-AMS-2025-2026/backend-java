@@ -30,7 +30,7 @@ public class RecursoService {
     public RecursoResponse criar(RecursoRequest request) {
 
         if (repository.existsByNomeIgnoreCase(request.nome())) {
-    throw new IllegalArgumentException("Esse recurso já possui cadastro");
+    throw new IllegalArgumentException("Já existe um recurso cadastrado com este nome.");
     }
 
         Recurso entity = RecursoMapper.toEntity(request);
@@ -101,7 +101,7 @@ public class RecursoService {
         }
         
         if (recursoSalaRepository.existsByRecursoId(id)) {
-            throw new IllegalArgumentException("Esse recurso está vinculado a um recurso_sala e não pode ser excluido.");
+            throw new IllegalArgumentException("Não é possível excluir recurso vinculado a salas.");
         }
         repository.deleteById(id);
     }

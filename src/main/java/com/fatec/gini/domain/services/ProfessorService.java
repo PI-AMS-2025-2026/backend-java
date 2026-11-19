@@ -120,7 +120,7 @@ public class ProfessorService {
 
             if (professorId == null || pertenceAoMesmoProfessor) {
                 throw new BusinessException(
-                        "Esse professor já possui cadastro");
+                        "Já existe um professor cadastrado com este e-mail.");
             }
         }
     }
@@ -136,7 +136,7 @@ public class ProfessorService {
                                 cursoId)) {
 
             throw new org.springframework.security.access.AccessDeniedException(
-                    "Professor não pertence ao curso do usuário");
+                    "Professor não pertence ao curso do usuário.");
         }
     }
 }

@@ -38,7 +38,7 @@ public class CursoService {
         if (repository.existsByNomeIgnoreCaseAndPeriodicidadeIgnoreCaseAndDuracao(
                 dto.nome(), periodicidade, dto.duracao())) {
             throw new IllegalArgumentException(
-                    "Já existe um curso com o mesmo nome, periodicidade e duração");
+                    "Já existe um curso cadastrado com o mesmo nome, periodicidade e duração.");
         }
 
         Curso entity = CursoMapper.toEntity(dto);
@@ -113,7 +113,7 @@ public class CursoService {
 
         if (cursoDuplicado && !mesmoCurso) {
             throw new IllegalArgumentException(
-                    "Já existe um curso com o mesmo nome, periodicidade e duração");
+                    "Já existe um curso cadastrado com o mesmo nome, periodicidade e duração.");
         }
 
         entity.setNome(request.nome());
@@ -159,7 +159,7 @@ public class CursoService {
     private String normalizarPeriodicidade(String periodicidade) {
 
         if (periodicidade == null) {
-            throw new IllegalArgumentException("Periodicidade é obrigatória");
+            throw new IllegalArgumentException("Periodicidade é obrigatória.");
         }
 
         String valor = periodicidade.trim();
@@ -173,26 +173,26 @@ public class CursoService {
         }
 
         throw new IllegalArgumentException(
-                "Periodicidade deve ser 'Semestral' ou 'Anual'");
+                "Periodicidade deve ser 'Semestral' ou 'Anual'.");
     }
 
     private void validarDuracao(String periodicidade, Integer duracao) {
 
         if (duracao == null) {
-            throw new IllegalArgumentException("Duração é obrigatória");
+            throw new IllegalArgumentException("Duração é obrigatória.");
         }
 
         if (periodicidade.equals("Anual")) {
             if (duracao <= 1 || duracao > 4) {
                 throw new IllegalArgumentException(
-                        "Para periodicidade Anual, a duração deve ser maior que 1 e menor ou igual a 4");
+                        "Para periodicidade Anual, a duração deve ser entre 2 e 4.");
             }
         }
 
         if (periodicidade.equals("Semestral")) {
             if (duracao < 4 || duracao > 10) {
                 throw new IllegalArgumentException(
-                        "Para periodicidade Semestral, a duração deve estar entre 4 e 10");
+                        "Para periodicidade Semestral, a duração deve ser entre 4 e 10.");
             }
         }
     }
