@@ -43,7 +43,7 @@ class EmailServiceTest {
 
         EmailService service = new EmailService(mailSender, templateEngine);
         ReflectionTestUtils.setField(service, "remetente", "noreply@gini.local");
-        ReflectionTestUtils.setField(service, "frontendUrl", "http://localhost:3000/");
+        ReflectionTestUtils.setField(service, "frontendUrl", "https://app.gini.exemplo.com/");
         ReflectionTestUtils.setField(service, "expiracaoMinutos", 15L);
 
         service.enviarRecuperacaoSenha("usuario@gini.local", "token-teste");
@@ -55,7 +55,7 @@ class EmailServiceTest {
 
         assertTrue(email.contains("text/plain"));
         assertTrue(email.contains("text/html"));
-        assertTrue(corpo.contains("http://localhost:3000/redefinir-senha?token=token-teste"));
+        assertTrue(corpo.contains("https://app.gini.exemplo.com/redefinir-senha?token=token-teste"));
         assertTrue(corpo.contains("Redefinir minha senha"));
         assertTrue(corpo.contains("15 minutos"));
         verify(mailSender).send(mimeMessage);

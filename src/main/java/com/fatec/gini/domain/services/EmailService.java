@@ -27,7 +27,7 @@ public class EmailService {
     @Value("${app.mail.from:noreply@gini.local}")
     private String remetente;
 
-    @Value("${app.frontend-url:http://localhost:3000}")
+    @Value("${app.frontend-url}")
     private String frontendUrl;
 
     @Value("${app.password-reset.expiration-minutes:15}")
