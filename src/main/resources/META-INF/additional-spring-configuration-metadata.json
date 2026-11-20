@@ -1,0 +1,48 @@
+{"properties": [
+  {
+    "name": "api.security.token.secret",
+    "type": "java.lang.String",
+    "description": "Chave secreta usada para assinar e validar os tokens JWT. Mantenha este valor protegido e altere-o entre ambientes."
+  },
+  {
+    "name": "api.security.token.expirationMs",
+    "type": "java.lang.Long",
+    "defaultValue": 86400000,
+    "description": "Tempo de validade do token JWT de acesso, em milissegundos. Após esse período, o frontend pode solicitar um novo token usando o refresh token."
+  },
+  {
+    "name": "api.security.token.refreshExpirationMs",
+    "type": "java.lang.Long",
+    "defaultValue": 604800000,
+    "description": "Tempo de validade do token de atualização, em milissegundos. Esse token permite renovar a sessão; após sua expiração, o usuário precisa entrar novamente."
+  },
+  {
+    "name": "app.security.authorization.enabled",
+    "type": "java.lang.Boolean",
+    "defaultValue": true,
+    "description": "Ativa ou desativa a validação de autorização por perfil e por curso. Mantenha habilitada em ambientes de produção."
+  },
+  {
+    "name": "app.password-reset.expiration-minutes",
+    "type": "java.lang.Long",
+    "defaultValue": 15,
+    "description": "Tempo de validade dos tokens de recuperação de senha, em minutos. O token só pode ser usado uma vez."
+  },
+  {
+    "name": "app.mail.from",
+    "type": "java.lang.String",
+    "defaultValue": "noreply@gini.local",
+    "description": "Endereço de e-mail usado como remetente nas mensagens enviadas pela aplicação."
+  },
+  {
+    "name": "app.frontend-url",
+    "type": "java.lang.String",
+    "defaultValue": "http://localhost:3000",
+    "description": "Endereço base da aplicação web usado para montar os links de recuperação de senha enviados por e-mail."
+  },
+  {
+    "name": "api.security.token.issuer",
+    "type": "java.lang.String",
+    "description": "Identificador do emissor (claim iss) dos tokens JWT. Por padrão, é derivado de app.environment e validado nas requisições para impedir o uso de tokens emitidos em outro ambiente."
+  }
+]}

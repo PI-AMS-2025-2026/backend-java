@@ -1,0 +1,190 @@
+
+package com.fatec.gini.domain.services;
+
+import java.time.LocalDateTime;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fatec.gini.domain.entities.Curso;
+import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.models.Status;
+import com.fatec.gini.domain.models.TipoUsuario;
+import com.fatec.gini.domain.services.usecase.read.ValidarCursoObrigatorioUsuarioUseCase;
+import com.fatec.gini.dto.paginacao.PageResponse;
+import com.fatec.gini.dto.usuario.UsuarioRequest;
+import com.fatec.gini.dto.usuario.UsuarioResponse;
+import com.fatec.gini.infrastructure.mappers.UsuarioMapper;
+import com.fatec.gini.infrastructure.repositories.CursoRepository;
+import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
+import com.fatec.gini.web.exception.BusinessException;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class UsuarioService {
+
+    private final UsuarioRepository repository;
+
+    private final CursoRepository cursoRepository;
+
+    private final ValidarCursoObrigatorioUsuarioUseCase validarCursoObrigatorioUsuario;
+
+    @Transactional
+    public UsuarioResponse criar(UsuarioRequest request) {
+
+        if (request.senha() == null || request.senha().isBlank()) {
+            throw new IllegalArgumentException("Senha é obrigatória.");
+        }
+
+        if (repository.existsByEmail(request.email())) {
+            throw new BusinessException("Esse email já possui cadastro.");
+        }
+
+        Usuario entity = UsuarioMapper.toEntity(request);
+
+        validarCursoObrigatorioUsuario.executar(request);
+
+        if (request.curso() != null) {
+
+            Curso curso = cursoRepository.findById(request.curso().id())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Curso não encontrado com ID: " + request.curso().id()));
+
+            if (request.tipoUsuario() == TipoUsuario.COORDENADOR && curso.getStatus() != Status.ATIVO) {
+                throw new BusinessException("O curso do coordenador deve estar ativo.");
+            }
+
+            entity.setCurso(curso);
+        }
+
+        String encrypSenha =
+                new BCryptPasswordEncoder().encode(request.senha());
+
+        entity.setSenha(encrypSenha);
+
+        entity.setCreatedAt(LocalDateTime.now());
+
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        return UsuarioMapper.toResponse(repository.save(entity));
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<UsuarioResponse> listar(
+            String nome,
+            String email,
+            Status status,
+            TipoUsuario tipoUsuario,
+            int pageNum,
+            int size
+    ) {
+
+        var pageRequest = PageRequest.of(pageNum, size);
+
+        var page = repository.buscarPorFiltros(
+                nome,
+                email,
+                status,
+                tipoUsuario,
+                pageRequest);
+
+        return new PageResponse<>(
+                page.getContent().stream().map(UsuarioMapper::toResponse).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages());
+    }
+
+    @Transactional(readOnly = true)
+    public UsuarioResponse buscarPorId(Long id) {
+
+        return repository.findById(id)
+                .map(UsuarioMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário não encontrado com ID: " + id));
+    }
+
+    @Transactional
+    public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
+        if (request.status() != Status.ATIVO || request.tipoUsuario() != TipoUsuario.ADMINISTRADOR) {
+            validarQueRestaAdministradorAtivo(id);
+        }
+
+        Usuario entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário não encontrado com ID: " + id));
+
+        if (repository.existsByEmailAndIdNot(request.email(), id)) {
+            throw new BusinessException("Esse email já possui cadastro.");
+        }
+
+        validarCursoObrigatorioUsuario.executar(request);
+
+        boolean preservaCurso = entity.getTipoUsuario() == TipoUsuario.COORDENADOR
+                && entity.getCurso() != null && request.curso() != null
+                && entity.getCurso().getId().equals(request.curso().id());
+
+        entity.setNome(request.nome());
+
+        entity.setEmail(request.email());
+
+        entity.setStatus(request.status());
+
+        entity.setTipoUsuario(request.tipoUsuario());
+
+        if (request.senha() != null && !request.senha().isBlank()) {
+            entity.setSenha(new BCryptPasswordEncoder().encode(request.senha()));
+        }
+
+        if (request.curso() != null) {
+
+            Curso curso = cursoRepository.findById(request.curso().id())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Curso não encontrado com ID: " + request.curso().id()));
+
+            if (request.tipoUsuario() == TipoUsuario.COORDENADOR && !preservaCurso && curso.getStatus() != Status.ATIVO) {
+                throw new BusinessException("O curso do coordenador deve estar ativo.");
+            }
+
+            entity.setCurso(curso);
+        }
+
+        return UsuarioMapper.toResponse(repository.save(entity));
+    }
+
+    @Transactional
+    public void inativar(Long id) {
+        validarQueRestaAdministradorAtivo(id);
+
+        Usuario entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário não encontrado com ID: " + id));
+
+        entity.setStatus(Status.INATIVO);
+
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        repository.save(entity);
+    }
+
+    private void validarQueRestaAdministradorAtivo(Long id) {
+        // Mantém a verificação e a alteração na mesma transação, inclusive
+        // quando duas requisições tentam remover administradores ao mesmo tempo.
+        var administradores = repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR);
+        if (administradores.size() == 1 && id.equals(administradores.get(0).getId())) {
+            throw new BusinessException("O sistema deve manter pelo menos um administrador ativo.");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public boolean jaUsuarioExisteEmail(String email) {
+
+        return repository.existsByEmail(email);
+    }
+}
