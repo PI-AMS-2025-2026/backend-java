@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import com.fatec.gini.domain.entities.Usuario;
 import com.fatec.gini.domain.services.RefreshTokenService;
 import com.fatec.gini.domain.services.TokenService;
 import com.fatec.gini.dto.auth.LoginRequest;
+import com.fatec.gini.dto.auth.AlterarSenhaRequest;
 import com.fatec.gini.dto.auth.LoginResponse;
 import com.fatec.gini.dto.auth.RedefinirSenhaRequest;
 import com.fatec.gini.dto.auth.RefreshTokenRequest;
@@ -29,6 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Autenticacao", description = "Endpoints para login, renovacao e encerramento de sessoes")
@@ -121,6 +124,15 @@ public class AutenticacaoController {
         @PostMapping("/redefinir-senha")
         public ResponseEntity<Void> redefinirSenha(@RequestBody @Valid RedefinirSenhaRequest request) {
                 passwordResetService.redefinirSenha(request.token(), request.senha());
+                return ResponseEntity.noContent().build();
+        }
+
+        @Operation(summary = "Alterar senha", description = "Altera a senha do usuário autenticado após validar a senha atual.")
+        @PutMapping("/alterar-senha")
+        public ResponseEntity<Void> alterarSenha(
+                        @AuthenticationPrincipal Usuario usuario,
+                        @RequestBody @Valid AlterarSenhaRequest request) {
+                passwordResetService.alterarSenha(usuario, request.senhaAtual(), request.novaSenha());
                 return ResponseEntity.noContent().build();
         }
 }
