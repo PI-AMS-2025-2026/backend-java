@@ -72,6 +72,7 @@ public class SalaService {
             Long idTipoSala,
             Integer capacidade,
             String codigo,
+            String tipoSalaNome,
             String busca,
             int pageNum,
             int size) {
@@ -84,6 +85,7 @@ public class SalaService {
                 idTipoSala,
                 capacidade,
                 codigo,
+                tipoSalaNome,
                 busca,
                 pageRequest);
 

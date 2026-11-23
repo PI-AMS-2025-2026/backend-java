@@ -79,6 +79,9 @@ public class DisponibilidadeProfessorService {
             Long professor,
             DiaSemana diaSemana,
             Long blocoHorario,
+            String professorNome,
+            String horario,
+            String busca,
             int pageNum,
             int size) {
 
@@ -88,6 +91,9 @@ public class DisponibilidadeProfessorService {
                 professor,
                 diaSemana,
                 blocoHorario,
+                professorNome,
+                horario,
+                busca,
                 validarAutorizacaoCurso.cursoParaFiltro(null),
                 pageRequest);
 

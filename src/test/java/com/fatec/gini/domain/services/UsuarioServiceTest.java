@@ -142,6 +142,27 @@ class UsuarioServiceTest {
     }
 
     @Test
+    void deveRejeitarCriacaoComSenhaFraca() {
+        UsuarioRequest request = new UsuarioRequest(
+                "Usuário Teste", "novo@teste.com", "abcdefgh", Status.ATIVO, TipoUsuario.ADMINISTRADOR, null);
+
+        assertThrows(IllegalArgumentException.class, () -> usuarioService.criar(request));
+        verify(repository, never()).save(any(Usuario.class));
+    }
+
+    @Test
+    void deveRejeitarTrocaPorSenhaFraca() {
+        Usuario existente = administradorAtivo(12L);
+        when(repository.findById(12L)).thenReturn(Optional.of(existente));
+        when(repository.existsByEmailAndIdNot("admin12@teste.com", 12L)).thenReturn(false);
+        UsuarioRequest request = new UsuarioRequest(
+                "Administrador", "admin12@teste.com", "ABCDEFGH", Status.ATIVO, TipoUsuario.ADMINISTRADOR, null);
+
+        assertThrows(IllegalArgumentException.class, () -> usuarioService.atualizar(12L, request));
+        verify(repository, never()).save(any(Usuario.class));
+    }
+
+    @Test
     void deveInativarUsuarioSemExcluirRegistro() {
         Usuario existente = administradorAtivo(12L);
         when(repository.buscarPorStatusETipoComBloqueio(Status.ATIVO, TipoUsuario.ADMINISTRADOR))
@@ -196,7 +217,7 @@ class UsuarioServiceTest {
         return new UsuarioRequest(
                 "Usuário Teste",
                 tipoUsuario.name().toLowerCase() + "@teste.com",
-                "123456",
+                "Senha123",
                 Status.ATIVO,
                 tipoUsuario,
                 curso);

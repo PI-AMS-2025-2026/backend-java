@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.PasswordResetToken;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.security.PasswordPolicy;
 import com.fatec.gini.infrastructure.repositories.PasswordResetTokenRepository;
 import com.fatec.gini.infrastructure.repositories.UsuarioRepository;
 import com.fatec.gini.web.exception.ParameterException;
@@ -62,6 +63,7 @@ public class PasswordResetService {
 
     @Transactional
     public void redefinirSenha(String token, String novaSenha) {
+        PasswordPolicy.requireStrong(novaSenha);
         PasswordResetToken passwordResetToken = passwordResetTokenRepository
                 .findByTokenHashAndUsedFalse(sha256(token))
                 .orElseThrow(() -> new ParameterException("Token de recuperação inválido"));
@@ -78,6 +80,20 @@ public class PasswordResetService {
         passwordResetToken.setUsedAt(Instant.now());
         usuarioRepository.save(usuario);
         passwordResetTokenRepository.save(passwordResetToken);
+    }
+
+    @Transactional
+    public void alterarSenha(Usuario usuarioAutenticado, String senhaAtual, String novaSenha) {
+        PasswordPolicy.requireStrong(novaSenha);
+        Usuario usuario = usuarioRepository.findById(usuarioAutenticado.getId())
+                .orElseThrow(() -> new ParameterException("Usuário autenticado não encontrado."));
+
+        if (!passwordEncoder.matches(senhaAtual, usuario.getSenha())) {
+            throw new ParameterException("A senha atual está incorreta.");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        usuarioRepository.save(usuario);
     }
 
     private String gerarToken() {

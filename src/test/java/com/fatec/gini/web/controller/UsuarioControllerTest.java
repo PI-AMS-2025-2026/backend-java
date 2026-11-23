@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,9 +63,29 @@ class UsuarioControllerTest {
 
         mockMvc.perform(post("/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"nome\":\"Coordenação\",\"email\":\"coord@teste.com\",\"senha\":\"123456\",\"status\":\"ATIVO\",\"tipo_usuario\":\"COORDENADOR\",\"curso\":{\"id\":999}}"))
+                        .content("{\"nome\":\"Coordenação\",\"email\":\"coord@teste.com\",\"senha\":\"Senha123\",\"status\":\"ATIVO\",\"tipo_usuario\":\"COORDENADOR\",\"curso\":{\"id\":999}}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Curso não encontrado com ID: 999"));
+    }
+
+    @Test
+    void deveRejeitarSenhaFracaAoCriarUsuario() throws Exception {
+        mockMvc.perform(post("/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nome\":\"Ana\",\"email\":\"ana@teste.com\",\"senha\":\"abcdefgh\",\"status\":\"ATIVO\",\"tipo_usuario\":\"ADMINISTRADOR\"}"))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'senha')].message")
+                        .value("A senha deve ter pelo menos 8 caracteres, uma letra maiúscula e uma letra minúscula."));
+    }
+
+    @Test
+    void deveRejeitarSenhaFracaAoAtualizarUsuario() throws Exception {
+        mockMvc.perform(put("/usuarios/31")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nome\":\"Ana\",\"email\":\"ana@teste.com\",\"senha\":\"ABCDEFGH\",\"status\":\"ATIVO\",\"tipo_usuario\":\"ADMINISTRADOR\"}"))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'senha')].message")
+                        .value("A senha deve ter pelo menos 8 caracteres, uma letra maiúscula e uma letra minúscula."));
     }
 
     @Test
