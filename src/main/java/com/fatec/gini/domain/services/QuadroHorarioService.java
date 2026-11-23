@@ -176,7 +176,7 @@ public class QuadroHorarioService {
                         Long idTurma,
                         Long idPeriodoAtividadeQuadro,
                         Status status,
-                        Integer versao,
+                String versao,
                         LocalDate dataCriacao,
                         String busca,
                         int pageNum,

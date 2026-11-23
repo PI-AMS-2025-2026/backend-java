@@ -37,10 +37,11 @@ public class PeriodoAtividadeQuadroController {
             @RequestParam(name = "status", required = false) Status status,
             @RequestParam(name = "data_inicio", required = false) java.time.LocalDate dataInicio,
             @RequestParam(name = "data_fim", required = false) java.time.LocalDate dataFim,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(service.listar(ano, periodo, status, dataInicio, dataFim, page, size));
+        return ResponseEntity.ok(service.listar(ano, periodo, status, dataInicio, dataFim, busca, page, size));
     }
 
     @GetMapping("/{id}")

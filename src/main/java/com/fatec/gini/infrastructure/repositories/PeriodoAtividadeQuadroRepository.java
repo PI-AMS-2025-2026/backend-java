@@ -33,6 +33,12 @@ public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoA
                                                                     AND (:status IS NULL OR p.status = :status)
                           AND (CAST(:dataInicio AS date) IS NULL OR p.dataInicio = :dataInicio)
                           AND (CAST(:dataFim AS date) IS NULL OR p.dataFim = :dataFim)
+                          AND (COALESCE(:busca, '') = '' OR CAST(p.ano AS string) LIKE CONCAT('%', :busca, '%')
+                               OR CAST(p.periodo AS string) LIKE CONCAT('%', :busca, '%')
+                               OR LOWER(CAST(p.dataInicio AS string)) LIKE LOWER(CONCAT('%', :busca, '%'))
+                               OR LOWER(CAST(p.dataFim AS string)) LIKE LOWER(CONCAT('%', :busca, '%'))
+                               OR LOWER(CAST(p.tipoPeridoAtividadeQuadro AS string)) LIKE LOWER(CONCAT('%', :busca, '%'))
+                               OR LOWER(CAST(p.status AS string)) LIKE LOWER(CONCAT('%', :busca, '%')))
                         """)
         Page<PeriodoAtividadeQuadro> buscarPorFiltros(
                         @Param("ano") Integer ano,
@@ -40,6 +46,7 @@ public interface PeriodoAtividadeQuadroRepository extends JpaRepository<PeriodoA
                         @Param("status") Status status,
                         @Param("dataInicio") java.time.LocalDate dataInicio,
                         @Param("dataFim") java.time.LocalDate dataFim,
+                        @Param("busca") String busca,
                         Pageable pageable);
 
 
