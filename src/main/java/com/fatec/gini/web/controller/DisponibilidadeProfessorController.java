@@ -1,6 +1,7 @@
 package com.fatec.gini.web.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.DisponibilidadeProfessorService;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
+import com.fatec.gini.dto.disponibilidadeProfessor.GradeDisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.paginacao.PageResponse;
 
 import jakarta.validation.Valid;
@@ -60,6 +62,13 @@ public class DisponibilidadeProfessorController {
     @GetMapping("/{id}")
     public ResponseEntity<DisponibilidadeProfessorResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @PutMapping("/professores/{professorId}/grade")
+    public ResponseEntity<List<DisponibilidadeProfessorResponse>> sincronizarGrade(
+            @PathVariable Long professorId,
+            @RequestBody @Valid GradeDisponibilidadeProfessorRequest request) {
+        return ResponseEntity.ok(service.sincronizarGrade(professorId, request));
     }
 
     @PutMapping("/{id}")

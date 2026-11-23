@@ -68,4 +68,6 @@ public interface DisponibilidadeProfessorRepository extends JpaRepository<Dispon
             @Param("blocoHorarioId") Long blocoHorarioId);
 
     List<DisponibilidadeProfessor> findByProfessorIdIn(List<Long> professorIds);
+
+    List<DisponibilidadeProfessor> findByProfessorId(Long professorId);
 }

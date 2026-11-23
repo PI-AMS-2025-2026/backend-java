@@ -14,6 +14,8 @@ import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 import com.fatec.gini.domain.entities.Professor;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.disponibilidadeProfessor.DisponibilidadeProfessorResponse;
+import com.fatec.gini.dto.disponibilidadeProfessor.GradeDisponibilidadeProfessorRequest;
+import com.fatec.gini.dto.disponibilidadeProfessor.HorarioDisponibilidadeProfessorRequest;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.DisponibilidadeProfessorMapper;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
@@ -23,6 +25,11 @@ import com.fatec.gini.infrastructure.repositories.ProfessorDisciplinaRepository;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -62,6 +69,62 @@ public class DisponibilidadeProfessorService {
         repository.save(entity);
 
         return DisponibilidadeProfessorMapper.toResponse(entity);
+    }
+
+    @Transactional
+    public List<DisponibilidadeProfessorResponse> sincronizarGrade(
+            Long professorId,
+            GradeDisponibilidadeProfessorRequest request) {
+        Professor professor = professorRepository.findById(professorId)
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + professorId));
+        validarProfessor(professorId);
+
+        List<HorarioDisponibilidadeProfessorRequest> horarios = request.horarios();
+        Set<ChaveHorario> desejados = new HashSet<>();
+        Set<Long> idsBlocos = new HashSet<>();
+        for (HorarioDisponibilidadeProfessorRequest horario : horarios) {
+            if (!desejados.add(new ChaveHorario(horario.diaSemana(), horario.blocoHorarioId()))) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "A grade contém um horário duplicado para o mesmo dia.");
+            }
+            idsBlocos.add(horario.blocoHorarioId());
+        }
+
+        Map<Long, BlocoHorario> blocosPorId = new HashMap<>();
+        blocoHorarioRepository.findAllById(idsBlocos).forEach(bloco -> blocosPorId.put(bloco.getId(), bloco));
+        if (blocosPorId.size() != idsBlocos.size()) {
+            Set<Long> ausentes = new HashSet<>(idsBlocos);
+            ausentes.removeAll(blocosPorId.keySet());
+            throw new EntityNotFoundException("Bloco(s) de horário não encontrado(s): " + ausentes);
+        }
+
+        List<DisponibilidadeProfessor> existentes = repository.findByProfessorId(professorId);
+        Map<ChaveHorario, DisponibilidadeProfessor> atuaisPorChave = new HashMap<>();
+        existentes.forEach(disponibilidade -> atuaisPorChave.put(
+                new ChaveHorario(disponibilidade.getDiaSemana(), disponibilidade.getBlocoHorario().getId()),
+                disponibilidade));
+
+        List<DisponibilidadeProfessor> remover = existentes.stream()
+                .filter(disponibilidade -> !desejados.contains(
+                        new ChaveHorario(disponibilidade.getDiaSemana(), disponibilidade.getBlocoHorario().getId())))
+                .toList();
+        List<DisponibilidadeProfessor> adicionar = horarios.stream()
+                .filter(horario -> !atuaisPorChave.containsKey(
+                        new ChaveHorario(horario.diaSemana(), horario.blocoHorarioId())))
+                .map(horario -> new DisponibilidadeProfessor(
+                        professor,
+                        horario.diaSemana(),
+                        blocosPorId.get(horario.blocoHorarioId())))
+                .toList();
+
+        repository.deleteAll(remover);
+        repository.saveAll(adicionar);
+        return repository.findByProfessorId(professorId).stream()
+                .map(DisponibilidadeProfessorMapper::toResponse)
+                .toList();
+    }
+
+    private record ChaveHorario(DiaSemana diaSemana, Long blocoHorarioId) {
     }
 
     @Transactional(readOnly = true)
