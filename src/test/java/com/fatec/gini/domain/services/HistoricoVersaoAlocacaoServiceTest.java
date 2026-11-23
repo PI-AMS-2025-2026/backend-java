@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
@@ -40,8 +42,8 @@ class HistoricoVersaoAlocacaoServiceTest {
         HistoricoVersaoAlocacao historico = new HistoricoVersaoAlocacao(
                 LocalDate.of(2026, 10, 29), "sala", "1", "2");
         when(validarAutorizacaoCurso.cursoParaFiltro(null)).thenReturn(7L);
-        var pageable = org.springframework.data.domain.PageRequest.of(1, 5,
-                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, HistoricoVersaoAlocacao::getId));
+        var pageable = PageRequest.of(1, 5,
+                Sort.by(Sort.Direction.ASC, HistoricoVersaoAlocacao::getId));
         when(repository.buscarPorFiltros(42L, 9L, null, 7L, pageable))
                 .thenReturn(new PageImpl<>(List.of(historico), pageable, 6));
 
