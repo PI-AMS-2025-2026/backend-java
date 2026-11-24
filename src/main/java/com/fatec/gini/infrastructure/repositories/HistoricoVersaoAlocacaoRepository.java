@@ -14,14 +14,30 @@ import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
 public interface HistoricoVersaoAlocacaoRepository extends JpaRepository<HistoricoVersaoAlocacao, Long> {
 
     @Query("""
-            SELECT h FROM HistoricoVersaoAlocacao h
+            SELECT h
+            FROM HistoricoVersaoAlocacao h
+            LEFT JOIN h.alocacao a
+            LEFT JOIN a.disciplina d
+            LEFT JOIN a.turma t
+            LEFT JOIN a.sala s
             WHERE (:alocacaoId IS NULL OR h.alocacaoIdOrigem = :alocacaoId)
               AND (:usuarioId IS NULL OR h.usuario.id = :usuarioId)
               AND (:cursoId IS NULL OR h.cursoId = :cursoId)
+              AND (COALESCE(:busca, '') = ''
+                   OR LOWER(h.usuario.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(CAST(h.dataAlteracao AS string)) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(h.campoAlterado) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(COALESCE(h.valorAntigo, '')) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(h.valorNovo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(COALESCE(d.nome, '')) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(COALESCE(t.codigo, '')) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR LOWER(COALESCE(s.codigo, '')) LIKE LOWER(CONCAT('%', :busca, '%'))
+                   OR CAST(h.alocacaoIdOrigem AS string) LIKE CONCAT('%', :busca, '%'))
             """)
     Page<HistoricoVersaoAlocacao> buscarPorFiltros(
             @Param("alocacaoId") Long alocacaoId,
             @Param("usuarioId") Long usuarioId,
+            @Param("busca") String busca,
             @Param("cursoId") Long cursoId,
             Pageable pageable);
 

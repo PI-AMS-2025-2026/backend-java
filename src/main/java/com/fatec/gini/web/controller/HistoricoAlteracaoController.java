@@ -24,10 +24,13 @@ public class HistoricoAlteracaoController {
 	public ResponseEntity<PageResponse<HistoricoVersaoAlocacaoResponse>> listar(
 			@RequestParam(required = false, name = "id_alocacao") Long idAlocacao,
 			@RequestParam(required = false, name = "id_usuario") Long idUsuario,
+			@RequestParam(required = false, name = "busca") String busca,
+			@RequestParam(required = false, name = "sort") String sort,
+			@RequestParam(required = false, name = "direction") String direction,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "10") int size) {
 
-		return ResponseEntity.ok(service.listar(idAlocacao, idUsuario, page, size));
+		return ResponseEntity.ok(service.listar(idAlocacao, idUsuario, busca, sort, direction, page, size));
 	}
 
 	@GetMapping("/{id}")

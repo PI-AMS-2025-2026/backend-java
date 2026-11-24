@@ -51,11 +51,12 @@ public class PeriodoAtividadeQuadroService {
             Status status,
             java.time.LocalDate dataInicio,
             java.time.LocalDate dataFim,
+            String busca,
             int pageNum,
             int size) {
 
         var pageRequest = PageRequest.of(pageNum, size);
-        var page = repository.buscarPorFiltros(ano, periodo, status, dataInicio, dataFim, pageRequest);
+        var page = repository.buscarPorFiltros(ano, periodo, status, dataInicio, dataFim, busca, pageRequest);
 
         return new PageResponse<>(
                 page.getContent().stream().map(PeriodoAtividadeQuadroMapper::toResponse).toList(),

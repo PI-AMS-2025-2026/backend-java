@@ -82,10 +82,10 @@ class PasswordResetServiceTest {
     void deveRedefinirSenhaEInvalidarToken() {
         PasswordResetToken token = new PasswordResetToken(usuario, "hash", Instant.now().plusSeconds(60), Instant.now());
         when(passwordResetTokenRepository.findByTokenHashAndUsedFalse(any())).thenReturn(Optional.of(token));
-        when(passwordEncoder.encode("nova-senha"))
+        when(passwordEncoder.encode("Nova-senha"))
                 .thenReturn("senha-codificada");
 
-        passwordResetService.redefinirSenha("token-bruto", "nova-senha");
+        passwordResetService.redefinirSenha("token-bruto", "Nova-senha");
 
         assertThat(usuario.getSenha()).isEqualTo("senha-codificada");
         assertThat(token.isUsed()).isTrue();
@@ -95,12 +95,48 @@ class PasswordResetServiceTest {
     }
 
     @Test
+    void deveRejeitarSenhaFracaAntesDeConsultarToken() {
+        assertThrows(IllegalArgumentException.class,
+                () -> passwordResetService.redefinirSenha("token-bruto", "abcdefgh"));
+
+        verify(passwordResetTokenRepository, never()).findByTokenHashAndUsedFalse(any());
+        verify(passwordEncoder, never()).encode(any());
+        verify(usuarioRepository, never()).save(any());
+    }
+
+    @Test
+    void deveAlterarSenhaDoUsuarioAutenticadoAposValidarSenhaAtual() {
+        usuario.setSenha("hash-antigo");
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(passwordEncoder.matches("Senha-atual", "hash-antigo")).thenReturn(true);
+        when(passwordEncoder.encode("Nova-senha")).thenReturn("hash-novo");
+
+        passwordResetService.alterarSenha(usuario, "Senha-atual", "Nova-senha");
+
+        assertThat(usuario.getSenha()).isEqualTo("hash-novo");
+        verify(usuarioRepository).save(usuario);
+    }
+
+    @Test
+    void deveRejeitarSenhaAtualIncorretaSemAlterarUsuario() {
+        usuario.setSenha("hash-antigo");
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(passwordEncoder.matches("incorreta", "hash-antigo")).thenReturn(false);
+
+        assertThrows(ParameterException.class,
+                () -> passwordResetService.alterarSenha(usuario, "incorreta", "Nova-senha"));
+
+        verify(passwordEncoder, never()).encode(any());
+        verify(usuarioRepository, never()).save(any());
+    }
+
+    @Test
     void deveRejeitarTokenExpirado() {
         PasswordResetToken token = new PasswordResetToken(usuario, "hash", Instant.now().minusSeconds(1), Instant.now());
         when(passwordResetTokenRepository.findByTokenHashAndUsedFalse(any())).thenReturn(Optional.of(token));
 
         assertThrows(ParameterException.class,
-                () -> passwordResetService.redefinirSenha("token-bruto", "nova-senha"));
+                () -> passwordResetService.redefinirSenha("token-bruto", "Nova-senha"));
         verify(passwordEncoder, never()).encode(any());
         verify(usuarioRepository, never()).save(any());
     }

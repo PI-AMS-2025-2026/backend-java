@@ -11,7 +11,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,6 +29,7 @@ import com.fatec.gini.web.exception.RefreshTokenException;
 import com.fatec.gini.web.config.SecurityFilter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -114,14 +117,56 @@ class AutenticacaoControllerTest {
 
     @Test
     void deveRedefinirSenhaEDevolverNoContent() throws Exception {
-        doNothing().when(passwordResetService).redefinirSenha("token-123", "nova-senha");
+        doNothing().when(passwordResetService).redefinirSenha("token-123", "Nova-senha");
 
         mockMvc.perform(post("/auth/redefinir-senha")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"token\":\"token-123\",\"senha\":\"nova-senha\"}"))
+                .content("{\"token\":\"token-123\",\"senha\":\"Nova-senha\"}"))
                 .andExpect(status().isNoContent());
 
-        verify(passwordResetService).redefinirSenha("token-123", "nova-senha");
+        verify(passwordResetService).redefinirSenha("token-123", "Nova-senha");
+    }
+
+    @Test
+    void deveRejeitarSenhaFracaNaRedefinicao() throws Exception {
+        mockMvc.perform(post("/auth/redefinir-senha")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"token\":\"token-123\",\"senha\":\"senha-fraca\"}"))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'senha')].message")
+                        .value("A senha deve ter pelo menos 8 caracteres, uma letra maiúscula e uma letra minúscula."));
+    }
+
+    @Test
+    void deveRejeitarSenhaFracaNaAlteracao() throws Exception {
+        mockMvc.perform(put("/auth/alterar-senha")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"senha_atual\":\"Senha-atual\",\"nova_senha\":\"senha-fraca\"}"))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.field_errors[?(@.field == 'novaSenha')].message")
+                        .value("A senha deve ter pelo menos 8 caracteres, uma letra maiúscula e uma letra minúscula."));
+    }
+
+    @Test
+    void deveAlterarSenhaDoUsuarioAutenticado() throws Exception {
+        Usuario usuario = new Usuario("Admin", "admin@gini.local", "hash-atual", Status.ATIVO,
+                TipoUsuario.ADMINISTRADOR);
+        usuario.setId(1L);
+        doNothing().when(passwordResetService).alterarSenha(usuario, "Senha-atual", "Nova-senha");
+
+        var context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
+        SecurityContextHolder.setContext(context);
+        try {
+            mockMvc.perform(put("/auth/alterar-senha")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"senha_atual\":\"Senha-atual\",\"nova_senha\":\"Nova-senha\"}"))
+                    .andExpect(status().isNoContent());
+
+            verify(passwordResetService).alterarSenha(usuario, "Senha-atual", "Nova-senha");
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 
     @Test

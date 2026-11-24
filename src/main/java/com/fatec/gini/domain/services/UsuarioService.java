@@ -2,14 +2,18 @@
 package com.fatec.gini.domain.services;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.Usuario;
+import com.fatec.gini.domain.security.PasswordPolicy;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.domain.services.usecase.read.ValidarCursoObrigatorioUsuarioUseCase;
@@ -40,6 +44,7 @@ public class UsuarioService {
         if (request.senha() == null || request.senha().isBlank()) {
             throw new IllegalArgumentException("Senha é obrigatória.");
         }
+        PasswordPolicy.requireStrong(request.senha());
 
         if (repository.existsByEmail(request.email())) {
             throw new BusinessException("Esse email já possui cadastro.");
@@ -112,6 +117,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
+        validarAutoInativacao(id, request.status());
         if (request.status() != Status.ATIVO || request.tipoUsuario() != TipoUsuario.ADMINISTRADOR) {
             validarQueRestaAdministradorAtivo(id);
         }
@@ -122,6 +128,10 @@ public class UsuarioService {
 
         if (repository.existsByEmailAndIdNot(request.email(), id)) {
             throw new BusinessException("Esse email já possui cadastro.");
+        }
+
+        if (request.senha() != null && !request.senha().isBlank()) {
+            PasswordPolicy.requireStrong(request.senha());
         }
 
         validarCursoObrigatorioUsuario.executar(request);
@@ -160,6 +170,7 @@ public class UsuarioService {
 
     @Transactional
     public void inativar(Long id) {
+        validarAutoInativacao(id, Status.INATIVO);
         validarQueRestaAdministradorAtivo(id);
 
         Usuario entity = repository.findById(id)
@@ -171,6 +182,20 @@ public class UsuarioService {
         entity.setUpdatedAt(LocalDateTime.now());
 
         repository.save(entity);
+    }
+
+    private void validarAutoInativacao(Long usuarioAlvoId, Status novoStatus) {
+        if (novoStatus != Status.INATIVO) {
+            return;
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null
+                && authentication.getPrincipal() instanceof Usuario usuarioAutenticado
+                && usuarioAutenticado.getTipoUsuario() == TipoUsuario.ADMINISTRADOR
+                && Objects.equals(usuarioAlvoId, usuarioAutenticado.getId())) {
+            throw new BusinessException("Administradores não podem se auto inativar.");
+        }
     }
 
     private void validarQueRestaAdministradorAtivo(Long id) {

@@ -46,7 +46,7 @@ public class QuadroHorarioController {
                         @RequestParam(name = "id_periodo_atividade_quadro", required = false) Long idPeriodoAtividadeQuadro,
 
                         @RequestParam(name = "status", required = false) Status status,
-                        @RequestParam(name = "versao", required = false) Integer versao,
+                        @RequestParam(name = "versao", required = false) String versao,
                         @RequestParam(name = "data_criacao", required = false) LocalDate dataCriacao,
                         @RequestParam(name = "busca", required = false) String busca,
 

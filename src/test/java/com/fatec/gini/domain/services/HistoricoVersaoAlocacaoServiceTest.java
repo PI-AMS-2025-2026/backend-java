@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
@@ -40,10 +42,12 @@ class HistoricoVersaoAlocacaoServiceTest {
         HistoricoVersaoAlocacao historico = new HistoricoVersaoAlocacao(
                 LocalDate.of(2026, 10, 29), "sala", "1", "2");
         when(validarAutorizacaoCurso.cursoParaFiltro(null)).thenReturn(7L);
-        when(repository.buscarPorFiltros(42L, 9L, 7L, org.springframework.data.domain.PageRequest.of(1, 5)))
-                .thenReturn(new PageImpl<>(List.of(historico), org.springframework.data.domain.PageRequest.of(1, 5), 6));
+        var pageable = PageRequest.of(1, 5,
+                Sort.by(Sort.Direction.ASC, HistoricoVersaoAlocacao::getId));
+        when(repository.buscarPorFiltros(42L, 9L, null, 7L, pageable))
+                .thenReturn(new PageImpl<>(List.of(historico), pageable, 6));
 
-        var resultado = service.listar(42L, 9L, 1, 5);
+        var resultado = service.listar(42L, 9L, null, null, null, 1, 5);
 
         assertThat(resultado.content()).hasSize(1);
         assertThat(resultado.page()).isEqualTo(1);
@@ -55,7 +59,7 @@ class HistoricoVersaoAlocacaoServiceTest {
         assertThat(response.valorAntigo()).isEqualTo("1");
         assertThat(response.valorNovo()).isEqualTo("2");
         verify(validarAutorizacaoCurso).cursoParaFiltro(null);
-        verify(repository).buscarPorFiltros(42L, 9L, 7L, org.springframework.data.domain.PageRequest.of(1, 5));
+        verify(repository).buscarPorFiltros(42L, 9L, null, 7L, pageable);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.fatec.gini.domain.services;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +23,21 @@ public class HistoricoVersaoAlocacaoService {
 	private final ValidarAutorizacaoCursoUseCase validarAutorizacaoCurso;
 
 	@Transactional(readOnly = true)
-	public PageResponse<HistoricoVersaoAlocacaoResponse> listar(Long idAlocacao, Long idUsuario, int pageNum,
-			int size) {
+	public PageResponse<HistoricoVersaoAlocacaoResponse> listar(Long idAlocacao, Long idUsuario, String busca,
+			String sort, String direction, int pageNum, int size) {
 
-		var pageRequest = PageRequest.of(pageNum, size);
-		var page = repository.buscarPorFiltros(idAlocacao, idUsuario,
+		String propriedade = switch (sort == null ? "" : sort) {
+			case "usuario" -> "usuario.nome";
+			case "dataAlteracao" -> "dataAlteracao";
+			case "campoAlterado" -> "campoAlterado";
+			case "valorAntigo" -> "valorAntigo";
+			case "valorNovo" -> "valorNovo";
+			case "alocacao" -> "alocacao.id";
+			default -> "id";
+		};
+		var sortOrder = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+		var pageRequest = PageRequest.of(pageNum, size, Sort.by(sortOrder, propriedade));
+		var page = repository.buscarPorFiltros(idAlocacao, idUsuario, busca,
 				validarAutorizacaoCurso.cursoParaFiltro(null), pageRequest);
 
 		return new PageResponse<>(

@@ -23,7 +23,7 @@ public interface QuadroHorarioRepository
                         AND (:idPeriodoAtividadeQuadro IS NULL
                              OR g.periodoAtividadeQuadro.id = :idPeriodoAtividadeQuadro)
                         AND (:status IS NULL OR g.status = :status)
-                        AND (:versao IS NULL OR g.versao = :versao)
+                        AND (:versao IS NULL OR CAST(g.versao AS string) = :versao)
                         AND (CAST(:dataInicio AS timestamp) IS NULL OR (g.dataCriacao >= :dataInicio AND g.dataCriacao < :dataFim))
                         AND (COALESCE(:busca, '') = '' OR LOWER(g.curso.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
                              OR CAST(g.versao AS string) LIKE CONCAT('%', :busca, '%'))
@@ -33,7 +33,7 @@ public interface QuadroHorarioRepository
                         @Param("idTurma") Long idTurma,
                         @Param("idPeriodoAtividadeQuadro") Long idPeriodoAtividadeQuadro,
                         @Param("status") Status status,
-                        @Param("versao") Integer versao,
+                        @Param("versao") String versao,
                         @Param("dataInicio") LocalDateTime dataInicio,
                         @Param("dataFim") LocalDateTime dataFim,
                         @Param("busca") String busca,

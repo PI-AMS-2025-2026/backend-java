@@ -15,6 +15,7 @@ public interface SalaRepository extends JpaRepository<Sala, Long> {
             WHERE (:idTipoSala IS NULL OR s.tipoSala.id = :idTipoSala)
               AND (:capacidade IS NULL OR s.capacidade >= :capacidade)
               AND (COALESCE(:codigo, '') = '' OR LOWER(s.codigo) LIKE LOWER(CONCAT('%', :codigo, '%')))
+              AND (COALESCE(:tipoSalaNome, '') = '' OR LOWER(s.tipoSala.nome) LIKE LOWER(CONCAT('%', :tipoSalaNome, '%')))
               AND (COALESCE(:busca, '') = '' OR LOWER(s.codigo) LIKE LOWER(CONCAT('%', :busca, '%'))
                    OR LOWER(s.tipoSala.nome) LIKE LOWER(CONCAT('%', :busca, '%')))
             """)
@@ -22,6 +23,7 @@ public interface SalaRepository extends JpaRepository<Sala, Long> {
             @Param("idTipoSala") Long idTipoSala,
             @Param("capacidade") Integer capacidade,
             @Param("codigo") String codigo,
+            @Param("tipoSalaNome") String tipoSalaNome,
             @Param("busca") String busca,
             Pageable pageable);
 

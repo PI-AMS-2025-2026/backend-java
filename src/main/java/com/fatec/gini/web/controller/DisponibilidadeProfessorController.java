@@ -48,10 +48,13 @@ public class DisponibilidadeProfessorController {
             @RequestParam(name = "id_professor", required = false) Long professor,
             @RequestParam(required = false, name = "dia_semana") DiaSemana diaSemana,
             @RequestParam(required = false, name = "id_bloco_horario") Long blocoHorario,
+            @RequestParam(name = "professor_nome", required = false) String professorNome,
+            @RequestParam(name = "horario", required = false) String horario,
+            @RequestParam(name = "busca", required = false) String busca,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(service.listar(professor, diaSemana, blocoHorario, page,size));
+        return ResponseEntity.ok(service.listar(professor, diaSemana, blocoHorario, professorNome, horario, busca, page, size));
     }
 
     @GetMapping("/{id}")

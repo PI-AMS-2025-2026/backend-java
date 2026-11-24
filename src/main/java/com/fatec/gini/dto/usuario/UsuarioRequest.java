@@ -3,11 +3,11 @@ package com.fatec.gini.dto.usuario;
 import com.fatec.gini.domain.models.Status;
 import com.fatec.gini.domain.models.TipoUsuario;
 import com.fatec.gini.dto.id.LongDTO;
+import com.fatec.gini.web.validation.SenhaForte;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 public record UsuarioRequest(
 
@@ -17,7 +17,7 @@ public record UsuarioRequest(
                 @Email(message = "E-mail deve ter um formato válido.")
                 @NotBlank(message = "E-mail é obrigatório.") String email,
 
-                @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres.") String senha,
+                @SenhaForte String senha,
 
                 @NotNull(message = "Status é obrigatório.") 
                 Status status,
