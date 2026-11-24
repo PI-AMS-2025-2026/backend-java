@@ -68,7 +68,7 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
     @Test
     void deveRegistrarSomenteCamposAlteradosComValoresNaOrdemAntigoENovo() {
         Alocacao antiga = alocacao(10L, 20L, 30L, 40L, DiaSemana.SEGUNDA, 50L, 60L);
-        Alocacao nova = alocacao(11L, 21L, 31L, 41L, DiaSemana.TERÇA, 51L, 61L);
+        Alocacao nova = alocacao(11L, 21L, 31L, 41L, DiaSemana.TERÇA, 51L, 61L, 5L);
         Usuario usuario = mock(Usuario.class);
 
         useCase.registrarAtualizacao(nova, antiga, usuario);
@@ -81,6 +81,7 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         assertThat(porCampo).hasSize(7);
         porCampo.values().forEach(historico -> {
             assertThat(historico.getAlocacao()).isSameAs(nova);
+            assertThat(historico.getCursoId()).isEqualTo(5L);
             assertThat(historico.getUsuario()).isSameAs(usuario);
         });
         assertThat(porCampo.get("turma").getValorAntigo()).isEqualTo("10");
@@ -103,6 +104,11 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
 
     private Alocacao alocacao(Long turmaId, Long disciplinaId, Long salaId, Long professorId,
             DiaSemana diaSemana, Long blocoId, Long quadroId) {
+        return alocacao(turmaId, disciplinaId, salaId, professorId, diaSemana, blocoId, quadroId, null);
+    }
+
+    private Alocacao alocacao(Long turmaId, Long disciplinaId, Long salaId, Long professorId,
+            DiaSemana diaSemana, Long blocoId, Long quadroId, Long cursoId) {
         Alocacao alocacao = mock(Alocacao.class);
         Turma turma = mock(Turma.class);
         com.fatec.gini.domain.entities.Disciplina disciplina = mock(com.fatec.gini.domain.entities.Disciplina.class);
@@ -110,7 +116,6 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         Professor professor = mock(Professor.class);
         BlocoHorario bloco = mock(BlocoHorario.class);
         QuadroHorario quadro = mock(QuadroHorario.class);
-        Curso curso = mock(Curso.class);
 
         when(turma.getId()).thenReturn(turmaId);
         when(disciplina.getId()).thenReturn(disciplinaId);
@@ -118,8 +123,11 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         when(professor.getId()).thenReturn(professorId);
         when(bloco.getId()).thenReturn(blocoId);
         when(quadro.getId()).thenReturn(quadroId);
-        when(curso.getId()).thenReturn(5L);
-        when(quadro.getCurso()).thenReturn(curso);
+        if (cursoId != null) {
+            Curso curso = mock(Curso.class);
+            when(curso.getId()).thenReturn(cursoId);
+            when(quadro.getCurso()).thenReturn(curso);
+        }
         when(alocacao.getTurma()).thenReturn(turma);
         when(alocacao.getDisciplina()).thenReturn(disciplina);
         when(alocacao.getSala()).thenReturn(sala);
