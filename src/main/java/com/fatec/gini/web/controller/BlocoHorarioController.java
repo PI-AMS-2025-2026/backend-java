@@ -81,8 +81,9 @@ public class BlocoHorarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id,
+            @RequestParam(name = "confirmar_vinculos", defaultValue = "false") boolean confirmarVinculos) {
+        service.deletar(id, confirmarVinculos);
         return ResponseEntity.noContent().build();
     }
 }

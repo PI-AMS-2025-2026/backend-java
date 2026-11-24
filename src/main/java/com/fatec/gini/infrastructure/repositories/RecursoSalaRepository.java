@@ -11,6 +11,14 @@ import com.fatec.gini.domain.entities.RecursoSala;
 
 public interface RecursoSalaRepository extends JpaRepository<RecursoSala, Long> {
 
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("DELETE FROM RecursoSala rs WHERE rs.recurso.id = :recursoId")
+    int deleteAllByRecursoId(@org.springframework.data.repository.query.Param("recursoId") Long recursoId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("DELETE FROM RecursoSala rs WHERE rs.sala.id = :salaId")
+    int deleteAllBySalaId(@org.springframework.data.repository.query.Param("salaId") Long salaId);
+
     boolean existsBySalaIdAndRecursoId(Long salaId, Long recursoId);
 
     boolean existsBySalaIdAndRecursoIdAndIdNot(Long salaId, Long recursoId, Long id);

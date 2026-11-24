@@ -39,6 +39,7 @@ import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
@@ -56,6 +57,9 @@ class AlocacaoServiceTest {
 
     @Mock
     private AlocacaoRepository repository;
+
+    @Mock
+    private HistoricoVersaoAlocacaoRepository historicoRepository;
 
     @Mock
     private CriarAlocacaoUseCase criarAlocacaoUseCase;
@@ -306,6 +310,18 @@ class AlocacaoServiceTest {
         when(professorRepository.findById(professor.getId())).thenReturn(Optional.of(professor));
         when(blocoHorarioRepository.findById(bloco.getId())).thenReturn(Optional.of(bloco));
         when(quadroHorarioRepository.findById(quadro.getId())).thenReturn(Optional.of(quadro));
+    }
+
+    @Test
+    void desvinculaHistoricoAntesDeExcluirAlocacao() {
+        Alocacao existente = alocacao(1, 2, 3, 4, 5, 6, DiaSemana.SEGUNDA);
+        existente.setId(12L);
+        when(repository.findById(12L)).thenReturn(Optional.of(existente));
+
+        service.deletar(12L);
+
+        verify(historicoRepository).desvincularAlocacoes(List.of(12L));
+        verify(repository).delete(existente);
     }
 
     private Alocacao alocacao(

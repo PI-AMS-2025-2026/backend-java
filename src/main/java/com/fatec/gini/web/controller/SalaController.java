@@ -70,8 +70,9 @@ public class SalaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id,
+            @RequestParam(name = "confirmar_alocacoes", defaultValue = "false") boolean confirmarAlocacoes) {
+        service.deletar(id, confirmarAlocacoes);
         return ResponseEntity.noContent().build();
     }
     

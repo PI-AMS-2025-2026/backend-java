@@ -8,14 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.TipoSala;
-import com.fatec.gini.domain.services.usecase.read.ValidarSalaSemVinculosUseCase;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sala.SalaRequest;
 import com.fatec.gini.dto.sala.SalaResponse;
 import com.fatec.gini.infrastructure.mappers.SalaMapper;
 import com.fatec.gini.infrastructure.repositories.SalaRepository;
 import com.fatec.gini.infrastructure.repositories.TipoSalaRepository;
+import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;
 import com.fatec.gini.web.exception.BusinessException;
+import com.fatec.gini.web.exception.SalaComAlocacoesException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +31,11 @@ public class SalaService {
 
     private final TipoSalaRepository tipoSalaRepository;
 
-    private final ValidarSalaSemVinculosUseCase validarSalaSemVinculos;
+    private final AlocacaoRepository alocacaoRepository;
+
+    private final HistoricoVersaoAlocacaoRepository historicoRepository;
+
+    private final RecursoSalaRepository recursoSalaRepository;
 
     @Transactional
     public SalaResponse criar(SalaRequest request) {
@@ -134,14 +141,24 @@ public class SalaService {
 
     @Transactional
     public void deletar(long id) {
+        deletar(id, false);
+    }
 
+    @Transactional
+    public void deletar(long id, boolean confirmarAlocacoes) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException(
                     "Sala não encontrada com ID: " + id);
         }
-
-        validarSalaSemVinculos.validar(id);
-
+        var alocacoes = alocacaoRepository.findBySalaId(id);
+        if (!alocacoes.isEmpty() && !confirmarAlocacoes) {
+            throw new SalaComAlocacoesException(alocacoes.size());
+        }
+        if (!alocacoes.isEmpty()) {
+            historicoRepository.desvincularAlocacoes(alocacoes.stream().map(a -> a.getId()).toList());
+            alocacaoRepository.deleteAll(alocacoes);
+        }
+        recursoSalaRepository.deleteAllBySalaId(id);
         repository.deleteById(id);
     }
 }

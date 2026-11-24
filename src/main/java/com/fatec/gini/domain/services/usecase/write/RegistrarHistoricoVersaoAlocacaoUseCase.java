@@ -112,6 +112,8 @@ public class RegistrarHistoricoVersaoAlocacaoUseCase {
         historicoVersaoAlocacao.setValorAntigo(valorAntigo != null ? valorAntigo.toString() : null);
         historicoVersaoAlocacao.setValorNovo(valorNovo != null ? valorNovo.toString() : null);
         historicoVersaoAlocacao.setAlocacao(alocacao);
+        historicoVersaoAlocacao.setAlocacaoIdOrigem(alocacao.getId());
+        historicoVersaoAlocacao.setCursoId(alocacao.getQuadroHorario().getCurso().getId());
         historicoVersaoAlocacao.setUsuario(usuario);
 
         historicoVersaoAlocacaoRepository.save(historicoVersaoAlocacao);

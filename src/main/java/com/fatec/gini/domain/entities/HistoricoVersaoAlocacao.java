@@ -41,8 +41,14 @@ public class HistoricoVersaoAlocacao {
     private String valorNovo;
 
     @ManyToOne
-    @JoinColumn(name = "id_alocacao", nullable = false)
+    @JoinColumn(name = "id_alocacao")
     private Alocacao alocacao;
+
+    @Column(name = "id_alocacao_origem", nullable = false, updatable = false)
+    private Long alocacaoIdOrigem;
+
+    @Column(name = "id_curso", nullable = false, updatable = false)
+    private Long cursoId;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)

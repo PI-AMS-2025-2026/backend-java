@@ -19,6 +19,7 @@ import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
+import com.fatec.gini.dto.alocacao.AlocacoesGradeRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
@@ -27,6 +28,7 @@ import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
 import com.fatec.gini.infrastructure.mappers.AlocacaoMapper;
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
 import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
 import com.fatec.gini.infrastructure.repositories.DisciplinaRepository;
@@ -46,6 +48,8 @@ import lombok.RequiredArgsConstructor;
 public class AlocacaoService {
 
     private final AlocacaoRepository repository;
+
+    private final HistoricoVersaoAlocacaoRepository historicoRepository;
 
     private final CriarAlocacaoUseCase criarAlocacaoUseCase;
 
@@ -108,6 +112,22 @@ public class AlocacaoService {
                         id,
                         entity,
                         validarAutorizacaoCurso.usuarioAutenticado().getId()));
+    }
+
+    @Transactional
+    public void sincronizarGrade(AlocacoesGradeRequest request) {
+        for (Long id : request.removidas()) {
+            deletar(id);
+        }
+        for (var atualizacao : request.atualizadas()) {
+            if (atualizacao.id() == null || atualizacao.alocacao() == null) {
+                throw new ParameterException("A alocação e seu ID são obrigatórios para atualização.");
+            }
+            atualizar(atualizacao.id(), atualizacao.alocacao());
+        }
+        if (!request.novas().isEmpty()) {
+            criarLote(request.novas());
+        }
     }
 
     /*
@@ -234,7 +254,8 @@ public class AlocacaoService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Alocação não encontrada com ID: " + id));
         validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
-        repository.deleteById(id);
+        historicoRepository.desvincularAlocacoes(List.of(id));
+        repository.delete(entity);
     }
 
     @Transactional(readOnly = true)

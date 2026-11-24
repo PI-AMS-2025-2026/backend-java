@@ -57,6 +57,36 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
+    @ExceptionHandler(SalaComAlocacoesException.class)
+    public ResponseEntity<StandardError> salaComAlocacoesException(
+            SalaComAlocacoesException exception, HttpServletRequest request) {
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(HttpStatus.CONFLICT.value());
+        error.setError("Sala vinculada a alocações");
+        error.setMessage(exception.getMessage());
+        error.setPath(request.getRequestURI());
+        error.setCode("SALA_COM_ALOCACOES");
+        error.setLinkedCount(exception.getQuantidade());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(BlocoHorarioComVinculosException.class)
+    public ResponseEntity<StandardError> blocoHorarioComVinculosException(
+            BlocoHorarioComVinculosException exception, HttpServletRequest request) {
+        StandardError error = new StandardError();
+        error.setTimeStamp(Instant.now());
+        error.setStatus(HttpStatus.CONFLICT.value());
+        error.setError("Bloco de horário possui vínculos");
+        error.setMessage(exception.getMessage());
+        error.setPath(request.getRequestURI());
+        error.setCode("BLOCO_HORARIO_COM_VINCULOS");
+        error.setAllocationCount(exception.getAlocacoes());
+        error.setAvailabilityCount(exception.getDisponibilidades());
+        error.setLinkedCount(exception.getAlocacoes() + exception.getDisponibilidades());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<StandardError> authenticationException(
             AuthenticationException exception,
@@ -117,15 +147,14 @@ public class ResourceExceptionHandler {
             return ResponseEntity.status(status).body(error);
         }
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.CONFLICT;
 
         StandardError error = new StandardError();
         error.setTimeStamp(Instant.now());
         error.setStatus(status.value());
         error.setError("Operação não permitida");
         error.setMessage(
-                "Não foi possível concluir a operação porque o registro possui vínculos com outros dados. "
-                        + "Remova esses vínculos antes de tentar novamente.");
+                "A operação não pode ser concluída porque existem registros relacionados. Revise os vínculos e tente novamente.");
         error.setPath(request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);

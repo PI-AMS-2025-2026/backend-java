@@ -102,6 +102,10 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
     boolean existsBySalaId(Long salaId);
 
+    List<Alocacao> findBySalaId(Long salaId);
+
+    List<Alocacao> findByBlocoHorarioId(Long blocoHorarioId);
+
     boolean existsByTurmaId(Long turmaId);
 
     boolean existsByProfessorId(Long professorId);

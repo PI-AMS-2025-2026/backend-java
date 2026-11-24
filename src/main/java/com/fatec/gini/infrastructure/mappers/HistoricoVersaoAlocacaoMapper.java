@@ -25,6 +25,7 @@ public class HistoricoVersaoAlocacaoMapper {
                 entity.getValorAntigo(),
                 entity.getValorNovo(),
                 entity.getAlocacao() != null ? AlocacaoMapper.toResponse(entity.getAlocacao()) : null,
+                entity.getAlocacaoIdOrigem(),
                 entity.getUsuario() != null ? UsuarioMapper.toResponse(entity.getUsuario()) : null);
     }
 }

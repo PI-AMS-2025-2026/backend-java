@@ -12,6 +12,7 @@ public record HistoricoVersaoAlocacaoResponse(
         String valorAntigo,
         String valorNovo,
         AlocacaoResponse alocacao,
+        Long alocacaoId,
         UsuarioResponse usuario) {
 
 }
