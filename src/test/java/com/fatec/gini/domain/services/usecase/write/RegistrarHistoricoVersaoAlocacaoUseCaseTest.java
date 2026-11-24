@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
+import com.fatec.gini.domain.entities.Curso;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.HistoricoVersaoAlocacao;
 import com.fatec.gini.domain.entities.Professor;
@@ -42,7 +43,12 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
     void deveRegistrarCriacaoComValorNovoEUsuarioResponsavel() {
         Alocacao alocacao = mock(Alocacao.class);
         Usuario usuario = mock(Usuario.class);
+        QuadroHorario quadro = mock(QuadroHorario.class);
+        Curso curso = mock(Curso.class);
         when(alocacao.getId()).thenReturn(42L);
+        when(curso.getId()).thenReturn(5L);
+        when(quadro.getCurso()).thenReturn(curso);
+        when(alocacao.getQuadroHorario()).thenReturn(quadro);
 
         useCase.registrarCriacao(alocacao, usuario);
 
@@ -55,6 +61,7 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         assertThat(historico.getValorNovo()).isEqualTo("42");
         assertThat(historico.getDataAlteracao()).isNotNull();
         assertThat(historico.getAlocacao()).isSameAs(alocacao);
+        assertThat(historico.getCursoId()).isEqualTo(5L);
         assertThat(historico.getUsuario()).isSameAs(usuario);
     }
 
@@ -103,6 +110,7 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         Professor professor = mock(Professor.class);
         BlocoHorario bloco = mock(BlocoHorario.class);
         QuadroHorario quadro = mock(QuadroHorario.class);
+        Curso curso = mock(Curso.class);
 
         when(turma.getId()).thenReturn(turmaId);
         when(disciplina.getId()).thenReturn(disciplinaId);
@@ -110,6 +118,8 @@ class RegistrarHistoricoVersaoAlocacaoUseCaseTest {
         when(professor.getId()).thenReturn(professorId);
         when(bloco.getId()).thenReturn(blocoId);
         when(quadro.getId()).thenReturn(quadroId);
+        when(curso.getId()).thenReturn(5L);
+        when(quadro.getCurso()).thenReturn(curso);
         when(alocacao.getTurma()).thenReturn(turma);
         when(alocacao.getDisciplina()).thenReturn(disciplina);
         when(alocacao.getSala()).thenReturn(sala);
