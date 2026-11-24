@@ -49,7 +49,7 @@ O sistema tem como objetivo auxiliar coordenadores e administradores acadêmicos
 * Disponibilidade de Professores
 * Horários
 * Dias da Semana
-* Períodos Letivos
+* Períodos Atividade Quadro
 
 ### Motor da Grade Horária
 

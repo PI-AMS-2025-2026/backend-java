@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatec.gini.domain.entities.Alocacao;
-import com.fatec.gini.domain.entities.Sala;
+
 import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
 import com.fatec.gini.infrastructure.repositories.RecursoSalaRepository;

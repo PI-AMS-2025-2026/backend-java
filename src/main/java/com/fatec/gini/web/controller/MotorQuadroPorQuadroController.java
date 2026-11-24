@@ -34,7 +34,7 @@ public class MotorQuadroPorQuadroController {
 
     @GetMapping(value = "/exportar/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     @Operation(summary = "Exportar PDF das turmas do curso e ano do quadro",
-            description = "Usa o ID do quadro para identificar o curso e o ano da turma. Reúne as turmas ativas e seus quadros ativos, separados por período letivo.")
+            description = "Usa o ID do quadro para identificar o curso e o ano da turma. Reúne as turmas ativas e seus quadros ativos, separados por Período Atividade Quadro.")
     @ApiResponse(responseCode = "200", description = "PDF gerado com sucesso", content = @Content(
             mediaType = MediaType.APPLICATION_PDF_VALUE, schema = @Schema(type = "string", format = "binary")))
     public ResponseEntity<byte[]> exportarPdf(@PathVariable Long id) {
