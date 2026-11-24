@@ -100,9 +100,7 @@ public class RecursoService {
             throw new EntityNotFoundException("Recurso não encontrado com ID: " + id);
         }
         
-        if (recursoSalaRepository.existsByRecursoId(id)) {
-            throw new IllegalArgumentException("Não é possível excluir recurso vinculado a salas.");
-        }
+        recursoSalaRepository.deleteAllByRecursoId(id);
         repository.deleteById(id);
     }
 }

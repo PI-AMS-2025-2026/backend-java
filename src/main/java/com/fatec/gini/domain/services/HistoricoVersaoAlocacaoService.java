@@ -43,7 +43,7 @@ public class HistoricoVersaoAlocacaoService {
 		HistoricoVersaoAlocacao entity = repository.findById(id)
 				.orElseThrow(
 						() -> new EntityNotFoundException("Histórico versão de alocação não encontrado com ID: " + id));
-		validarAutorizacaoCurso.validarCurso(entity.getAlocacao().getQuadroHorario().getCurso());
+		validarAutorizacaoCurso.validarCurso(entity.getCursoId());
 
 		return HistoricoVersaoAlocacaoMapper.toResponse(entity);
 	}

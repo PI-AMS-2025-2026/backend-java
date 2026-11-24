@@ -21,6 +21,7 @@ import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.services.AlocacaoService;
 import com.fatec.gini.dto.alocacao.AlocacaoRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
+import com.fatec.gini.dto.alocacao.AlocacoesGradeRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
@@ -49,6 +50,13 @@ public class AlocacaoController {
 
         private final AlocacaoService service;
         private final Validator validator;
+
+        @PutMapping("/sincronizar-grade")
+        @Operation(summary = "Sincroniza as alterações de uma grade em uma única transação")
+        public ResponseEntity<Void> sincronizarGrade(@RequestBody @Valid AlocacoesGradeRequest request) {
+                service.sincronizarGrade(request);
+                return ResponseEntity.noContent().build();
+        }
 
         /**
          * Cria uma nova alocação.

@@ -3,6 +3,7 @@ package com.fatec.gini.web.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -86,6 +87,18 @@ class AlocacaoControllerTest {
                 .andExpect(jsonPath("$.field_errors[0].field").value("sala"))
                 .andExpect(jsonPath("$.alocacao_indice").doesNotExist());
         verifyNoInteractions(service);
+    }
+
+    @Test
+    void sincronizaGradeEmUmaUnicaRequisicao() throws Exception {
+        mockMvc.perform(put("/alocacoes/sincronizar-grade")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"removidas": [], "atualizadas": [], "novas": []}
+                        """))
+                .andExpect(status().isNoContent());
+
+        verify(service).sincronizarGrade(any());
     }
 
     @Test

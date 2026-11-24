@@ -17,6 +17,10 @@ import com.fatec.gini.dto.blocoHorario.BlocoHorarioResponse;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.infrastructure.mappers.BlocoHorarioMapper;
 import com.fatec.gini.infrastructure.repositories.BlocoHorarioRepository;
+import com.fatec.gini.infrastructure.repositories.AlocacaoRepository;
+import com.fatec.gini.infrastructure.repositories.DisponibilidadeProfessorRepository;
+import com.fatec.gini.infrastructure.repositories.HistoricoVersaoAlocacaoRepository;
+import com.fatec.gini.web.exception.BlocoHorarioComVinculosException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,9 @@ public class BlocoHorarioService {
 
     private final BlocoHorarioRepository repository;
     private final ValidarBlocoHorarioUseCase validarBlocoHorarioUseCase;
+    private final AlocacaoRepository alocacaoRepository;
+    private final DisponibilidadeProfessorRepository disponibilidadeRepository;
+    private final HistoricoVersaoAlocacaoRepository historicoRepository;
 
     @Transactional
     public BlocoHorarioResponse criar(BlocoHorarioRequest request) {
@@ -95,11 +102,20 @@ public class BlocoHorarioService {
     }
 
     @Transactional
-    public void deletar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Bloco de horário não encontrado com ID: " + id);
+    public void deletar(Long id, boolean confirmarVinculos) {
+        BlocoHorario bloco = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Bloco de horário não encontrado com ID: " + id));
+        var alocacoes = alocacaoRepository.findByBlocoHorarioId(id);
+        var disponibilidades = disponibilidadeRepository.findByBlocoHorarioId(id);
+        if ((!alocacoes.isEmpty() || !disponibilidades.isEmpty()) && !confirmarVinculos) {
+            throw new BlocoHorarioComVinculosException(alocacoes.size(), disponibilidades.size());
         }
-        repository.deleteById(id);
+        if (!alocacoes.isEmpty()) {
+            historicoRepository.desvincularAlocacoes(alocacoes.stream().map(a -> a.getId()).toList());
+            alocacaoRepository.deleteAll(alocacoes);
+        }
+        disponibilidadeRepository.deleteAll(disponibilidades);
+        repository.delete(bloco);
     }
 
     private int calcularDuracao(LocalTime horaInicio, LocalTime horaFim) {

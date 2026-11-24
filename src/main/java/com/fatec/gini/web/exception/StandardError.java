@@ -11,6 +11,10 @@ public class StandardError {
     private String message;
     private String path;
     private Integer alocacaoIndice;
+    private String code;
+    private Long linkedCount;
+    private Long allocationCount;
+    private Long availabilityCount;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Integer getAlocacaoIndice() {
@@ -20,6 +24,22 @@ public class StandardError {
     public void setAlocacaoIndice(Integer alocacaoIndice) {
         this.alocacaoIndice = alocacaoIndice;
     }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public String getCode() { return code; }
+    public void setCode(String code) { this.code = code; }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Long getLinkedCount() { return linkedCount; }
+    public void setLinkedCount(Long linkedCount) { this.linkedCount = linkedCount; }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Long getAllocationCount() { return allocationCount; }
+    public void setAllocationCount(Long allocationCount) { this.allocationCount = allocationCount; }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Long getAvailabilityCount() { return availabilityCount; }
+    public void setAvailabilityCount(Long availabilityCount) { this.availabilityCount = availabilityCount; }
 
     public Instant getTimeStamp() {
         return timeStamp;

@@ -13,6 +13,8 @@ import com.fatec.gini.domain.entities.DisponibilidadeProfessor;
 
 public interface DisponibilidadeProfessorRepository extends JpaRepository<DisponibilidadeProfessor, Long> {
 
+    List<DisponibilidadeProfessor> findByBlocoHorarioId(Long blocoHorarioId);
+
     /**
      * Verifica duplicidade na criação (mesmo professor + dia da semana + bloco de horário).
      */
