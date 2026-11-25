@@ -67,9 +67,8 @@ public class QuadroHorarioService {
                 validarAutorizacaoCurso.validarCurso(origem.getCurso());
 
                 if (origem.getTurma() == null || request.turma() == null
-                                || !origem.getTurma().getId().equals(request.turma().id())
-                                || !origem.getPeriodoAtividadeQuadro().getId().equals(request.periodoAtividadeQuadro().id())) {
-                        throw new BusinessException("A cópia deve pertencer à mesma turma e período do quadro de origem.");
+                                || !origem.getTurma().getId().equals(request.turma().id())) {
+                        throw new BusinessException("A cópia deve pertencer à mesma turma do quadro de origem.");
                 }
 
                 QuadroHorario dadosNovaGrade = QuadroHorarioMapper.toEntity(request);
@@ -81,6 +80,7 @@ public class QuadroHorarioService {
                                                                 "Período Atividade Quadro não encontrado com ID: "
                                                                                 + request.periodoAtividadeQuadro()
                                                                                                 .id())));
+                validarPeriodoAtividadeQuadroAtivoUseCase.executar(dadosNovaGrade);
 
                 QuadroHorario copia = copiarQuadroHorarioUseCase.executar(
                                 id,

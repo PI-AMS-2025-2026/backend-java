@@ -12,9 +12,15 @@ import com.fatec.gini.domain.entities.Alocacao;
 import com.fatec.gini.domain.entities.BlocoHorario;
 import com.fatec.gini.domain.entities.DiaSemana;
 import com.fatec.gini.domain.entities.Professor;
+import com.fatec.gini.domain.entities.Turma;
+import com.fatec.gini.domain.entities.Disciplina;
+import com.fatec.gini.domain.entities.Sala;
+import com.fatec.gini.domain.entities.QuadroHorario;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
@@ -23,6 +29,7 @@ import com.fatec.gini.dto.alocacao.AlocacoesGradeRequest;
 import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
+import com.fatec.gini.dto.alocacao.ValidarAlocacaoRequest;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
@@ -62,6 +69,10 @@ public class AlocacaoService {
     private final ValidarSugestaoAutomatica validarSugestaoAutomatica;
 
     private final ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
+
+    private final ValidarAlocacaoUseCase validarAlocacaoUseCase;
+
+    private final ValidarReferenciasObrigatoriasAlocacaoUseCase validarReferenciasAlocacao;
 
     private final BlocoHorarioRepository blocoHorarioRepository;
 
@@ -288,6 +299,46 @@ public class AlocacaoService {
                     alocacaoSimulada);
             return new ValidarCargaHorariaResponse(true,
                     "Carga horária válida para o professor no dia informado.");
+        } catch (BusinessException ex) {
+            return new ValidarCargaHorariaResponse(false, ex.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ValidarCargaHorariaResponse validarAlocacaoSemPersistir(ValidarAlocacaoRequest request) {
+        Alocacao entity = new Alocacao();
+        entity.setTurma(new Turma());
+        entity.getTurma().setId(request.turma().id());
+        entity.setDisciplina(new Disciplina());
+        entity.getDisciplina().setId(request.disciplina().id());
+        entity.setSala(new Sala());
+        entity.getSala().setId(request.sala().id());
+        entity.setProfessor(new Professor());
+        entity.getProfessor().setId(request.professor().id());
+        entity.setBlocoHorario(new BlocoHorario());
+        entity.getBlocoHorario().setId(request.horario().id());
+        entity.setQuadroHorario(new QuadroHorario());
+        entity.getQuadroHorario().setId(request.quadroHorario().id());
+        entity.setDiaSemana(request.diaSemana());
+
+        if (request.alocacaoId() != null) {
+            Alocacao existente = repository.findById(request.alocacaoId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Alocação não encontrada com ID: " + request.alocacaoId()));
+            validarAutorizacaoCurso.validarCurso(existente.getQuadroHorario().getCurso());
+            if (!Objects.equals(existente.getTurma().getId(), request.turma().id())
+                    || !Objects.equals(existente.getQuadroHorario().getId(), request.quadroHorario().id())) {
+                throw new ParameterException("A alocação informada não pertence à turma e ao quadro horário enviados.");
+            }
+            entity.setId(existente.getId());
+        }
+
+        entity = validarReferenciasAlocacao.validar(entity);
+        validarAutorizacaoCurso.validarCurso(entity.getQuadroHorario().getCurso());
+
+        try {
+            validarAlocacaoUseCase.executar(entity);
+            return new ValidarCargaHorariaResponse(true, "A alocação é válida.");
         } catch (BusinessException ex) {
             return new ValidarCargaHorariaResponse(false, ex.getMessage());
         }

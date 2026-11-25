@@ -2,6 +2,8 @@ package com.fatec.gini.web.exception;
 
 import java.time.Instant;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResourceExceptionHandler.class);
 
     @ExceptionHandler(AlocacaoLoteException.class)
     public ResponseEntity<? extends StandardError> alocacaoLoteException(
@@ -136,6 +140,8 @@ public class ResourceExceptionHandler {
             HttpServletRequest request) {
 
         String causa = exception.getMostSpecificCause().getMessage();
+        logger.error("Violação de integridade no endpoint {} {}. Causa: {}",
+                request.getMethod(), request.getRequestURI(), causa, exception);
         if (causa != null && causa.contains("uk_periodo_atividade_quadro_ano_periodo_tipo")) {
             HttpStatus status = HttpStatus.CONFLICT;
             StandardError error = new StandardError();
@@ -147,17 +153,38 @@ public class ResourceExceptionHandler {
             return ResponseEntity.status(status).body(error);
         }
 
-        HttpStatus status = HttpStatus.CONFLICT;
+        if (causa != null && causa.contains("periodo_atividade_quadro_pkey")) {
+            StandardError error = new StandardError();
+            error.setTimeStamp(Instant.now());
+            error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            error.setError("Erro interno");
+            error.setMessage(
+                    "Não foi possível gerar um identificador para o cadastro. Tente novamente; se o problema persistir, contate o suporte.");
+            error.setPath(request.getRequestURI());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+
+        if (causa != null && causa.toLowerCase().contains("foreign key constraint")) {
+            HttpStatus status = HttpStatus.CONFLICT;
+            StandardError error = new StandardError();
+            error.setTimeStamp(Instant.now());
+            error.setStatus(status.value());
+            error.setError("Operação não permitida");
+            error.setMessage(
+                    "A operação não pode ser concluída porque existem registros relacionados. Revise os vínculos e tente novamente.");
+            error.setPath(request.getRequestURI());
+            return ResponseEntity.status(status).body(error);
+        }
 
         StandardError error = new StandardError();
         error.setTimeStamp(Instant.now());
-        error.setStatus(status.value());
-        error.setError("Operação não permitida");
+        error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        error.setError("Erro interno");
         error.setMessage(
-                "A operação não pode ser concluída porque existem registros relacionados. Revise os vínculos e tente novamente.");
+                "Não foi possível concluir a operação por uma inconsistência nos dados. Tente novamente; se o problema persistir, contate o suporte.");
         error.setPath(request.getRequestURI());
 
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     @ExceptionHandler(ParameterException.class)
