@@ -24,6 +24,7 @@ import com.fatec.gini.dto.alocacao.AlocacaoResponse;
 import com.fatec.gini.dto.alocacao.AlocacoesGradeRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
+import com.fatec.gini.dto.alocacao.ValidarAlocacaoRequest;
 import com.fatec.gini.dto.paginacao.PageResponse;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
@@ -103,6 +104,13 @@ public class AlocacaoController {
         public ResponseEntity<ValidarCargaHorariaResponse> validarCargaHorariaSemPersistir(
                         @RequestBody @Valid ValidarCargaHorariaRequest request) {
                 return ResponseEntity.ok(service.validarCargaHorariaSemPersistir(request));
+        }
+
+        @PostMapping("/validar")
+        @Operation(summary = "Validar uma alocação completa sem persistir alterações")
+        public ResponseEntity<ValidarCargaHorariaResponse> validarAlocacaoSemPersistir(
+                        @RequestBody @Valid ValidarAlocacaoRequest request) {
+                return ResponseEntity.ok(service.validarAlocacaoSemPersistir(request));
         }
 
         /**

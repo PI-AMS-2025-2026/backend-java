@@ -29,12 +29,15 @@ import com.fatec.gini.domain.entities.Sala;
 import com.fatec.gini.domain.entities.Turma;
 import com.fatec.gini.domain.services.usecase.read.ValidarAutorizacaoCursoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarCargaHorariaMaximaProfessorUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarDuplicidadeAlocacaoLoteUseCase;
+import com.fatec.gini.domain.services.usecase.read.ValidarReferenciasObrigatoriasAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.read.ValidarSugestaoAutomatica;
 import com.fatec.gini.domain.services.usecase.write.AtualizarAlocacaoUseCase;
 import com.fatec.gini.domain.services.usecase.write.CriarAlocacaoUseCase;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaRequest;
 import com.fatec.gini.dto.alocacao.ValidarCargaHorariaResponse;
+import com.fatec.gini.dto.alocacao.ValidarAlocacaoRequest;
 import com.fatec.gini.dto.id.LongDTO;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoRequest;
 import com.fatec.gini.dto.sugestaoAutomatica.SugestaoResponse;
@@ -80,6 +83,12 @@ class AlocacaoServiceTest {
     private ValidarCargaHorariaMaximaProfessorUseCase validarCargaHorariaUseCase;
 
     @Mock
+    private ValidarAlocacaoUseCase validarAlocacaoUseCase;
+
+    @Mock
+    private ValidarReferenciasObrigatoriasAlocacaoUseCase validarReferenciasAlocacao;
+
+    @Mock
     private BlocoHorarioRepository blocoHorarioRepository;
 
     @Mock
@@ -102,6 +111,23 @@ class AlocacaoServiceTest {
 
     @InjectMocks
     private AlocacaoService service;
+
+    @Test
+    void retornaConflitoDaTurmaNaPreValidacaoSemPersistir() {
+        ValidarAlocacaoRequest request = new ValidarAlocacaoRequest(
+                new LongDTO(1L), new LongDTO(2L), new LongDTO(3L), new LongDTO(4L),
+                DiaSemana.SEGUNDA, new LongDTO(5L), new LongDTO(6L), null);
+        Alocacao entity = alocacao(1, 2, 3, 4, 5, 6, DiaSemana.SEGUNDA);
+        when(validarReferenciasAlocacao.validar(any(Alocacao.class))).thenReturn(entity);
+        doThrow(new BusinessException("A turma já possui uma alocação neste dia/horário"))
+                .when(validarAlocacaoUseCase).executar(entity);
+
+        ValidarCargaHorariaResponse response = service.validarAlocacaoSemPersistir(request);
+
+        assertThat(response.valido()).isFalse();
+        assertThat(response.mensagem()).isEqualTo("A turma já possui uma alocação neste dia/horário");
+        verify(repository, never()).save(any());
+    }
 
     @Test
     void deveRetornarSucessoQuandoTentativaForValida() {
