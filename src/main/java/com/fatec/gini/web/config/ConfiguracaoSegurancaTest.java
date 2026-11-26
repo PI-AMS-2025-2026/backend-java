@@ -40,9 +40,12 @@ public class ConfiguracaoSegurancaTest {
 
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // CORS liberado para qualquer origem/IP em todos os ambientes.
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("*");
+                        .allowedOriginPatterns("*")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
 
         };
