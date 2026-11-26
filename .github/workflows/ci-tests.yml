@@ -1,0 +1,199 @@
+name: ci-tests
+
+# Testes unitários e validação das migrations em PostgreSQL real.
+# Em push para dev/staging/main estes testes são executados através do
+# workflow build-release-images (via workflow_call), evitando duplicação.
+on:
+  pull_request:
+    branches: [dev, staging, main]
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-tests-${{ github.workflow }}-${{ github.ref }}
+  # Em PRs cancela execuções antigas; em push/tag deixa terminar, pois o
+  # build-release-images depende deste resultado.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  unit-tests:
+    name: Testes unitários e cobertura
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Executar testes (mvnw verify)
+        run: ./mvnw -B verify
+
+      - name: Resumo de cobertura
+        if: always()
+        run: |
+          set -euo pipefail
+          CSV=target/site/jacoco/jacoco.csv
+          if [ ! -f "$CSV" ]; then
+            echo "Relatório JaCoCo não encontrado em $CSV." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          # Soma as colunas de instruções e linhas (perdidas/cobertas) do CSV.
+          awk -F, 'NR>1 {im+=$4; ic+=$5; lm+=$8; lc+=$9}
+            END {
+              it=im+ic; lt=lm+lc;
+              printf "## Cobertura de testes (JaCoCo)\n\n";
+              printf "| Métrica | Cobertas | Total | %% |\n";
+              printf "|---|---:|---:|---:|\n";
+              printf "| Instruções | %d | %d | %.1f%% |\n", ic, it, (it ? ic*100/it : 0);
+              printf "| Linhas | %d | %d | %.1f%% |\n", lc, lt, (lt ? lc*100/lt : 0);
+            }' "$CSV" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar relatório JaCoCo
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+          if-no-files-found: warn
+
+      - name: Publicar relatórios do Surefire
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
+          if-no-files-found: warn
+
+  migrations-postgres:
+    name: Migrations Flyway em PostgreSQL
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          # Credenciais descartáveis, válidas apenas dentro deste job.
+          POSTGRES_DB: gini_ci
+          POSTGRES_USER: gini_ci
+          POSTGRES_PASSWORD: gini_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U gini_ci -d gini_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Empacotar aplicação
+        run: ./mvnw -B -DskipTests package
+
+      - name: Iniciar aplicação com perfil prod
+        env:
+          SPRING_PROFILES_ACTIVE: prod
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/gini_ci
+          SPRING_DATASOURCE_USERNAME: gini_ci
+          SPRING_DATASOURCE_PASSWORD: gini_ci
+          # O perfil prod exige a configuração de SMTP e a URL do frontend
+          # (fluxo de recuperação de senha). Nenhum e-mail é enviado neste job:
+          # os valores apenas satisfazem a inicialização do contexto.
+          SMTP_HOST: localhost
+          SMTP_PORT: '1025'
+          SMTP_USERNAME: ''
+          SMTP_PASSWORD: ''
+          SMTP_AUTH: 'false'
+          SMTP_STARTTLS: 'false'
+          SMTP_FROM: noreply@gini.local
+          FRONTEND_URL: http://localhost:3000
+        run: |
+          set -euo pipefail
+          # Segredo descartável, gerado e usado apenas nesta execução.
+          JWT_SECRET="$(openssl rand -hex 32)"
+          export JWT_SECRET
+          JAR="$(find target -maxdepth 1 -name '*.jar' ! -name '*.jar.original' | head -n 1)"
+          echo "Iniciando $JAR"
+          nohup java -jar "$JAR" > app.log 2>&1 &
+          echo "$!" > app.pid
+
+      - name: Aguardar health UP
+        run: |
+          set -uo pipefail
+          for i in $(seq 1 120); do
+            if curl -fsS http://localhost:8080/actuator/health 2>/dev/null | grep -q '"status":"UP"'; then
+              echo "Aplicação saudável após ${i}s."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::A aplicação não ficou saudável em 120s."
+          echo "----- log da aplicação -----"
+          cat app.log
+          exit 1
+
+      - name: Validar migrations aplicadas
+        env:
+          PGPASSWORD: gini_ci
+        run: |
+          set -euo pipefail
+          APLICADAS="$(psql -h localhost -U gini_ci -d gini_ci -tAc \
+            "SELECT count(*) FROM flyway_schema_history WHERE success")"
+          echo "Migrations aplicadas com sucesso: $APLICADAS"
+          if [ "$APLICADAS" -lt 2 ]; then
+            echo "::error::Esperadas ao menos 2 migrations aplicadas, encontradas $APLICADAS."
+            psql -h localhost -U gini_ci -d gini_ci -c "SELECT version, description, success FROM flyway_schema_history ORDER BY installed_rank"
+            exit 1
+          fi
+          # A migration V1_0_1 insere o usuário administrador inicial.
+          USUARIOS="$(psql -h localhost -U gini_ci -d gini_ci -tAc "SELECT count(*) FROM usuario")"
+          echo "Registros na tabela usuario (seed da V1_0_1): $USUARIOS"
+          if [ "$USUARIOS" -lt 1 ]; then
+            echo "::error::O seed da migration V1_0_1 não populou a tabela usuario."
+            exit 1
+          fi
+
+      - name: Verificar que o health não exige autenticação
+        run: |
+          set -euo pipefail
+          CODIGO="$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/actuator/health)"
+          echo "GET /actuator/health -> $CODIGO"
+          [ "$CODIGO" = "200" ] || { echo "::error::Esperado 200 no health, obtido $CODIGO."; exit 1; }
+          # Um endpoint protegido deve continuar recusando acesso sem token.
+          PROTEGIDO="$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/usuarios)"
+          echo "GET /usuarios (sem token) -> $PROTEGIDO"
+          case "$PROTEGIDO" in
+            401|403) ;;
+            *) echo "::error::Endpoint protegido deveria retornar 401/403, obteve $PROTEGIDO."; exit 1 ;;
+          esac
+
+      - name: Encerrar aplicação
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill "$(cat app.pid)" 2>/dev/null || true
+          fi
+
+      - name: Publicar log da aplicação
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-log-migrations
+          path: app.log
+          if-no-files-found: ignore

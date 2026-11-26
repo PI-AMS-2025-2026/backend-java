@@ -1,2 +1,20 @@
-/mvnw text eol=lf
+# Normalização de fim de linha. O time desenvolve em Windows, mas o mvnw e os
+# scripts shell são executados em Linux (Docker/CI) e precisam de LF.
+* text=auto
+
+mvnw text eol=lf
+*.sh text eol=lf
 *.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Arquivos consumidos por contêineres Linux.
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sql text eol=lf
+
+# Binários (não normalizar).
+*.jar binary
+*.png binary
+*.jpg binary
+*.ico binary
