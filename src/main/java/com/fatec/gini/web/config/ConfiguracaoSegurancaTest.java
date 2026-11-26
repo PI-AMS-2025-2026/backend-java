@@ -66,17 +66,27 @@ public class ConfiguracaoSegurancaTest {
                         (request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(HttpMethod.POST, "/auth/login")
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/auth/refresh")
+                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/auth/logout")
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/grades/**")
+                        .requestMatchers(HttpMethod.POST, "/api/auth/solicitar-recuperacao",
+                                "/api/auth/redefinir-senha")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/grades/**")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/motor-quadro/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
+
+                        .requestMatchers("/api/historicos-versoes-alocacoes/**")
+                        .hasAnyRole("ADMIN", "COORDENADOR")
 
                         // Libera a interface, os arquivos estaticos e a especificacao do Swagger.
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
@@ -87,50 +97,50 @@ public class ConfiguracaoSegurancaTest {
                         .permitAll()
 
                         // Somente administrador
-                        .requestMatchers("/usuarios/**")
+                        .requestMatchers("/api/usuarios/**")
                         .hasRole("ADMIN")
 
                         // Admin e Coordenador
-                        .requestMatchers("/disciplinas/**")
+                        .requestMatchers("/api/disciplinas/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/turmas/**")
+                        .requestMatchers("/api/turmas/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/alocacoes/**")
+                        .requestMatchers("/api/alocacoes/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers(HttpMethod.GET, "/professores/**")
+                        .requestMatchers(HttpMethod.GET, "/api/professores/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/professores/**")
+                        .requestMatchers("/api/professores/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers("/disponibilidades/**")
+                        .requestMatchers("/api/disponibilidades/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/periodos-atividade-quadro/**")
+                        .requestMatchers("/api/periodos-atividade-quadro/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers(HttpMethod.GET, "/cursos/**")
+                        .requestMatchers(HttpMethod.GET, "/api/cursos/**")
                         .hasAnyRole("ADMIN", "COORDENADOR")
 
-                        .requestMatchers("/cursos/**")
+                        .requestMatchers("/api/cursos/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/salas/**", "/tipos-salas/**", "/recursos/**",
-                                "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**")
+                        .requestMatchers(HttpMethod.POST, "/api/salas/**", "/api/tipos-salas/**",
+                                "/api/recursos/**", "/api/tipos-recursos/**", "/api/recursos-salas/**",
+                                "/api/bloco-horarios/**", "/api/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.PUT, "/salas/**", "/tipos-salas/**", "/recursos/**",
-                                "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**")
+                        .requestMatchers(HttpMethod.PUT, "/api/salas/**", "/api/tipos-salas/**",
+                                "/api/recursos/**", "/api/tipos-recursos/**", "/api/recursos-salas/**",
+                                "/api/bloco-horarios/**", "/api/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE, "/salas/**", "/tipos-salas/**", "/recursos/**",
-                                "/tipos-recursos/**", "/recursos-salas/**", "/bloco-horarios/**",
-                                "/disponibilidades-professores/**")
+                        .requestMatchers(HttpMethod.DELETE, "/api/salas/**", "/api/tipos-salas/**",
+                                "/api/recursos/**", "/api/tipos-recursos/**", "/api/recursos-salas/**",
+                                "/api/bloco-horarios/**", "/api/disponibilidades-professores/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated())

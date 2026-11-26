@@ -61,14 +61,14 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
 
     @Test
     void tokenAusenteOuExpiradoRetorna401EMantem403ParaFaltaDePermissao() throws Exception {
-        mvc.perform(get("/cursos")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/cursos")).andExpect(status().isUnauthorized());
 
         String tokenExpirado = JWT.create()
                 .withIssuer(jwtIssuer)
                 .withSubject("expirado@teste.local")
                 .withExpiresAt(Instant.now().minusSeconds(60))
                 .sign(Algorithm.HMAC256(jwtSecret));
-        mvc.perform(get("/cursos").header("Authorization", "Bearer " + tokenExpirado))
+        mvc.perform(get("/api/cursos").header("Authorization", "Bearer " + tokenExpirado))
                 .andExpect(status().isUnauthorized());
 
         var curso = cursos.findAll().get(0);
@@ -76,7 +76,7 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
                 TipoUsuario.COORDENADOR);
         coordenador.setCurso(curso);
         usuarios.saveAndFlush(coordenador);
-        mvc.perform(get("/usuarios").header("Authorization", "Bearer " + token(coordenador, "sessao-permissao")))
+        mvc.perform(get("/api/usuarios").header("Authorization", "Bearer " + token(coordenador, "sessao-permissao")))
                 .andExpect(status().isForbidden());
     }
 
@@ -90,7 +90,7 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
 
         String corpo = "{\"ano\":2027,\"periodo\":1,\"tipo_perido_atividade_quadro\":\"SEMESTRAL\"," +
                 "\"data_inicio\":\"2027-02-01\",\"data_fim\":\"2027-06-30\",\"status\":\"ATIVO\"}";
-        mvc.perform(post("/periodos-atividade-quadro")
+        mvc.perform(post("/api/periodos-atividade-quadro")
                 .header("Authorization", "Bearer " + token(coordenador, "sessao-periodo-coord"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(corpo))
@@ -101,7 +101,7 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
         usuarios.saveAndFlush(administrador);
         String segundoPeriodo = "{\"ano\":2027,\"periodo\":2,\"tipo_perido_atividade_quadro\":\"SEMESTRAL\"," +
                 "\"data_inicio\":\"2027-08-01\",\"data_fim\":\"2027-12-20\",\"status\":\"ATIVO\"}";
-        mvc.perform(post("/periodos-atividade-quadro")
+        mvc.perform(post("/api/periodos-atividade-quadro")
                 .header("Authorization", "Bearer " + token(administrador, "sessao-periodo-admin"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(segundoPeriodo))
@@ -121,13 +121,13 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
         String credencial = token(coordenador, "sessao-jornada");
         String corpo = "{\"versao\":1,\"status\":\"ATIVO\",\"curso\":{\"id\":" + turma.getCurso().getId()
                 + "},\"turma\":{\"id\":" + turma.getId() + "},\"periodo_atividade_quadro\":{\"id\":" + periodo.getId() + "}}";
-        mvc.perform(post("/quadros-horarios").header("Authorization", "Bearer " + credencial)
+        mvc.perform(post("/api/quadros-horarios").header("Authorization", "Bearer " + credencial)
                 .contentType(MediaType.APPLICATION_JSON).content(corpo))
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.turma.id").value(turma.getId()))
                 .andExpect(jsonPath("$.versao").value(1));
         String corpoOutro = "{\"versao\":1,\"status\":\"ATIVO\",\"curso\":{\"id\":" + turma.getCurso().getId()
                 + "},\"turma\":{\"id\":" + outra.getId() + "},\"periodo_atividade_quadro\":{\"id\":" + periodo.getId() + "}}";
-        mvc.perform(post("/quadros-horarios").header("Authorization", "Bearer " + credencial)
+        mvc.perform(post("/api/quadros-horarios").header("Authorization", "Bearer " + credencial)
                 .contentType(MediaType.APPLICATION_JSON).content(corpoOutro)).andExpect(status().isForbidden());
     }
 
@@ -138,7 +138,7 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
                 .findFirst().orElseThrow();
         quadro.setTurma(turma);
         quadros.saveAndFlush(quadro);
-        String rota = "/motor-quadro/quadros/" + quadro.getId() + "/exportar/pdf";
+        String rota = "/api/motor-quadro/quadros/" + quadro.getId() + "/exportar/pdf";
         int semToken = mvc.perform(get(rota)).andReturn().getResponse().getStatus();
         assertThat(semToken).isIn(401, 403);
 
@@ -151,7 +151,7 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
                 .andReturn().getResponse().getContentAsByteArray();
         mvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.paths['/motor-quadro/quadros/{id}/exportar/pdf'].get.responses['200']"
+                .andExpect(jsonPath("$.paths['/api/motor-quadro/quadros/{id}/exportar/pdf'].get.responses['200']"
                         + ".content['application/pdf'].schema.format").value("binary"));
         var resultadoSwagger = mvc.perform(get(rota).header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_PDF))
@@ -236,7 +236,7 @@ class ExportacaoQuadroSegurancaIntegracaoTest {
     }
 
     private String textoPdfAnual(Long quadroId, String token) throws Exception {
-        var resultado = mvc.perform(get("/motor-quadro/quadros/" + quadroId + "/exportar/pdf")
+        var resultado = mvc.perform(get("/api/motor-quadro/quadros/" + quadroId + "/exportar/pdf")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_PDF))
                 .andReturn().getResponse().getContentAsByteArray();
