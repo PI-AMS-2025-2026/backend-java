@@ -33,10 +33,12 @@ public class ConfiguracaoSegurancaDev {
 
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // CORS liberado para qualquer origem/IP em todos os ambientes.
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000","http://localhost:8081")
+                        .allowedOriginPatterns("*")
                         .allowedMethods("*")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
 
         };

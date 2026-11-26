@@ -86,8 +86,9 @@ public class ConfiguracaoSeguranca {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // CORS liberado para qualquer origem/IP em todos os ambientes.
                 registry.addMapping("/**")
-                        .allowedOrigins(frontendUrl)
+                        .allowedOriginPatterns("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true);
