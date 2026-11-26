@@ -60,7 +60,7 @@ class AlocacaoControllerTest {
     void identificaItemDoLoteQueFalhouNaRegraDeSala() throws Exception {
         when(service.criarLote(anyList())).thenThrow(new AlocacaoLoteException(1,
                 new BusinessException("A sala informada é incompatível com o tipo de sala exigido pela disciplina.")));
-        mockMvc.perform(post("/alocacoes/lote").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/alocacoes/lote").contentType(MediaType.APPLICATION_JSON)
                 .content("[" + AULA + "," + AULA.replace("SEGUNDA", "QUARTA") + "]"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.alocacao_indice").value(1))
@@ -70,7 +70,7 @@ class AlocacaoControllerTest {
 
     @Test
     void identificaCampoInvalidoNoSegundoItemDoLote() throws Exception {
-        mockMvc.perform(post("/alocacoes/lote").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/alocacoes/lote").contentType(MediaType.APPLICATION_JSON)
                 .content("[" + AULA + "," + AULA.replace("{\"id\": 4}", "null") + "]"))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.alocacao_indice").value(1))
@@ -81,7 +81,7 @@ class AlocacaoControllerTest {
 
     @Test
     void preservaDetalhesDeCampoNaAtualizacaoIndividual() throws Exception {
-        mockMvc.perform(put("/alocacoes/10").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/api/alocacoes/10").contentType(MediaType.APPLICATION_JSON)
                 .content(AULA.replace("{\"id\": 3}", "null")))
                 .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.field_errors[0].field").value("sala"))
@@ -91,7 +91,7 @@ class AlocacaoControllerTest {
 
     @Test
     void sincronizaGradeEmUmaUnicaRequisicao() throws Exception {
-        mockMvc.perform(put("/alocacoes/sincronizar-grade")
+        mockMvc.perform(put("/api/alocacoes/sincronizar-grade")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {"removidas": [], "atualizadas": [], "novas": []}
@@ -107,7 +107,7 @@ class AlocacaoControllerTest {
                 .thenReturn(new ValidarCargaHorariaResponse(true,
                         "Carga horária válida para o professor no dia informado."));
 
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -127,7 +127,7 @@ class AlocacaoControllerTest {
                 .thenReturn(new ValidarCargaHorariaResponse(false,
                         "A carga horária máxima diária do professor foi excedida."));
 
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -146,7 +146,7 @@ class AlocacaoControllerTest {
         when(service.validarCargaHorariaSemPersistir(any(ValidarCargaHorariaRequest.class)))
                 .thenThrow(new EntityNotFoundException("Professor não encontrado com ID: 99"));
 
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -164,7 +164,7 @@ class AlocacaoControllerTest {
         when(service.validarCargaHorariaSemPersistir(any(ValidarCargaHorariaRequest.class)))
                 .thenThrow(new EntityNotFoundException("Bloco horário não encontrado com ID: 99"));
 
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -179,7 +179,7 @@ class AlocacaoControllerTest {
 
     @Test
     void deveRetornar422QuandoProfessorForNulo() throws Exception {
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -193,7 +193,7 @@ class AlocacaoControllerTest {
 
     @Test
     void deveRetornar400QuandoDiaSemanaForInvalido() throws Exception {
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -207,7 +207,7 @@ class AlocacaoControllerTest {
 
     @Test
     void deveRetornar422QuandoHorarioForNulo() throws Exception {
-        mockMvc.perform(post("/alocacoes/validar-carga-horaria")
+        mockMvc.perform(post("/api/alocacoes/validar-carga-horaria")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
