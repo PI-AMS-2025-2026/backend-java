@@ -37,7 +37,7 @@ class MotorQuadroPorQuadroExportControllerTest {
         QuadroAnualPdf grade = mock(QuadroAnualPdf.class);
         when(motor.construirPdfAnual(42L)).thenReturn(grade);
         when(pdf.exportarAnual(grade)).thenReturn(new byte[]{37, 80, 68, 70});
-        mvc.perform(get("/motor-quadro/quadros/42/exportar/pdf"))
+        mvc.perform(get("/api/motor-quadro/quadros/42/exportar/pdf"))
             .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_PDF))
             .andExpect(header().string("Content-Disposition", "attachment; filename=quadro-horario-42.pdf"))
             .andExpect(content().bytes(new byte[]{37, 80, 68, 70}));
@@ -49,7 +49,7 @@ class MotorQuadroPorQuadroExportControllerTest {
         GradeCursoResponse grade = mock(GradeCursoResponse.class);
         when(motor.construirPorQuadro(43L)).thenReturn(grade);
         when(excel.exportar(grade)).thenReturn(new byte[]{80, 75});
-        mvc.perform(get("/motor-quadro/quadros/43/exportar/planilha"))
+        mvc.perform(get("/api/motor-quadro/quadros/43/exportar/planilha"))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
             .andExpect(header().string("Content-Disposition", "attachment; filename=quadro-horario-43.xlsx"));
@@ -58,7 +58,7 @@ class MotorQuadroPorQuadroExportControllerTest {
     @Test
     void recusaQuadroDeOutroCursoSemGerarArquivo() throws Exception {
         when(motor.construirPdfAnual(44L)).thenThrow(new AccessDeniedException("Sem acesso"));
-        mvc.perform(get("/motor-quadro/quadros/44/exportar/pdf")).andExpect(status().isForbidden());
+        mvc.perform(get("/api/motor-quadro/quadros/44/exportar/pdf")).andExpect(status().isForbidden());
         verifyNoInteractions(pdf);
     }
 }

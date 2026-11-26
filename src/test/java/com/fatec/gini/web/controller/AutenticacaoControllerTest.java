@@ -69,7 +69,7 @@ class AutenticacaoControllerTest {
         when(refreshTokenService.createRefreshToken(1L)).thenReturn(refreshToken);
         when(tokenService.gerarToken(usuario, "refresh-123")).thenReturn("access-123");
 
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"admin@gini.local\",\"senha\":\"senha\"}"))
                 .andExpect(status().isOk())
@@ -82,7 +82,7 @@ class AutenticacaoControllerTest {
         when(refreshTokenService.refresh("refresh-123"))
                 .thenReturn(new LoginResponse("access-456", "refresh-789", null));
 
-        mockMvc.perform(post("/auth/refresh")
+        mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"refresh_token\":\"refresh-123\"}"))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ class AutenticacaoControllerTest {
         when(refreshTokenService.refresh("refresh-expirado"))
                 .thenThrow(new RefreshTokenException("Refresh token inválido ou expirado"));
 
-        mockMvc.perform(post("/auth/refresh")
+        mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"refresh_token\":\"refresh-expirado\"}"))
                 .andExpect(status().isUnauthorized());
@@ -107,7 +107,7 @@ class AutenticacaoControllerTest {
     void deveAceitarSolicitacaoDeRecuperacaoSemExporExistenciaDoEmail() throws Exception {
         doNothing().when(passwordResetService).solicitarRecuperacao("desconhecido@gini.local");
 
-        mockMvc.perform(post("/auth/solicitar-recuperacao")
+        mockMvc.perform(post("/api/auth/solicitar-recuperacao")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"desconhecido@gini.local\"}"))
                 .andExpect(status().isAccepted());
@@ -119,7 +119,7 @@ class AutenticacaoControllerTest {
     void deveRedefinirSenhaEDevolverNoContent() throws Exception {
         doNothing().when(passwordResetService).redefinirSenha("token-123", "Nova-senha");
 
-        mockMvc.perform(post("/auth/redefinir-senha")
+        mockMvc.perform(post("/api/auth/redefinir-senha")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"token\":\"token-123\",\"senha\":\"Nova-senha\"}"))
                 .andExpect(status().isNoContent());
@@ -129,7 +129,7 @@ class AutenticacaoControllerTest {
 
     @Test
     void deveRejeitarSenhaFracaNaRedefinicao() throws Exception {
-        mockMvc.perform(post("/auth/redefinir-senha")
+        mockMvc.perform(post("/api/auth/redefinir-senha")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"token\":\"token-123\",\"senha\":\"senha-fraca\"}"))
                 .andExpect(status().isUnprocessableContent())
@@ -139,7 +139,7 @@ class AutenticacaoControllerTest {
 
     @Test
     void deveRejeitarSenhaFracaNaAlteracao() throws Exception {
-        mockMvc.perform(put("/auth/alterar-senha")
+        mockMvc.perform(put("/api/auth/alterar-senha")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"senha_atual\":\"Senha-atual\",\"nova_senha\":\"senha-fraca\"}"))
                 .andExpect(status().isUnprocessableContent())
@@ -158,7 +158,7 @@ class AutenticacaoControllerTest {
         context.setAuthentication(new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
         SecurityContextHolder.setContext(context);
         try {
-            mockMvc.perform(put("/auth/alterar-senha")
+            mockMvc.perform(put("/api/auth/alterar-senha")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"senha_atual\":\"Senha-atual\",\"nova_senha\":\"Nova-senha\"}"))
                     .andExpect(status().isNoContent());
@@ -171,7 +171,7 @@ class AutenticacaoControllerTest {
 
     @Test
     void deveRejeitarSolicitacaoDeRecuperacaoComEmailInvalido() throws Exception {
-        mockMvc.perform(post("/auth/solicitar-recuperacao")
+        mockMvc.perform(post("/api/auth/solicitar-recuperacao")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"invalido\"}"))
                 .andExpect(status().isUnprocessableContent());

@@ -46,7 +46,7 @@ class UsuarioControllerTest {
 
     @Test
     void deveRetornarErrosDeValidacaoAssociadosAosCampos() throws Exception {
-        mockMvc.perform(post("/usuarios")
+        mockMvc.perform(post("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isUnprocessableContent())
@@ -61,7 +61,7 @@ class UsuarioControllerTest {
         doThrow(new EntityNotFoundException("Curso não encontrado com ID: 999"))
                 .when(service).criar(any());
 
-        mockMvc.perform(post("/usuarios")
+        mockMvc.perform(post("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nome\":\"Coordenação\",\"email\":\"coord@teste.com\",\"senha\":\"Senha123\",\"status\":\"ATIVO\",\"tipo_usuario\":\"COORDENADOR\",\"curso\":{\"id\":999}}"))
                 .andExpect(status().isNotFound())
@@ -70,7 +70,7 @@ class UsuarioControllerTest {
 
     @Test
     void deveRejeitarSenhaFracaAoCriarUsuario() throws Exception {
-        mockMvc.perform(post("/usuarios")
+        mockMvc.perform(post("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nome\":\"Ana\",\"email\":\"ana@teste.com\",\"senha\":\"abcdefgh\",\"status\":\"ATIVO\",\"tipo_usuario\":\"ADMINISTRADOR\"}"))
                 .andExpect(status().isUnprocessableContent())
@@ -80,7 +80,7 @@ class UsuarioControllerTest {
 
     @Test
     void deveRejeitarSenhaFracaAoAtualizarUsuario() throws Exception {
-        mockMvc.perform(put("/usuarios/31")
+        mockMvc.perform(put("/api/usuarios/31")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nome\":\"Ana\",\"email\":\"ana@teste.com\",\"senha\":\"ABCDEFGH\",\"status\":\"ATIVO\",\"tipo_usuario\":\"ADMINISTRADOR\"}"))
                 .andExpect(status().isUnprocessableContent())
@@ -92,7 +92,7 @@ class UsuarioControllerTest {
     void deveManterDeleteComoOperacaoDeInativacao() throws Exception {
         doNothing().when(service).inativar(12L);
 
-        mockMvc.perform(delete("/usuarios/12"))
+        mockMvc.perform(delete("/api/usuarios/12"))
                 .andExpect(status().isNoContent());
 
         verify(service).inativar(12L);

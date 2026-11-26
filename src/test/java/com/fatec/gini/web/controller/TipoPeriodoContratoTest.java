@@ -41,9 +41,9 @@ class TipoPeriodoContratoTest {
             var req = invocation.getArgument(0, com.fatec.gini.dto.periodoAtividadeQuadro.PeriodoAtividadeQuadroRequest.class);
             return new PeriodoAtividadeQuadroResponse(1L, 2026, 1, req.tipoPeridoAtividadeQuadro(), inicio, fim, Status.ATIVO, LocalDateTime.now(), LocalDateTime.now());
         });
-        mvc.perform(get("/periodos-atividade-quadro/tipos"))
+        mvc.perform(get("/api/periodos-atividade-quadro/tipos"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$[0]").value("SEMESTRAL"));
-        mvc.perform(post("/periodos-atividade-quadro").contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/api/periodos-atividade-quadro").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"ano\":2026,\"periodo\":1,\"tipo_perido_atividade_quadro\":\"SEMESTRAL\",\"data_inicio\":\"2026-01-01\",\"data_fim\":\"2026-06-30\",\"status\":\"ATIVO\"}"))
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.tipo_perido_atividade_quadro").value("SEMESTRAL"));
         org.assertj.core.api.Assertions.assertThat(TipoPeridoAtividadeQuadro.SEMESTRAL.ordinal()).isZero();
